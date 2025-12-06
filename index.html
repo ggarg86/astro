@@ -120,12 +120,11 @@
                     </div>
 
                     <div class="space-y-3">
-                        <!-- Date & Time Title Removed -->
                         
-                        <!-- Combined Single Row for Date and Time with Labels -->
-                        <div class="flex flex-wrap items-end gap-1.5">
+                        <!-- Row 1: Date Inputs -->
+                        <div class="flex items-end gap-2 w-full">
                             <!-- Day -->
-                            <div class="flex flex-col w-[16%]">
+                            <div class="flex flex-col w-[25%]">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span>
                                 <div class="relative w-full">
                                     <select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
@@ -133,7 +132,7 @@
                             </div>
                             
                             <!-- Month -->
-                            <div class="flex flex-col w-[18%]">
+                            <div class="flex flex-col w-[35%]">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span>
                                 <div class="relative w-full">
                                     <select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
@@ -141,16 +140,19 @@
                             </div>
 
                             <!-- Year with Datalist -->
-                            <div class="flex flex-col w-[18%]">
+                            <div class="flex flex-col w-[40%]">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span>
                                 <div class="relative w-full">
                                     <input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY">
                                     <datalist id="year-options"></datalist>
                                 </div>
                             </div>
+                        </div>
 
+                        <!-- Row 2: Time Inputs -->
+                        <div class="flex items-end gap-2 mt-2">
                             <!-- Hour -->
-                            <div class="flex flex-col w-[14%]">
+                            <div class="flex flex-col w-20">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span>
                                 <div class="relative w-full">
                                     <select id="hour-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
@@ -160,7 +162,7 @@
                             <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
 
                             <!-- Minute -->
-                            <div class="flex flex-col w-[14%]">
+                            <div class="flex flex-col w-20">
                                 <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span>
                                 <div class="relative w-full">
                                     <select id="minute-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
@@ -168,7 +170,7 @@
                             </div>
 
                             <!-- AM/PM Toggle -->
-                            <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 flex-1 h-[34px] mb-[1px]">
+                            <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
                                 <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
                                 <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
                             </div>
