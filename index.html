@@ -4,86 +4,41 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Geo-Time Chart Calculator</title>
-    
     <script src="https://cdn.tailwindcss.com"></script>
-    
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
     <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
-
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-
     <style>
-        /* Custom scrollbar */
         .suggestions-list::-webkit-scrollbar { width: 8px; }
         .suggestions-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         .suggestions-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         .suggestions-list::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        
-        .loader {
-            border-top-color: #3498db;
-            -webkit-animation: spinner 1.5s linear infinite;
-            animation: spinner 1.5s linear infinite;
-        }
-        @keyframes spinner {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .loader { border-top-color: #3498db; animation: spinner 1.5s linear infinite; -webkit-animation: spinner 1.5s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .asc-row { background-color: #eff6ff; border-left: 3px solid #3b82f6; }
         .node-row { color: #64748b; font-style: italic; }
         .ampm-btn.active { background-color: #4f46e5; color: white; border-color: #4f46e5; }
-        
-        /* Cross-browser Input Centering */
-        .input-center {
-            text-align: center;
-            text-align-last: center;       /* For Chrome/Edge/Safari Selects */
-            -moz-text-align-last: center;  /* For Firefox Selects */
-        }
-
-        /* Font Utility */
+        .input-center { text-align: center; text-align-last: center; -moz-text-align-last: center; }
         .font-serif-title { font-family: 'Playfair Display', serif; }
-
-        /* SVG Styles */
         .chart-text { font-family: sans-serif; font-size: 10px; fill: #1e293b; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
         .curved-label { font-family: sans-serif; font-size: 9px; font-weight: 800; fill: #334155; letter-spacing: 0.5px; text-transform: uppercase; }
         .planet-label { font-size: 11px; font-weight: bold; fill: #0f172a; cursor: default; pointer-events: none; }
-        /* Text Glow Effect */
-        .planet-label-glow { text-shadow: 0 0 4px #ffffff, 0 0 4px #ffffff, 0 0 4px #ffffff; }
-        
+        .planet-label-glow { text-shadow: 0 0 4px #fff, 0 0 4px #fff, 0 0 4px #fff; }
         .cardinal-label { font-size: 14px; font-weight: 800; fill: #1e293b; }
         .cardinal-sub { font-size: 9px; font-weight: 600; fill: #64748b; }
         .house-number { font-size: 14px; font-weight: bold; fill: #334155; opacity: 0.3; }
-        
-        /* Flow Chart Styles */
         .flow-node { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .flow-node:hover { transform: translateY(-4px) scale(1.05); }
-        
-        /* Compact Narrative Flow */
         .narrative-chip { transition: all 0.2s ease; }
         .narrative-chip:hover { transform: scale(1.02); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-
-        /* Timeline Styles */
         .timeline-line { position: absolute; left: 24px; top: 30px; bottom: 0; width: 2px; background: #e2e8f0; z-index: 0; }
         .timeline-item { position: relative; z-index: 1; padding-left: 60px; padding-bottom: 24px; }
         .timeline-dot { position: absolute; left: 19px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #cbd5e1; border: 2px solid #fff; box-shadow: 0 0 0 1px #cbd5e1; z-index: 2; }
         .timeline-item.active .timeline-dot { background: #4f46e5; box-shadow: 0 0 0 4px #e0e7ff; }
-
-        /* New Planetary Flow Scrollbar */
         .planet-flow-scroll::-webkit-scrollbar { height: 4px; }
         .planet-flow-scroll::-webkit-scrollbar-track { background: transparent; }
         .planet-flow-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        
-        /* Table Styles - Compact & Updated Colors */
-        .compact-table th { 
-            padding: 10px 12px; 
-            font-size: 11px; 
-            text-transform: uppercase; 
-            letter-spacing: 0.05em; 
-            color: #ffffff; /* White text */
-            background-color: #1e293b; /* Dark Slate to match titles */
-            border-bottom: 1px solid #334155; 
-            font-weight: 700; 
-        }
+        .compact-table th { padding: 10px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #ffffff; background-color: #1e293b; border-bottom: 1px solid #334155; font-weight: 700; }
         .compact-table td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
         .compact-table tr:hover td { background-color: #f8fafc; }
         .compact-table tr:last-child td { border-bottom: none; }
@@ -92,7 +47,6 @@
 <body class="bg-slate-100 min-h-screen font-sans text-slate-800 p-4 md:p-8">
 
     <div class="max-w-6xl mx-auto flex flex-col gap-6">
-        
         <!-- Header -->
         <div class="bg-indigo-900 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between w-full">
             <div class="flex items-center gap-3">
@@ -102,25 +56,21 @@
                     <p class="text-indigo-200 text-sm">Positions (Lahiri) &bull; Octal House Map &bull; Planetary Data</p>
                 </div>
             </div>
-            <div id="ayanamsa-display" class="mt-4 md:mt-0 bg-indigo-800 px-4 py-2 rounded-lg font-mono text-sm border border-indigo-700">
-                </div>
+            <div id="ayanamsa-display" class="mt-4 md:mt-0 bg-indigo-800 px-4 py-2 rounded-lg font-mono text-sm border border-indigo-700"></div>
         </div>
 
-        <!-- Input Section (Full Row) -->
+        <!-- Input Section -->
         <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 w-full">
             <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
                 <i class="ph ph-sliders-horizontal"></i> Input Details
             </h2>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
-                <!-- Column 1: Identity & Location -->
+                <!-- Col 1 -->
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name</label>
                         <input type="text" id="name-input" placeholder="Enter Name" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 font-medium">
                     </div>
-
                     <div class="relative w-full">
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Location Search</label>
                         <div class="relative">
@@ -132,60 +82,18 @@
                         <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list"></ul>
                     </div>
                 </div>
-
-                <!-- Column 2: Date & Time -->
+                <!-- Col 2 -->
                 <div class="space-y-3">
                     <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Date & Time</label>
-                    
-                    <!-- Row 1: Date Inputs -->
                     <div class="flex items-end gap-2 w-full">
-                        <!-- Day -->
-                        <div class="flex flex-col w-[25%]">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span>
-                            <div class="relative w-full">
-                                <select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                            </div>
-                        </div>
-                        
-                        <!-- Month -->
-                        <div class="flex flex-col w-[35%]">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span>
-                            <div class="relative w-full">
-                                <select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                            </div>
-                        </div>
-
-                        <!-- Year with Datalist -->
-                        <div class="flex flex-col w-[40%]">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span>
-                            <div class="relative w-full">
-                                <input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY">
-                                <datalist id="year-options"></datalist>
-                            </div>
-                        </div>
+                        <div class="flex flex-col w-[25%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span><div class="relative w-full"><select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <div class="flex flex-col w-[35%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span><div class="relative w-full"><select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <div class="flex flex-col w-[40%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span><div class="relative w-full"><input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY"><datalist id="year-options"></datalist></div></div>
                     </div>
-
-                    <!-- Row 2: Time Inputs -->
                     <div class="flex items-end gap-2 mt-2">
-                        <!-- Hour -->
-                        <div class="flex flex-col w-20">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span>
-                            <div class="relative w-full">
-                                <select id="hour-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                            </div>
-                        </div>
-                        
+                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span><div class="relative w-full"><select id="hour-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
                         <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
-
-                        <!-- Minute -->
-                        <div class="flex flex-col w-20">
-                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span>
-                            <div class="relative w-full">
-                                <select id="minute-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                            </div>
-                        </div>
-
-                        <!-- AM/PM Toggle -->
+                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span><div class="relative w-full"><select id="minute-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
                         <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
                             <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
                             <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
@@ -193,595 +101,214 @@
                         <input type="hidden" id="ampm-value" value="AM">
                     </div>
                 </div>
-
-                <!-- Column 3: Action & Coordinates -->
+                <!-- Col 3 -->
                 <div class="flex flex-col justify-between">
                     <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-slate-50 p-2 rounded border border-slate-200">
-                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Latitude</span>
-                            <span id="lat-display" class="font-mono font-medium text-slate-700">28.6139</span>
-                        </div>
-                        <div class="bg-slate-50 p-2 rounded border border-slate-200">
-                            <span class="block text-[10px] font-bold text-slate-400 uppercase">Longitude</span>
-                            <span id="lng-display" class="font-mono font-medium text-slate-700">77.2090</span>
-                        </div>
+                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Latitude</span><span id="lat-display" class="font-mono font-medium text-slate-700">28.6139</span></div>
+                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Longitude</span><span id="lng-display" class="font-mono font-medium text-slate-700">77.2090</span></div>
                     </div>
-                    <input type="hidden" id="latitude" value="28.6139">
-                    <input type="hidden" id="longitude" value="77.2090">
-
-                    <button onclick="calculatePositions()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-sm shadow-indigo-500/30 flex items-center justify-center gap-2">
-                        <i class="ph ph-chart-polar"></i> Generate Report
-                    </button>
+                    <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
+                    <button onclick="calculatePositions()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-sm shadow-indigo-500/30 flex items-center justify-center gap-2"><i class="ph ph-chart-polar"></i> Generate Report</button>
                 </div>
             </div>
         </div>
 
-        <!-- Result Sections (Vertically Stacked) -->
+        <!-- Result Sections -->
         <div class="w-full space-y-6">
-            
-            <!-- Geo Map Section (Static/Always Visible) -->
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col items-center">
                 <div class="flex flex-col items-center text-center w-full mb-6">
-                    <h3 class="font-serif-title font-bold text-lg md:text-2xl text-slate-800 uppercase tracking-wide">
-                        Geo-Time Zone Map
-                    </h3>
-                    <span id="octal-map-details" class="font-sans font-bold text-indigo-900 text-sm md:text-base mt-1 block">
-                        </span>
+                    <h3 class="font-serif-title font-bold text-lg md:text-2xl text-slate-800 uppercase tracking-wide">Geo-Time Zone Map</h3>
+                    <span id="octal-map-details" class="font-sans font-bold text-indigo-900 text-sm md:text-base mt-1 block"></span>
                 </div>
-
-                <div id="octal-chart-container" class="w-full max-w-[550px] aspect-square relative flex items-center justify-center bg-slate-50 rounded-full border border-slate-100">
-                    <span class="text-slate-400 text-sm">Click "Generate Report" to view chart</span>
-                </div>
+                <div id="octal-chart-container" class="w-full max-w-[550px] aspect-square relative flex items-center justify-center bg-slate-50 rounded-full border border-slate-100"><span class="text-slate-400 text-sm">Click "Generate Report" to view chart</span></div>
             </div>
 
-            <!-- Results Table (Static/Always Visible) -->
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse compact-table" id="results-table">
-                        <thead>
-                            <tr>
-                                <th>Planet</th>
-                                <th>House Label (No.)</th>
-                                <th>Rashi</th>
-                                <th>Longitude</th>
-                                <th>Nakshatra</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-slate-700">
-                            <tr><td colspan="5" class="p-8 text-center text-slate-400 italic">Waiting for input...</td></tr>
-                        </tbody>
+                        <thead><tr><th>Planet</th><th>House Label (No.)</th><th>Rashi</th><th>Longitude</th><th>Nakshatra</th></tr></thead>
+                        <tbody class="text-slate-700"><tr><td colspan="5" class="p-8 text-center text-slate-400 italic">Waiting for input...</td></tr></tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- COLLAPSIBLE RESULTS CONTAINER -->
-            <!-- Hidden initially, shown via JS -->
             <div id="results-container" class="hidden space-y-4">
-
                 <!-- 1. Psycho-Analysis -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-psycho')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-slate-700 p-2 rounded-lg text-purple-400 border border-slate-600"><i class="ph ph-brain text-xl"></i></div>
-                            <div>
-                                <h3 class="font-bold text-white">Psycho-Analysis</h3>
-                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Emotional Pattern & Energy Flow <span id="psycho-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
-                            </div>
-                        </div>
-                        <i id="icon-acc-psycho" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-purple-400 border border-slate-600"><i class="ph ph-brain text-xl"></i></div><div><h3 class="font-bold text-white">Psycho-Analysis</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Emotional Pattern & Energy Flow <span id="psycho-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-psycho" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
                     <div id="acc-psycho" class="hidden border-t border-slate-100 p-6">
                         <div class="mb-8">
-                            <p class="text-slate-600 text-sm leading-relaxed mb-6 border-l-4 border-indigo-200 pl-4 bg-slate-50 py-3 rounded-r-lg">
-                                In this system, <strong>TAMAS</strong> houses (3, 5, 6, 8) act as <span class="text-emerald-500 font-semibold">Energy Producers</span>. <strong>RAJAS</strong> houses (2, 9, 11, 12) are <span class="text-orange-600 font-semibold">Action Oriented</span>. The cycle flows from needing support (Tamas) to performing action (Rajas).
-                            </p>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6 border-l-4 border-indigo-200 pl-4 bg-slate-50 py-3 rounded-r-lg">In this system, <strong>TAMAS</strong> houses (3, 5, 6, 8) act as <span class="text-emerald-500 font-semibold">Energy Producers</span>. <strong>RAJAS</strong> houses (2, 9, 11, 12) are <span class="text-orange-600 font-semibold">Action Oriented</span>. The cycle flows from needing support (Tamas) to performing action (Rajas).</p>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="bg-gradient-to-br from-emerald-50 to-white rounded-xl border border-emerald-100 overflow-hidden shadow-sm">
-                                    <div class="px-4 py-3 bg-emerald-100/50 border-b border-emerald-100 flex justify-between items-center">
-                                        <span class="font-bold text-emerald-800 flex items-center gap-2"><i class="ph ph-battery-charging text-lg"></i> TAMAS (Energy Source)</span>
-                                        <span id="tamas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-emerald-600 border border-emerald-100">0 Planets</span>
-                                    </div>
-                                    <div class="p-4">
-                                        <p class="text-xs text-black mb-3 italic">Emotions created, batteries charging, seeking support.</p>
-                                        <div id="tamas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div>
-                                    </div>
+                                    <div class="px-4 py-3 bg-emerald-100/50 border-b border-emerald-100 flex justify-between items-center"><span class="font-bold text-emerald-800 flex items-center gap-2"><i class="ph ph-battery-charging text-lg"></i> TAMAS (Energy Source)</span><span id="tamas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-emerald-600 border border-emerald-100">0 Planets</span></div>
+                                    <div class="p-4"><p class="text-xs text-black mb-3 italic">Emotions created, batteries charging, seeking support.</p><div id="tamas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div></div>
                                 </div>
                                 <div class="bg-gradient-to-br from-orange-50 to-white rounded-xl border border-orange-100 overflow-hidden shadow-sm">
-                                    <div class="px-4 py-3 bg-orange-100/50 border-b border-orange-100 flex justify-between items-center">
-                                        <span class="font-bold text-orange-800 flex items-center gap-2"><i class="ph ph-lightning text-lg"></i> RAJAS (Action Release)</span>
-                                        <span id="rajas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-orange-600 border border-orange-100">0 Planets</span>
-                                    </div>
-                                    <div class="p-4">
-                                        <p class="text-xs text-black mb-3 italic">Emotions released, batteries draining, action taking.</p>
-                                        <div id="rajas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div>
-                                    </div>
+                                    <div class="px-4 py-3 bg-orange-100/50 border-b border-orange-100 flex justify-between items-center"><span class="font-bold text-orange-800 flex items-center gap-2"><i class="ph ph-lightning text-lg"></i> RAJAS (Action Release)</span><span id="rajas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-orange-600 border border-orange-100">0 Planets</span></div>
+                                    <div class="p-4"><p class="text-xs text-black mb-3 italic">Emotions released, batteries draining, action taking.</p><div id="rajas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div></div>
                                 </div>
                             </div>
                             <div id="analysis-summary" class="mt-6 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-200"></div>
                         </div>
                     </div>
                 </div>
-
                 <!-- 2. Energy Flow Narrative -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-energy')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-slate-700 p-2 rounded-lg text-indigo-400 border border-slate-600"><i class="ph ph-flow-arrow text-xl"></i></div>
-                            <div>
-                                <h3 class="font-bold text-white">Energy Flow Narrative</h3>
-                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Planetary Sequence & Story</p>
-                            </div>
-                        </div>
-                        <i id="icon-acc-energy" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-indigo-400 border border-slate-600"><i class="ph ph-flow-arrow text-xl"></i></div><div><h3 class="font-bold text-white">Energy Flow Narrative</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Planetary Sequence & Story</p></div></div><i id="icon-acc-energy" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
                     <div id="acc-energy" class="hidden border-t border-slate-100 p-6">
                         <div id="energy-flow-container" class="border-b border-slate-100 pb-6 mb-6"></div>
-                        <div>
-                            <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2"><i class="ph ph-chat-text"></i> Detailed Narrative</h5>
-                            <div id="energy-narrative-container" class="flex flex-wrap gap-2 text-sm"></div>
-                        </div>
+                        <div><h5 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2"><i class="ph ph-chat-text"></i> Detailed Narrative</h5><div id="energy-narrative-container" class="flex flex-wrap gap-2 text-sm"></div></div>
                     </div>
                 </div>
-
                 <!-- 3. Energy Support & Speed -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-speed')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-slate-700 p-2 rounded-lg text-teal-400 border border-slate-600"><i class="ph ph-speedometer text-xl"></i></div>
-                            <div>
-                                <h3 class="font-bold text-white">Energy Support & Speed Analysis</h3>
-                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Tamas Supply vs Rajas Demand <span id="speed-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
-                            </div>
-                        </div>
-                        <i id="icon-acc-speed" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-teal-400 border border-slate-600"><i class="ph ph-speedometer text-xl"></i></div><div><h3 class="font-bold text-white">Energy Support & Speed Analysis</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Tamas Supply vs Rajas Demand <span id="speed-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-speed" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
-                    <div id="acc-speed" class="hidden border-t border-slate-100 p-6">
-                        <div id="energy-support-container" class="flex flex-col gap-6"></div>
-                    </div>
+                    <div id="acc-speed" class="hidden border-t border-slate-100 p-6"><div id="energy-support-container" class="flex flex-col gap-6"></div></div>
                 </div>
-
                 <!-- 4. Past-Present-Future -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-ppf')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-slate-700 p-2 rounded-lg text-blue-400 border border-slate-600"><i class="ph ph-clock-counter-clockwise text-xl"></i></div>
-                            <div>
-                                <h3 class="font-bold text-white">Past-Present-Future Cycles</h3>
-                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Mars, Jupiter, Saturn <span id="long-cycle-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
-                            </div>
-                        </div>
-                        <i id="icon-acc-ppf" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-blue-400 border border-slate-600"><i class="ph ph-clock-counter-clockwise text-xl"></i></div><div><h3 class="font-bold text-white">Past-Present-Future Cycles</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Mars, Jupiter, Saturn <span id="long-cycle-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-ppf" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
-                    <div id="acc-ppf" class="hidden border-t border-slate-100 p-6">
-                        <div id="long-cycle-container" class="grid grid-cols-1 gap-6"></div>
-                    </div>
+                    <div id="acc-ppf" class="hidden border-t border-slate-100 p-6"><div id="long-cycle-container" class="grid grid-cols-1 gap-6"></div></div>
                 </div>
-
                 <!-- 5. Monthly (Sun) Cycle -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-sun')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-slate-700 p-2 rounded-lg text-amber-400 border border-slate-600"><i class="ph ph-sun text-xl"></i></div>
-                            <div>
-                                <h3 class="font-bold text-white">Monthly Emotional Rhythmic Pattern</h3>
-                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Annual Solar Transit <span id="monthly-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
-                            </div>
-                        </div>
-                        <i id="icon-acc-sun" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-amber-400 border border-slate-600"><i class="ph ph-sun text-xl"></i></div><div><h3 class="font-bold text-white">Monthly Emotional Rhythmic Pattern</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Annual Solar Transit <span id="monthly-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-sun" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
-                    <div id="acc-sun" class="hidden border-t border-slate-100 p-6">
-                        <div id="sun-cycle-container" class="space-y-4"></div>
-                    </div>
+                    <div id="acc-sun" class="hidden border-t border-slate-100 p-6"><div id="sun-cycle-container" class="space-y-4"></div></div>
                 </div>
-
                 <!-- 6. Daily (Moon) Cycle -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-moon')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-slate-700 p-2 rounded-lg text-slate-300 border border-slate-600"><i class="ph ph-moon text-xl"></i></div>
-                            <div>
-                                <h3 class="font-bold text-white">Daily Emotional Rhythmic Pattern</h3>
-                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Lunar Transit <span id="daily-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
-                            </div>
-                        </div>
-                        <i id="icon-acc-moon" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-slate-300 border border-slate-600"><i class="ph ph-moon text-xl"></i></div><div><h3 class="font-bold text-white">Daily Emotional Rhythmic Pattern</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Lunar Transit <span id="daily-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-moon" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
-                    <div id="acc-moon" class="hidden border-t border-slate-100 p-6">
-                        <div id="moon-cycle-container" class="space-y-4"></div>
-                    </div>
+                    <div id="acc-moon" class="hidden border-t border-slate-100 p-6"><div id="moon-cycle-container" class="space-y-4"></div></div>
                 </div>
-
                 <!-- 7. Archetype Mastery Guide -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-guide')" class="w-full flex items-center justify-between p-4 bg-indigo-900 hover:bg-indigo-800 transition-colors text-left group">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-indigo-800 text-yellow-400 border border-indigo-700 p-2 rounded-lg"><i class="ph ph-book-open-text text-xl"></i></div>
-                            <div>
-                                <h3 class="font-bold text-white">Archetype Mastery Guide</h3>
-                                <p class="text-xs text-indigo-200 uppercase tracking-wide font-semibold">Deep Dive into Emotional Energy</p>
-                            </div>
-                        </div>
-                        <i id="icon-acc-guide" class="ph ph-caret-down text-indigo-300 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-indigo-800 text-yellow-400 border border-indigo-700 p-2 rounded-lg"><i class="ph ph-book-open-text text-xl"></i></div><div><h3 class="font-bold text-white">Archetype Mastery Guide</h3><p class="text-xs text-indigo-200 uppercase tracking-wide font-semibold">Deep Dive into Emotional Energy</p></div></div><i id="icon-acc-guide" class="ph ph-caret-down text-indigo-300 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
                     <div id="acc-guide" class="hidden border-t border-slate-100 p-6 bg-slate-50/50">
-                         <!-- Content for Guide -->
                          <div class="space-y-12">
-
-                            <!-- SECTION 1: SEEKER -> CREATOR -->
+                            <!-- SECTION 1 -->
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                                 <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
-                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-binoculars"></i> SEEKER OF TRUTH</span>
-                                        <i class="ph ph-arrow-right text-slate-300"></i>
-                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-paint-brush-broad"></i> CREATOR</span>
-                                    </h4>
-                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">From Chaos to Creation: Turning Overthinking into Something Real</p>
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-binoculars"></i> SEEKER OF TRUTH</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-paint-brush-broad"></i> CREATOR</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">From Chaos to Creation: Turning Overthinking into Something Real</p>
                                 </div>
-                                
                                 <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
-                                        <p>When your mind is full of thoughts, "what ifs," worries, and ideas, it often feels like a storm. You are not lazy or broken – you are overloaded.</p>
-                                        <p class="mt-2">Inside you, there are two important parts:</p>
-                                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                                            <li><strong>The Seeker:</strong> The part of you that observes, feels deeply, and tries to understand life.</li>
-                                            <li><strong>The Creator:</strong> The part of you that turns ideas and emotions into real, physical things.</li>
-                                        </ul>
-                                        <p class="mt-2 font-medium text-indigo-700">You suffer most when the Seeker is active, but the Creator is silent.</p>
-                                    </div>
-
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>When your mind is full of thoughts, "what ifs," worries, and ideas, it often feels like a storm. You are not lazy or broken – you are overloaded.</p><p class="mt-2">Inside you, there are two important parts:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Seeker:</strong> The part of you that observes, feels deeply, and tries to understand life.</li><li><strong>The Creator:</strong> The part of you that turns ideas and emotions into real, physical things.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer most when the Seeker is active, but the Creator is silent.</p></div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
-                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-eye"></i> The Seeker: The Inner Student</h5>
-                                            <p class="mb-2">The Seeker notices small details, thinks deeply about why things happen, replays conversations, and feels emotions intensely. You may ask:</p>
-                                            <ul class="list-disc pl-5 italic text-emerald-700/80">
-                                                <li>“Why do I always end up in this situation?”</li>
-                                                <li>“Why do people behave like this?”</li>
-                                                <li>“Why do I feel this way?”</li>
-                                            </ul>
-                                            <p class="mt-3 text-xs font-bold text-emerald-800">This is the Seeker at work.</p>
-                                        </div>
-                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
-                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-hammer"></i> The Creator: Giving Thoughts a Home</h5>
-                                            <p class="mb-2">The Creator says: “Enough thinking. Let’s build something.” It turns pain into projects and ideas into reality.</p>
-                                            <p class="mb-2">This looks like writing insights, building a product, designing a routine, or making something physical.</p>
-                                            <p class="mt-3 text-xs font-bold text-orange-800 italic">The Creator doesn’t ask, “What if?” The Creator says, “What can I make with what I have right now?”</p>
-                                        </div>
+                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-eye"></i> The Seeker: The Inner Student</h5><p class="mb-2">The Seeker notices small details, thinks deeply about why things happen, replays conversations, and feels emotions intensely. You may ask:</p><ul class="list-disc pl-5 italic text-emerald-700/80"><li>“Why do I always end up in this situation?”</li><li>“Why do people behave like this?”</li><li>“Why do I feel this way?”</li></ul><p class="mt-3 text-xs font-bold text-emerald-800">This is the Seeker at work.</p></div>
+                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-hammer"></i> The Creator: Giving Thoughts a Home</h5><p class="mb-2">The Creator says: “Enough thinking. Let’s build something.” It turns pain into projects and ideas into reality.</p><p class="mb-2">This looks like writing insights, building a product, designing a routine, or making something physical.</p><p class="mt-3 text-xs font-bold text-orange-800 italic">The Creator doesn’t ask, “What if?” The Creator says, “What can I make with what I have right now?”</p></div>
                                     </div>
-
-                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500">
-                                        <h5 class="font-bold text-slate-900 mb-2">Example Story: The Silent Observer</h5>
-                                        <p class="italic text-slate-600 mb-4">Imagine Arjun. He spends nights replaying arguments, feeling like a CCTV camera—recording everything but doing nothing. He is the Seeker.</p>
-                                        <p>One day, instead of overthinking, he opens a notebook. He writes down lessons from his failed relationships. Over weeks, these notes turn into a "Red Flag Checklist" he shares with friends. By turning his pain into a tangible tool, he stops overthinking and starts building.</p>
-                                        <p class="font-bold text-indigo-700 mt-2">This is how overthinking becomes a tool instead of torture.</p>
-                                    </div>
-
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Seeker to Creator</h5>
-                                        <div class="space-y-4">
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Collect Your “Raw Data”</strong>
-                                                    <p>Write down major painful events, repeat patterns, and recurring thoughts from the last 2-5 years. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> Feeling overwhelmed. <strong class="text-emerald-600">Solution:</strong> Start with just one situation.</span></p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Extract Lessons</strong>
-                                                    <p>Ask: What did this teach me about myself and others? Focus on "Next time, I will..." rather than "I should have...".</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Decide What to Create</strong>
-                                                    <p>Build something from these lessons: A journal template, a checklist, a blog, a routine. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> “Who will care?” <strong class="text-emerald-600">Solution:</strong> You are building for clarity, not fame.</span></p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Use Creation as Your Anchor</strong>
-                                                    <p>Whenever your mind becomes noisy, return to your project. Add one page, one idea. Let your hands move instead of your thoughts running wild.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500"><h5 class="font-bold text-slate-900 mb-2">Example Story: The Silent Observer</h5><p class="italic text-slate-600 mb-4">Imagine Arjun. He spends nights replaying arguments, feeling like a CCTV camera—recording everything but doing nothing. He is the Seeker.</p><p>One day, instead of overthinking, he opens a notebook. He writes down lessons from his failed relationships. Over weeks, these notes turn into a "Red Flag Checklist" he shares with friends. By turning his pain into a tangible tool, he stops overthinking and starts building.</p><p class="font-bold text-indigo-700 mt-2">This is how overthinking becomes a tool instead of torture.</p></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Seeker to Creator</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Collect Your “Raw Data”</strong><p>Write down major painful events, repeat patterns, and recurring thoughts from the last 2-5 years. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> Feeling overwhelmed. <strong class="text-emerald-600">Solution:</strong> Start with just one situation.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Extract Lessons</strong><p>Ask: What did this teach me about myself and others? Focus on "Next time, I will..." rather than "I should have...".</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Decide What to Create</strong><p>Build something from these lessons: A journal template, a checklist, a blog, a routine. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> “Who will care?” <strong class="text-emerald-600">Solution:</strong> You are building for clarity, not fame.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Use Creation as Your Anchor</strong><p>Whenever your mind becomes noisy, return to your project. Add one page, one idea. Let your hands move instead of your thoughts running wild.</p></div></div></div></div>
                                 </div>
                             </div>
-
-                            <!-- SECTION 2: COMPANION -> SELLER -->
+                            <!-- SECTION 2 -->
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                                 <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
-                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-hand-heart"></i> COMPANION</span>
-                                        <i class="ph ph-arrow-right text-slate-300"></i>
-                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-storefront"></i> SELLER</span>
-                                    </h4>
-                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Art of Connection: Healing Yourself by Supporting Others</p>
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-hand-heart"></i> COMPANION</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-storefront"></i> SELLER</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Art of Connection: Healing Yourself by Supporting Others</p>
                                 </div>
-                                
                                 <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
-                                        <p>Some people heal best when they focus on others. Inside you are two aspects:</p>
-                                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                                            <li><strong>The Companion (Nurturer):</strong> Wants to comfort, listen, and be there for others.</li>
-                                            <li><strong>The Seller (Charmer):</strong> Naturally influences, inspires, and uplifts people through words and presence.</li>
-                                        </ul>
-                                        <p class="mt-2 font-medium text-indigo-700">You suffer when you try to be invisible or shut down your ability to connect.</p>
-                                    </div>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
-                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-heart"></i> The Companion</h5>
-                                            <p class="mb-2">Listens without judgment and feels others' pain. You are the one friends call when hurting. But if you stop here, you may feel drained and unseen, like an "Invisible Healer."</p>
-                                        </div>
-                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
-                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> The Seller (Leader)</h5>
-                                            <p class="mb-2">This is not commercial sales. It means you "sell" hope, comfort, and clarity. Your tools are your voice, presence, and intentional dressing. You transform complex feelings into soothing communication.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100">
-                                        <h5 class="font-bold text-indigo-900 mb-2">The King of Hearts: Leading with Love</h5>
-                                        <p>When Companion and Seller merge, people trust you deeply. You become a natural leader not by force, but by heart. This shows up as a mentor, community builder, or trusted guide.</p>
-                                        <p class="mt-2 font-bold text-rose-700"><i class="ph ph-warning"></i> Responsibility: Never manipulate. Use your influence only for honesty and well-being.</p>
-                                    </div>
-
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: From Nurturer to Leader</h5>
-                                        <div class="space-y-4">
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Acknowledge Your Power</strong>
-                                                    <p>Notice who comes to you for help and how they feel better around you. Don't dismiss this; it is a strength.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Set Emotional Boundaries</strong>
-                                                    <p>Learn to say, "I care, but I need rest." A burned-out Companion helps no one.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Use Appearance Intentionally</strong>
-                                                    <p>Dress to communicate safety and trust. You are dressing to support your role as a calm, reliable presence.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Start Sharing Perspective</strong>
-                                                    <p>Don't just listen; share gentle insights. "Maybe you need rest, not effort." Speaking up increases your positive impact.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Some people heal best when they focus on others. Inside you are two aspects:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Companion (Nurturer):</strong> Wants to comfort, listen, and be there for others.</li><li><strong>The Seller (Charmer):</strong> Naturally influences, inspires, and uplifts people through words and presence.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer when you try to be invisible or shut down your ability to connect.</p></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-heart"></i> The Companion</h5><p class="mb-2">Listens without judgment and feels others' pain. You are the one friends call when hurting. But if you stop here, you may feel drained and unseen, like an "Invisible Healer."</p></div><div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> The Seller (Leader)</h5><p class="mb-2">This is not commercial sales. It means you "sell" hope, comfort, and clarity. Your tools are your voice, presence, and intentional dressing. You transform complex feelings into soothing communication.</p></div></div>
+                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100"><h5 class="font-bold text-indigo-900 mb-2">The King of Hearts: Leading with Love</h5><p>When Companion and Seller merge, people trust you deeply. You become a natural leader not by force, but by heart. This shows up as a mentor, community builder, or trusted guide.</p><p class="mt-2 font-bold text-rose-700"><i class="ph ph-warning"></i> Responsibility: Never manipulate. Use your influence only for honesty and well-being.</p></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: From Nurturer to Leader</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Acknowledge Your Power</strong><p>Notice who comes to you for help and how they feel better around you. Don't dismiss this; it is a strength.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Set Emotional Boundaries</strong><p>Learn to say, "I care, but I need rest." A burned-out Companion helps no one.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Use Appearance Intentionally</strong><p>Dress to communicate safety and trust. You are dressing to support your role as a calm, reliable presence.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Start Sharing Perspective</strong><p>Don't just listen; share gentle insights. "Maybe you need rest, not effort." Speaking up increases your positive impact.</p></div></div></div></div>
                                 </div>
                             </div>
-
-                            <!-- SECTION 3: CHALLENGER -> WARRIOR -->
+                            <!-- SECTION 3 -->
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                                 <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
-                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-fist"></i> CHALLENGER</span>
-                                        <i class="ph ph-arrow-right text-slate-300"></i>
-                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-sword"></i> WARRIOR</span>
-                                    </h4>
-                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Fire of Transformation: From Victim to Victor</p>
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-fist"></i> CHALLENGER</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-sword"></i> WARRIOR</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Fire of Transformation: From Victim to Victor</p>
                                 </div>
-                                
                                 <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
-                                        <p>Some people cannot stay calm when things are wrong. Inside you are two forces:</p>
-                                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                                            <li><strong>The Challenger (Catalyst):</strong> Points out what is wrong and refuses to tolerate injustice.</li>
-                                            <li><strong>The Warrior (Protector):</strong> Takes strong action to fix or defend.</li>
-                                        </ul>
-                                        <p class="mt-2 font-medium text-indigo-700">You suffer when you see what is wrong but do nothing, turning that fire inward into frustration.</p>
-                                    </div>
-
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
-                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-warning-circle"></i> The Challenger</h5>
-                                            <p class="mb-2">Notices unfairness, lies, and inefficiency. You aren't "negative"; you are sensitive to standards. But without action, you become the "Silent Volcano"—always irritated but powerless.</p>
-                                        </div>
-                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
-                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-shield-check"></i> The Warrior</h5>
-                                            <p class="mb-2">Moves when others freeze. Protects people and principles. Driven by "Do or Die" energy. You are here to be brave when others are scared, taking bold decisions.</p>
-                                        </div>
-                                    </div>
-
-                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-rose-500">
-                                        <h5 class="font-bold text-slate-900 mb-2">The Synergy: Turning Fire into Purpose</h5>
-                                        <p>When you feel angry or restless, it means your inner Challenger sees a problem, but your Warrior is locked up. The cure is not to suppress anger but to direct it.</p>
-                                        <p class="font-bold text-slate-800 mt-2">Ask: "What exactly is wrong? And what is within my power to fix?"</p>
-                                    </div>
-
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Constructive Power</h5>
-                                        <div class="space-y-4">
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Name Your Anger</strong>
-                                                    <p>Write down what irritates you. See anger as a signal of your values, not a sin.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Control What You Can</strong>
-                                                    <p>Separate what you can change from what you cannot. Focus on your own boundaries and standards.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Choose a Battle Worth Fighting</strong>
-                                                    <p>Don't waste energy on petty arguments. Direct it toward protecting the vulnerable or fixing a broken system.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Train Discipline</strong>
-                                                    <p>Physical training channels aggression. The Warrior is about controlled power, not exploding rage.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Some people cannot stay calm when things are wrong. Inside you are two forces:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Challenger (Catalyst):</strong> Points out what is wrong and refuses to tolerate injustice.</li><li><strong>The Warrior (Protector):</strong> Takes strong action to fix or defend.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer when you see what is wrong but do nothing, turning that fire inward into frustration.</p></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-warning-circle"></i> The Challenger</h5><p class="mb-2">Notices unfairness, lies, and inefficiency. You aren't "negative"; you are sensitive to standards. But without action, you become the "Silent Volcano"—always irritated but powerless.</p></div><div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-shield-check"></i> The Warrior</h5><p class="mb-2">Moves when others freeze. Protects people and principles. Driven by "Do or Die" energy. You are here to be brave when others are scared, taking bold decisions.</p></div></div>
+                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-rose-500"><h5 class="font-bold text-slate-900 mb-2">The Synergy: Turning Fire into Purpose</h5><p>When you feel angry or restless, it means your inner Challenger sees a problem, but your Warrior is locked up. The cure is not to suppress anger but to direct it.</p><p class="font-bold text-slate-800 mt-2">Ask: "What exactly is wrong? And what is within my power to fix?"</p></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Constructive Power</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Name Your Anger</strong><p>Write down what irritates you. See anger as a signal of your values, not a sin.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Control What You Can</strong><p>Separate what you can change from what you cannot. Focus on your own boundaries and standards.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Choose a Battle Worth Fighting</strong><p>Don't waste energy on petty arguments. Direct it toward protecting the vulnerable or fixing a broken system.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Train Discipline</strong><p>Physical training channels aggression. The Warrior is about controlled power, not exploding rage.</p></div></div></div></div>
                                 </div>
                             </div>
-
-                            <!-- SECTION 4: DEATH -> STRATEGIST -->
+                            <!-- SECTION 4 -->
                             <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
                                 <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
-                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-recycle"></i> THOUGHTS OF DEATH</span>
-                                        <i class="ph ph-arrow-right text-slate-300"></i>
-                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-strategy"></i> STRATEGIST</span>
-                                    </h4>
-                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Architect of the Path: The Strategist Within You</p>
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-recycle"></i> THOUGHTS OF DEATH</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-strategy"></i> STRATEGIST</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Architect of the Path: The Strategist Within You</p>
                                 </div>
-                                
                                 <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
-                                        <p>Even with all other roles active, you may feel stuck without a clear path. This is where the Strategist comes in.</p>
-                                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                                            <li><strong>The Strategist:</strong> Steps back, sees patterns, and designs the shortest route to the goal.</li>
-                                            <li><strong>The Decoder:</strong> Asks "What is actually happening?" and focuses on results, not just intentions.</li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
-                                        <h5 class="font-bold text-slate-900 mb-2">Example Story: The Stuck Hard Worker</h5>
-                                        <p class="italic text-slate-600 mb-4">Sanjay works hard but sees little progress. He realizes he keeps repeating the same patterns: improving skills in a low-growth environment, or abandoning methods too soon.</p>
-                                        <p class="font-bold text-indigo-700">He realizes: The problem is not his effort. The problem is his strategy.</p>
-                                    </div>
-
-                                    <div>
-                                        <h5 class="font-bold text-slate-900 mb-2">The Requirement: A Clear Goal</h5>
-                                        <p>The Strategist cannot work with vague feelings like "I want peace." It needs a physical target: "I want to earn X in Y years" or "I want to publish a book in 12 months." Only then can it design a path.</p>
-                                    </div>
-
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Activating Your Strategist</h5>
-                                        <div class="space-y-4">
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Define One Main Goal</strong>
-                                                    <p>Choose one tangible result for the next 6-18 months. Don't scatter your energy.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Study Current Reality</strong>
-                                                    <p>Be factual, not emotional. Look at your skills, resources, and environment. Identify the gaps like an engineer inspecting a machine.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Break it Down & Look for Leverage</strong>
-                                                    <p>What is the shortest path? Where can you get maximum result from minimum action? Smart does not mean lazy; it means wise.</p>
-                                                </div>
-                                            </div>
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
-                                                <div>
-                                                    <strong class="block text-slate-800">Review and Adjust</strong>
-                                                    <p>Treat your life like a series of experiments. Ask "What worked?" periodically. Data, not drama.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Even with all other roles active, you may feel stuck without a clear path. This is where the Strategist comes in.</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Strategist:</strong> Steps back, sees patterns, and designs the shortest route to the goal.</li><li><strong>The Decoder:</strong> Asks "What is actually happening?" and focuses on results, not just intentions.</li></ul></div>
+                                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200"><h5 class="font-bold text-slate-900 mb-2">Example Story: The Stuck Hard Worker</h5><p class="italic text-slate-600 mb-4">Sanjay works hard but sees little progress. He realizes he keeps repeating the same patterns: improving skills in a low-growth environment, or abandoning methods too soon.</p><p class="font-bold text-indigo-700">He realizes: The problem is not his effort. The problem is his strategy.</p></div>
+                                    <div><h5 class="font-bold text-slate-900 mb-2">The Requirement: A Clear Goal</h5><p>The Strategist cannot work with vague feelings like "I want peace." It needs a physical target: "I want to earn X in Y years" or "I want to publish a book in 12 months." Only then can it design a path.</p></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Activating Your Strategist</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Define One Main Goal</strong><p>Choose one tangible result for the next 6-18 months. Don't scatter your energy.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Study Current Reality</strong><p>Be factual, not emotional. Look at your skills, resources, and environment. Identify the gaps like an engineer inspecting a machine.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Break it Down & Look for Leverage</strong><p>What is the shortest path? Where can you get maximum result from minimum action? Smart does not mean lazy; it means wise.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Review and Adjust</strong><p>Treat your life like a series of experiments. Ask "What worked?" periodically. Data, not drama.</p></div></div></div></div>
                                 </div>
                             </div>
-
-                            <!-- FINAL SUMMARY SECTION -->
-                            <div class="bg-indigo-900 text-white rounded-2xl p-8 text-center shadow-lg">
-                                <h4 class="text-2xl font-bold font-serif-title mb-4">Putting It All Together</h4>
-                                <p class="text-indigo-200 text-sm max-w-2xl mx-auto mb-6">
-                                    You do not need to force yourself into only one role. Think of them as tools in your inner toolbox. You are a Seeker learning, a Creator building, a Companion healing, and a Strategist designing your path.
-                                </p>
-                                <div class="inline-block bg-white/10 border border-white/20 rounded-xl p-4 text-sm font-medium">
-                                    <p class="mb-2">Your next move is simple:</p>
-                                    <ol class="list-decimal list-inside text-left space-y-1 text-indigo-100">
-                                        <li>Pick one area of life that feels stuck.</li>
-                                        <li>Identify which inner role needs to step forward.</li>
-                                        <li>Take one small, concrete action today.</li>
-                                    </ol>
-                                </div>
-                                <p class="mt-6 text-xs text-indigo-300 uppercase tracking-widest font-bold">Clarity comes when thought, emotion, and action move together.</p>
-                            </div>
-
+                            <!-- FINAL SUMMARY -->
+                            <div class="bg-indigo-900 text-white rounded-2xl p-8 text-center shadow-lg"><h4 class="text-2xl font-bold font-serif-title mb-4">Putting It All Together</h4><p class="text-indigo-200 text-sm max-w-2xl mx-auto mb-6">You do not need to force yourself into only one role. Think of them as tools in your inner toolbox. You are a Seeker learning, a Creator building, a Companion healing, and a Strategist designing your path.</p><div class="inline-block bg-white/10 border border-white/20 rounded-xl p-4 text-sm font-medium"><p class="mb-2">Your next move is simple:</p><ol class="list-decimal list-inside text-left space-y-1 text-indigo-100"><li>Pick one area of life that feels stuck.</li><li>Identify which inner role needs to step forward.</li><li>Take one small, concrete action today.</li></ol></div><p class="mt-6 text-xs text-indigo-300 uppercase tracking-widest font-bold">Clarity comes when thought, emotion, and action move together.</p></div>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
-
     </div>
 
     <script>
-        // ... (Previous JS Code) ...
-
-        // --- NEW: TOGGLE FUNCTION FOR ACCORDIONS ---
+        // --- HELPERS ---
+        const ACC_IDS = ['acc-psycho', 'acc-energy', 'acc-speed', 'acc-ppf', 'acc-sun', 'acc-moon', 'acc-guide'];
         function toggleAccordion(id) {
-            const content = document.getElementById(id);
-            const icon = document.getElementById('icon-' + id);
-            
-            content.classList.toggle('hidden');
-            
-            if (content.classList.contains('hidden')) {
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                icon.style.transform = 'rotate(180deg)';
+            ACC_IDS.forEach(aid => {
+                const el = document.getElementById(aid), ic = document.getElementById('icon-' + aid);
+                if (aid === id) {
+                    el.classList.toggle('hidden');
+                    ic.style.transform = el.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                } else {
+                    el.classList.add('hidden');
+                    if(ic) ic.style.transform = 'rotate(0deg)';
+                }
+            });
+        }
+        function populateSelect(id, start, end, mapFn) {
+            const el = document.getElementById(id); el.innerHTML = '';
+            for(let i=start; i<=end; i++) {
+                const opt = document.createElement('option');
+                opt.value = i; opt.text = mapFn ? mapFn(i) : i;
+                el.appendChild(opt);
             }
+        }
+        const debounce = (func, delay) => { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => func(...args), delay); }; };
+        function pad(n){return n.toString().padStart(2,'0');}
+        function dm(d){let m=Math.round((d-Math.floor(d))*60); if(m===60){d++;m=0;} return `${Math.floor(d)}° ${pad(m)}'`;}
+        function normalize(d){d=d%360;if(d<0)d+=360;return d;}
+        function toRad(d){return d*(Math.PI/180);}
+        function toDeg(r){return r*(180/Math.PI);}
+        function normalizeRashi(n){let r=n%12;return r===0?12:r;}
+        
+        function formatDateFull(date) {
+            return `${pad(date.getDate())} ${date.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${date.getFullYear().toString().slice(-2)}`;
+        }
+        function formatDateMonthTime(date) {
+            return `${pad(date.getDate())} ${date.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} @ ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
         }
 
         // --- CONSTANTS ---
         const BODIES = [
-            { name: 'Sun', type: 'Planet', icon: 'ph-sun', symbol: 'Su' },
-            { name: 'Moon', type: 'Planet', icon: 'ph-moon', symbol: 'Mo' },
-            { name: 'Mars', type: 'Planet', icon: 'ph-fire', symbol: 'Ma' },
-            { name: 'Mercury', type: 'Planet', icon: 'ph-chat-circle-dots', symbol: 'Me' },
-            { name: 'Jupiter', type: 'Planet', icon: 'ph-lightning', symbol: 'Ju' },
-            { name: 'Venus', type: 'Planet', icon: 'ph-heart', symbol: 'Ve' },
-            { name: 'Saturn', type: 'Planet', icon: 'ph-hourglass', symbol: 'Sa' },
-            { name: 'Rahu', type: 'Node', icon: 'ph-link', symbol: 'Ra' },
+            { name: 'Sun', type: 'Planet', icon: 'ph-sun', symbol: 'Su' }, { name: 'Moon', type: 'Planet', icon: 'ph-moon', symbol: 'Mo' },
+            { name: 'Mars', type: 'Planet', icon: 'ph-fire', symbol: 'Ma' }, { name: 'Mercury', type: 'Planet', icon: 'ph-chat-circle-dots', symbol: 'Me' },
+            { name: 'Jupiter', type: 'Planet', icon: 'ph-lightning', symbol: 'Ju' }, { name: 'Venus', type: 'Planet', icon: 'ph-heart', symbol: 'Ve' },
+            { name: 'Saturn', type: 'Planet', icon: 'ph-hourglass', symbol: 'Sa' }, { name: 'Rahu', type: 'Node', icon: 'ph-link', symbol: 'Ra' },
             { name: 'Ketu', type: 'Node', icon: 'ph-link-break', symbol: 'Ke' }
         ];
-
-        // Only used for Analysis (Speed Ranking), not for date calculations
-        const PLANET_SPEEDS = {
-            'Ketu': 1, 'Venus': 2, 'Sun': 3, 'Moon': 4, 'Mars': 5, 
-            'Rahu': 6, 'Jupiter': 7, 'Saturn': 8, 'Mercury': 9
-        };
-
-        const RASHI_NAMES = [
-            "Aries (Mesha)", "Taurus (Vrishabha)", "Gemini (Mithuna)", "Cancer (Karka)", "Leo (Simha)", "Virgo (Kanya)", 
-            "Libra (Tula)", "Scorpio (Vrishchika)", "Sagittarius (Dhanu)", "Capricorn (Makara)", "Aquarius (Kumbha)", "Pisces (Meena)"
-        ];
-
-        const NAKSHATRAS = [
-            "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
-        ];
-
-        // UPDATED: Added "is activating" and fixed "actions" to "action"
+        const PLANET_SPEEDS = { 'Ketu': 1, 'Venus': 2, 'Sun': 3, 'Moon': 4, 'Mars': 5, 'Rahu': 6, 'Jupiter': 7, 'Saturn': 8, 'Mercury': 9 };
+        const RASHI_NAMES = ["Aries (Mesha)", "Taurus (Vrishabha)", "Gemini (Mithuna)", "Cancer (Karka)", "Leo (Simha)", "Virgo (Kanya)", "Libra (Tula)", "Scorpio (Vrishchika)", "Sagittarius (Dhanu)", "Capricorn (Makara)", "Aquarius (Kumbha)", "Pisces (Meena)"];
+        const NAKSHATRAS = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
         const OCTAL_HOUSES = [
             { id: 2, range: [0, 45], label: "STRATEGIST", category: "RAJAS", color: "#e2e8f0", textColor: "#334155", sourceAction: "STRATEGIST action is activating", targetAction: "to do actions as STRATEGIST" },
             { id: 3, range: [45, 90], label: "SEEKER OF TRUTH", category: "TAMAS", color: "#cbd5e1", textColor: "#334155", sourceAction: "emotionally GUIDING environment is activating", targetAction: "to attract environment that will emotionally GUIDE" },
@@ -792,13 +319,7 @@
             { id: 11, range: [270, 315], label: "SELLER", category: "RAJAS", color: "#fecaca", textColor: "#7f1d1d", sourceAction: "SELLER action is activating", targetAction: "to do actions as SELLER" },
             { id: 12, range: [315, 360], label: "WARRIOR", category: "RAJAS", color: "#fca5a5", textColor: "#7f1d1d", sourceAction: "WARRIOR action is activating", targetAction: "to do actions as WARRIOR" }
         ];
-
-        const HOUSE_ORDER = [3, 5, 6, 8, 9, 11, 12, 2]; // Cyclic order specified by user
-
-        const ENERGY_PAIRS = [
-            { rajas: 9, tamas: 3 }, { rajas: 11, tamas: 5 }, { rajas: 12, tamas: 6 }, { rajas: 2, tamas: 8 }
-        ];
-
+        const ENERGY_PAIRS = [{ rajas: 9, tamas: 3 }, { rajas: 11, tamas: 5 }, { rajas: 12, tamas: 6 }, { rajas: 2, tamas: 8 }];
         const ARCHETYPES = {
             2: { title: "THE STRATEGIST", icon: "ph-strategy", quote: "Fear is not the end. When effort yields no reward, do not need to push harder. You need a map.", definition: "The Strategist is the resilience that rises from chaos. You are the puzzle solver, transforming the fear of failure into a structured plan for survival. You analyze the wreckage to find invisible leverage points.", method: "Anchor the 'Start' and visualize the 'End.' Build the bridge between your chaotic present and a secure future. Stop panicking; engineer your escape and survive at any cost." },
             3: { title: "THE SEEKER", icon: "ph-binoculars", quote: "Truth is not found in comfort, but in the questions that disturb your sleep.", definition: "The Seeker represents the gathering of emotional intelligence and data. It is the phase of absorbing truth from the environment to guide future actions.", method: "Observe without judgment. Let the environment reveal its hidden patterns to you before you act. Listen more than you speak." },
@@ -809,21 +330,25 @@
             11: { title: "THE SELLER", icon: "ph-storefront", quote: "You possess a unique duality—a power to heal yourself by healing those around you.", definition: "This path merges the nurturing energy of the Companion with the influential charm of the Seller. You transform from a friend into a 'King of Hearts'—a leader who rules by affection, selling hope, comfort, and ideals.", method: "Focus entirely on the comfort of others. By acting as a bridge and speaking with love, you become a beacon that guides others out of their clutter, thereby organizing your own emotions." },
             12: { title: "THE WARRIOR", icon: "ph-sword", quote: "When gentle diplomacy fails, the Warrior awakens to break the walls enclosing you.", definition: "This domain governs high-intensity transformation. It begins with the Challenger and culminates in the Warrior, who executes the necessary change with red-hot discipline.", method: "Align your dissatisfaction with action. Stop warring with yourself and direct that intensity outward to correct injustices. Your healing comes from urgency and fearless execution." }
         };
-
-        // --- GLOBAL VARIABLES ---
-        let debounceTimer;
+        const THEMES = {
+            RAJAS: { bg: "bg-[#fff7ed]", border: "border-orange-400", text: "text-orange-900", badge: "bg-orange-600", lightBg: "bg-orange-50", highlight: "text-orange-600", circleBg: "bg-orange-200", circleText: "text-orange-800", divider: "border-orange-200", ring: "ring-orange-400", strip: "bg-orange-500", sub: "RAJAS PHASE", icon: "text-orange-400" },
+            TAMAS: { bg: "bg-[#ecfdf5]", border: "border-emerald-400", text: "text-emerald-900", badge: "bg-emerald-600", lightBg: "bg-emerald-50", highlight: "text-emerald-600", circleBg: "bg-emerald-200", circleText: "text-emerald-800", divider: "border-emerald-200", ring: "ring-emerald-400", strip: "bg-emerald-500", sub: "TAMAS PHASE", icon: "text-emerald-400" }
+        };
 
         // --- INITIALIZATION ---
         window.onload = function() {
-            populateDateDropdowns();
-            populateTimeDropdowns();
+            populateSelect('day-input', 1, 31);
+            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            populateSelect('month-input', 0, 11, i => months[i]);
+            const yearList = document.getElementById('year-options'); yearList.innerHTML = '';
+            for(let i=1900; i<=2100; i++) { const opt = document.createElement('option'); opt.value = i; yearList.appendChild(opt); }
+            populateSelect('hour-input', 1, 12, i => pad(i));
+            populateSelect('minute-input', 0, 59, i => pad(i));
+            
             document.getElementById('name-input').value = "FBR Institute";
-            
-            // Set default date: 03 July 1986
             document.getElementById('day-input').value = "3";
-            document.getElementById('month-input').value = "6"; // July is index 6
+            document.getElementById('month-input').value = "6"; 
             document.getElementById('year-input').value = "1986";
-            
             document.getElementById('hour-input').value = "3";
             document.getElementById('minute-input').value = "50";
             setAmPm('PM');
@@ -834,1039 +359,309 @@
             document.getElementById('lng-display').textContent = "74.7583";
         };
 
-        // --- POPULATION FUNCTIONS ---
-        
-        function populateDateDropdowns() {
-            const daySelect = document.getElementById('day-input');
-            const monthSelect = document.getElementById('month-input');
-            const yearList = document.getElementById('year-options');
-            
-            // Populate Days 1-31
-            daySelect.innerHTML = '';
-            for(let i=1; i<=31; i++) {
-                const opt = document.createElement('option');
-                opt.value = i;
-                opt.text = i;
-                daySelect.appendChild(opt);
-            }
-            
-            // Populate Months Jan-Dec
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            monthSelect.innerHTML = '';
-            months.forEach((m, index) => {
-                const opt = document.createElement('option');
-                opt.value = index; // 0 for Jan, 11 for Dec
-                opt.text = m;
-                monthSelect.appendChild(opt);
-            });
-            
-            // Populate Year Datalist (1900 - 2100)
-            yearList.innerHTML = '';
-            for(let i=1900; i<=2100; i++) {
-                const opt = document.createElement('option');
-                opt.value = i;
-                yearList.appendChild(opt);
-            }
-        }
-
-        function populateTimeDropdowns() {
-            const hourSelect = document.getElementById('hour-input');
-            const minuteSelect = document.getElementById('minute-input');
-            
-            hourSelect.innerHTML = '';
-            minuteSelect.innerHTML = '';
-
-            for(let i=1; i<=12; i++) { 
-                const opt = document.createElement('option'); 
-                opt.value = i; 
-                opt.text = i.toString().padStart(2,'0'); 
-                hourSelect.appendChild(opt); 
-            }
-            for(let i=0; i<60; i++) { 
-                const opt = document.createElement('option'); 
-                opt.value = i; 
-                opt.text = i.toString().padStart(2,'0'); 
-                minuteSelect.appendChild(opt); 
-            }
-        }
         function setAmPm(val) {
             document.getElementById('ampm-value').value = val;
-            const btnAm = document.getElementById('btn-am'); const btnPm = document.getElementById('btn-pm');
-            if(val === 'AM') { btnAm.classList.add('active'); btnPm.classList.remove('active'); } else { btnPm.classList.add('active'); btnAm.classList.remove('active'); }
+            const btnAm = document.getElementById('btn-am'), btnPm = document.getElementById('btn-pm');
+            btnAm.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${val === 'AM' ? 'active' : ''}`;
+            btnPm.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${val === 'PM' ? 'active' : ''}`;
         }
-        const debounce = (func, delay) => { return (...args) => { clearTimeout(debounceTimer); debounceTimer = setTimeout(() => func(...args), delay); }; };
-        const searchInput = document.getElementById('location-input');
-        const suggestionsList = document.getElementById('suggestions');
-        const spinner = document.getElementById('loading-spinner');
-        const clearBtn = document.getElementById('clear-btn');
+
+        const searchInput = document.getElementById('location-input'), suggestionsList = document.getElementById('suggestions'), spinner = document.getElementById('loading-spinner'), clearBtn = document.getElementById('clear-btn');
         searchInput.addEventListener('input', debounce((e) => fetchLocations(e.target.value), 400));
-        document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !suggestionsList.contains(e.target)) { suggestionsList.classList.add('hidden'); } });
+        document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !suggestionsList.contains(e.target)) suggestionsList.classList.add('hidden'); });
         clearBtn.addEventListener('click', () => { searchInput.value = ''; suggestionsList.classList.add('hidden'); clearBtn.classList.add('hidden'); });
         async function fetchLocations(query) {
             if (!query || query.length < 3) { suggestionsList.classList.add('hidden'); return; }
             spinner.classList.remove('hidden'); clearBtn.classList.add('hidden');
-            try { const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`); const data = await response.json(); renderSuggestions(data); } catch (error) { console.error("Fetch error:", error); } finally { spinner.classList.add('hidden'); clearBtn.classList.remove('hidden'); }
+            try { const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`); renderSuggestions(await response.json()); } catch (error) { console.error(error); } finally { spinner.classList.add('hidden'); clearBtn.classList.remove('hidden'); }
         }
         function renderSuggestions(data) {
             suggestionsList.innerHTML = '';
-            if (data.length === 0) { suggestionsList.classList.add('hidden'); return; }
+            if (!data.length) { suggestionsList.classList.add('hidden'); return; }
             data.forEach(place => {
                 const li = document.createElement('li'); li.className = "px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 last:border-0 flex flex-col";
                 li.innerHTML = `<span class="font-semibold text-slate-700 text-sm">${place.display_name.split(',')[0]}</span><span class="text-xs text-slate-500 truncate">${place.display_name}</span>`;
-                li.onclick = () => selectLocation(place); suggestionsList.appendChild(li);
+                li.onclick = () => {
+                    document.getElementById('latitude').value = parseFloat(place.lat).toFixed(4);
+                    document.getElementById('longitude').value = parseFloat(place.lon).toFixed(4);
+                    document.getElementById('lat-display').textContent = parseFloat(place.lat).toFixed(4);
+                    document.getElementById('lng-display').textContent = parseFloat(place.lon).toFixed(4);
+                    searchInput.value = place.display_name; suggestionsList.classList.add('hidden');
+                };
+                suggestionsList.appendChild(li);
             }); suggestionsList.classList.remove('hidden');
-        }
-        function selectLocation(place) {
-            const lat = parseFloat(place.lat).toFixed(4); const lon = parseFloat(place.lon).toFixed(4);
-            document.getElementById('latitude').value = lat; document.getElementById('longitude').value = lon;
-            document.getElementById('lat-display').textContent = lat; document.getElementById('lng-display').textContent = lon;
-            searchInput.value = place.display_name; suggestionsList.classList.add('hidden');
-        }
-
-        function formatDateFull(date) {
-            const d = date.getDate().toString().padStart(2, '0');
-            const m = date.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
-            const y = date.getFullYear().toString().slice(-2);
-            return `${d} ${m} ${y}`;
-        }
-
-        function formatDateMonthTime(date) {
-            const d = date.getDate().toString().padStart(2, '0');
-            const m = date.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
-            const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-            return `${d} ${m} @ ${time}`;
         }
 
         // --- CORE LOGIC ---
         function calculatePositions() {
-            // Updated to fetch from new split inputs
-            const dayVal = parseInt(document.getElementById('day-input').value);
-            const monthVal = parseInt(document.getElementById('month-input').value); // 0-11
-            const yearVal = parseInt(document.getElementById('year-input').value);
+            const vals = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value));
+            if (!vals[0] || isNaN(vals[1]) || !vals[2]) { alert("Please enter a valid date."); return; }
+            let hour = vals[3]; const ampm = document.getElementById('ampm-value').value;
+            if (ampm === 'PM' && hour < 12) hour += 12; if (ampm === 'AM' && hour === 12) hour = 0;
+            const birthDate = new Date(vals[2], vals[1], vals[0], hour, vals[4]);
             
-            const hourVal = parseInt(document.getElementById('hour-input').value);
-            const minVal = parseInt(document.getElementById('minute-input').value);
-            const ampm = document.getElementById('ampm-value').value;
-            const lat = parseFloat(document.getElementById('latitude').value);
-            const lon = parseFloat(document.getElementById('longitude').value);
-            const name = document.getElementById('name-input').value || "Unknown";
-            const locationName = document.getElementById('location-input').value || "Unknown Location";
+            const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value);
+            const name = document.getElementById('name-input').value || "Unknown", loc = document.getElementById('location-input').value || "Unknown Location";
+            const detailStr = `(${name} @ ${formatDateMonthTime(birthDate).replace('@','@')} @ ${loc})`;
+            ['octal-map-details','psycho-details','speed-details','long-cycle-details','monthly-details','daily-details'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = detailStr; });
 
-            if (!dayVal || isNaN(monthVal) || !yearVal) {
-                alert("Please enter a valid date.");
-                return;
-            }
-
-            let hour24 = hourVal;
-            if (ampm === 'PM' && hour24 < 12) hour24 += 12;
-            if (ampm === 'AM' && hour24 === 12) hour24 = 0;
-
-            // Construct Date Object directly from components
-            const birthDate = new Date(yearVal, monthVal, dayVal, hour24, minVal);
-            const birthTime = Astronomy.MakeTime(birthDate);
-            const now = new Date(); 
-            const nowTime = Astronomy.MakeTime(now);
-
-            // Title Update Helper - Removing suffix from specific cycle headers as requested
-            const updateTitles = (suffix) => {
-                document.getElementById('octal-map-details').textContent = suffix;
-                document.getElementById('psycho-details').textContent = suffix;
-                document.getElementById('speed-details').textContent = suffix;
-                
-                // New targets
-                const longCycleDetails = document.getElementById('long-cycle-details');
-                if(longCycleDetails) longCycleDetails.textContent = suffix;
-                
-                const monthlyDetails = document.getElementById('monthly-details');
-                if(monthlyDetails) monthlyDetails.textContent = suffix;
-                
-                const dailyDetails = document.getElementById('daily-details');
-                if(dailyDetails) dailyDetails.textContent = suffix;
-            };
-
-            const dateDisplay = birthDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }).replace(/ /g, '-'); 
-            const timeDisplay = `${hourVal}:${minVal.toString().padStart(2,'0')} ${ampm}`; 
-            const detailsSuffix = `(${name} @ ${dateDisplay} @ ${timeDisplay} @ ${locationName})`;
-            updateTitles(detailsSuffix);
-
-            // Lahiri Ayanamsa (Birth)
-            const daysSinceJ2000 = (birthDate - new Date('2000-01-01T12:00:00Z')) / (1000 * 60 * 60 * 24);
-            const T = daysSinceJ2000 / 36525.0;
-            const lahiriAyanamsa = 23.858832 + (1.396042 * T);
-
-            // Natal Ascendant
-            const obliquity = 23.4392911 - (0.0130042 * T);
-            const eRad = toRad(obliquity);
-            const gmst = Astronomy.SiderealTime(birthDate);
-            let lstDeg = normalize((gmst * 15) + lon);
-            const lstRad = toRad(lstDeg);
-            const latRad = toRad(lat);
-            const y = Math.cos(lstRad);
-            const x = - ( (Math.sin(lstRad) * Math.cos(eRad)) + (Math.tan(latRad) * Math.sin(eRad)) );
-            let ascTropical = normalize(toDeg(Math.atan2(y, x)));
+            const daysSinceJ2000 = (birthDate - new Date('2000-01-01T12:00:00Z')) / 86400000;
+            const T = daysSinceJ2000 / 36525.0, lahiriAyanamsa = 23.858832 + (1.396042 * T);
+            const obliquity = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(birthDate);
+            const lstRad = toRad(normalize((gmst * 15) + lon)), latRad = toRad(lat);
+            const ascTropical = normalize(toDeg(Math.atan2(Math.cos(lstRad), -((Math.sin(lstRad) * Math.cos(obliquity)) + (Math.tan(latRad) * Math.sin(obliquity))))));
             const ascSidereal = normalize(ascTropical - lahiriAyanamsa);
             const lagnaData = { deg: ascSidereal, rashi: Math.floor(ascSidereal / 30) + 1 };
 
-            // Render Results Table
-            const tbody = document.querySelector('#results-table tbody');
-            tbody.innerHTML = '';
-            
-            // Ascendant Row
-            const ascRashiName = RASHI_NAMES[lagnaData.rashi - 1];
-            renderRow("Ascendant", ascSidereal, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", ascRashiName, ascSidereal % 30, NAKSHATRAS[Math.floor(ascSidereal/13.333)], Math.floor((ascSidereal%13.333)/(13.333/4))+1);
+            document.querySelector('#results-table tbody').innerHTML = '';
+            renderRow("Ascendant", ascSidereal, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lagnaData.rashi - 1], ascSidereal % 30, NAKSHATRAS[Math.floor(ascSidereal/13.333)], Math.floor((ascSidereal%13.333)/(13.333/4))+1);
 
-            // Planetary Calculation (Natal)
-            const rajasPlanets = [], tamasPlanets = [], planetHouseMap = {}, housePlanetList = [], planetData = [];
-            
-            BODIES.forEach(bodyInfo => {
-                let tropicalLon = 0;
-                if (bodyInfo.type === 'Node') {
-                    let rahuMeanLon = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T*T*T)/450000));
-                    tropicalLon = (bodyInfo.name === 'Rahu') ? rahuMeanLon : normalize(rahuMeanLon + 180);
+            const rajasP = [], tamasP = [], planetHouseMap = {}, housePlanetList = [], planetData = [];
+            BODIES.forEach(b => {
+                let tropicalLon;
+                if (b.type === 'Node') {
+                    let rMean = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T*T*T)/450000));
+                    tropicalLon = (b.name === 'Rahu') ? rMean : normalize(rMean + 180);
                 } else {
-                    const astronomyBody = Astronomy.Body[bodyInfo.name];
-                    const vector = Astronomy.GeoVector(astronomyBody, birthTime, true);
-                    const ecliptic = Astronomy.Ecliptic(vector);
-                    tropicalLon = ecliptic.elon + (0.013969 * (daysSinceJ2000/365.25));
+                    tropicalLon = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(birthDate), true)).elon + (0.013969 * (daysSinceJ2000/365.25));
                 }
-                let siderealLon = normalize(tropicalLon - lahiriAyanamsa);
-                let dist = normalize(siderealLon - ascSidereal);
-                let houseInfo = OCTAL_HOUSES.find(h => dist >= h.range[0] && dist < h.range[1]);
-                let houseNo = houseInfo ? houseInfo.id : "Gap";
+                const siderealLon = normalize(tropicalLon - lahiriAyanamsa), dist = normalize(siderealLon - ascSidereal);
+                const houseInfo = OCTAL_HOUSES.find(h => dist >= h.range[0] && dist < h.range[1]);
+                const houseNo = houseInfo ? houseInfo.id : "Gap";
                 
-                // Data Aggregation
                 if(houseInfo) {
-                    if(houseInfo.category === "RAJAS") rajasPlanets.push({name: bodyInfo.name, icon: bodyInfo.icon});
-                    else tamasPlanets.push({name: bodyInfo.name, icon: bodyInfo.icon});
+                    const pObj = {name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name]};
+                    (houseInfo.category === "RAJAS" ? rajasP : tamasP).push(pObj);
                     if(!housePlanetList[houseNo]) housePlanetList[houseNo] = [];
-                    housePlanetList[houseNo].push({name: bodyInfo.name, speed: PLANET_SPEEDS[bodyInfo.name], icon: bodyInfo.icon});
+                    housePlanetList[houseNo].push(pObj);
                 }
-                planetHouseMap[bodyInfo.name] = { symbol: bodyInfo.symbol, house: houseNo, category: houseInfo?.category, houseInfo: houseInfo, icon: bodyInfo.icon };
-                planetData.push({ symbol: bodyInfo.symbol, deg: siderealLon, distFromLagna: dist });
-
-                // Render Table Row
-                const rashiIdx = Math.floor(siderealLon / 30);
-                renderRow(bodyInfo.name, siderealLon, bodyInfo.type, bodyInfo.icon, houseInfo?.label || "-", houseNo, RASHI_NAMES[rashiIdx], siderealLon % 30, NAKSHATRAS[Math.floor(siderealLon/13.333)], Math.floor((siderealLon%13.333)/(13.333/4))+1);
+                planetHouseMap[b.name] = { symbol: b.symbol, house: houseNo, category: houseInfo?.category, houseInfo, icon: b.icon };
+                planetData.push({ symbol: b.symbol, deg: siderealLon, distFromLagna: dist });
+                renderRow(b.name, siderealLon, b.type, b.icon, houseInfo?.label || "-", houseNo, RASHI_NAMES[Math.floor(siderealLon / 30)], siderealLon % 30, NAKSHATRAS[Math.floor(siderealLon/13.333)], Math.floor((siderealLon%13.333)/(13.333/4))+1);
             });
 
-            // Visuals
             drawOctalChart(lagnaData, planetData);
-            // UPDATED: Reveal the results container which holds the accordions
             document.getElementById('results-container').classList.remove('hidden');
-            
-            renderAnalysis(rajasPlanets, tamasPlanets);
+            renderAnalysis(rajasP, tamasP);
             renderEnergyFlow(planetHouseMap);
-            renderEnergyNarrative(planetHouseMap); 
+            renderEnergyNarrative(planetHouseMap);
             renderSupportSpeedAnalysis(housePlanetList);
-
-            // --- CYCLIC CALCULATIONS (Updated to use Natal Ascendant and Real Time) ---
-            renderLongCycles(now, ascSidereal, planetHouseMap); // Pass Natal Data
-            renderSunCycle(now, ascSidereal, planetHouseMap);   // Pass Natal Data
-            renderMoonCycle(now, ascSidereal, planetHouseMap);  // Pass Natal Data
+            const now = new Date();
+            renderLongCycles(now, ascSidereal, planetHouseMap);
+            renderSunCycle(now, ascSidereal, planetHouseMap);
+            renderMoonCycle(now, ascSidereal, planetHouseMap);
         }
 
-        // --- RENDER FUNCTIONS ---
-
-        function renderRow(name, siderealLon, type, iconClass, houseLabel, houseNo, rashiName, degInSign, nakshatraName, pada) {
-            const tbody = document.querySelector('#results-table tbody');
+        function renderRow(name, siderealLon, type, icon, hLabel, hNo, rashi, deg, nak, pada) {
             const tr = document.createElement('tr');
-            // Modified row styles for compact look
-            tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0";
-            if (type === 'Node') tr.classList.add('node-row'); else if (type === 'Ascendant') tr.classList.add('asc-row');
-            
-            // UPDATED: House Label and Number are now 'text-slate-900' (Dark Black)
-            const mergedHouse = (houseLabel !== "-" && houseNo !== "-") ? `<span class="font-bold text-slate-900">${houseLabel}</span> <span class="text-slate-900 font-bold">(${houseNo})</span>` : "-";
-            
-            // Compact cell padding
-            tr.innerHTML = `
-                <td class="flex items-center gap-2" style="padding: 6px 12px;">
-                    <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${iconClass || 'ph-planet'} text-sm"></i></div>
-                    <span class="font-bold text-xs">${name}</span>
-                </td>
-                <td>${mergedHouse}</td>
-                <td class="text-slate-700 font-medium">${rashiName}</td>
-                <td class="font-mono text-slate-600">${dm(degInSign)}</td>
-                <td><span class="font-medium text-slate-700">${nakshatraName}</span> <span class="text-[10px] text-slate-400 ml-1">P${pada}</span></td>
-            `;
-            tbody.appendChild(tr);
+            tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0" + (type === 'Node' ? ' node-row' : type === 'Ascendant' ? ' asc-row' : '');
+            tr.innerHTML = `<td class="flex items-center gap-2" style="padding: 6px 12px;"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${icon || 'ph-planet'} text-sm"></i></div><span class="font-bold text-xs">${name}</span></td><td>${(hLabel !== "-" && hNo !== "-") ? `<span class="font-bold text-slate-900">${hLabel}</span> <span class="text-slate-900 font-bold">(${hNo})</span>` : "-"}</td><td class="text-slate-700 font-medium">${rashi}</td><td class="font-mono text-slate-600">${dm(deg)}</td><td><span class="font-medium text-slate-700">${nak}</span> <span class="text-[10px] text-slate-400 ml-1">P${pada}</span></td>`;
+            document.querySelector('#results-table tbody').appendChild(tr);
         }
 
         function renderAnalysis(rajas, tamas) {
-            // NO LONGER UNHIDING THE OLD BIG SECTION
-            // document.getElementById('analysis-section').classList.remove('hidden');
-            
-            // UPDATED: Colors for Rajas (Orange) and Tamas (Emerald)
-            document.getElementById('rajas-list').innerHTML = rajas.length ? rajas.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-orange-200 text-orange-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-orange-300 italic">No planets</span>`;
-            document.getElementById('rajas-count').textContent = `${rajas.length} Planet${rajas.length !== 1 ? 's' : ''}`;
-            document.getElementById('tamas-list').innerHTML = tamas.length ? tamas.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-emerald-200 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-emerald-300 italic">No planets</span>`;
-            document.getElementById('tamas-count').textContent = `${tamas.length} Planet${tamas.length !== 1 ? 's' : ''}`;
-            
-            let summaryText = "";
-            if (rajas.length > tamas.length) summaryText = "<strong>Active Release Phase:</strong> Your chart shows a dominance of planets in RAJAS houses. This suggests you are currently wired for action, expression, and releasing energy. You may feel a strong drive to execute plans and engage with the external world.";
-            else if (tamas.length > rajas.length) summaryText = "<strong>Recharge & Support Phase:</strong> Your chart shows a dominance of planets in TAMAS houses. This indicates a period or tendency towards gathering resources, introspection, and emotional processing. You are in a 'charging' phase.";
-            else summaryText = "<strong>Balanced Energy:</strong> You have an even distribution of planets between RAJAS and TAMAS houses. This suggests a healthy equilibrium between gathering energy and releasing it.";
-            document.getElementById('analysis-summary').innerHTML = summaryText;
+            const rHtml = rajas.length ? rajas.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-orange-200 text-orange-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-orange-300 italic">No planets</span>`;
+            const tHtml = tamas.length ? tamas.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-emerald-200 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-emerald-300 italic">No planets</span>`;
+            document.getElementById('rajas-list').innerHTML = rHtml; document.getElementById('rajas-count').textContent = `${rajas.length} Planet${rajas.length!==1?'s':''}`;
+            document.getElementById('tamas-list').innerHTML = tHtml; document.getElementById('tamas-count').textContent = `${tamas.length} Planet${tamas.length!==1?'s':''}`;
+            let summary = rajas.length > tamas.length ? "<strong>Active Release Phase:</strong> Dominance in RAJAS houses. Wired for action, expression, and releasing energy." : tamas.length > rajas.length ? "<strong>Recharge & Support Phase:</strong> Dominance in TAMAS houses. Tendency towards gathering resources and introspection." : "<strong>Balanced Energy:</strong> Equilibrium between gathering energy and releasing it.";
+            document.getElementById('analysis-summary').innerHTML = summary;
         }
 
         function renderEnergyFlow(planetMap) {
-            // Specified Sequence: Ke -> Ve -> Su -> Mo -> Ma -> Ra -> Ju -> Sa -> Me -> Ke
-            const sequence = ['Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn', 'Mercury', 'Ketu'];
-            
-            const container = document.getElementById('energy-flow-container');
-            
-            // 1. General Layout & Container Styling
-            // container.className = "w-full border-t border-slate-200 p-4 bg-white mt-8";
-            // Removed extra styling as it's now inside an accordion
-            
-            let html = `
-                <h3 class="text-sm font-bold text-slate-800 mb-3">Planetary Energy Flow Sequence</h3>
-                
-                <div class="planet-flow-scroll flex items-center justify-between overflow-x-auto gap-1 pb-2">
-            `;
-
-            sequence.forEach((pName, index) => {
-                const data = planetMap[pName];
-                const houseDisplay = (typeof data.house === 'number') ? data.house : '?';
-                const isLast = index === sequence.length - 1;
-                
-                // 5. Color Logic for Energy Indicator
-                let barColor = "bg-slate-300"; // Default
-                if (data.category === "RAJAS") {
-                    barColor = "bg-orange-400"; // Vibrant Orange
-                } else if (data.category === "TAMAS") {
-                    barColor = "bg-emerald-400"; // Vibrant Emerald Green
-                }
-
-                // 3. Planet Card Design
-                html += `
-                    <div class="flex-shrink-0 flex flex-col items-center justify-center w-[36px] md:w-[45px] bg-slate-50 border border-slate-200 rounded shadow-sm p-1">
-                        
-                        <span class="text-[10px] md:text-[11px] font-bold text-slate-800 leading-tight">${data.symbol}</span>
-                        
-                        <span class="text-xs md:text-[13px] font-bold text-indigo-900 leading-tight">${houseDisplay}</span>
-                        
-                        <div class="w-full h-1 rounded-full mt-1 ${barColor}"></div>
-                    </div>
-                `;
-
-                // 6. The Connector (Arrows)
-                if (!isLast) {
-                    html += `
-                        <div class="flex-shrink-0 text-slate-400 flex items-center justify-center -mx-1">
-                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256">
-                                <path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path>
-                             </svg>
-                        </div>
-                    `;
-                }
+            const seq = ['Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn', 'Mercury', 'Ketu'];
+            let html = `<h3 class="text-sm font-bold text-slate-800 mb-3">Planetary Energy Flow Sequence</h3><div class="planet-flow-scroll flex items-center justify-between overflow-x-auto gap-1 pb-2">`;
+            seq.forEach((pName, idx) => {
+                const d = planetMap[pName], cat = d.category, bar = cat === "RAJAS" ? "bg-orange-400" : cat === "TAMAS" ? "bg-emerald-400" : "bg-slate-300";
+                html += `<div class="flex-shrink-0 flex flex-col items-center justify-center w-[36px] md:w-[45px] bg-slate-50 border border-slate-200 rounded shadow-sm p-1"><span class="text-[10px] md:text-[11px] font-bold text-slate-800 leading-tight">${d.symbol}</span><span class="text-xs md:text-[13px] font-bold text-indigo-900 leading-tight">${d.house}</span><div class="w-full h-1 rounded-full mt-1 ${bar}"></div></div>`;
+                if (idx < seq.length - 1) html += `<div class="flex-shrink-0 text-slate-400 flex items-center justify-center -mx-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg></div>`;
             });
-
-            html += `</div>`; // Close row
-            container.innerHTML = html;
+            document.getElementById('energy-flow-container').innerHTML = html + `</div>`;
         }
 
-        // RESTORED: Energy Flow Narrative with Updated Colors
         function renderEnergyNarrative(planetMap) {
-            const sequence = ['Mercury', 'Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn'];
-            const container = document.getElementById('energy-narrative-container');
-            container.innerHTML = '';
-            sequence.forEach((pName, index) => {
-                const nextPName = index === sequence.length - 1 ? 'Mercury' : sequence[index + 1];
-                const currData = planetMap[pName], nextData = planetMap[nextPName];
-                if (!currData || !nextData || !currData.houseInfo || !nextData.houseInfo) return;
-                const currHouse = currData.houseInfo, isRajas = currHouse.category === "RAJAS";
-                
-                // Color Logic: Rajas = Orange, Tamas = Emerald (Green)
-                const bgClass = isRajas ? "bg-orange-50 border-orange-200" : "bg-emerald-50 border-emerald-200";
-                const textClass = isRajas ? "text-orange-700" : "text-emerald-700";
-                const iconClass = isRajas ? "text-orange-400" : "text-emerald-400";
-                
-                container.innerHTML += `<div class="narrative-chip inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${bgClass} shadow-sm text-xs cursor-default"><span class="font-bold text-slate-700">${pName}</span><i class="ph ph-arrow-right ${iconClass}"></i><span class="${textClass} font-semibold">${currHouse.sourceAction}</span><i class="ph ph-caret-right text-black font-bold"></i><span class="font-bold text-slate-700">${nextPName}</span></div>`;
+            const seq = ['Mercury', 'Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn'], cont = document.getElementById('energy-narrative-container');
+            cont.innerHTML = '';
+            seq.forEach((p, i) => {
+                const next = i === seq.length - 1 ? 'Mercury' : seq[i + 1], curD = planetMap[p], nextD = planetMap[next];
+                if (!curD?.houseInfo || !nextD?.houseInfo) return;
+                const theme = THEMES[curD.houseInfo.category] || THEMES.TAMAS;
+                cont.innerHTML += `<div class="narrative-chip inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${theme.lightBg} ${theme.divider} shadow-sm text-xs cursor-default"><span class="font-bold text-slate-700">${p}</span><i class="ph ph-arrow-right ${theme.icon}"></i><span class="${theme.highlight} font-semibold">${curD.houseInfo.sourceAction}</span><i class="ph ph-caret-right text-black font-bold"></i><span class="font-bold text-slate-700">${next}</span></div>`;
             });
         }
 
-        function renderSupportSpeedAnalysis(housePlanetList) {
-            const container = document.getElementById('energy-support-container');
-            container.innerHTML = '';
-            const pairs = ENERGY_PAIRS;
-            const results = [];
-            pairs.forEach(pair => {
-                const rajasP = housePlanetList[pair.rajas] || [], tamasP = housePlanetList[pair.tamas] || [];
-                const hasRajas = rajasP.length > 0, hasTamas = tamasP.length > 0;
-                const sortedRajas = [...rajasP].sort((a,b) => b.speed - a.speed);
-                const sortedTamas = [...tamasP].sort((a,b) => b.speed - a.speed);
-                const rSpeed = hasRajas ? sortedRajas[0].speed : 0, tSpeed = hasTamas ? sortedTamas[0].speed : 0;
-                const rajasInfo = OCTAL_HOUSES.find(h => h.id === pair.rajas), tamasInfo = OCTAL_HOUSES.find(h => h.id === pair.tamas);
-                let scenario = 0, rankScore = 0;
-                if (hasTamas && hasRajas) {
-                    if (tSpeed < rSpeed) { scenario = 1; rankScore = 4000 + (rSpeed * 10) - tSpeed; }
-                    else { scenario = 3; rankScore = 2000 + (10 - tSpeed); }
-                } else if (hasTamas && !hasRajas) { scenario = 2; rankScore = 3000 + (10 - tSpeed); }
-                else if (!hasTamas && hasRajas) { scenario = 4; rankScore = 1000 + rSpeed; }
-                else return;
-                results.push({ scenario, rankScore, rajasInfo, tamasInfo, rajasP: sortedRajas, tamasP: sortedTamas });
+        function renderSupportSpeedAnalysis(list) {
+            const cont = document.getElementById('energy-support-container'), res = [];
+            cont.innerHTML = '';
+            ENERGY_PAIRS.forEach(pair => {
+                const rP = (list[pair.rajas] || []).sort((a,b)=>b.speed-a.speed), tP = (list[pair.tamas] || []).sort((a,b)=>b.speed-a.speed);
+                const rInfo = OCTAL_HOUSES.find(h=>h.id===pair.rajas), tInfo = OCTAL_HOUSES.find(h=>h.id===pair.tamas);
+                const rS = rP.length ? rP[0].speed : 0, tS = tP.length ? tP[0].speed : 0;
+                let sc = 0, scVal = 0;
+                if(tP.length && rP.length) { if(tS < rS) { sc=1; scVal=4000+(rS*10)-tS; } else { sc=3; scVal=2000+(10-tS); } }
+                else if(tP.length) { sc=2; scVal=3000+(10-tS); } else if(rP.length) { sc=4; scVal=1000+rS; } else return;
+                res.push({ sc, scVal, rInfo, tInfo, rP, tP });
             });
-            results.sort((a, b) => b.rankScore - a.rankScore);
-            if(results.length === 0) { container.innerHTML = `<div class="col-span-2 text-center text-slate-400 py-8 italic bg-slate-50 rounded-xl border border-slate-100">No planetary pairs found.</div>`; return; }
-            results.forEach((res, index) => {
-                let title, description, iconName, colorBase;
-                const archetype = ARCHETYPES[res.rajasInfo.id];
-                
-                // Determine color theme based on rank
-                if (index === 0) colorBase = "emerald";
-                else if (index === 1) colorBase = "orange";
-                else if (index === 2) colorBase = "rose";
-                else colorBase = "slate";
-
-                const rankColorClass = `bg-${colorBase}-500 text-white`;
-                const iconClass = `text-${colorBase}-500`;
-                const leftBorderClass = `border-l-${colorBase}-500`;
-
-                switch(res.scenario) {
-                    case 1: title = "Fast Charging"; description = "Your internal battery charges rapidly, fueling your actions with abundance. You possess a rare stamina in this domain—capable of sustained, high-intensity effort without the shadow of burnout. This is your zone of mastery, where energy meets execution effortlessly."; iconName = "ph-battery-charging-vertical"; break;
-                    case 2: title = "Forced Action"; description = "A reservoir of energy is building within you, seeking release but no direct outlet. Without conscious direction, this power will find its own way out—often through impulsive decisions or actions you didn’t plan. You are not losing control; you are simply being moved by a tide you haven't steered. Embrace this flow, but gently guide it."; iconName = "ph-waves"; break;
-                    case 3: title = "Slow Charging"; description = "You are spending energy faster than you can recover it. While you can act, you drain your battery quickly, leading to eventual fatigue if you don't rest."; iconName = "ph-battery-warning"; break;
-                    case 4: title = "Strained Action"; description = "You have the drive to act, yet feel unsupported by your inner resources. This creates friction—where effort feels heavy, and progress demands exhaustion. It’s not that you cannot succeed; rather, you are running on reserves, pushing the engine without fuel."; iconName = "ph-fire"; break;
-                }
-                const formatPlanets = (planets) => (!planets || planets.length === 0) ? '<span class="text-slate-300 italic text-[10px]">Empty</span>' : planets.map(p => `<span class="inline-flex items-center gap-1 font-bold text-slate-800 bg-slate-100/50 px-1.5 py-0.5 rounded border border-slate-200/50 text-xs"><i class="ph ${p.icon} text-slate-500"></i> ${p.name}</span>`).join('');
-                
-                // Updated HTML structure with highlighted boundaries (border border-slate-300)
-                container.innerHTML += `
-                <div class="rounded-xl border border-slate-300 border-l-[6px] ${leftBorderClass} shadow-md bg-white overflow-hidden flex flex-col hover:shadow-lg transition-shadow">
-                    
-                    <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                        <div class="flex items-center gap-3">
-                            <div class="p-1.5 rounded-lg bg-white shadow-sm border border-slate-200 ${iconClass}"><i class="ph ${iconName} text-lg"></i></div>
-                            <div>
-                                <h4 class="text-sm font-bold text-slate-800 leading-tight">${title}</h4>
-                                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${res.tamasInfo.label} <i class="ph ph-arrow-right text-[8px]"></i> ${res.rajasInfo.label}</div>
-                            </div>
-                        </div>
-                        <span class="${rankColorClass} px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm">Rank ${index + 1}</span>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row">
-                        
-                        <div class="md:w-5/12 p-4 flex flex-col gap-4 border-b md:border-b-0 md:border-r border-slate-100">
-                            <div class="flex items-center justify-between gap-2 text-xs bg-slate-50 p-2 rounded border border-slate-100">
-                                <div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-emerald-600 uppercase mb-1">Support</span><div class="flex flex-wrap justify-center gap-1">${formatPlanets(res.tamasP)}</div></div>
-                                <i class="ph ph-arrow-right text-slate-300"></i>
-                                <div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-orange-600 uppercase mb-1">Action</span><div class="flex flex-wrap justify-center gap-1">${formatPlanets(res.rajasP)}</div></div>
-                            </div>
-                            
-                            <p class="text-xs text-slate-700 font-medium leading-relaxed italic">
-                                "${description}"
-                            </p>
-                        </div>
-
-                        <div class="md:w-7/12 p-4 bg-slate-50/30 flex flex-col justify-center">
-                            <div class="flex items-center gap-2 mb-3">
-                                <i class="ph ${archetype.icon} text-slate-400 text-lg"></i>
-                                <span class="text-sm font-bold text-slate-600 uppercase tracking-wider">${archetype.title} Insight</span>
-                            </div>
-                            <div class="space-y-3">
-                                <p class="text-sm text-slate-700 leading-relaxed">
-                                    <span class="font-bold text-slate-900">Definition:</span> ${archetype.definition}
-                                </p>
-                                <p class="text-sm text-slate-700 leading-relaxed">
-                                    <span class="font-bold text-indigo-700">Method:</span> ${archetype.method}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>`;
+            if(!res.length) { cont.innerHTML = `<div class="col-span-2 text-center text-slate-400 py-8 italic bg-slate-50 rounded-xl border border-slate-100">No planetary pairs found.</div>`; return; }
+            res.sort((a,b) => b.scVal - a.scVal).forEach((d, i) => {
+                const arch = ARCHETYPES[d.rInfo.id], color = i===0?'emerald':i===1?'orange':i===2?'rose':'slate';
+                const meta = {
+                    1: {t:"Fast Charging", i:"ph-battery-charging-vertical", d:"Internal battery charges rapidly, fueling actions with abundance. Rare stamina without burnout."},
+                    2: {t:"Forced Action", i:"ph-waves", d:"Energy building seeking release. Without direction, power finds way out through impulsive actions."},
+                    3: {t:"Slow Charging", i:"ph-battery-warning", d:"Spending energy faster than recovery. Draining battery quickly leading to fatigue."},
+                    4: {t:"Strained Action", i:"ph-fire", d:"Drive to act but unsupported by inner resources. Effort feels heavy, running on reserves."}
+                }[d.sc];
+                const fmt = p => (!p || !p.length) ? '<span class="text-slate-300 italic text-[10px]">Empty</span>' : p.map(x=>`<span class="inline-flex items-center gap-1 font-bold text-slate-800 bg-slate-100/50 px-1.5 py-0.5 rounded border border-slate-200/50 text-xs"><i class="ph ${x.icon} text-slate-500"></i> ${x.name}</span>`).join('');
+                cont.innerHTML += `<div class="rounded-xl border border-slate-300 border-l-[6px] border-l-${color}-500 shadow-md bg-white overflow-hidden flex flex-col hover:shadow-lg transition-shadow">
+                    <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"><div class="flex items-center gap-3"><div class="p-1.5 rounded-lg bg-white shadow-sm border border-slate-200 text-${color}-500"><i class="ph ${meta.i} text-lg"></i></div><div><h4 class="text-sm font-bold text-slate-800 leading-tight">${meta.t}</h4><div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${d.tInfo.label} <i class="ph ph-arrow-right text-[8px]"></i> ${d.rInfo.label}</div></div></div><span class="bg-${color}-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm">Rank ${i+1}</span></div>
+                    <div class="flex flex-col md:flex-row"><div class="md:w-5/12 p-4 flex flex-col gap-4 border-b md:border-b-0 md:border-r border-slate-100"><div class="flex items-center justify-between gap-2 text-xs bg-slate-50 p-2 rounded border border-slate-100"><div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-emerald-600 uppercase mb-1">Support</span><div class="flex flex-wrap justify-center gap-1">${fmt(d.tP)}</div></div><i class="ph ph-arrow-right text-slate-300"></i><div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-orange-600 uppercase mb-1">Action</span><div class="flex flex-wrap justify-center gap-1">${fmt(d.rP)}</div></div></div><p class="text-xs text-slate-700 font-medium leading-relaxed italic">"${meta.d}"</p></div><div class="md:w-7/12 p-4 bg-slate-50/30 flex flex-col justify-center"><div class="flex items-center gap-2 mb-3"><i class="ph ${arch.icon} text-slate-400 text-lg"></i><span class="text-sm font-bold text-slate-600 uppercase tracking-wider">${arch.title} Insight</span></div><div class="space-y-3"><p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-slate-900">Definition:</span> ${arch.definition}</p><p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-indigo-700">Method:</span> ${arch.method}</p></div></div></div></div>`;
             });
         }
 
-        // --- CYCLIC TRANSIT LOGIC (UPDATED: REAL TIME SEARCH) ---
-        function getHouseFromDegree(deg) { return OCTAL_HOUSES.find(h => deg >= h.range[0] && deg < h.range[1]) || OCTAL_HOUSES[0]; }
-        function getHouseDescription(hId, planetName) {
-            const prefix = `${planetName} is`;
-            switch(hId) {
-                case 3: return `${prefix} attracting environment to GUIDE`;
-                case 5: return `${prefix} attracting environment to SUPPORT`;
-                case 6: return `${prefix} attracting environment to CHALLENGE`;
-                case 8: return `${prefix} triggering THOUGHTS of DEATH/FAILURE`;
-                case 9: return `${prefix} triggering action as CREATOR`;
-                case 11: return `${prefix} triggering action as SELLER`;
-                case 12: return `${prefix} triggering action as WARRIOR`;
-                case 2: return `${prefix} triggering action as STRATEGIST`;
-                default: return "";
-            }
-        }
-
-        // Helper to get precise transit data at a specific date
-        function getTransitData(planetName, date, natalAsc) {
-            const time = Astronomy.MakeTime(date);
-            const daysSinceJ2000 = (date - new Date('2000-01-01T12:00:00Z')) / (1000 * 60 * 60 * 24);
-            const T = daysSinceJ2000 / 36525.0;
-            const ayanamsa = 23.858832 + (1.396042 * T);
-            
-            let trop = 0;
-            let speed = 0;
-            if (planetName === 'Rahu' || planetName === 'Ketu') {
-                 let rMean = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T*T*T)/450000));
-                 trop = (planetName === 'Rahu') ? rMean : normalize(rMean + 180);
-                 speed = -0.05295; // Mean motion is retrograde
+        // --- TRANSIT LOGIC ---
+        function getTransitData(pName, date, asc) {
+            const T = (date - new Date('2000-01-01T12:00:00Z')) / 86400000 / 36525.0;
+            let trop, speed;
+            if (['Rahu','Ketu'].includes(pName)) {
+                let r = normalize(125.04452 - (1934.136261*T) + (0.0020708*T*T) + ((T*T*T)/450000));
+                trop = pName === 'Rahu' ? r : normalize(r + 180); speed = -0.05295;
             } else {
-                 const vec = Astronomy.GeoVector(Astronomy.Body[planetName], time, true);
-                 // Simple velocity check: compare with 1 hour ago
-                 const timePrev = Astronomy.MakeTime(new Date(date.getTime() - 3600000));
-                 const vecPrev = Astronomy.GeoVector(Astronomy.Body[planetName], timePrev, true);
-                 const ecl = Astronomy.Ecliptic(vec);
-                 const eclPrev = Astronomy.Ecliptic(vecPrev);
-                 trop = ecl.elon;
-                 let diff = ecl.elon - eclPrev.elon;
-                 if (diff < -180) diff += 360;
-                 if (diff > 180) diff -= 360;
-                 speed = diff; // per hour
+                const vec = Astronomy.GeoVector(Astronomy.Body[pName], Astronomy.MakeTime(date), true);
+                trop = Astronomy.Ecliptic(vec).elon;
+                const prev = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[pName], Astronomy.MakeTime(new Date(date.getTime()-3600000)), true)).elon;
+                speed = trop - prev; if(speed < -180) speed+=360; if(speed > 180) speed-=360;
             }
-            
-            const sidereal = normalize(trop - ayanamsa);
-            const relDeg = normalize(sidereal - natalAsc);
-            const houseInfo = getHouseFromDegree(relDeg);
-            const isRetro = speed < 0;
-
-            return { house: houseInfo, date: date, isRetro: isRetro, degree: relDeg };
+            const deg = normalize(normalize(trop - (23.858832 + (1.396042 * T))) - asc);
+            return { house: OCTAL_HOUSES.find(h => deg >= h.range[0] && deg < h.range[1]) || OCTAL_HOUSES[0], isRetro: speed < 0 };
         }
 
-        // Search algorithm to find when the house changes
-        function findBoundaryCrossing(planetName, startDate, natalAsc, direction, stepHours) {
-            let currentDate = new Date(startDate);
-            let startData = getTransitData(planetName, currentDate, natalAsc);
-            let currentHouseId = startData.house.id;
-            let steps = 0;
-            const maxSteps = 10000; // Safety break
-            
-            // 1. Coarse Search
-            while(steps < maxSteps) {
-                currentDate = new Date(currentDate.getTime() + (direction * stepHours * 3600000));
-                let data = getTransitData(planetName, currentDate, natalAsc);
-                if (data.house.id !== currentHouseId) {
-                    // Boundary found between (currentDate - step) and currentDate
-                    // 2. Binary Search refinement for precision (down to ~1 min)
-                    let lower = new Date(currentDate.getTime() - (direction * stepHours * 3600000));
-                    let upper = new Date(currentDate);
-                    // Ensure chronological order for logic
-                    if (lower > upper) { let temp = lower; lower = upper; upper = temp; }
-                    
-                    let finalDate = upper;
-                    let lastValidHouse = startData.house;
-                    
-                    for(let i=0; i<15; i++) { // 15 iterations is ~1 second precision on 24h range
-                        let mid = new Date((lower.getTime() + upper.getTime())/2);
-                        let midData = getTransitData(planetName, mid, natalAsc);
-                        if(midData.house.id === currentHouseId) {
-                             if(direction === 1) lower = mid; else upper = mid;
-                        } else {
-                             if(direction === 1) upper = mid; else lower = mid;
-                             lastValidHouse = midData.house; // The new house
-                             finalDate = mid;
-                        }
+        function findBoundary(pName, start, asc, dir, stepH) {
+            let curr = new Date(start), hId = getTransitData(pName, curr, asc).house.id, step = 0;
+            while(step++ < 10000) {
+                const next = new Date(curr.getTime() + (dir * stepH * 3600000));
+                if (getTransitData(pName, next, asc).house.id !== hId) {
+                    let l = dir===1 ? curr : next, u = dir===1 ? next : curr;
+                    if(l>u) [l,u]=[u,l];
+                    let final = u, lastH;
+                    for(let i=0; i<15; i++) {
+                        let m = new Date((l.getTime()+u.getTime())/2), d = getTransitData(pName, m, asc);
+                        if(d.house.id === hId) { if(dir===1) l=m; else u=m; } 
+                        else { if(dir===1) u=m; else l=m; lastH = d.house; final = m; }
                     }
-                    return { date: finalDate, newHouse: lastValidHouse };
+                    return { date: final, newHouse: lastH };
                 }
-                steps++;
+                curr = next;
             }
-            return null; // Should not happen in reasonable time
+            return null;
         }
 
-        function calculateTransitScheduleRealTime(planetName, now, natalAsc, futureCount, pastCount) {
-            const schedule = [];
-            
-            // Define search step size based on typical planet speed to optimize performance
-            let stepHours = 24;
-            if (planetName === 'Moon') stepHours = 2;
-            if (planetName === 'Saturn' || planetName === 'Jupiter' || planetName === 'Rahu' || planetName === 'Ketu') stepHours = 120; // 5 days
-            if (planetName === 'Mars') stepHours = 48;
-
-            // 1. Get Current State
-            const currentData = getTransitData(planetName, now, natalAsc);
-            
-            // Find Current Exit (Forward Search)
-            const exitSearchResult = findBoundaryCrossing(planetName, now, natalAsc, 1, stepHours);
-            const exitDate = exitSearchResult ? exitSearchResult.date : new Date(now.getTime() + 30*24*3600000); // Fallback
-            
-            // Find Current Entry (Backward Search)
-            const entrySearchResult = findBoundaryCrossing(planetName, now, natalAsc, -1, stepHours);
-            const entryDate = entrySearchResult ? entrySearchResult.date : new Date(now.getTime() - 30*24*3600000); // Fallback
-
-            // Prepare Current Object with (R) logic if applicable
-            let curLabel = currentData.house.label;
-            if(currentData.isRetro) curLabel += " (R)";
-            
-            // We clone the house object to avoid modifying the global constant permanently
-            let curHouseObj = { ...currentData.house, label: curLabel };
-
-            schedule.push({ house: curHouseObj, entry: entryDate, exit: exitDate, type: 'Present' });
-
-            // 2. Future Items
-            let lastExit = exitDate;
-            for(let i=0; i<futureCount; i++) {
-                // To find next entry/exit, we start search slightly after the last exit
-                let searchStart = new Date(lastExit.getTime() + (60000)); // +1 minute
-                let nextExitRes = findBoundaryCrossing(planetName, searchStart, natalAsc, 1, stepHours);
-                if(nextExitRes) {
-                    let midDate = new Date((searchStart.getTime() + nextExitRes.date.getTime())/2);
-                    let midData = getTransitData(planetName, midDate, natalAsc);
-                    
-                    let fLabel = midData.house.label;
-                    if(midData.isRetro) fLabel += " (R)";
-                    let fHouseObj = { ...midData.house, label: fLabel };
-
-                    schedule.push({ house: fHouseObj, entry: lastExit, exit: nextExitRes.date, type: 'Future' });
-                    lastExit = nextExitRes.date;
+        function calcSchedule(pName, now, asc, fCount, pCount) {
+            let step = 24; if(pName==='Moon') step=2; if(['Saturn','Jupiter','Rahu','Ketu'].includes(pName)) step=120; if(pName==='Mars') step=48;
+            const cData = getTransitData(pName, now, asc), exit = findBoundary(pName, now, asc, 1, step)?.date || new Date(now.getTime()+2592000000), entry = findBoundary(pName, now, asc, -1, step)?.date || new Date(now.getTime()-2592000000);
+            const sched = [{ house: {...cData.house, label: cData.house.label + (cData.isRetro ? " (R)" : "")}, entry, exit, type: 'Present' }];
+            let le = exit; 
+            for(let i=0; i<fCount; i++) {
+                const res = findBoundary(pName, new Date(le.getTime()+60000), asc, 1, step);
+                if(res) {
+                    const mid = getTransitData(pName, new Date((le.getTime()+res.date.getTime())/2), asc);
+                    sched.push({ house: {...mid.house, label: mid.house.label + (mid.isRetro ? " (R)" : "")}, entry: le, exit: res.date, type: 'Future' });
+                    le = res.date;
                 }
             }
-
-            // 3. Past Items
-            let lastEntry = entryDate;
-            for(let i=0; i<pastCount; i++) {
-                // Search backward from entry
-                let searchStart = new Date(lastEntry.getTime() - (60000));
-                let prevEntryRes = findBoundaryCrossing(planetName, searchStart, natalAsc, -1, stepHours);
-                if(prevEntryRes) {
-                     let midDate = new Date((searchStart.getTime() + prevEntryRes.date.getTime())/2);
-                     let midData = getTransitData(planetName, midDate, natalAsc);
-                     
-                     let pLabel = midData.house.label;
-                     if(midData.isRetro) pLabel += " (R)";
-                     let pHouseObj = { ...midData.house, label: pLabel };
-
-                     schedule.unshift({ house: pHouseObj, entry: prevEntryRes.date, exit: lastEntry, type: 'Past' });
-                     lastEntry = prevEntryRes.date;
+            let lEntry = entry;
+            for(let i=0; i<pCount; i++) {
+                const res = findBoundary(pName, new Date(lEntry.getTime()-60000), asc, -1, step);
+                if(res) {
+                    const mid = getTransitData(pName, new Date((lEntry.getTime()+res.date.getTime())/2), asc);
+                    sched.unshift({ house: {...mid.house, label: mid.house.label + (mid.isRetro ? " (R)" : "")}, entry: res.date, exit: lEntry, type: 'Past' });
+                    lEntry = res.date;
                 }
             }
-            
-            return schedule;
+            return sched;
         }
 
-        function formatDateFull(date) {
-            const d = date.getDate().toString().padStart(2, '0');
-            const m = date.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
-            const y = date.getFullYear().toString().slice(-2);
-            return `${d} ${m} ${y}`;
+        function getDesc(hId, p) {
+            const pre = `${p} is`;
+            const m = {3:"attracting environment to GUIDE", 5:"attracting environment to SUPPORT", 6:"attracting environment to CHALLENGE", 8:"triggering THOUGHTS of DEATH/FAILURE", 9:"triggering action as CREATOR", 11:"triggering action as SELLER", 12:"triggering action as WARRIOR", 2:"triggering action as STRATEGIST"};
+            return m[hId] ? `${pre} ${m[hId]}` : "";
         }
 
-        function formatDateMonthTime(date) {
-            const d = date.getDate().toString().padStart(2, '0');
-            const m = date.toLocaleString('en-GB', { month: 'short' }).toUpperCase();
-            const time = date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
-            return `${d} ${m} @ ${time}`;
-        }
-
-        function renderLongCycles(now, natalAsc, planetMap) {
-            const planets = ['Mars', 'Jupiter', 'Saturn'];
-            const container = document.getElementById('long-cycle-container');
-            container.innerHTML = '';
-
-            planets.forEach(p => {
-                // Future Count 1, Past Count 1 to get [Past, Present, Future]
-                const sched = calculateTransitScheduleRealTime(p, now, natalAsc, 1, 1);
-                // sched array should be length 3: [Past, Present, Future]
-                const viewData = sched; 
-                
-                // Get Natal House Label
-                const natalHouse = planetMap[p]?.houseInfo?.label || "Unknown";
-                
-                // 1. Cycle Block Container
-                // UPDATED: Changed text-[10px] to text-xs for the @Birth badge
-                let html = `
-                <div class="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 p-1">
-                    <div class="flex items-center justify-between p-3 border-b border-slate-100 mb-2">
-                        <div class="flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
-                            <span class="text-sm font-bold text-slate-800 uppercase">${p} Cycle</span>
-                        </div>
-                        <span class="bg-slate-100 text-slate-500 text-xs font-bold px-2 py-0.5 rounded-full">@Birth: ${natalHouse}</span>
-                    </div>
-                    
-                    <div class="flex flex-col md:flex-row gap-2 p-2">`; // Grid/Flex Layout
-                
-                const labels = ['PAST', 'PRESENT', 'FUTURE'];
-                
-                viewData.forEach((item, i) => {
+        function renderLongCycles(now, asc, pMap) {
+            const cont = document.getElementById('long-cycle-container'); cont.innerHTML = '';
+            ['Mars','Jupiter','Saturn'].forEach(p => {
+                const data = calcSchedule(p, now, asc, 1, 1), nH = pMap[p]?.houseInfo?.label || "Unknown";
+                let html = `<div class="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 p-1"><div class="flex items-center justify-between p-3 border-b border-slate-100 mb-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-600"></span><span class="text-sm font-bold text-slate-800 uppercase">${p} Cycle</span></div><span class="bg-slate-100 text-slate-500 text-xs font-bold px-2 py-0.5 rounded-full">@Birth: ${nH}</span></div><div class="flex flex-col md:flex-row gap-2 p-2">`;
+                data.forEach(item => {
                     if(!item) return;
-                    const isPresent = item.type === 'Present';
-                    
-                    // --- THEME COLOR LOGIC ---
-                    let themeBg, themeBorder, themeBadge, themeText, houseCircleBg, houseCircleText;
-                    let quoteBorder, dividerBorder;
-
-                    if(item.house.category === "RAJAS") {
-                        // RAJAS: Orange
-                        themeBg = "bg-[#fff7ed]";           // Very Light Orange
-                        themeBorder = "border-orange-400";  // Orange-400
-                        themeBadge = "bg-orange-600";       // Badge bg
-                        themeText = "text-orange-900";      // Text color
-                        houseCircleBg = "bg-orange-200";
-                        houseCircleText = "text-orange-800";
-                        quoteBorder = "border-orange-400";
-                        dividerBorder = "border-orange-200";
-                    } else {
-                        // TAMAS: Emerald
-                        themeBg = "bg-[#ecfdf5]";           // Very Light Emerald
-                        themeBorder = "border-emerald-400"; // Emerald-400
-                        themeBadge = "bg-emerald-600";      // Badge bg
-                        themeText = "text-emerald-900";     // Text color
-                        houseCircleBg = "bg-emerald-200";
-                        houseCircleText = "text-emerald-800";
-                        quoteBorder = "border-emerald-400";
-                        dividerBorder = "border-emerald-200";
-                    }
-                    
-                    // --- STATE LOGIC (Present vs Others) ---
-                    let cardStateClasses = "";
-                    if (isPresent) {
-                        cardStateClasses = "opacity-100 ring-2 ring-offset-2 ring-indigo-500 shadow-md scale-[1.01] z-10"; // Active
-                    } else {
-                        cardStateClasses = "opacity-80 grayscale-[30%] shadow-sm"; // Inactive
-                    }
-
-                    const houseDesc = getHouseDescription(item.house.id, p);
-                    const archetype = ARCHETYPES[item.house.id];
-
-                    // --- HIGHLIGHT LOGIC ---
-                    let highlightColorClass = item.house.category === "RAJAS" ? "text-orange-600" : "text-emerald-600";
-                    let richDesc = houseDesc.replace(OCTAL_HOUSES.find(h=>h.id === item.house.id).label, `<span class="font-bold ${highlightColorClass}">${OCTAL_HOUSES.find(h=>h.id === item.house.id).label}</span>`);
-
-                    // 2. The Card Structure
-                    // UPDATED: Font sizes increased to text-sm (approx 14px) and removed 'h-full' to allow vertical growth
-                    html += `
-                    <div class="flex-1 rounded-lg border p-4 flex flex-col gap-4 transition-all ${themeBg} ${themeBorder} ${cardStateClasses}">
-                        
-                        <div class="flex justify-between items-start">
-                            <span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white uppercase ${themeBadge}">${item.type}</span>
-                            <span class="text-[10px] font-bold text-slate-500">${formatDateFull(item.entry)} - ${formatDateFull(item.exit)}</span>
-                        </div>
-
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${houseCircleBg} ${houseCircleText}">
-                                ${item.house.id}
-                            </div>
-                            <span class="text-sm font-bold text-slate-800 uppercase tracking-tight">${item.house.label}</span>
-                        </div>
-
-                        <div class="flex flex-col gap-3 mt-1">
-                            <p class="text-sm text-slate-800 leading-relaxed text-justify font-medium">
-                               ${richDesc}
-                            </p>
-
-                            <div class="pl-3 border-l-4 ${quoteBorder} text-sm italic text-slate-700 leading-relaxed my-2 py-1">
-                                "${archetype.quote}"
-                            </div>
-
-                            <p class="text-sm text-slate-700 text-justify leading-relaxed pt-3 border-t ${dividerBorder} mt-auto">
-                                <strong class="text-slate-900">Guidance:</strong> ${archetype.method}
-                            </p>
-                        </div>
-                    </div>`;
+                    const t = THEMES[item.house.category] || THEMES.TAMAS, arch = ARCHETYPES[item.house.id];
+                    const state = item.type === 'Present' ? "opacity-100 ring-2 ring-offset-2 ring-indigo-500 shadow-md scale-[1.01] z-10" : "opacity-80 grayscale-[30%] shadow-sm";
+                    const richDesc = getDesc(item.house.id, p).replace(item.house.label, `<span class="font-bold ${t.highlight}">${item.house.label}</span>`);
+                    html += `<div class="flex-1 rounded-lg border p-4 flex flex-col gap-4 transition-all ${t.bg} ${t.border} ${state}"><div class="flex justify-between items-start"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white uppercase ${t.badge}">${item.type}</span><span class="text-[10px] font-bold text-slate-500">${formatDateFull(item.entry)} - ${formatDateFull(item.exit)}</span></div><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${t.circleBg} ${t.circleText}">${item.house.id}</div><span class="text-sm font-bold text-slate-800 uppercase tracking-tight">${item.house.label}</span></div><div class="flex flex-col gap-3 mt-1"><p class="text-sm text-slate-800 leading-relaxed text-justify font-medium">${richDesc}</p><div class="pl-3 border-l-4 ${t.border} text-sm italic text-slate-700 leading-relaxed my-2 py-1">"${arch.quote}"</div><p class="text-sm text-slate-700 text-justify leading-relaxed pt-3 border-t ${t.divider} mt-auto"><strong class="text-slate-900">Guidance:</strong> ${arch.method}</p></div></div>`;
                 });
-                html += `</div></div>`;
-                container.innerHTML += html;
+                cont.innerHTML += html + `</div></div>`;
             });
         }
 
-        function renderSunCycle(now, natalAsc, planetMap) {
-            // Future 8 steps, using Real Time Calculation
-            const sched = calculateTransitScheduleRealTime('Sun', now, natalAsc, 8, 0);
-            const container = document.getElementById('sun-cycle-container');
-            container.innerHTML = '';
-
-            // Get Natal Sun Label
-            const natalHouse = planetMap['Sun']?.houseInfo?.label || "Unknown";
-            
-            // The real time schedule includes "Present" first, then futures.
-            sched.forEach(item => {
-                const h = item.house;
-                const desc = getHouseDescription(h.id, 'Sun');
-                const isPresent = item.type === 'Present';
-                const archetype = ARCHETYPES[h.id];
-
-                // --- COLORS ---
-                let stripColor, themeText, subLabel, lightBg, quoteBorder;
-                if(h.category === "RAJAS") {
-                    stripColor = "bg-orange-500";
-                    themeText = "text-orange-600";
-                    subLabel = "RAJAS PHASE";
-                    lightBg = "bg-orange-50"; // For icon
-                    quoteBorder = "border-orange-500";
-                } else {
-                    stripColor = "bg-emerald-500";
-                    themeText = "text-emerald-600";
-                    subLabel = "TAMAS PHASE";
-                    lightBg = "bg-emerald-50";
-                    quoteBorder = "border-emerald-500";
-                }
-
-                // --- ACTIVE STATE ---
-                let wrapperClass = "bg-white rounded-lg border border-slate-200 overflow-hidden relative flex flex-col md:flex-row shadow-sm mb-4";
-                if(isPresent) {
-                    wrapperClass += " ring-2 ring-indigo-500 z-10 shadow-md transform scale-[1.01]";
-                }
-
-                // UPDATED: Font sizes increased to text-sm
-                html = `
-                <div class="${wrapperClass}">
-                    ${isPresent ? '<div class="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg z-20 shadow-sm">CURRENTLY ACTIVE</div>' : ''}
-                    
-                    <div class="w-3 ${stripColor} flex-shrink-0"></div>
-
-                    <div class="flex-1 p-5 flex flex-col gap-4">
-                        
-                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full ${lightBg} flex items-center justify-center font-bold text-sm ${themeText}">
-                                    ${h.id}
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-slate-800 uppercase text-sm leading-none">${h.label} <span class="text-slate-400 font-normal text-[10px] ml-1">(@Birth: ${natalHouse})</span></h4>
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${subLabel}</span>
-                                </div>
-                            </div>
-                            
-                            <div class="bg-indigo-50 border border-indigo-100 rounded px-2 py-1 text-[10px] font-bold font-mono text-indigo-700 text-center md:text-right">
-                                ${formatDateMonthTime(item.entry)} ➜ <br class="md:hidden"/> ${formatDateMonthTime(item.exit)}
-                            </div>
-                        </div>
-
-                        <div class="flex flex-col gap-3">
-                             <div class="bg-slate-50 rounded p-3 text-sm font-medium text-slate-800 border border-slate-200">
-                                <span class="font-bold text-slate-900">Trigger:</span> ${desc}
-                            </div>
-                            
-                            <div class="pl-3 border-l-4 ${quoteBorder} text-sm italic text-slate-700 leading-relaxed">
-                                "${archetype.quote}"
-                            </div>
-                            
-                            <p class="text-sm text-slate-700 text-justify leading-relaxed pt-2 border-t border-slate-100 mt-1">
-                                <strong class="text-slate-900">Guidance:</strong> ${archetype.method}
-                            </p>
-                        </div>
-                    </div>
-                </div>`;
-                
-                container.innerHTML += html;
+        function renderSunCycle(now, asc, pMap) {
+            const cont = document.getElementById('sun-cycle-container'), nH = pMap['Sun']?.houseInfo?.label || "Unknown"; cont.innerHTML = '';
+            calcSchedule('Sun', now, asc, 8, 0).forEach(item => {
+                const t = THEMES[item.house.category] || THEMES.TAMAS, arch = ARCHETYPES[item.house.id], isP = item.type === 'Present';
+                const cls = `bg-white rounded-lg border border-slate-200 overflow-hidden relative flex flex-col md:flex-row shadow-sm mb-4${isP ? " ring-2 ring-indigo-500 z-10 shadow-md transform scale-[1.01]" : ""}`;
+                cont.innerHTML += `<div class="${cls}">${isP ? '<div class="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg z-20 shadow-sm">CURRENTLY ACTIVE</div>' : ''}<div class="w-3 ${t.strip} flex-shrink-0"></div><div class="flex-1 p-5 flex flex-col gap-4"><div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full ${t.lightBg} flex items-center justify-center font-bold text-sm ${t.highlight}">${item.house.id}</div><div><h4 class="font-bold text-slate-800 uppercase text-sm leading-none">${item.house.label} <span class="text-slate-400 font-normal text-[10px] ml-1">(@Birth: ${nH})</span></h4><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sub}</span></div></div><div class="bg-indigo-50 border border-indigo-100 rounded px-2 py-1 text-[10px] font-bold font-mono text-indigo-700 text-center md:text-right">${formatDateMonthTime(item.entry)} ➜ <br class="md:hidden"/> ${formatDateMonthTime(item.exit)}</div></div><div class="flex flex-col gap-3"><div class="bg-slate-50 rounded p-3 text-sm font-medium text-slate-800 border border-slate-200"><span class="font-bold text-slate-900">Trigger:</span> ${getDesc(item.house.id, 'Sun')}</div><div class="pl-3 border-l-4 ${t.border} text-sm italic text-slate-700 leading-relaxed">"${arch.quote}"</div><p class="text-sm text-slate-700 text-justify leading-relaxed pt-2 border-t border-slate-100 mt-1"><strong class="text-slate-900">Guidance:</strong> ${arch.method}</p></div></div></div>`;
             });
         }
 
-        function renderMoonCycle(now, natalAsc, planetMap) {
-            // Moon: 2 Past, 1 Present, 5 Future using Real Time Calculation
-            const sched = calculateTransitScheduleRealTime('Moon', now, natalAsc, 5, 2); 
-            const container = document.getElementById('moon-cycle-container');
-            container.innerHTML = '';
-            
-            // Get Natal Moon Label
-            const natalHouse = planetMap['Moon']?.houseInfo?.label || "Unknown";
-
-            sched.forEach(item => {
-                const h = item.house;
-                const desc = getHouseDescription(h.id, 'Moon');
-                const isPresent = item.type === 'Present';
-                const isPast = item.type === 'Past';
-                const archetype = ARCHETYPES[h.id];
-                
-                // --- THEME & STATE ---
-                let themeBg, themeBorder, themeRing, badgeText;
-                
-                if (h.category === "RAJAS") {
-                    themeBg = "bg-orange-50";
-                    themeBorder = "border-orange-400";
-                    themeRing = "ring-orange-400";
-                } else {
-                    themeBg = "bg-emerald-50";
-                    themeBorder = "border-emerald-400";
-                    themeRing = "ring-emerald-400";
-                }
-
-                let opacityClass = "opacity-80 grayscale-[30%]";
-                let stateClass = "";
-                let badgeLabel = item.type.toUpperCase();
-
-                if (isPresent) {
-                    opacityClass = "opacity-100";
-                    stateClass = `ring-2 ${themeRing} shadow-md z-10`;
-                } else if (item.type === 'Future') {
-                     // Future items in list
-                }
-
-                // 1. List Item Base
-                // UPDATED: Definition text font size increased to text-sm
-                let html = `
-                <div class="w-full rounded-lg border p-0 overflow-hidden flex flex-col md:flex-row ${themeBg} ${themeBorder} ${opacityClass} ${stateClass} mb-3 transition-all">
-                    
-                    <div class="md:w-1/4 p-4 border-b md:border-b-0 md:border-r ${themeBorder} flex flex-row md:flex-col items-center md:items-start justify-between md:justify-center gap-2">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 shadow-sm">${badgeLabel}</span>
-                        <div class="text-xs font-bold text-slate-500 font-mono flex flex-col items-end md:items-start leading-tight">
-                            <span>${formatDateMonthTime(item.entry)}</span>
-                            <span class="text-[9px] text-slate-400 lowercase italic">to</span>
-                            <span>${formatDateMonthTime(item.exit)}</span>
-                        </div>
-                    </div>
-
-                    <div class="flex-1 p-4 flex flex-col gap-3">
-                        <div class="flex items-center gap-2">
-                            <div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 shadow-sm">
-                                ${h.id}
-                            </div>
-                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wide">${h.label} <span class="text-slate-400 font-normal text-[10px] ml-1">(@Birth: ${natalHouse})</span></span>
-                        </div>
-
-                        <div class="bg-white/60 border border-black/5 rounded p-2 text-xs text-slate-700 font-medium">
-                            ${desc}
-                        </div>
-
-                        <p class="text-sm text-slate-700 text-justify leading-relaxed">
-                            ${archetype.definition}
-                        </p>
-                    </div>
-                </div>`;
-                container.innerHTML += html;
+        function renderMoonCycle(now, asc, pMap) {
+            const cont = document.getElementById('moon-cycle-container'), nH = pMap['Moon']?.houseInfo?.label || "Unknown"; cont.innerHTML = '';
+            calcSchedule('Moon', now, asc, 5, 2).forEach(item => {
+                const t = THEMES[item.house.category] || THEMES.TAMAS, isP = item.type === 'Present';
+                const st = isP ? `opacity-100 ring-2 ${t.ring} shadow-md z-10` : "opacity-80 grayscale-[30%]";
+                cont.innerHTML += `<div class="w-full rounded-lg border p-0 overflow-hidden flex flex-col md:flex-row ${t.lightBg} ${t.border} ${st} mb-3 transition-all"><div class="md:w-1/4 p-4 border-b md:border-b-0 md:border-r ${t.border} flex flex-row md:flex-col items-center md:items-start justify-between md:justify-center gap-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 shadow-sm">${item.type.toUpperCase()}</span><div class="text-xs font-bold text-slate-500 font-mono flex flex-col items-end md:items-start leading-tight"><span>${formatDateMonthTime(item.entry)}</span><span class="text-[9px] text-slate-400 lowercase italic">to</span><span>${formatDateMonthTime(item.exit)}</span></div></div><div class="flex-1 p-4 flex flex-col gap-3"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 shadow-sm">${item.house.id}</div><span class="text-xs font-bold text-slate-800 uppercase tracking-wide">${item.house.label} <span class="text-slate-400 font-normal text-[10px] ml-1">(@Birth: ${nH})</span></span></div><div class="bg-white/60 border border-black/5 rounded p-2 text-xs text-slate-700 font-medium">${getDesc(item.house.id, 'Moon')}</div><p class="text-sm text-slate-700 text-justify leading-relaxed">${ARCHETYPES[item.house.id].definition}</p></div></div>`;
             });
-            container.innerHTML += `<div class="timeline-line hidden"></div>`; // Hide old line if present in CSS
         }
 
-        // ... (Keep existing drawing/helper functions) ...
         function drawOctalChart(lagna, planets) {
-            const width = 550, height = 550, cx = width/2, cy = height/2, r = 180, labelR = 185;
-            const container = document.getElementById('octal-chart-container');
-            
-            // --- UPDATED LOGIC: Alternating Radial Layout ---
-            
-            // 1. Angular Constraints (Keep inside house)
-            const SAFE_MARGIN = 7; // Degrees padding from house lines
-            
+            const w = 550, h = 550, cx = w/2, cy = h/2, r = 180, labelR = 185, container = document.getElementById('octal-chart-container');
             planets.forEach(p => {
-                let h = OCTAL_HOUSES.find(h => p.distFromLagna >= h.range[0] && p.distFromLagna < h.range[1]);
-                if (!h) h = OCTAL_HOUSES[0]; 
-                
-                const min = h.range[0];
-                const max = h.range[1];
-                const houseWidth = max - min;
-                const safeWidth = houseWidth - (2 * SAFE_MARGIN);
-                
-                // Normalize position within the safe zone
-                let fraction = (p.distFromLagna - min) / houseWidth;
-                p.visualDist = min + SAFE_MARGIN + (fraction * safeWidth);
+                let hs = OCTAL_HOUSES.find(h => p.distFromLagna >= h.range[0] && p.distFromLagna < h.range[1]) || OCTAL_HOUSES[0];
+                p.visualDist = hs.range[0] + 7 + ((p.distFromLagna - hs.range[0]) / (hs.range[1] - hs.range[0]) * (hs.range[1]-hs.range[0]-14));
             });
-
-            // 2. Sort by angle to keep lines tidy
             planets.sort((a,b) => a.visualDist - b.visualDist);
-            
-            // 3. Track Allocator (Short, Medium, Long)
-            // Creates the "Short -> Long -> Short" pattern by checking collisions
-            const trackRadii = [60, 105, 150]; // Distinct lengths as requested
-            const trackOccupancy = [[], [], []]; 
-            const symbolWidth = 14; // Approx pixel width of a planet symbol
-            
+            const tracks = [60, 105, 150], occ = [[], [], []], symW = 14;
             planets.forEach(p => {
-                let assignedTrack = -1;
-                
-                // Try tracks in order: Short -> Medium -> Long
-                for(let t = 0; t < trackRadii.length; t++) {
-                    const radius = trackRadii[t];
-                    // Angular threshold decreases as radius increases
-                    const threshold = (symbolWidth * 1.8) / (2 * Math.PI * radius) * 360;
-                    
-                    const hasCollision = trackOccupancy[t].some(angle => {
-                        let diff = Math.abs(angle - p.visualDist);
-                        if(diff > 180) diff = 360 - diff;
-                        return diff < threshold;
-                    });
-                    
-                    if(!hasCollision) {
-                        assignedTrack = t;
-                        break;
-                    }
+                let t = -1;
+                for(let i=0; i<3; i++) {
+                    const th = (symW * 1.8) / (2 * Math.PI * tracks[i]) * 360;
+                    if(!occ[i].some(a => { let d = Math.abs(a - p.visualDist); return (d > 180 ? 360-d : d) < th; })) { t=i; break; }
                 }
-                
-                // Fallback to outer track if very crowded
-                if (assignedTrack === -1) assignedTrack = trackRadii.length - 1;
-                
-                p.radius = trackRadii[assignedTrack];
-                trackOccupancy[assignedTrack].push(p.visualDist);
+                if(t===-1) t=2;
+                p.radius = tracks[t]; occ[t].push(p.visualDist);
             });
 
-            let svg = `<svg viewBox="0 0 ${width} ${height}" xmlns="http://www.w3.org/2000/svg" class="w-full h-full bg-white rounded-full"><defs>`;
-            
-            // Draw House Arcs (Invisible paths for text)
+            let svg = `<svg viewBox="0 0 ${w} ${h}" class="w-full h-full bg-white rounded-full"><defs>`;
             OCTAL_HOUSES.forEach(h => {
-                const sA = -90 - h.range[0], eA = -90 - h.range[1];
-                const sR = toRad(sA), eR = toRad(eA);
-                const x1=cx+labelR*Math.cos(sR), y1=cy+labelR*Math.sin(sR), x2=cx+labelR*Math.cos(eR), y2=cy+labelR*Math.sin(eR);
+                const sR = toRad(-90-h.range[0]), eR = toRad(-90-h.range[1]), x1=cx+labelR*Math.cos(sR), y1=cy+labelR*Math.sin(sR), x2=cx+labelR*Math.cos(eR), y2=cy+labelR*Math.sin(eR);
                 const isTop = [2,3,11,12].includes(h.id);
-                svg += isTop ? `<path id="arc-${h.id}" d="M ${x2} ${y2} A ${labelR} ${labelR} 0 0 1 ${x1} ${y1}" fill="none"/>` : `<path id="arc-${h.id}" d="M ${x1} ${y1} A ${labelR} ${labelR} 0 0 0 ${x2} ${y2}" fill="none"/>`;
+                svg += `<path id="arc-${h.id}" d="M ${isTop ? x2 : x1} ${isTop ? y2 : y1} A ${labelR} ${labelR} 0 0 ${isTop ? 1 : 0} ${isTop ? x1 : x2} ${isTop ? y1 : y2}" fill="none"/>`;
             });
             svg += `</defs>`;
-
-            // Draw House Sectors
             OCTAL_HOUSES.forEach(h => {
-                const sA = -90 - h.range[0], eA = -90 - h.range[1];
-                const sR = toRad(sA), eR = toRad(eA);
-                const x1=cx+r*Math.cos(sR), y1=cy+r*Math.sin(sR), x2=cx+r*Math.cos(eR), y2=cy+r*Math.sin(eR);
-                const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 0 ${x2} ${y2} Z`;
-                svg += `<path d="${d}" fill="${h.color}" stroke="white" stroke-width="2"/>`;
-                const isTop = [2,3,11,12].includes(h.id);
-                svg += `<text class="curved-label" fill="${h.textColor}" dy="${isTop ? -5 : 12}" font-weight="bold"><textPath href="#arc-${h.id}" startOffset="50%" text-anchor="middle">${h.label} (${h.id})</textPath></text>`;
+                const sR = toRad(-90-h.range[0]), eR = toRad(-90-h.range[1]), x1=cx+r*Math.cos(sR), y1=cy+r*Math.sin(sR), x2=cx+r*Math.cos(eR), y2=cy+r*Math.sin(eR);
+                svg += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 0 ${x2} ${y2} Z" fill="${h.color}" stroke="white" stroke-width="2"/><text class="curved-label" fill="${h.textColor}" dy="${[2,3,11,12].includes(h.id)?-5:12}" font-weight="bold"><textPath href="#arc-${h.id}" startOffset="50%" text-anchor="middle">${h.label} (${h.id})</textPath></text>`;
             });
-
-            // Draw Cardinal Lines
-            const cards = [{name:'E',a:0,ro:0,c:"#ef4444"},{name:'N',a:90,ro:3,c:"#3b82f6"},{name:'W',a:180,ro:6,c:"#10b981"},{name:'S',a:270,ro:9,c:"#f59e0b"}];
-            cards.forEach(c => {
-                const rad = toRad(-90-c.a);
-                const lx=cx+r*Math.cos(rad), ly=cy+r*Math.sin(rad);
-                svg += `<line x1="${cx}" y1="${cy}" x2="${lx}" y2="${ly}" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/>`;
-                const ld = r+45, tx=cx+ld*Math.cos(rad), ty=cy+ld*Math.sin(rad);
-                const rashi = normalizeRashi(lagna.rashi + c.ro);
-                const degStr = dm(lagna.deg % 30);
-                svg += `<g transform="translate(${tx},${ty})"><text y="-8" class="cardinal-label" text-anchor="middle" fill="${c.c}">${c.name}</text><text y="5" class="cardinal-sub" text-anchor="middle">Rashi ${rashi}</text><text y="15" class="cardinal-sub" text-anchor="middle" font-family="monospace">${degStr}</text></g>`;
+            [{n:'E',a:0,r:0,c:"#ef4444"},{n:'N',a:90,r:3,c:"#3b82f6"},{n:'W',a:180,r:6,c:"#10b981"},{n:'S',a:270,r:9,c:"#f59e0b"}].forEach(c => {
+                const rad = toRad(-90-c.a), lx=cx+r*Math.cos(rad), ly=cy+r*Math.sin(rad), tx=cx+(r+45)*Math.cos(rad), ty=cy+(r+45)*Math.sin(rad);
+                svg += `<line x1="${cx}" y1="${cy}" x2="${lx}" y2="${ly}" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/><g transform="translate(${tx},${ty})"><text y="-8" class="cardinal-label" text-anchor="middle" fill="${c.c}">${c.n}</text><text y="5" class="cardinal-sub" text-anchor="middle">Rashi ${normalizeRashi(lagna.rashi + c.r)}</text><text y="15" class="cardinal-sub" text-anchor="middle" font-family="monospace">${dm(lagna.deg % 30)}</text></g>`;
             });
-
-            // --- LAYERED DRAWING ---
-            // We build strings for each layer to ensure correct z-index order (Painter's Algorithm)
-            // Order: Lines (Bottom) -> Dots (Middle) -> Text (Top)
-            
-            let linesSvg = "";
-            let dotsSvg = "";
-            let textSvg = "";
-
-            planets.forEach((p,i) => {
-                const visRad = toRad(-90 - p.visualDist);
-                const pR = p.radius;
-                const px=cx+pR*Math.cos(visRad), py=cy+pR*Math.sin(visRad);
-                
-                // 1. Radial Line - Updated to be very transparent/invisible
-                linesSvg += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="rgba(0,0,0,0.06)" stroke-width="1" />`;
-                
-                // 2. Planet Dot
-                dotsSvg += `<circle cx="${px}" cy="${py}" r="3.5" fill="#1e293b" stroke="white" stroke-width="1.5"/>`;
-                
-                // 3. Planet Label
-                const labelOffset = 10;
-                const lDist = pR + labelOffset; 
-                const lx = cx + lDist * Math.cos(visRad);
-                const ly = cy + lDist * Math.sin(visRad);
-                const anchor = "middle"; 
-                
-                // Added font-weight="bold" explicitly
-                textSvg += `<text x="${lx}" y="${ly}" class="planet-label planet-label-glow" text-anchor="${anchor}" dominant-baseline="central" font-weight="bold" style="font-size: 10px;">${p.symbol}</text>`;
+            let lSvg="", dSvg="", tSvg="";
+            planets.forEach(p => {
+                const rad = toRad(-90 - p.visualDist), px=cx+p.radius*Math.cos(rad), py=cy+p.radius*Math.sin(rad), lx=cx+(p.radius+10)*Math.cos(rad), ly=cy+(p.radius+10)*Math.sin(rad);
+                lSvg += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="rgba(0,0,0,0.06)" stroke-width="1" />`;
+                dSvg += `<circle cx="${px}" cy="${py}" r="3.5" fill="#1e293b" stroke="white" stroke-width="1.5"/>`;
+                tSvg += `<text x="${lx}" y="${ly}" class="planet-label planet-label-glow" text-anchor="middle" dominant-baseline="central" font-weight="bold" style="font-size: 10px;">${p.symbol}</text>`;
             });
-
-            // Combine layers
-            svg += linesSvg + dotsSvg + textSvg;
-            
-            svg += `</svg>`;
-            container.innerHTML = svg;
+            container.innerHTML = svg + lSvg + dSvg + tSvg + `</svg>`;
         }
-
-        function dm(d){let m=Math.round((d-Math.floor(d))*60); if(m===60){d++;m=0;} return `${Math.floor(d)}° ${pad(m)}'`;}
-        function dms(d){let m=Math.floor((d-Math.floor(d))*60), s=Math.round(((d-Math.floor(d))*60-m)*60); if(m===60){d++;m=0;} return `${Math.floor(d)}° ${pad(m)}' ${pad(s)}"`;}
-        function pad(n){return n.toString().padStart(2,'0');}
-        function normalize(d){d=d%360;if(d<0)d+=360;return d;}
-        function toRad(d){return d*(Math.PI/180);}
-        function toDeg(r){return r*(180/Math.PI);}
-        function normalizeRashi(n){let r=n%12;return r===0?12:r;}
-
     </script>
 </body>
 </html>
