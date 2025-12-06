@@ -287,7 +287,7 @@
                 <!-- 2. Energy Flow Narrative -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
                     <button onclick="toggleAccordion('acc-energy')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-indigo-400 border border-slate-600"><i class="ph ph-flow-arrow text-xl"></i></div><div><h3 class="font-bold text-white">Energy Flow Narrative</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Planetary Sequence & Story</p></div></div><i id="icon-acc-energy" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-indigo-400 border border-slate-600"><i class="ph ph-flow-arrow text-xl"></i></div><div><h3 class="font-bold text-white">Energy Flow Narrative</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Planetary Sequence & Story <span id="energy-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-energy" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
                     </button>
                     <div id="acc-energy" class="hidden border-t border-slate-100 p-6">
                         <div id="energy-flow-container" class="border-b border-slate-100 pb-6 mb-6"></div>
@@ -668,9 +668,14 @@
             const birthDate = new Date(vals[2], vals[1], vals[0], hour, vals[4]);
             
             const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value);
-            const name = document.getElementById('name-input').value || "Unknown", loc = document.getElementById('location-input').value || "Unknown Location";
-            const detailStr = `(${name} @ ${formatDateMonthTime(birthDate).replace('@','@')} @ ${loc})`;
-            ['octal-map-details','psycho-details','speed-details','long-cycle-details','monthly-details','daily-details'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = detailStr; });
+            const name = (document.getElementById('name-input').value || "Unknown").toUpperCase();
+            const loc = document.getElementById('location-input').value || "Unknown Location";
+            
+            const datePart = `${pad(birthDate.getDate())} ${birthDate.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${birthDate.getFullYear()}`;
+            const timePart = birthDate.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+            const detailStr = `(${name} @ ${datePart} @ ${timePart} @ ${loc})`;
+
+            ['octal-map-details','psycho-details','energy-details','speed-details','long-cycle-details','monthly-details','daily-details'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = detailStr; });
 
             const daysSinceJ2000 = (birthDate - new Date('2000-01-01T12:00:00Z')) / 86400000;
             const T = daysSinceJ2000 / 36525.0, lahiriAyanamsa = 23.858832 + (1.396042 * T);
