@@ -91,9 +91,10 @@
 </head>
 <body class="bg-slate-100 min-h-screen font-sans text-slate-800 p-4 md:p-8">
 
-    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="max-w-6xl mx-auto flex flex-col gap-6">
         
-        <div class="lg:col-span-12 bg-indigo-900 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between">
+        <!-- Header -->
+        <div class="bg-indigo-900 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between w-full">
             <div class="flex items-center gap-3">
                 <i class="ph ph-star-four text-4xl text-yellow-400"></i>
                 <div>
@@ -105,77 +106,19 @@
                 </div>
         </div>
 
-        <div class="lg:col-span-4 space-y-6">
-            
-            <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200">
-                <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
-                    <i class="ph ph-sliders-horizontal"></i> Input Details
-                </h2>
+        <!-- Input Section (Full Row) -->
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 w-full">
+            <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <i class="ph ph-sliders-horizontal"></i> Input Details
+            </h2>
 
-                <div class="space-y-5">
-                    
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Column 1: Identity & Location -->
+                <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name</label>
                         <input type="text" id="name-input" placeholder="Enter Name" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 font-medium">
-                    </div>
-
-                    <div class="space-y-3">
-                        
-                        <!-- Row 1: Date Inputs -->
-                        <div class="flex items-end gap-2 w-full">
-                            <!-- Day -->
-                            <div class="flex flex-col w-[25%]">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span>
-                                <div class="relative w-full">
-                                    <select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                                </div>
-                            </div>
-                            
-                            <!-- Month -->
-                            <div class="flex flex-col w-[35%]">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span>
-                                <div class="relative w-full">
-                                    <select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                                </div>
-                            </div>
-
-                            <!-- Year with Datalist -->
-                            <div class="flex flex-col w-[40%]">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span>
-                                <div class="relative w-full">
-                                    <input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY">
-                                    <datalist id="year-options"></datalist>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Row 2: Time Inputs -->
-                        <div class="flex items-end gap-2 mt-2">
-                            <!-- Hour -->
-                            <div class="flex flex-col w-20">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span>
-                                <div class="relative w-full">
-                                    <select id="hour-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                                </div>
-                            </div>
-                            
-                            <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
-
-                            <!-- Minute -->
-                            <div class="flex flex-col w-20">
-                                <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span>
-                                <div class="relative w-full">
-                                    <select id="minute-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
-                                </div>
-                            </div>
-
-                            <!-- AM/PM Toggle -->
-                            <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
-                                <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
-                                <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
-                            </div>
-                            <input type="hidden" id="ampm-value" value="AM">
-                        </div>
                     </div>
 
                     <div class="relative w-full">
@@ -188,8 +131,72 @@
                         </div>
                         <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list"></ul>
                     </div>
+                </div>
 
-                    <div class="grid grid-cols-2 gap-3">
+                <!-- Column 2: Date & Time -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Date & Time</label>
+                    
+                    <!-- Row 1: Date Inputs -->
+                    <div class="flex items-end gap-2 w-full">
+                        <!-- Day -->
+                        <div class="flex flex-col w-[25%]">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span>
+                            <div class="relative w-full">
+                                <select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
+                            </div>
+                        </div>
+                        
+                        <!-- Month -->
+                        <div class="flex flex-col w-[35%]">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span>
+                            <div class="relative w-full">
+                                <select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
+                            </div>
+                        </div>
+
+                        <!-- Year with Datalist -->
+                        <div class="flex flex-col w-[40%]">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span>
+                            <div class="relative w-full">
+                                <input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY">
+                                <datalist id="year-options"></datalist>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row 2: Time Inputs -->
+                    <div class="flex items-end gap-2 mt-2">
+                        <!-- Hour -->
+                        <div class="flex flex-col w-20">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span>
+                            <div class="relative w-full">
+                                <select id="hour-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
+                            </div>
+                        </div>
+                        
+                        <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
+
+                        <!-- Minute -->
+                        <div class="flex flex-col w-20">
+                            <span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span>
+                            <div class="relative w-full">
+                                <select id="minute-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select>
+                            </div>
+                        </div>
+
+                        <!-- AM/PM Toggle -->
+                        <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
+                            <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
+                            <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
+                        </div>
+                        <input type="hidden" id="ampm-value" value="AM">
+                    </div>
+                </div>
+
+                <!-- Column 3: Action & Coordinates -->
+                <div class="flex flex-col justify-between">
+                    <div class="grid grid-cols-2 gap-3 mb-4">
                         <div class="bg-slate-50 p-2 rounded border border-slate-200">
                             <span class="block text-[10px] font-bold text-slate-400 uppercase">Latitude</span>
                             <span id="lat-display" class="font-mono font-medium text-slate-700">28.6139</span>
@@ -202,13 +209,17 @@
                     <input type="hidden" id="latitude" value="28.6139">
                     <input type="hidden" id="longitude" value="77.2090">
 
-                    <button onclick="calculatePositions()" class="w-full py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-sm shadow-indigo-500/30">Generate Report</button>
+                    <button onclick="calculatePositions()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-sm shadow-indigo-500/30 flex items-center justify-center gap-2">
+                        <i class="ph ph-chart-polar"></i> Generate Report
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="lg:col-span-8 space-y-6">
+        <!-- Result Sections (Vertically Stacked) -->
+        <div class="w-full space-y-6">
             
+            <!-- Geo Map Section (Static/Always Visible) -->
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col items-center">
                 <div class="flex flex-col items-center text-center w-full mb-6">
                     <h3 class="font-serif-title font-bold text-lg md:text-2xl text-slate-800 uppercase tracking-wide">
@@ -223,6 +234,7 @@
                 </div>
             </div>
 
+            <!-- Results Table (Static/Always Visible) -->
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse compact-table" id="results-table">
@@ -242,97 +254,481 @@
                 </div>
             </div>
 
-            <div id="analysis-section" class="hidden bg-white rounded-2xl shadow-md border border-slate-200 p-6">
-                <div class="flex items-center gap-3 mb-6 bg-slate-800 p-4 rounded-xl shadow-sm">
-                    <div class="bg-slate-700 p-2 rounded-lg text-purple-400 border border-slate-600"><i class="ph ph-brain text-2xl"></i></div>
-                    <div>
-                        <h3 class="text-lg font-bold text-white">Psycho-Analysis</h3>
-                        <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Emotional Pattern & Energy Flow <span id="psycho-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
-                    </div>
-                </div>
+            <!-- COLLAPSIBLE RESULTS CONTAINER -->
+            <!-- Hidden initially, shown via JS -->
+            <div id="results-container" class="hidden space-y-4">
 
-                <div class="mb-8">
-                    <p class="text-slate-600 text-sm leading-relaxed mb-6 border-l-4 border-indigo-200 pl-4 bg-slate-50 py-3 rounded-r-lg">
-                        In this system, <strong>TAMAS</strong> houses (3, 5, 6, 8) act as <span class="text-emerald-500 font-semibold">Energy Producers</span>. <strong>RAJAS</strong> houses (2, 9, 11, 12) are <span class="text-orange-600 font-semibold">Action Oriented</span>. The cycle flows from needing support (Tamas) to performing action (Rajas).
-                    </p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="bg-gradient-to-br from-emerald-50 to-white rounded-xl border border-emerald-100 overflow-hidden shadow-sm">
-                            <div class="px-4 py-3 bg-emerald-100/50 border-b border-emerald-100 flex justify-between items-center">
-                                <span class="font-bold text-emerald-800 flex items-center gap-2"><i class="ph ph-battery-charging text-lg"></i> TAMAS (Energy Source)</span>
-                                <span id="tamas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-emerald-600 border border-emerald-100">0 Planets</span>
-                            </div>
-                            <div class="p-4">
-                                <p class="text-xs text-black mb-3 italic">Emotions created, batteries charging, seeking support.</p>
-                                <div id="tamas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div>
+                <!-- 1. Psycho-Analysis -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <button onclick="toggleAccordion('acc-psycho')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-700 p-2 rounded-lg text-purple-400 border border-slate-600"><i class="ph ph-brain text-xl"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">Psycho-Analysis</h3>
+                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Emotional Pattern & Energy Flow <span id="psycho-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
                             </div>
                         </div>
-                        <div class="bg-gradient-to-br from-orange-50 to-white rounded-xl border border-orange-100 overflow-hidden shadow-sm">
-                            <div class="px-4 py-3 bg-orange-100/50 border-b border-orange-100 flex justify-between items-center">
-                                <span class="font-bold text-orange-800 flex items-center gap-2"><i class="ph ph-lightning text-lg"></i> RAJAS (Action Release)</span>
-                                <span id="rajas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-orange-600 border border-orange-100">0 Planets</span>
+                        <i id="icon-acc-psycho" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                    </button>
+                    <div id="acc-psycho" class="hidden border-t border-slate-100 p-6">
+                        <div class="mb-8">
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6 border-l-4 border-indigo-200 pl-4 bg-slate-50 py-3 rounded-r-lg">
+                                In this system, <strong>TAMAS</strong> houses (3, 5, 6, 8) act as <span class="text-emerald-500 font-semibold">Energy Producers</span>. <strong>RAJAS</strong> houses (2, 9, 11, 12) are <span class="text-orange-600 font-semibold">Action Oriented</span>. The cycle flows from needing support (Tamas) to performing action (Rajas).
+                            </p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="bg-gradient-to-br from-emerald-50 to-white rounded-xl border border-emerald-100 overflow-hidden shadow-sm">
+                                    <div class="px-4 py-3 bg-emerald-100/50 border-b border-emerald-100 flex justify-between items-center">
+                                        <span class="font-bold text-emerald-800 flex items-center gap-2"><i class="ph ph-battery-charging text-lg"></i> TAMAS (Energy Source)</span>
+                                        <span id="tamas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-emerald-600 border border-emerald-100">0 Planets</span>
+                                    </div>
+                                    <div class="p-4">
+                                        <p class="text-xs text-black mb-3 italic">Emotions created, batteries charging, seeking support.</p>
+                                        <div id="tamas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div>
+                                    </div>
+                                </div>
+                                <div class="bg-gradient-to-br from-orange-50 to-white rounded-xl border border-orange-100 overflow-hidden shadow-sm">
+                                    <div class="px-4 py-3 bg-orange-100/50 border-b border-orange-100 flex justify-between items-center">
+                                        <span class="font-bold text-orange-800 flex items-center gap-2"><i class="ph ph-lightning text-lg"></i> RAJAS (Action Release)</span>
+                                        <span id="rajas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-orange-600 border border-orange-100">0 Planets</span>
+                                    </div>
+                                    <div class="p-4">
+                                        <p class="text-xs text-black mb-3 italic">Emotions released, batteries draining, action taking.</p>
+                                        <div id="rajas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="p-4">
-                                <p class="text-xs text-black mb-3 italic">Emotions released, batteries draining, action taking.</p>
-                                <div id="rajas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div>
+                            <div id="analysis-summary" class="mt-6 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-200"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Energy Flow Narrative -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <button onclick="toggleAccordion('acc-energy')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-700 p-2 rounded-lg text-indigo-400 border border-slate-600"><i class="ph ph-flow-arrow text-xl"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">Energy Flow Narrative</h3>
+                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Planetary Sequence & Story</p>
                             </div>
                         </div>
-                    </div>
-                    <div id="analysis-summary" class="mt-6 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-200"></div>
-                </div>
-
-                <div id="energy-flow-container" class="border-t border-slate-200 mt-8 pt-0">
-                    </div>
-
-                <div class="mt-8">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="bg-indigo-100 p-1.5 rounded text-indigo-600"><i class="ph ph-chat-text text-lg"></i></div>
-                        <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Energy Flow Narrative</h5>
-                    </div>
-                    <div id="energy-narrative-container" class="flex flex-wrap gap-2 text-sm"></div>
-                </div>
-
-                <div class="border-t border-slate-100 pt-8 mt-8">
-                    <div class="flex items-center gap-3 mb-6 bg-slate-800 p-4 rounded-xl shadow-sm">
-                        <div class="bg-slate-700 p-2 rounded-lg text-teal-400 border border-slate-600"><i class="ph ph-speedometer text-2xl"></i></div>
+                        <i id="icon-acc-energy" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                    </button>
+                    <div id="acc-energy" class="hidden border-t border-slate-100 p-6">
+                        <div id="energy-flow-container" class="border-b border-slate-100 pb-6 mb-6"></div>
                         <div>
-                            <h3 class="text-lg font-bold text-white">Energy Support & Speed Analysis</h3>
-                            <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Tamas Supply vs Rajas Demand <span id="speed-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                            <h5 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2"><i class="ph ph-chat-text"></i> Detailed Narrative</h5>
+                            <div id="energy-narrative-container" class="flex flex-wrap gap-2 text-sm"></div>
                         </div>
                     </div>
-                    <div id="energy-support-container" class="flex flex-col gap-6"></div>
                 </div>
 
-                <div class="border-t border-slate-100 pt-8 mt-8">
-                    <div class="flex items-center gap-3 mb-6 bg-slate-800 p-4 rounded-xl shadow-sm">
-                        <div class="bg-slate-700 p-2 rounded-lg text-blue-400 border border-slate-600"><i class="ph ph-clock-counter-clockwise text-2xl"></i></div>
-                        <div>
-                            <h3 class="text-lg font-bold text-white">Past-Present-Future Emotional Rhythmic Pattern</h3>
-                            <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Mars, Jupiter, Saturn Cycles <span id="long-cycle-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                <!-- 3. Energy Support & Speed -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <button onclick="toggleAccordion('acc-speed')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-700 p-2 rounded-lg text-teal-400 border border-slate-600"><i class="ph ph-speedometer text-xl"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">Energy Support & Speed Analysis</h3>
+                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Tamas Supply vs Rajas Demand <span id="speed-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                            </div>
                         </div>
+                        <i id="icon-acc-speed" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                    </button>
+                    <div id="acc-speed" class="hidden border-t border-slate-100 p-6">
+                        <div id="energy-support-container" class="flex flex-col gap-6"></div>
                     </div>
-                    <div id="long-cycle-container" class="grid grid-cols-1 gap-6"></div>
                 </div>
 
-                <div class="border-t border-slate-100 pt-8 mt-8">
-                    <div class="flex items-center gap-3 mb-6 bg-slate-800 p-4 rounded-xl shadow-sm">
-                        <div class="bg-slate-700 p-2 rounded-lg text-amber-400 border border-slate-600"><i class="ph ph-sun text-2xl"></i></div>
-                        <div>
-                            <h3 class="text-lg font-bold text-white">Monthly Emotional Rhythmic Pattern</h3>
-                            <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Annual Solar Transit Schedule <span id="monthly-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                <!-- 4. Past-Present-Future -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <button onclick="toggleAccordion('acc-ppf')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-700 p-2 rounded-lg text-blue-400 border border-slate-600"><i class="ph ph-clock-counter-clockwise text-xl"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">Past-Present-Future Cycles</h3>
+                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Mars, Jupiter, Saturn <span id="long-cycle-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                            </div>
                         </div>
+                        <i id="icon-acc-ppf" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                    </button>
+                    <div id="acc-ppf" class="hidden border-t border-slate-100 p-6">
+                        <div id="long-cycle-container" class="grid grid-cols-1 gap-6"></div>
                     </div>
-                    <div id="sun-cycle-container" class="space-y-4"></div>
                 </div>
 
-                <div class="border-t border-slate-100 pt-8 mt-8">
-                    <div class="flex items-center gap-3 mb-6 bg-slate-800 p-4 rounded-xl shadow-sm">
-                        <div class="bg-slate-700 p-2 rounded-lg text-slate-300 border border-slate-600"><i class="ph ph-moon text-2xl"></i></div>
-                        <div>
-                            <h3 class="text-lg font-bold text-white">Daily Emotional Rhythmic Pattern</h3>
-                            <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Lunar Transit Schedule <span id="daily-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                <!-- 5. Monthly (Sun) Cycle -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <button onclick="toggleAccordion('acc-sun')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-700 p-2 rounded-lg text-amber-400 border border-slate-600"><i class="ph ph-sun text-xl"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">Monthly Emotional Rhythmic Pattern</h3>
+                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Annual Solar Transit <span id="monthly-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                            </div>
+                        </div>
+                        <i id="icon-acc-sun" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                    </button>
+                    <div id="acc-sun" class="hidden border-t border-slate-100 p-6">
+                        <div id="sun-cycle-container" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <!-- 6. Daily (Moon) Cycle -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <button onclick="toggleAccordion('acc-moon')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-slate-700 p-2 rounded-lg text-slate-300 border border-slate-600"><i class="ph ph-moon text-xl"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">Daily Emotional Rhythmic Pattern</h3>
+                                <p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Lunar Transit <span id="daily-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p>
+                            </div>
+                        </div>
+                        <i id="icon-acc-moon" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                    </button>
+                    <div id="acc-moon" class="hidden border-t border-slate-100 p-6">
+                        <div id="moon-cycle-container" class="space-y-4"></div>
+                    </div>
+                </div>
+
+                <!-- 7. Archetype Mastery Guide -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+                    <button onclick="toggleAccordion('acc-guide')" class="w-full flex items-center justify-between p-4 bg-indigo-900 hover:bg-indigo-800 transition-colors text-left group">
+                        <div class="flex items-center gap-4">
+                            <div class="bg-indigo-800 text-yellow-400 border border-indigo-700 p-2 rounded-lg"><i class="ph ph-book-open-text text-xl"></i></div>
+                            <div>
+                                <h3 class="font-bold text-white">Archetype Mastery Guide</h3>
+                                <p class="text-xs text-indigo-200 uppercase tracking-wide font-semibold">Deep Dive into Emotional Energy</p>
+                            </div>
+                        </div>
+                        <i id="icon-acc-guide" class="ph ph-caret-down text-indigo-300 group-hover:text-white transition-transform duration-300 text-lg"></i>
+                    </button>
+                    <div id="acc-guide" class="hidden border-t border-slate-100 p-6 bg-slate-50/50">
+                         <!-- Content for Guide -->
+                         <div class="space-y-12">
+
+                            <!-- SECTION 1: SEEKER -> CREATOR -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
+                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-binoculars"></i> SEEKER OF TRUTH</span>
+                                        <i class="ph ph-arrow-right text-slate-300"></i>
+                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-paint-brush-broad"></i> CREATOR</span>
+                                    </h4>
+                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">From Chaos to Creation: Turning Overthinking into Something Real</p>
+                                </div>
+                                
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
+                                        <p>When your mind is full of thoughts, "what ifs," worries, and ideas, it often feels like a storm. You are not lazy or broken – you are overloaded.</p>
+                                        <p class="mt-2">Inside you, there are two important parts:</p>
+                                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                                            <li><strong>The Seeker:</strong> The part of you that observes, feels deeply, and tries to understand life.</li>
+                                            <li><strong>The Creator:</strong> The part of you that turns ideas and emotions into real, physical things.</li>
+                                        </ul>
+                                        <p class="mt-2 font-medium text-indigo-700">You suffer most when the Seeker is active, but the Creator is silent.</p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-eye"></i> The Seeker: The Inner Student</h5>
+                                            <p class="mb-2">The Seeker notices small details, thinks deeply about why things happen, replays conversations, and feels emotions intensely. You may ask:</p>
+                                            <ul class="list-disc pl-5 italic text-emerald-700/80">
+                                                <li>“Why do I always end up in this situation?”</li>
+                                                <li>“Why do people behave like this?”</li>
+                                                <li>“Why do I feel this way?”</li>
+                                            </ul>
+                                            <p class="mt-3 text-xs font-bold text-emerald-800">This is the Seeker at work.</p>
+                                        </div>
+                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
+                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-hammer"></i> The Creator: Giving Thoughts a Home</h5>
+                                            <p class="mb-2">The Creator says: “Enough thinking. Let’s build something.” It turns pain into projects and ideas into reality.</p>
+                                            <p class="mb-2">This looks like writing insights, building a product, designing a routine, or making something physical.</p>
+                                            <p class="mt-3 text-xs font-bold text-orange-800 italic">The Creator doesn’t ask, “What if?” The Creator says, “What can I make with what I have right now?”</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500">
+                                        <h5 class="font-bold text-slate-900 mb-2">Example Story: The Silent Observer</h5>
+                                        <p class="italic text-slate-600 mb-4">Imagine Arjun. He spends nights replaying arguments, feeling like a CCTV camera—recording everything but doing nothing. He is the Seeker.</p>
+                                        <p>One day, instead of overthinking, he opens a notebook. He writes down lessons from his failed relationships. Over weeks, these notes turn into a "Red Flag Checklist" he shares with friends. By turning his pain into a tangible tool, he stops overthinking and starts building.</p>
+                                        <p class="font-bold text-indigo-700 mt-2">This is how overthinking becomes a tool instead of torture.</p>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Seeker to Creator</h5>
+                                        <div class="space-y-4">
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Collect Your “Raw Data”</strong>
+                                                    <p>Write down major painful events, repeat patterns, and recurring thoughts from the last 2-5 years. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> Feeling overwhelmed. <strong class="text-emerald-600">Solution:</strong> Start with just one situation.</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Extract Lessons</strong>
+                                                    <p>Ask: What did this teach me about myself and others? Focus on "Next time, I will..." rather than "I should have...".</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Decide What to Create</strong>
+                                                    <p>Build something from these lessons: A journal template, a checklist, a blog, a routine. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> “Who will care?” <strong class="text-emerald-600">Solution:</strong> You are building for clarity, not fame.</span></p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Use Creation as Your Anchor</strong>
+                                                    <p>Whenever your mind becomes noisy, return to your project. Add one page, one idea. Let your hands move instead of your thoughts running wild.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SECTION 2: COMPANION -> SELLER -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
+                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-hand-heart"></i> COMPANION</span>
+                                        <i class="ph ph-arrow-right text-slate-300"></i>
+                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-storefront"></i> SELLER</span>
+                                    </h4>
+                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Art of Connection: Healing Yourself by Supporting Others</p>
+                                </div>
+                                
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
+                                        <p>Some people heal best when they focus on others. Inside you are two aspects:</p>
+                                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                                            <li><strong>The Companion (Nurturer):</strong> Wants to comfort, listen, and be there for others.</li>
+                                            <li><strong>The Seller (Charmer):</strong> Naturally influences, inspires, and uplifts people through words and presence.</li>
+                                        </ul>
+                                        <p class="mt-2 font-medium text-indigo-700">You suffer when you try to be invisible or shut down your ability to connect.</p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-heart"></i> The Companion</h5>
+                                            <p class="mb-2">Listens without judgment and feels others' pain. You are the one friends call when hurting. But if you stop here, you may feel drained and unseen, like an "Invisible Healer."</p>
+                                        </div>
+                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
+                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> The Seller (Leader)</h5>
+                                            <p class="mb-2">This is not commercial sales. It means you "sell" hope, comfort, and clarity. Your tools are your voice, presence, and intentional dressing. You transform complex feelings into soothing communication.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100">
+                                        <h5 class="font-bold text-indigo-900 mb-2">The King of Hearts: Leading with Love</h5>
+                                        <p>When Companion and Seller merge, people trust you deeply. You become a natural leader not by force, but by heart. This shows up as a mentor, community builder, or trusted guide.</p>
+                                        <p class="mt-2 font-bold text-rose-700"><i class="ph ph-warning"></i> Responsibility: Never manipulate. Use your influence only for honesty and well-being.</p>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: From Nurturer to Leader</h5>
+                                        <div class="space-y-4">
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Acknowledge Your Power</strong>
+                                                    <p>Notice who comes to you for help and how they feel better around you. Don't dismiss this; it is a strength.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Set Emotional Boundaries</strong>
+                                                    <p>Learn to say, "I care, but I need rest." A burned-out Companion helps no one.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Use Appearance Intentionally</strong>
+                                                    <p>Dress to communicate safety and trust. You are dressing to support your role as a calm, reliable presence.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Start Sharing Perspective</strong>
+                                                    <p>Don't just listen; share gentle insights. "Maybe you need rest, not effort." Speaking up increases your positive impact.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SECTION 3: CHALLENGER -> WARRIOR -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
+                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-fist"></i> CHALLENGER</span>
+                                        <i class="ph ph-arrow-right text-slate-300"></i>
+                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-sword"></i> WARRIOR</span>
+                                    </h4>
+                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Fire of Transformation: From Victim to Victor</p>
+                                </div>
+                                
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
+                                        <p>Some people cannot stay calm when things are wrong. Inside you are two forces:</p>
+                                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                                            <li><strong>The Challenger (Catalyst):</strong> Points out what is wrong and refuses to tolerate injustice.</li>
+                                            <li><strong>The Warrior (Protector):</strong> Takes strong action to fix or defend.</li>
+                                        </ul>
+                                        <p class="mt-2 font-medium text-indigo-700">You suffer when you see what is wrong but do nothing, turning that fire inward into frustration.</p>
+                                    </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-warning-circle"></i> The Challenger</h5>
+                                            <p class="mb-2">Notices unfairness, lies, and inefficiency. You aren't "negative"; you are sensitive to standards. But without action, you become the "Silent Volcano"—always irritated but powerless.</p>
+                                        </div>
+                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
+                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-shield-check"></i> The Warrior</h5>
+                                            <p class="mb-2">Moves when others freeze. Protects people and principles. Driven by "Do or Die" energy. You are here to be brave when others are scared, taking bold decisions.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-rose-500">
+                                        <h5 class="font-bold text-slate-900 mb-2">The Synergy: Turning Fire into Purpose</h5>
+                                        <p>When you feel angry or restless, it means your inner Challenger sees a problem, but your Warrior is locked up. The cure is not to suppress anger but to direct it.</p>
+                                        <p class="font-bold text-slate-800 mt-2">Ask: "What exactly is wrong? And what is within my power to fix?"</p>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Constructive Power</h5>
+                                        <div class="space-y-4">
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Name Your Anger</strong>
+                                                    <p>Write down what irritates you. See anger as a signal of your values, not a sin.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Control What You Can</strong>
+                                                    <p>Separate what you can change from what you cannot. Focus on your own boundaries and standards.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Choose a Battle Worth Fighting</strong>
+                                                    <p>Don't waste energy on petty arguments. Direct it toward protecting the vulnerable or fixing a broken system.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Train Discipline</strong>
+                                                    <p>Physical training channels aggression. The Warrior is about controlled power, not exploding rage.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- SECTION 4: DEATH -> STRATEGIST -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-2xl font-bold text-slate-800 flex items-center gap-3 font-serif-title">
+                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-recycle"></i> THOUGHTS OF DEATH</span>
+                                        <i class="ph ph-arrow-right text-slate-300"></i>
+                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-strategy"></i> STRATEGIST</span>
+                                    </h4>
+                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Architect of the Path: The Strategist Within You</p>
+                                </div>
+                                
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
+                                        <p>Even with all other roles active, you may feel stuck without a clear path. This is where the Strategist comes in.</p>
+                                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                                            <li><strong>The Strategist:</strong> Steps back, sees patterns, and designs the shortest route to the goal.</li>
+                                            <li><strong>The Decoder:</strong> Asks "What is actually happening?" and focuses on results, not just intentions.</li>
+                                        </ul>
+                                    </div>
+
+                                    <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+                                        <h5 class="font-bold text-slate-900 mb-2">Example Story: The Stuck Hard Worker</h5>
+                                        <p class="italic text-slate-600 mb-4">Sanjay works hard but sees little progress. He realizes he keeps repeating the same patterns: improving skills in a low-growth environment, or abandoning methods too soon.</p>
+                                        <p class="font-bold text-indigo-700">He realizes: The problem is not his effort. The problem is his strategy.</p>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="font-bold text-slate-900 mb-2">The Requirement: A Clear Goal</h5>
+                                        <p>The Strategist cannot work with vague feelings like "I want peace." It needs a physical target: "I want to earn X in Y years" or "I want to publish a book in 12 months." Only then can it design a path.</p>
+                                    </div>
+
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Activating Your Strategist</h5>
+                                        <div class="space-y-4">
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Define One Main Goal</strong>
+                                                    <p>Choose one tangible result for the next 6-18 months. Don't scatter your energy.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Study Current Reality</strong>
+                                                    <p>Be factual, not emotional. Look at your skills, resources, and environment. Identify the gaps like an engineer inspecting a machine.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Break it Down & Look for Leverage</strong>
+                                                    <p>What is the shortest path? Where can you get maximum result from minimum action? Smart does not mean lazy; it means wise.</p>
+                                                </div>
+                                            </div>
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
+                                                <div>
+                                                    <strong class="block text-slate-800">Review and Adjust</strong>
+                                                    <p>Treat your life like a series of experiments. Ask "What worked?" periodically. Data, not drama.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- FINAL SUMMARY SECTION -->
+                            <div class="bg-indigo-900 text-white rounded-2xl p-8 text-center shadow-lg">
+                                <h4 class="text-2xl font-bold font-serif-title mb-4">Putting It All Together</h4>
+                                <p class="text-indigo-200 text-sm max-w-2xl mx-auto mb-6">
+                                    You do not need to force yourself into only one role. Think of them as tools in your inner toolbox. You are a Seeker learning, a Creator building, a Companion healing, and a Strategist designing your path.
+                                </p>
+                                <div class="inline-block bg-white/10 border border-white/20 rounded-xl p-4 text-sm font-medium">
+                                    <p class="mb-2">Your next move is simple:</p>
+                                    <ol class="list-decimal list-inside text-left space-y-1 text-indigo-100">
+                                        <li>Pick one area of life that feels stuck.</li>
+                                        <li>Identify which inner role needs to step forward.</li>
+                                        <li>Take one small, concrete action today.</li>
+                                    </ol>
+                                </div>
+                                <p class="mt-6 text-xs text-indigo-300 uppercase tracking-widest font-bold">Clarity comes when thought, emotion, and action move together.</p>
+                            </div>
+
                         </div>
                     </div>
-                    <div id="moon-cycle-container" class="space-y-4"></div>
                 </div>
 
             </div>
@@ -341,6 +737,22 @@
     </div>
 
     <script>
+        // ... (Previous JS Code) ...
+
+        // --- NEW: TOGGLE FUNCTION FOR ACCORDIONS ---
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const icon = document.getElementById('icon-' + id);
+            
+            content.classList.toggle('hidden');
+            
+            if (content.classList.contains('hidden')) {
+                icon.style.transform = 'rotate(0deg)';
+            } else {
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
         // --- CONSTANTS ---
         const BODIES = [
             { name: 'Sun', type: 'Planet', icon: 'ph-sun', symbol: 'Su' },
@@ -639,9 +1051,12 @@
 
             // Visuals
             drawOctalChart(lagnaData, planetData);
+            // UPDATED: Reveal the results container which holds the accordions
+            document.getElementById('results-container').classList.remove('hidden');
+            
             renderAnalysis(rajasPlanets, tamasPlanets);
             renderEnergyFlow(planetHouseMap);
-            renderEnergyNarrative(planetHouseMap); // Restored function call
+            renderEnergyNarrative(planetHouseMap); 
             renderSupportSpeedAnalysis(housePlanetList);
 
             // --- CYCLIC CALCULATIONS (Updated to use Natal Ascendant and Real Time) ---
@@ -677,7 +1092,9 @@
         }
 
         function renderAnalysis(rajas, tamas) {
-            document.getElementById('analysis-section').classList.remove('hidden');
+            // NO LONGER UNHIDING THE OLD BIG SECTION
+            // document.getElementById('analysis-section').classList.remove('hidden');
+            
             // UPDATED: Colors for Rajas (Orange) and Tamas (Emerald)
             document.getElementById('rajas-list').innerHTML = rajas.length ? rajas.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-orange-200 text-orange-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-orange-300 italic">No planets</span>`;
             document.getElementById('rajas-count').textContent = `${rajas.length} Planet${rajas.length !== 1 ? 's' : ''}`;
@@ -698,7 +1115,8 @@
             const container = document.getElementById('energy-flow-container');
             
             // 1. General Layout & Container Styling
-            container.className = "w-full border-t border-slate-200 p-4 bg-white mt-8";
+            // container.className = "w-full border-t border-slate-200 p-4 bg-white mt-8";
+            // Removed extra styling as it's now inside an accordion
             
             let html = `
                 <h3 class="text-sm font-bold text-slate-800 mb-3">Planetary Energy Flow Sequence</h3>
