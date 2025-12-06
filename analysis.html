@@ -103,6 +103,34 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
         }
 
+        /* --- RESPONSIVE MEDIA QUERIES (ADDED) --- */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 0 15px; /* Reduce padding on mobile */
+            }
+            
+            /* Hide the brand text on mobile, keep only icon */
+            .nav-brand span {
+                display: none;
+            }
+            
+            /* Make the brand icon slightly larger for better tap target */
+            .nav-brand i {
+                font-size: 1.5em;
+            }
+
+            /* Adjust buttons to fit on small screens */
+            .nav-btn {
+                padding: 6px 10px; /* Smaller padding */
+                font-size: 0.75em; /* Slightly smaller text */
+            }
+            
+            /* Ensure gap is managed */
+            .nav-container {
+                gap: 5px;
+            }
+        }
+
         /* --- EXISTING STYLES (Adjusted for theme) --- */
         .suggestions-list::-webkit-scrollbar { width: 8px; }
         .suggestions-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
