@@ -3,800 +3,1017 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geo-Time Chart Calculator</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    <script src="https://cdn.jsdelivr.net/npm/astronomy-engine@2.1.19/astronomy.browser.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <title>The Architecture of Self: Comprehensive Guide</title>
+    <!-- Import Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Import FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        .suggestions-list::-webkit-scrollbar { width: 8px; }
-        .suggestions-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
-        .suggestions-list::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .suggestions-list::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-        .loader { border-top-color: #3498db; animation: spinner 1.5s linear infinite; -webkit-animation: spinner 1.5s linear infinite; }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .asc-row { background-color: #eff6ff; border-left: 3px solid #3b82f6; }
-        .node-row { color: #64748b; font-style: italic; }
-        .ampm-btn.active { background-color: #4f46e5; color: white; border-color: #4f46e5; }
-        .input-center { text-align: center; text-align-last: center; -moz-text-align-last: center; }
-        .font-serif-title { font-family: 'Playfair Display', serif; }
-        .chart-text { font-family: sans-serif; font-size: 10px; fill: #1e293b; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
-        .curved-label { font-family: sans-serif; font-size: 9px; font-weight: 800; fill: #334155; letter-spacing: 0.5px; text-transform: uppercase; }
-        .planet-label { font-size: 11px; font-weight: bold; fill: #0f172a; cursor: default; pointer-events: none; }
-        .planet-label-glow { text-shadow: 0 0 4px #fff, 0 0 4px #fff, 0 0 4px #fff; }
-        .cardinal-label { font-size: 14px; font-weight: 800; fill: #1e293b; }
-        .cardinal-sub { font-size: 9px; font-weight: 600; fill: #64748b; }
-        .house-number { font-size: 14px; font-weight: bold; fill: #334155; opacity: 0.3; }
-        .flow-node { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .flow-node:hover { transform: translateY(-4px) scale(1.05); }
-        .narrative-chip { transition: all 0.2s ease; }
-        .narrative-chip:hover { transform: scale(1.02); box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1); }
-        .timeline-line { position: absolute; left: 24px; top: 30px; bottom: 0; width: 2px; background: #e2e8f0; z-index: 0; }
-        .timeline-item { position: relative; z-index: 1; padding-left: 60px; padding-bottom: 24px; }
-        .timeline-dot { position: absolute; left: 19px; top: 2px; width: 12px; height: 12px; border-radius: 50%; background: #cbd5e1; border: 2px solid #fff; box-shadow: 0 0 0 1px #cbd5e1; z-index: 2; }
-        .timeline-item.active .timeline-dot { background: #4f46e5; box-shadow: 0 0 0 4px #e0e7ff; }
-        .planet-flow-scroll::-webkit-scrollbar { height: 4px; }
-        .planet-flow-scroll::-webkit-scrollbar-track { background: transparent; }
-        .planet-flow-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .compact-table th { padding: 10px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: #ffffff; background-color: #1e293b; border-bottom: 1px solid #334155; font-weight: 700; }
-        .compact-table td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #f1f5f9; white-space: nowrap; }
-        .compact-table tr:hover td { background-color: #f8fafc; }
-        .compact-table tr:last-child td { border-bottom: none; }
+        :root {
+            /* Color Palette */
+            --primary: #2c3e50;       /* Dark Blue/Grey */
+            --secondary: #34495e;     /* Lighter Blue/Grey */
+            --accent-creator: #e67e22; /* Orange for Creation */
+            --accent-seller: #9b59b6;  /* Purple for Influence/Royalty */
+            --accent-warrior: #c0392b; /* Red for Action */
+            --accent-strategist: #27ae60; /* Green for Growth/Survival */
+            --accent-analysis: #2980b9; /* Blue for Analysis */
+            --bg-color: #f4f6f8;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-light: #555555;
+            --nav-height: 70px;
+        }
+
+        body {
+            font-family: 'Merriweather', serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            padding-top: var(--nav-height); /* Space for fixed nav */
+        }
+
+        h1, h2, h3, h4, h5 {
+            font-family: 'Montserrat', sans-serif;
+            margin-top: 0;
+            color: var(--primary);
+        }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--nav-height);
+            background: #fff;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between; /* Space between Brand and Nav */
+            padding: 0 30px;
+            box-sizing: border-box;
+        }
+
+        .nav-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.2em;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            flex-shrink: 0; /* Prevent brand from shrinking */
+        }
+
+        .nav-brand i {
+            color: var(--accent-creator); 
+            /* Subtle gradient icon in nav */
+            background: -webkit-linear-gradient(45deg, var(--accent-creator), var(--accent-seller));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-container {
+            display: flex;
+            gap: 5px; /* Reduced gap for better mobile fit */
+            overflow-x: auto;
+            align-items: center;
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+            flex: 1; /* Allow container to take up space */
+            justify-content: flex-end; /* Align items to the right */
+            min-width: 0; /* Critical for flexbox scrolling to work properly */
+            padding-left: 10px; /* Space from brand */
+        }
+        
+        .nav-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            padding: 8px 16px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+            font-size: 0.85em;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            text-decoration: none; /* Added for anchor tags */
+            flex-shrink: 0;
+        }
+
+        .nav-btn:hover { background-color: #f0f0f0; color: var(--primary); }
+        .nav-btn.active { color: white; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+
+        /* Nav Button Specific Colors */
+        .nav-btn[data-target="overview"].active { background-color: var(--primary); }
+        .nav-btn[data-target="creator"].active { background-color: var(--accent-creator); }
+        .nav-btn[data-target="seller"].active { background-color: var(--accent-seller); }
+        .nav-btn[data-target="warrior"].active { background-color: var(--accent-warrior); }
+        .nav-btn[data-target="strategist"].active { background-color: var(--accent-strategist); }
+        
+        /* New Analysis Button Style */
+        .nav-btn.analysis-link {
+            border: 1px solid var(--accent-analysis);
+            color: var(--accent-analysis);
+            margin-left: 5px;
+        }
+        
+        .nav-btn.analysis-link:hover {
+            background-color: var(--accent-analysis);
+            color: white;
+        }
+
+        .nav-btn[data-target="creator"] i { color: var(--accent-creator); }
+        .nav-btn[data-target="seller"] i { color: var(--accent-seller); }
+        .nav-btn[data-target="warrior"] i { color: var(--accent-warrior); }
+        .nav-btn[data-target="strategist"] i { color: var(--accent-strategist); }
+        .nav-btn.active i { color: white; }
+
+
+        /* --- LAYOUT --- */
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+            min-height: 80vh;
+        }
+
+        .tab-content { display: none; animation: fadeIn 0.6s cubic-bezier(0.22, 1, 0.36, 1); }
+        .tab-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- REDESIGNED HERO SECTION --- */
+        .hero {
+            /* Removed the dark box background to make title stand out on page bg */
+            background: transparent;
+            color: var(--primary);
+            padding: 40px 0 60px 0;
+            text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .hero-title {
+            font-size: 4em; 
+            font-weight: 800;
+            margin-bottom: 15px;
+            line-height: 1.1;
+            color: var(--primary);
+            text-shadow: 2px 2px 0px rgba(255,255,255,1);
+            position: relative;
+            display: inline-block;
+        }
+
+        /* Decorative Gradient Line */
+        .hero-title::after {
+            content: '';
+            display: block;
+            width: 60%;
+            height: 6px;
+            margin: 15px auto 0;
+            border-radius: 3px;
+            /* Gradient representing the 4 Archetypes */
+            background: linear-gradient(90deg, 
+                var(--accent-creator) 0%, 
+                var(--accent-seller) 33%, 
+                var(--accent-warrior) 66%, 
+                var(--accent-strategist) 100%
+            );
+        }
+
+        .hero-subtitle {
+            font-size: 1.4em;
+            color: var(--text-light);
+            font-family: 'Merriweather', serif;
+            font-weight: 300;
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* --- CHAPTER HEADER --- */
+        .chapter-header {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border-top: 6px solid transparent; /* Changed from bottom to top for tab feel */
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Subtle background icon */
+        .chapter-header::before {
+            content: '';
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 15rem;
+            opacity: 0.04;
+            transform: rotate(15deg);
+            pointer-events: none;
+        }
+        
+        #creator .chapter-header::before { content: '\f0eb'; color: var(--accent-creator); }
+        #seller .chapter-header::before { content: '\f004'; color: var(--accent-seller); }
+        #warrior .chapter-header::before { content: '\f06d'; color: var(--accent-warrior); }
+        #strategist .chapter-header::before { content: '\f441'; color: var(--accent-strategist); }
+
+        .chapter-header h2 { font-size: 2.5em; margin-bottom: 10px; color: var(--primary); position: relative; }
+        .chapter-header span { text-transform: uppercase; letter-spacing: 3px; font-weight: 700; font-size: 0.9em; display: block; margin-bottom: 15px; opacity: 0.7; }
+        
+        .big-icon {
+            font-size: 4em;
+            margin-bottom: 25px;
+            display: inline-flex;
+            width: 100px; 
+            height: 100px;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+            position: relative;
+        }
+
+        /* Specific Header Colors */
+        #creator .chapter-header { border-color: var(--accent-creator); }
+        #creator .big-icon { color: var(--accent-creator); }
+        #seller .chapter-header { border-color: var(--accent-seller); }
+        #seller .big-icon { color: var(--accent-seller); }
+        #warrior .chapter-header { border-color: var(--accent-warrior); }
+        #warrior .big-icon { color: var(--accent-warrior); }
+        #strategist .chapter-header { border-color: var(--accent-strategist); }
+        #strategist .big-icon { color: var(--accent-strategist); }
+
+        /* --- CONTENT BLOCKS --- */
+        .content-block {
+            background: white;
+            padding: 50px;
+            border-radius: 12px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border-left: 4px solid transparent;
+            transition: transform 0.2s;
+        }
+        
+        .content-block:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+
+        /* Content block accents */
+        #creator .content-block { border-left-color: rgba(230, 126, 34, 0.3); }
+        #seller .content-block { border-left-color: rgba(155, 89, 182, 0.3); }
+        #warrior .content-block { border-left-color: rgba(192, 57, 43, 0.3); }
+        #strategist .content-block { border-left-color: rgba(39, 174, 96, 0.3); }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5em;
+            color: var(--primary);
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+        
+        /* Icons in section titles */
+        .section-title i { opacity: 0.8; }
+
+        /* --- SWOT TABLE --- */
+        .swot-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 10px;
+            margin: 30px 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+        .swot-table th, .swot-table td {
+            border: 1px solid #f0f0f0;
+            padding: 25px;
+            vertical-align: top;
+            width: 50%;
+            border-radius: 8px;
+            background: #fafafa;
+        }
+        
+        .swot-item h5 {
+            margin-bottom: 15px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .swot-item p { font-size: 0.95em; line-height: 1.7; margin: 0; color: #555; }
+        
+        .s-green { color: #27ae60; }
+        .s-red { color: #c0392b; }
+        .s-blue { color: #2980b9; }
+        .s-orange { color: #e67e22; }
+
+        /* --- STORY BOX --- */
+        .story-box {
+            background: #fff;
+            border-left: 5px solid var(--secondary);
+            padding: 30px;
+            margin: 40px 0;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+            border-radius: 0 8px 8px 0;
+        }
+        .story-header {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            color: var(--primary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .story-header::after {
+            content: 'CASE STUDY';
+            font-size: 0.7em;
+            background: #eee;
+            padding: 2px 8px;
+            border-radius: 4px;
+            align-self: center;
+            color: #777;
+        }
+
+        .story-analysis {
+            margin-top: 25px;
+            padding: 20px;
+            border-top: 2px dashed #eee;
+            font-size: 0.95em;
+            background: #f9f9f9;
+            border-radius: 6px;
+        }
+
+        /* --- ROADMAP --- */
+        .roadmap-step {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        /* Connecting line */
+        .roadmap-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 24px;
+            top: 60px;
+            bottom: -40px;
+            width: 2px;
+            background: #eee;
+            z-index: 0;
+        }
+
+        .step-num {
+            background: var(--primary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1.4em;
+            font-family: 'Montserrat', sans-serif;
+            flex-shrink: 0;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            border: 4px solid white;
+        }
+        
+        /* Step colors per section */
+        #creator .step-num { background: var(--accent-creator); box-shadow: 0 5px 15px rgba(230, 126, 34, 0.4); }
+        #seller .step-num { background: var(--accent-seller); box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4); }
+        #warrior .step-num { background: var(--accent-warrior); box-shadow: 0 5px 15px rgba(192, 57, 43, 0.4); }
+        #strategist .step-num { background: var(--accent-strategist); box-shadow: 0 5px 15px rgba(39, 174, 96, 0.4); }
+
+        .step-body h4 { margin-bottom: 10px; font-size: 1.3em; font-weight: 700; }
+        .step-body p { color: #555; }
+
+        /* Intro Grid */
+        .intro-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 50px;
+        }
+        .intro-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-top: 5px solid #ccc;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .intro-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        
+        /* Updated Breakpoint from 768px to 1024px to prevent nav collision on tablets/small laptops */
+        @media (max-width: 1024px) {
+            .navbar { padding: 0 15px; }
+            
+            /* Responsive Nav Layout */
+            .nav-brand span { display: none; } /* Hide brand text earlier */
+            .nav-brand i { font-size: 1.5em; }
+
+            /* Hide text labels for standard tabs on mobile/tablet to save space */
+            .nav-btn:not(.analysis-link) span {
+                display: none;
+            }
+            /* Adjust padding since text is gone */
+            .nav-btn:not(.analysis-link) {
+                padding: 10px;
+                font-size: 1.1em;
+            }
+            
+            /* Keep Analysis button more prominent but shorten text if really needed */
+            .nav-btn.analysis-link {
+                padding: 6px 12px;
+                font-size: 0.85em;
+            }
+
+            .hero-title { font-size: 2.5em; }
+            .swot-table th, .swot-table td { display: block; width: auto; margin-bottom: 10px; }
+            .swot-table { border-spacing: 0; }
+            .roadmap-step { gap: 15px; }
+            .step-num { width: 40px; height: 40px; font-size: 1.1em; }
+            .roadmap-step:not(:last-child)::after { left: 19px; }
+        }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen font-sans text-slate-800 p-4 md:p-8">
+<body>
 
-    <div class="max-w-6xl mx-auto flex flex-col gap-6">
-        <!-- Header -->
-        <div class="bg-indigo-900 text-white p-6 rounded-2xl shadow-lg flex flex-col md:flex-row items-center justify-between w-full">
-            <div class="flex items-center gap-3">
-                <i class="ph ph-star-four text-4xl text-yellow-400"></i>
-                <div>
-                    <h1 class="text-2xl font-bold">Geo-Time Chart Calculator</h1>
-                    <p class="text-indigo-200 text-sm">Positions (Lahiri) &bull; Octal House Map &bull; Planetary Data</p>
-                </div>
-            </div>
-            <div id="ayanamsa-display" class="mt-4 md:mt-0 bg-indigo-800 px-4 py-2 rounded-lg font-mono text-sm border border-indigo-700"></div>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="nav-brand">
+            <i class="fa-solid fa-shapes"></i>
+            <span>Architecture of Self</span>
         </div>
 
-        <!-- Input Section -->
-        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 w-full">
-            <h2 class="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
-                <i class="ph ph-sliders-horizontal"></i> Input Details
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Col 1 -->
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name</label>
-                        <input type="text" id="name-input" placeholder="Enter Name" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 font-medium">
-                    </div>
-                    <div class="relative w-full">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Location Search</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-map-pin text-slate-400 text-lg"></i></div>
-                            <input type="text" id="location-input" class="w-full pl-9 pr-9 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 transition shadow-sm" placeholder="Start typing a city..." autocomplete="off">
-                            <div id="loading-spinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden"><div class="loader ease-linear rounded-full border-2 border-t-2 border-slate-200 h-4 w-4"></div></div>
-                            <button id="clear-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"><i class="ph ph-x-circle text-lg"></i></button>
-                        </div>
-                        <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list"></ul>
-                    </div>
-                </div>
-                <!-- Col 2 -->
-                <div class="space-y-3">
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Date & Time</label>
-                    <div class="flex items-end gap-2 w-full">
-                        <div class="flex flex-col w-[25%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span><div class="relative w-full"><select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <div class="flex flex-col w-[35%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span><div class="relative w-full"><select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <div class="flex flex-col w-[40%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span><div class="relative w-full"><input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY"><datalist id="year-options"></datalist></div></div>
-                    </div>
-                    <div class="flex items-end gap-2 mt-2">
-                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span><div class="relative w-full"><select id="hour-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
-                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span><div class="relative w-full"><select id="minute-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
-                            <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
-                            <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
-                        </div>
-                        <input type="hidden" id="ampm-value" value="AM">
-                    </div>
-                </div>
-                <!-- Col 3 -->
-                <div class="flex flex-col justify-between">
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Latitude</span><span id="lat-display" class="font-mono font-medium text-slate-700">28.6139</span></div>
-                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Longitude</span><span id="lng-display" class="font-mono font-medium text-slate-700">77.2090</span></div>
-                    </div>
-                    <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
-                    <button onclick="calculatePositions()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold transition shadow-sm shadow-indigo-500/30 flex items-center justify-center gap-2"><i class="ph ph-chart-polar"></i> Generate Report</button>
-                </div>
-            </div>
+        <div class="nav-container">
+            <button class="nav-btn active" onclick="switchTab('overview')" data-target="overview">
+                <i class="fa-solid fa-compass"></i> <span>Overview</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('creator')" data-target="creator">
+                <i class="fa-solid fa-lightbulb"></i> <span>Creator</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('seller')" data-target="seller">
+                <i class="fa-solid fa-heart"></i> <span>Seller</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('warrior')" data-target="warrior">
+                <i class="fa-solid fa-fire"></i> <span>Warrior</span>
+            </button>
+            <button class="nav-btn" onclick="switchTab('strategist')" data-target="strategist">
+                <i class="fa-solid fa-chess"></i> <span>Strategist</span>
+            </button>
+            <!-- New Start Analysis Link -->
+            <a href="analysis.html" class="nav-btn analysis-link">
+                <i class="fa-solid fa-magnifying-glass-chart"></i> <span>Start Analysis</span>
+            </a>
         </div>
+    </nav>
 
-        <!-- Result Sections -->
-        <div class="w-full space-y-6">
-            <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col items-center">
-                <div class="flex flex-col items-center text-center w-full mb-6">
-                    <h3 class="font-serif-title font-bold text-lg md:text-2xl text-slate-800 uppercase tracking-wide">Geo-Time Zone Map</h3>
-                    <span id="octal-map-details" class="font-sans font-bold text-indigo-900 text-sm md:text-base mt-1 block"></span>
-                </div>
-                <div id="octal-chart-container" class="w-full max-w-[550px] aspect-square relative flex items-center justify-center bg-slate-50 rounded-full border border-slate-100"><span class="text-slate-400 text-sm">Click "Generate Report" to view chart</span></div>
+    <div class="container">
+
+        <!-- OVERVIEW TAB -->
+        <div id="overview" class="tab-content active">
+            <div class="hero">
+                <h1 class="hero-title">The Architecture of Self</h1>
+                <p class="hero-subtitle">A Professional Manual for Psychological Reconstruction</p>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-md border border-slate-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse compact-table" id="results-table">
-                        <thead><tr><th>Planet</th><th>House Label (No.)</th><th>Rashi</th><th>Longitude</th><th>Nakshatra</th></tr></thead>
-                        <tbody class="text-slate-700"><tr><td colspan="5" class="p-8 text-center text-slate-400 italic">Waiting for input...</td></tr></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div id="results-container" class="hidden space-y-4">
-                <!-- 1. Psycho-Analysis -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <button onclick="toggleAccordion('acc-psycho')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-purple-400 border border-slate-600"><i class="ph ph-brain text-xl"></i></div><div><h3 class="font-bold text-white">Psycho-Analysis</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Emotional Pattern & Energy Flow <span id="psycho-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-psycho" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
-                    </button>
-                    <div id="acc-psycho" class="hidden border-t border-slate-100 p-6">
-                        <div class="mb-8">
-                            <p class="text-slate-600 text-sm leading-relaxed mb-6 border-l-4 border-indigo-200 pl-4 bg-slate-50 py-3 rounded-r-lg">In this system, <strong>TAMAS</strong> houses (3, 5, 6, 8) act as <span class="text-emerald-500 font-semibold">Energy Producers</span>. <strong>RAJAS</strong> houses (2, 9, 11, 12) are <span class="text-orange-600 font-semibold">Action Oriented</span>. The cycle flows from needing support (Tamas) to performing action (Rajas).</p>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="bg-gradient-to-br from-emerald-50 to-white rounded-xl border border-emerald-100 overflow-hidden shadow-sm">
-                                    <div class="px-4 py-3 bg-emerald-100/50 border-b border-emerald-100 flex justify-between items-center"><span class="font-bold text-emerald-800 flex items-center gap-2"><i class="ph ph-battery-charging text-lg"></i> TAMAS (Energy Source)</span><span id="tamas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-emerald-600 border border-emerald-100">0 Planets</span></div>
-                                    <div class="p-4"><p class="text-xs text-black mb-3 italic">Emotions created, batteries charging, seeking support.</p><div id="tamas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div></div>
-                                </div>
-                                <div class="bg-gradient-to-br from-orange-50 to-white rounded-xl border border-orange-100 overflow-hidden shadow-sm">
-                                    <div class="px-4 py-3 bg-orange-100/50 border-b border-orange-100 flex justify-between items-center"><span class="font-bold text-orange-800 flex items-center gap-2"><i class="ph ph-lightning text-lg"></i> RAJAS (Action Release)</span><span id="rajas-count" class="text-xs font-bold bg-white px-2 py-1 rounded text-orange-600 border border-orange-100">0 Planets</span></div>
-                                    <div class="p-4"><p class="text-xs text-black mb-3 italic">Emotions released, batteries draining, action taking.</p><div id="rajas-list" class="flex flex-wrap gap-2 min-h-[40px]"></div></div>
-                                </div>
-                            </div>
-                            <div id="analysis-summary" class="mt-6 text-sm text-slate-700 bg-slate-50 p-4 rounded-lg border border-slate-200"></div>
-                        </div>
+            <div class="content-block">
+                <h3><i class="fa-solid fa-book-open"></i> The Theory of Internal Engines</h3>
+                <p>Human psychology is not a monolith; it is a system of competing energy centers. When you feel "stuck," "anxious," or "unfulfilled," it is rarely a sign of mental weakness. It is a sign of <strong>mechanical misalignment</strong>. You are trying to use an engine designed for one purpose to solve a problem that requires another.</p>
+                <p>We have identified four primary "Engines of Action." Each has a specific fuel (input) and a specific product (output). When the input does not match the output, the engine stalls. This guide provides a deep-dive analysis, SWOT assessments, and operational roadmaps for each archetype.</p>
+                
+                <div class="intro-grid">
+                    <div class="intro-card" style="border-color: var(--accent-creator)" onclick="switchTab('creator')">
+                        <i class="fa-solid fa-lightbulb" style="color: var(--accent-creator); font-size: 2.5em; margin-bottom: 15px;"></i>
+                        <h4>The Creator</h4>
+                        <p><strong>Core Conflict:</strong> Input vs. Output</p>
+                        <p style="font-size:0.85em; color:#777;">For those suffering from Analysis Paralysis and intellectual hoarding.</p>
                     </div>
-                </div>
-                <!-- 2. Energy Flow Narrative -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <button onclick="toggleAccordion('acc-energy')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-indigo-400 border border-slate-600"><i class="ph ph-flow-arrow text-xl"></i></div><div><h3 class="font-bold text-white">Energy Flow Narrative</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Planetary Sequence & Story</p></div></div><i id="icon-acc-energy" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
-                    </button>
-                    <div id="acc-energy" class="hidden border-t border-slate-100 p-6">
-                        <div id="energy-flow-container" class="border-b border-slate-100 pb-6 mb-6"></div>
-                        <div><h5 class="text-sm font-bold text-slate-700 uppercase tracking-wider mb-4 flex items-center gap-2"><i class="ph ph-chat-text"></i> Detailed Narrative</h5><div id="energy-narrative-container" class="flex flex-wrap gap-2 text-sm"></div></div>
+                    <div class="intro-card" style="border-color: var(--accent-seller)" onclick="switchTab('seller')">
+                        <i class="fa-solid fa-heart" style="color: var(--accent-seller); font-size: 2.5em; margin-bottom: 15px;"></i>
+                        <h4>The Seller</h4>
+                        <p><strong>Core Conflict:</strong> Performance vs. Connection</p>
+                        <p style="font-size:0.85em; color:#777;">For those feeling unseen, lonely, or like an impostor.</p>
                     </div>
-                </div>
-                <!-- 3. Energy Support & Speed -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <button onclick="toggleAccordion('acc-speed')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-teal-400 border border-slate-600"><i class="ph ph-speedometer text-xl"></i></div><div><h3 class="font-bold text-white">Energy Support & Speed Analysis</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Tamas Supply vs Rajas Demand <span id="speed-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-speed" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
-                    </button>
-                    <div id="acc-speed" class="hidden border-t border-slate-100 p-6"><div id="energy-support-container" class="flex flex-col gap-6"></div></div>
-                </div>
-                <!-- 4. Past-Present-Future -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <button onclick="toggleAccordion('acc-ppf')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-blue-400 border border-slate-600"><i class="ph ph-clock-counter-clockwise text-xl"></i></div><div><h3 class="font-bold text-white">Past-Present-Future Cycles</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Mars, Jupiter, Saturn <span id="long-cycle-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-ppf" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
-                    </button>
-                    <div id="acc-ppf" class="hidden border-t border-slate-100 p-6"><div id="long-cycle-container" class="grid grid-cols-1 gap-6"></div></div>
-                </div>
-                <!-- 5. Monthly (Sun) Cycle -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <button onclick="toggleAccordion('acc-sun')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-amber-400 border border-slate-600"><i class="ph ph-sun text-xl"></i></div><div><h3 class="font-bold text-white">Monthly Emotional Rhythmic Pattern</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Annual Solar Transit <span id="monthly-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-sun" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
-                    </button>
-                    <div id="acc-sun" class="hidden border-t border-slate-100 p-6"><div id="sun-cycle-container" class="space-y-4"></div></div>
-                </div>
-                <!-- 6. Daily (Moon) Cycle -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <button onclick="toggleAccordion('acc-moon')" class="w-full flex items-center justify-between p-4 bg-slate-800 hover:bg-slate-700 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-slate-700 p-2 rounded-lg text-slate-300 border border-slate-600"><i class="ph ph-moon text-xl"></i></div><div><h3 class="font-bold text-white">Daily Emotional Rhythmic Pattern</h3><p class="text-xs text-slate-400 uppercase tracking-wide font-semibold">Lunar Transit <span id="daily-details" class="normal-case font-normal text-indigo-300 ml-1"></span></p></div></div><i id="icon-acc-moon" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>
-                    </button>
-                    <div id="acc-moon" class="hidden border-t border-slate-100 p-6"><div id="moon-cycle-container" class="space-y-4"></div></div>
-                </div>
-                <!-- 7. Archetype Mastery Guide -->
-                <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-                    <button onclick="toggleAccordion('acc-guide')" class="w-full flex items-center justify-between p-4 bg-indigo-900 hover:bg-indigo-800 transition-colors text-left group">
-                        <div class="flex items-center gap-4"><div class="bg-indigo-800 text-yellow-400 border border-indigo-700 p-2 rounded-lg"><i class="ph ph-book-open-text text-xl"></i></div><div><h3 class="font-bold text-white">Archetype Mastery Guide</h3><p class="text-xs text-indigo-200 uppercase tracking-wide font-semibold">Deep Dive into Emotional Energy</p></div></div><i id="icon-acc-guide" class="ph ph-caret-down text-indigo-300 group-hover:text-white transition-transform duration-300 text-lg"></i>
-                    </button>
-                    <div id="acc-guide" class="hidden border-t border-slate-100 p-6 bg-slate-50/50">
-                         <div class="space-y-12">
-                            <!-- SECTION 1 -->
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                                <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-binoculars"></i> SEEKER OF TRUTH</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-paint-brush-broad"></i> CREATOR</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">From Chaos to Creation: Turning Overthinking into Something Real</p>
-                                </div>
-                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>When your mind is full of thoughts, "what ifs," worries, and ideas, it often feels like a storm. You are not lazy or broken – you are overloaded.</p><p class="mt-2">Inside you, there are two important parts:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Seeker:</strong> The part of you that observes, feels deeply, and tries to understand life.</li><li><strong>The Creator:</strong> The part of you that turns ideas and emotions into real, physical things.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer most when the Seeker is active, but the Creator is silent.</p></div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-eye"></i> The Seeker: The Inner Student</h5><p class="mb-2">The Seeker notices small details, thinks deeply about why things happen, replays conversations, and feels emotions intensely. You may ask:</p><ul class="list-disc pl-5 italic text-emerald-700/80"><li>“Why do I always end up in this situation?”</li><li>“Why do people behave like this?”</li><li>“Why do I feel this way?”</li></ul><p class="mt-3 text-xs font-bold text-emerald-800">This is the Seeker at work.</p></div>
-                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-hammer"></i> The Creator: Giving Thoughts a Home</h5><p class="mb-2">The Creator says: “Enough thinking. Let’s build something.” It turns pain into projects and ideas into reality.</p><p class="mb-2">This looks like writing insights, building a product, designing a routine, or making something physical.</p><p class="mt-3 text-xs font-bold text-orange-800 italic">The Creator doesn’t ask, “What if?” The Creator says, “What can I make with what I have right now?”</p></div>
-                                    </div>
-                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500"><h5 class="font-bold text-slate-900 mb-2">Example Story: The Silent Observer</h5><p class="italic text-slate-600 mb-4">Imagine Arjun. He spends nights replaying arguments, feeling like a CCTV camera—recording everything but doing nothing. He is the Seeker.</p><p>One day, instead of overthinking, he opens a notebook. He writes down lessons from his failed relationships. Over weeks, these notes turn into a "Red Flag Checklist" he shares with friends. By turning his pain into a tangible tool, he stops overthinking and starts building.</p><p class="font-bold text-indigo-700 mt-2">This is how overthinking becomes a tool instead of torture.</p></div>
-                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Seeker to Creator</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Collect Your “Raw Data”</strong><p>Write down major painful events, repeat patterns, and recurring thoughts from the last 2-5 years. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> Feeling overwhelmed. <strong class="text-emerald-600">Solution:</strong> Start with just one situation.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Extract Lessons</strong><p>Ask: What did this teach me about myself and others? Focus on "Next time, I will..." rather than "I should have...".</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Decide What to Create</strong><p>Build something from these lessons: A journal template, a checklist, a blog, a routine. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> “Who will care?” <strong class="text-emerald-600">Solution:</strong> You are building for clarity, not fame.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Use Creation as Your Anchor</strong><p>Whenever your mind becomes noisy, return to your project. Add one page, one idea. Let your hands move instead of your thoughts running wild.</p></div></div></div></div>
-                                </div>
-                            </div>
-                            <!-- SECTION 2 -->
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                                <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-hand-heart"></i> COMPANION</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-storefront"></i> SELLER</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Art of Connection: Healing Yourself by Supporting Others</p>
-                                </div>
-                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Some people heal best when they focus on others. Inside you are two aspects:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Companion (Nurturer):</strong> Wants to comfort, listen, and be there for others.</li><li><strong>The Seller (Charmer):</strong> Naturally influences, inspires, and uplifts people through words and presence.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer when you try to be invisible or shut down your ability to connect.</p></div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-heart"></i> The Companion</h5><p class="mb-2">Listens without judgment and feels others' pain. You are the one friends call when hurting. But if you stop here, you may feel drained and unseen, like an "Invisible Healer."</p></div><div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> The Seller (Leader)</h5><p class="mb-2">This is not commercial sales. It means you "sell" hope, comfort, and clarity. Your tools are your voice, presence, and intentional dressing. You transform complex feelings into soothing communication.</p></div></div>
-                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100"><h5 class="font-bold text-indigo-900 mb-2">The King of Hearts: Leading with Love</h5><p>When Companion and Seller merge, people trust you deeply. You become a natural leader not by force, but by heart. This shows up as a mentor, community builder, or trusted guide.</p><p class="mt-2 font-bold text-rose-700"><i class="ph ph-warning"></i> Responsibility: Never manipulate. Use your influence only for honesty and well-being.</p></div>
-                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: From Nurturer to Leader</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Acknowledge Your Power</strong><p>Notice who comes to you for help and how they feel better around you. Don't dismiss this; it is a strength.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Set Emotional Boundaries</strong><p>Learn to say, "I care, but I need rest." A burned-out Companion helps no one.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Use Appearance Intentionally</strong><p>Dress to communicate safety and trust. You are dressing to support your role as a calm, reliable presence.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Start Sharing Perspective</strong><p>Don't just listen; share gentle insights. "Maybe you need rest, not effort." Speaking up increases your positive impact.</p></div></div></div></div>
-                                </div>
-                            </div>
-                            <!-- SECTION 3 -->
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                                <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-fist"></i> CHALLENGER</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-sword"></i> WARRIOR</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Fire of Transformation: From Victim to Victor</p>
-                                </div>
-                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Some people cannot stay calm when things are wrong. Inside you are two forces:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Challenger (Catalyst):</strong> Points out what is wrong and refuses to tolerate injustice.</li><li><strong>The Warrior (Protector):</strong> Takes strong action to fix or defend.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer when you see what is wrong but do nothing, turning that fire inward into frustration.</p></div>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-warning-circle"></i> The Challenger</h5><p class="mb-2">Notices unfairness, lies, and inefficiency. You aren't "negative"; you are sensitive to standards. But without action, you become the "Silent Volcano"—always irritated but powerless.</p></div><div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-shield-check"></i> The Warrior</h5><p class="mb-2">Moves when others freeze. Protects people and principles. Driven by "Do or Die" energy. You are here to be brave when others are scared, taking bold decisions.</p></div></div>
-                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-rose-500"><h5 class="font-bold text-slate-900 mb-2">The Synergy: Turning Fire into Purpose</h5><p>When you feel angry or restless, it means your inner Challenger sees a problem, but your Warrior is locked up. The cure is not to suppress anger but to direct it.</p><p class="font-bold text-slate-800 mt-2">Ask: "What exactly is wrong? And what is within my power to fix?"</p></div>
-                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Constructive Power</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Name Your Anger</strong><p>Write down what irritates you. See anger as a signal of your values, not a sin.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Control What You Can</strong><p>Separate what you can change from what you cannot. Focus on your own boundaries and standards.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Choose a Battle Worth Fighting</strong><p>Don't waste energy on petty arguments. Direct it toward protecting the vulnerable or fixing a broken system.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Train Discipline</strong><p>Physical training channels aggression. The Warrior is about controlled power, not exploding rage.</p></div></div></div></div>
-                                </div>
-                            </div>
-                            <!-- SECTION 4: DEATH -> STRATEGIST -->
-                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                                <div class="bg-slate-50 border-b border-slate-100 p-6">
-                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title">
-                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-recycle"></i> THOUGHTS OF DEATH</span>
-                                        <i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i>
-                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-strategy"></i> STRATEGIST</span>
-                                    </h4>
-                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">From Fear of Loss to Strategic Survival: Turning Anxiety into a Plan</p>
-                                </div>
-                                
-                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
-                                    
-                                    <!-- What This Really Means -->
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
-                                        <p>When your mind is constantly predicting failure, imagining how things will die, or obsessing over safety, it feels like torture. You are not pessimistic or “negative” – you are scanning for survival.</p>
-                                        <p class="mt-2">Inside you, there are two important parts:</p>
-                                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                                            <li><strong>The Sentry (Thoughts of Death):</strong> The part of you that investigates threats, fears losing happiness, and obsessively researches how things could go wrong.</li>
-                                            <li><strong>The Strategist:</strong> The part of you that takes that fear and designs a way to survive, recover, and rise from the ashes.</li>
-                                        </ul>
-                                        <p class="mt-2 font-medium text-indigo-700">You suffer most when the Sentry is screaming about danger, but the Strategist has not been given a clear mission to solve it.</p>
-                                    </div>
-
-                                    <!-- Grid: Sentry vs Strategist -->
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
-                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-shield-warning"></i> The Sentry: Guardian of "What Could Go Wrong"</h5>
-                                            <p class="mb-2">The Sentry is the version of you who:</p>
-                                            <ul class="list-disc pl-5 italic text-emerald-700/80 space-y-1">
-                                                <li>Scans the environment deep below the surface to find weak spots.</li>
-                                                <li>Feels terror when happiness arrives, asking "When will I lose this?"</li>
-                                                <li>Refuses to invest time or money until safety is guaranteed.</li>
-                                                <li>Investigates dark secrets to ensure nothing surprises you.</li>
-                                            </ul>
-                                            <p class="mt-3 text-xs font-bold text-emerald-800">It isn't trying to hurt you; it is trying to keep you safe by predicting death before it happens.</p>
-                                        </div>
-                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
-                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-compass"></i> The Strategist: Architect of Survival</h5>
-                                            <p class="mb-2">The Strategist says:</p>
-                                            <ul class="list-disc pl-5 italic text-orange-700/80 space-y-1">
-                                                <li>“I see the risk. Now, let’s build a bridge over it.”</li>
-                                                <li>“If this fails, here is exactly how we will recover.”</li>
-                                                <li>“Let’s find the loophole to survive this chaos.”</li>
-                                            </ul>
-                                            <p class="mt-3 text-xs font-bold text-orange-800">The Strategist says: “I know how things die, so here is the design to make sure I survive.”</p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Example Story -->
-                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500">
-                                        <h5 class="font-bold text-slate-900 mb-2">Example Story: The Paralyzed Investigator</h5>
-                                        <p class="italic text-slate-600 mb-4">Priya has a stable job but is terrified of poverty. She reads about economic collapses and worries one mistake will ruin her life. She has all the information about "how things die," but no plan on how to live. She is the Sentry without the Strategist.</p>
-                                        <h5 class="font-bold text-indigo-700 mb-2 text-xs uppercase tracking-wide">Turning Panic into a Plan</h5>
-                                        <p>Priya activates her inner Strategist. She says: "Okay, the fear is real. Total financial loss is the 'Death' I fear."</p>
-                                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                                            <li>She diversifies savings (Risk Management).</li>
-                                            <li>She learns a secondary skill (Survival Tactic).</li>
-                                            <li>She creates a strict budget (The Path).</li>
-                                        </ul>
-                                        <p class="mt-2 font-bold text-indigo-800">The fear is still there, but it is no longer paralyzing. It has become fuel for strategy.</p>
-                                    </div>
-
-                                    <!-- The Method -->
-                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100">
-                                        <h5 class="font-bold text-indigo-900 mb-2">The Method: Fear + Coordinates = Strategy</h5>
-                                        <p>Fear without a plan is anxiety. Fear with a plan is strategy. To heal:</p>
-                                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                                            <li><strong>Acknowledge the Fear (Sentry):</strong> Let your mind show you the worst-case scenario.</li>
-                                            <li><strong>Define the Path (Strategist):</strong> Connect your current reality to a specific outcome of safety.</li>
-                                        </ul>
-                                        <p class="mt-3 font-bold text-center text-lg text-indigo-900 font-serif-title">“Do not just stare at the fire – build the exit.”</p>
-                                    </div>
-
-                                    <!-- Steps -->
-                                    <div>
-                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Sentry to Strategist</h5>
-                                        <div class="space-y-6">
-                                            <!-- Step 1 -->
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
-                                                <div class="w-full">
-                                                    <strong class="block text-slate-800">Let the Sentry Speak (Define the Death)</strong>
-                                                    <p>Write down the exact "Death" or "Failure" you are afraid of (Losing job? Breakup? Failure?). Let your mind list every way it could go wrong.</p>
-                                                    <div class="mt-2 text-xs bg-rose-50 border border-rose-100 p-2 rounded text-rose-800">
-                                                        <strong>Obstacle:</strong> Overwhelmed by negativity. <br>
-                                                        <strong>Solution:</strong> Remind yourself: "I am gathering data for the Strategist. I need to know the risks to defeat them."
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- Step 2 -->
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
-                                                <div class="w-full">
-                                                    <strong class="block text-slate-800">Define Your Physical Coordinates</strong>
-                                                    <p>The Strategist needs a map. Define two points clearly:</p>
-                                                    <ul class="list-disc pl-5 mt-1 text-slate-600">
-                                                        <li><strong>START:</strong> Where are you right now? (e.g., "$500 in bank", "Just fired")</li>
-                                                        <li><strong>END:</strong> What does survival look like? (e.g., "Survive 6 months", "Find new job")</li>
-                                                    </ul>
-                                                    <div class="mt-2 text-xs bg-slate-100 border border-slate-200 p-2 rounded text-slate-600">
-                                                        <strong>Obstacle:</strong> Vague goals like "I want to be happy." <br>
-                                                        <strong>Solution:</strong> Make it physical and tangible.
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- Step 3 -->
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
-                                                <div class="w-full">
-                                                    <strong class="block text-slate-800">Find the Loophole or the Path</strong>
-                                                    <p>Ask: "Given these constraints, what is the most efficient way to get from START to END?" Look for the "hack" or simple way out (cutting losses, asking for help, changing the goal).</p>
-                                                </div>
-                                            </div>
-                                            <!-- Step 4 -->
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
-                                                <div class="w-full">
-                                                    <strong class="block text-slate-800">Execute to Survive</strong>
-                                                    <p>Pick one action that increases safety immediately. Make the call. Sell the asset. Sign the paper.</p>
-                                                    <div class="mt-2 text-xs bg-emerald-50 border border-emerald-100 p-2 rounded text-emerald-800">
-                                                        <strong>Solution:</strong> Don't wait for "perfectly safe." Aim for "Safe Enough to Move."
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <!-- Step 5 -->
-                                            <div class="flex gap-3">
-                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">5</div>
-                                                <div class="w-full">
-                                                    <strong class="block text-slate-800">Use Fear as Fuel</strong>
-                                                    <p>When "Thoughts of Death" return, ask: "What new risk have you found?" Then ask the Strategist: "How do we mitigate this?" You become a Grandmaster playing a game you know how to win.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- FINAL SUMMARY -->
-                            <div class="bg-indigo-900 text-white rounded-2xl p-8 text-center shadow-lg"><h4 class="text-2xl font-bold font-serif-title mb-4">Putting It All Together</h4><p class="text-indigo-200 text-sm max-w-2xl mx-auto mb-6">You do not need to force yourself into only one role. Think of them as tools in your inner toolbox. You are a Seeker learning, a Creator building, a Companion healing, and a Strategist designing your path.</p><div class="inline-block bg-white/10 border border-white/20 rounded-xl p-4 text-sm font-medium"><p class="mb-2">Your next move is simple:</p><ol class="list-decimal list-inside text-left space-y-1 text-indigo-100"><li>Pick one area of life that feels stuck.</li><li>Identify which inner role needs to step forward.</li><li>Take one small, concrete action today.</li></ol></div><p class="mt-6 text-xs text-indigo-300 uppercase tracking-widest font-bold">Clarity comes when thought, emotion, and action move together.</p></div>
-                        </div>
+                    <div class="intro-card" style="border-color: var(--accent-warrior)" onclick="switchTab('warrior')">
+                        <i class="fa-solid fa-fire" style="color: var(--accent-warrior); font-size: 2.5em; margin-bottom: 15px;"></i>
+                        <h4>The Warrior</h4>
+                        <p><strong>Core Conflict:</strong> Complaint vs. Reform</p>
+                        <p style="font-size:0.85em; color:#777;">For those filled with rage at inefficiency and injustice.</p>
+                    </div>
+                    <div class="intro-card" style="border-color: var(--accent-strategist)" onclick="switchTab('strategist')">
+                        <i class="fa-solid fa-chess" style="color: var(--accent-strategist); font-size: 2.5em; margin-bottom: 15px;"></i>
+                        <h4>The Strategist</h4>
+                        <p><strong>Core Conflict:</strong> Anxiety vs. Planning</p>
+                        <p style="font-size:0.85em; color:#777;">For those paralyzed by the fear of future catastrophes.</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- CREATOR TAB -->
+        <div id="creator" class="tab-content">
+            <div class="chapter-header">
+                <div class="big-icon">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <span>Module 1</span>
+                <h2>The Creator & The Seeker</h2>
+                <p>From Intellectual Gluttony to Tangible Manufacture</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-microscope"></i> Deep Psychological Analysis</h3>
+                </div>
+                <p>The <strong>Creator</strong> archetype is defined by the transmutation of abstract thought into physical matter. However, most people who identify as "creative" are actually stuck in the <strong>Seeker</strong> phase. The Seeker is the student. It gathers information from the environment (books, podcasts, seminars). This is "Potential Energy."</p>
+                <p>The problem arises when the Seeker continues to consume without releasing that energy through the Creator. This leads to <strong>Intellectual Gluttony</strong>. Just as the body becomes sluggish when it consumes more calories than it burns, the mind becomes anxious and heavy when it consumes more information than it produces.</p>
+                <p>The "Creator Block" is not usually a lack of ideas; it is an addiction to the <em>potential</em> of the idea. As long as an idea remains in your head, it is perfect. It has no flaws, no critics, and no possibility of failure. The moment you manifest it (write the chapter, build the prototype), it becomes flawed. The Seeker resists this fall from perfection, keeping you trapped in a cycle of endless research.</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-chart-pie"></i> SWOT Analysis: The Creator Archetype</h3>
+                </div>
+                <table class="swot-table">
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-green"><i class="fa-solid fa-plus-circle"></i> Strengths</h5>
+                            <p><strong>Deep Vision:</strong> Ability to see possibilities where others see nothing.<br>
+                            <strong>Synthesizing Power:</strong> Capable of connecting disparate ideas into new concepts.<br>
+                            <strong>Patience:</strong> Once engaged, the Creator has the stamina for deep, lonely work.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-red"><i class="fa-solid fa-minus-circle"></i> Weaknesses</h5>
+                            <p><strong>Perfectionism:</strong> The refusal to accept the "ugly first draft."<br>
+                            <strong>Input Addiction:</strong> Mistaking reading about the work for doing the work.<br>
+                            <strong>Isolation:</strong> Tendency to withdraw from the world entirely, damaging relationships.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-blue"><i class="fa-solid fa-lightbulb"></i> Opportunities</h5>
+                            <p><strong>Tangible Legacy:</strong> The ability to leave behind physical proof of your existence.<br>
+                            <strong>Market Value:</strong> The world pays for output, not potential. Shifting to output increases wealth.<br>
+                            <strong>Self-Discovery:</strong> You only truly learn what you think by seeing what you create.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-orange"><i class="fa-solid fa-triangle-exclamation"></i> Threats</h5>
+                            <p><strong>The "Expert" Trap:</strong> Becoming an expert critic of others' work while producing none of your own.<br>
+                            <strong>Obsolescence:</strong> Having brilliant ideas that expire because you waited too long to build them.</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-users"></i> Real Life Case Studies</h3>
+                </div>
+                
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 1: The "Wantrepreneur"</div>
+                    </div>
+                    <p>Sarah attended every startup networking event in her city. She listened to business podcasts at 2x speed. She had a notebook with 50 "billion-dollar ideas." When asked what she was working on, she would say, "I'm currently in the research phase for a disruptive logistics platform." This "research phase" had lasted 4 years.</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> Sarah was addicted to the <em>identity</em> of being an entrepreneur without the pain of execution. She was getting her dopamine hit from talking about her plans.<br>
+                        <strong>The Fix:</strong> She was forced to stop attending events. She was given a challenge: Sell one item for $10 by Friday. No apps, no logos, no business cards. Just a sale. By removing the "fake work," she was forced to do "real work." She baked cookies and sold them to neighbors. It wasn't tech, but it was <em>commerce</em>. This broke the paralysis.
+                    </div>
+                </div>
+
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 2: The Academic Hoarder</div>
+                    </div>
+                    <p>Dr. Aris was a brilliant historian. He had read everything. But he hadn't published a paper in 6 years. He felt he needed to read "just one more source" to be sure his argument was bulletproof. He was terrified of being corrected by a peer.</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> Fear of imperfection masquerading as "thoroughness."<br>
+                        <strong>The Fix:</strong> The "Vomit Draft" Protocol. He was permitted to write a paper that was intentionally bad. He had to write a draft in 3 days with zero citations allowed. Once the draft existed physically, his Creator engine kicked in to edit and refine it. He couldn't fix a blank page, but he could fix a bad one.
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-road"></i> The Action Roadmap</h3>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <h4>The Vow of Silence (Detox Phase)</h4>
+                        <p>For the next 14 days, you are forbidden from discussing your project with anyone. No "I'm thinking of writing a book." No "I have an idea for an app." Silence. This builds internal pressure. Without the release valve of talking, your brain will force you to use the release valve of <em>doing</em>.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <h4>The "Garbage" Prototype</h4>
+                        <p>Your standards are too high for a beginner. Lower them. If you want to be a YouTuber, film a video on your phone in one take and upload it unlisted. If you want to be a coder, copy-paste a basic script. Your goal is not quality; your goal is <strong>existence</strong>. A bad object is infinitely more valuable than a perfect thought.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <h4>Industrialize Your Process</h4>
+                        <p>Stop waiting for inspiration. Inspiration is an amateur's tool. Professionals use schedules. Treat your creative work like a factory shift. You punch in at 9:00 AM, you lay bricks until 11:00 AM, and you punch out. Whether you felt "inspired" or "sad" during those two hours is irrelevant. The wall gets built brick by brick, not feeling by feeling.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SELLER TAB -->
+        <div id="seller" class="tab-content">
+            <div class="chapter-header">
+                <div class="big-icon">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <span>Module 2</span>
+                <h2>The Seller & The Companion</h2>
+                <p>From Manipulative Performance to Magnetic Leadership</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-microscope"></i> Deep Psychological Analysis</h3>
+                </div>
+                <p>The <strong>Seller</strong> is the archetype of influence, aesthetics, and social power. However, most people who identify as "creative" are actually stuck in the <strong>Seeker</strong> phase. The Seeker is the student. It gathers information from the environment (books, podcasts, seminars). This is "Potential Energy."</p>
+                <p>The problem arises when the Seeker continues to consume without releasing that energy through the Creator. This leads to <strong>Intellectual Gluttony</strong>. Just as the body becomes sluggish when it consumes more calories than it burns, the mind becomes anxious and heavy when it consumes more information than it produces.</p>
+                <p>The "Seller's Fatigue" occurs when you are constantly projecting an image (The Seller) without grounding it in care (The Companion). You feel like a fraud because, on some level, you are. You are selling a relationship that is one-sided. You want their admiration, but you aren't offering your protection.</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-chart-pie"></i> SWOT Analysis: The Seller Archetype</h3>
+                </div>
+                <table class="swot-table">
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-green"><i class="fa-solid fa-plus-circle"></i> Strengths</h5>
+                            <p><strong>Charisma:</strong> The ability to alter the mood of a room instantly.<br>
+                            <strong>Empathy:</strong> High emotional intelligence to read what others need.<br>
+                            <strong>Aesthetics:</strong> An intuitive understanding of beauty and presentation.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-red"><i class="fa-solid fa-minus-circle"></i> Weaknesses</h5>
+                            <p><strong>People-Pleasing:</strong> Losing your own identity to fit the crowd's desires.<br>
+                            <strong>Deceit:</strong> The temptation to lie to maintain a perfect image.<br>
+                            <strong>Dependency:</strong> Measuring self-worth entirely by external validation (likes/applause).</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-blue"><i class="fa-solid fa-lightbulb"></i> Opportunities</h5>
+                            <p><strong>Community Building:</strong> You have the power to unite people around a cause.<br>
+                            <strong>Leadership:</strong> The natural progression from "Influencer" to "Leader."<br>
+                            <strong>Healing:</strong> Using your charm to comfort those in distress.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-orange"><i class="fa-solid fa-triangle-exclamation"></i> Threats</h5>
+                            <p><strong>Exposure:</strong> If you are caught lying, your influence evaporates instantly.<br>
+                            <strong>Parasocial Burnout:</strong> Giving so much energy to strangers that you have none for family.</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-users"></i> Real Life Case Studies</h3>
+                </div>
+                
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 1: The Sales Manager</div>
+                    </div>
+                    <p>David was a high-performing sales manager who was losing his team. He was charismatic, sharp, and always dressed perfectly. But his team had high turnover. In meetings, David would talk for 45 minutes about <em>his</em> vision and <em>his</em> targets. He was "Selling" leadership, but no one was buying.</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> David was operating as a King without being a Father. He demanded loyalty without offering care.<br>
+                        <strong>The Fix:</strong> He was instructed to stop talking in meetings. For the first 15 minutes of every 1-on-1, he was only allowed to ask about the employee's life, struggles, and barriers. He had to become a Companion. Within three months, his team would run through walls for him. They realized he cared, so they allowed him to lead.
+                    </div>
+                </div>
+
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 2: The "Perfect" Mother</div>
+                    </div>
+                    <p>Linda was obsessed with her family looking perfect to the neighborhood. She threw the best parties and had the cleanest house. But her children were distant. They felt they were props in her stage play, not people she actually knew.</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> Prioritizing the "Image of Family" (Seller) over the "Reality of Connection" (Companion).<br>
+                        <strong>The Fix:</strong> Linda had to drop the performance. She stopped cleaning before guests arrived. She sat on the floor with her kids in messy clothes. She showed them her own tiredness. By becoming vulnerable, she became accessible. Her children stopped performing and started bonding.
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-road"></i> The Action Roadmap</h3>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <h4>The "Host" Shift</h4>
+                        <p>Social anxiety is usually narcissism in disguise (worrying about <em>yourself</em>). Flip the script. When you enter a social situation, assign yourself the role of the "Secret Host." Your job is to make others comfortable. Find the quiet person. Fill the empty glass. By focusing on their comfort, your anxiety vanishes and your charisma activates.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <h4>Aesthetic Dignity</h4>
+                        <p>Audit your appearance. Are you dressing to scream "Look at me!" or are you dressing to say "I respect this occasion"? Upgrade your wardrobe, your grooming, and your environment. A clean, beautiful environment signals to others that you have your life in order. It builds subconscious trust.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <h4>The Truth Anchor</h4>
+                        <p>You must become the most honest person in your circle. Because you are charming, you can easily manipulate people. Resist this. If you use your influence to lie, you destroy your soul. If you use your influence to tell hard truths with love, you become a legend.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- WARRIOR TAB -->
+        <div id="warrior" class="tab-content">
+            <div class="chapter-header">
+                <div class="big-icon">
+                    <i class="fa-solid fa-fire"></i>
+                </div>
+                <span>Module 3</span>
+                <h2>The Warrior & The Challenger</h2>
+                <p>From Toxic Complaining to Systemic Reformation</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-microscope"></i> Deep Psychological Analysis</h3>
+                </div>
+                <p>The <strong>Warrior</strong> is the energy of forceful change. It is awakened by the <strong>Challenger</strong>—the part of you that detects errors. The Challenger is a "System Scanner." It looks at a process, a government, or a family dynamic and immediately spots where it is broken, slow, or unfair.</p>
+                <p>The pain you feel is the gap between the "Broken Reality" you see and the "Efficient Ideal" you know is possible. When you cannot close this gap, the energy turns into rage. You become a complainer, a rebel, or a "difficult person." You generate heat (anger) but no motion (change).</p>
+                <p>The transition to Warrior happens when you stop using your mouth and start using your body. The Warrior does not ask for the system to change; the Warrior <em>forces</em> the change through superior action. It is the energy of the Surgeon cutting out the tumor, or the General leading the charge. It is destructive, yes, but it is "Creative Destruction."</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-chart-pie"></i> SWOT Analysis: The Warrior Archetype</h3>
+                </div>
+                <table class="swot-table">
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-green"><i class="fa-solid fa-plus-circle"></i> Strengths</h5>
+                            <p><strong>Courage:</strong> The ability to act when others are frozen by fear.<br>
+                            <strong>Efficiency:</strong> An obsession with speed and results.<br>
+                            <strong>Protection:</strong> A fierce instinct to safeguard the weak or the team.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-red"><i class="fa-solid fa-minus-circle"></i> Weaknesses</h5>
+                            <p><strong>Impatience:</strong> Destroying relationships because others move too slowly.<br>
+                            <strong>Burnout:</strong> Running on high-adrenaline "Red Energy" until collapse.<br>
+                            <strong>Diplomacy:</strong> A tendency to be blunt to the point of cruelty.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-blue"><i class="fa-solid fa-lightbulb"></i> Opportunities</h5>
+                            <p><strong>Crisis Management:</strong> You thrive where others panic. Ideal for high-stakes careers.<br>
+                            <strong>Innovation:</strong> Disgust with the "old way" is the mother of invention.<br>
+                            <strong>Reform:</strong> You have the power to fix broken institutions.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-orange"><i class="fa-solid fa-triangle-exclamation"></i> Threats</h5>
+                            <p><strong>Isolation:</strong> If you fight everyone, you end up alone.<br>
+                            <strong>Martyrdom:</strong> Fighting battles that aren't yours to fight.</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-users"></i> Real Life Case Studies</h3>
+                </div>
+                
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 1: The Corporate Rebel</div>
+                    </div>
+                    <p>Mark worked in a legacy bank. He hated the archaic software they used. He spent every lunch break ranting to colleagues about how "stupid" management was. He was right, but he was toxic. Management sidelined him as a "troublemaker."</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> Mark was a Challenger using verbal resistance (complaining) which only created friction.<br>
+                        <strong>The Fix:</strong> Mark stopped complaining. He spent his weekends coding a demo of a better interface. He didn't ask for permission. He walked into the VP's office and showed the working product. He said, "I built this. It saves us 4 hours a day." The VP didn't fire him; he put him in charge of innovation. Mark moved from "rebel" to "reformer."
+                    </div>
+                </div>
+
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 2: The Resentful Partner</div>
+                    </div>
+                    <p>Julie was the "doer" in her marriage. She paid the bills, fixed the leaks, and managed the schedule. She resented her husband for being passive. She would snap at him, creating a cycle of fights. She felt like she was fighting a war alone.</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> Misdirected Warrior energy against her own teammate.<br>
+                        <strong>The Fix:</strong> Julie realized she was addicted to the control. She had to "lay down her sword" at home. She joined a competitive kickboxing gym to exhaust her Warrior energy physically. At home, she stopped "saving" her husband and allowed him to fail and fix things himself. By directing her aggression to the gym, she brought peace to the home.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-road"></i> The Action Roadmap</h3>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <h4>Target Identification</h4>
+                        <p>You feel angry. Good. Anger is energy. But unguided energy is a bomb. You must aim it. Write down exactly what you hate. Is it the messy garage? The corrupt policy? The slow website? Pick ONE target. Your mission is to destroy that problem, not just yell at it.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <h4>Kinetic Solution</h4>
+                        <p>Implement the "No Talk" rule. If you see a problem, you are not allowed to complain about it unless you have a physical solution in hand. If the trash is full, take it out. If the team is slow, lead the pace. Demonstrate the new standard through your own body and actions. Shame the incompetence of others by the excellence of your own performance.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <h4>Physical Exhaustion</h4>
+                        <p>The Warrior accumulates stress hormones (cortisol/adrenaline). If you sit at a desk all day, this turns into anxiety and irritability. You <em>must</em> engage in intense physical activity. Lift heavy weights. Sprint. Hit a bag. You need to simulate the "battle" to trick your biology into releasing the relaxation hormones that come after victory.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRATEGIST TAB -->
+        <div id="strategist" class="tab-content">
+            <div class="chapter-header">
+                <div class="big-icon">
+                    <i class="fa-solid fa-chess"></i>
+                </div>
+                <span>Module 4</span>
+                <h2>The Strategist & The Analyst</h2>
+                <p>From Paralyzing Anxiety to Masterful Planning</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-microscope"></i> Deep Psychological Analysis</h3>
+                </div>
+                <p>The <strong>Strategist</strong> is born from the <strong>Thoughts of Death</strong>. This is not necessarily suicidal ideation; it is the profound realization that things end. You are hyper-aware of entropy. You know that markets crash, bodies fail, and luck runs out. While others live in a bubble of "it'll be fine," you see the cliff edge.</p>
+                <p>This makes you anxious. You are the "Sentinel" of the tribe. Your brain is constantly running simulations of disaster. When you are unhealthy, this results in paranoia and hoarding. You freeze because every path looks dangerous.</p>
+                <p>However, this fear is the raw material of Strategy. A Strategist is simply a person who has already lived through the disaster in their mind and mapped a way out. You are the chess player who sacrifices a pawn to save the king. You are the only one calm during the actual crisis because you have already panicked in your head a thousand times.</p>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-chart-pie"></i> SWOT Analysis: The Strategist Archetype</h3>
+                </div>
+                <table class="swot-table">
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-green"><i class="fa-solid fa-plus-circle"></i> Strengths</h5>
+                            <p><strong>Foresight:</strong> Predicting problems months before they happen.<br>
+                            <strong>Resource Management:</strong> Natural ability to conserve and allocate efficiency.<br>
+                            <strong>Objectivity:</strong> Removing emotion to make the cold, hard choice that survives.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-red"><i class="fa-solid fa-minus-circle"></i> Weaknesses</h5>
+                            <p><strong>Paralysis:</strong> Over-analyzing to the point of inaction.<br>
+                            <strong>Pessimism:</strong> Becoming a "wet blanket" who kills others' enthusiasm.<br>
+                            <strong>Trust Issues:</strong> Believing that you must control everything to be safe.</p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="swot-item">
+                            <h5 class="s-blue"><i class="fa-solid fa-lightbulb"></i> Opportunities</h5>
+                            <p><strong>Advisor Roles:</strong> Leaders need Strategists to keep them safe.<br>
+                            <strong>Wealth Preservation:</strong> You are naturally good at protecting assets.<br>
+                            <strong>Turnaround Artist:</strong> You can take a dying project and find the path to life.</p>
+                        </td>
+                        <td class="swot-item">
+                            <h5 class="s-orange"><i class="fa-solid fa-triangle-exclamation"></i> Threats</h5>
+                            <p><strong>Doom Spiraling:</strong> Getting stuck in a loop of hopelessness.<br>
+                            <strong>Self-Fulfilling Prophecy:</strong> Being so afraid of failure that you cause it.</p>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-users"></i> Real Life Case Studies</h3>
+                </div>
+                
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 1: The Paralyzed Artist</div>
+                    </div>
+                    <p>Tom was a talented graphic designer who wanted to freelance. But he was terrified of "starving." He kept his safe corporate job for 10 years, miserable, because he constantly imagined a scenario where he got zero clients and lost his house.</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> Tom was staring at the "Death" (poverty) without a Strategy.<br>
+                        <strong>The Fix:</strong> We did a "Pre-Mortem." We assumed he quit and failed. Then we built the safety net. 1. Save 6 months of expenses. 2. Secure 3 retainer clients <em>before</em> quitting. 3. Set a "fail date"—if he didn't make $X by December, he would return to corporate. Once the safety net was mathematically defined, his anxiety vanished. He quit the next month.
+                    </div>
+                </div>
+
+                <div class="story-box">
+                    <div class="story-header">
+                        <div>Case Study 2: The Helicopter Parent</div>
+                    </div>
+                    <p>Maria was terrified for her teenage son. She tracked his phone, checked his homework, and chose his friends. She was trying to prevent "Death" (her son failing in life). But she was suffocating him, causing him to rebel.</p>
+                    <div class="story-analysis">
+                        <strong>The Issue:</strong> Using control instead of preparation.<br>
+                        <strong>The Fix:</strong> Maria had to shift from "Guard" to "Guide." Instead of preventing him from falling, she taught him how to get up. She focused her Strategy on equipping him with skills (cooking, budgeting, conflict resolution) rather than shielding him from reality. She prepared the child for the road, not the road for the child.
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-block">
+                <div class="section-title">
+                    <h3><i class="fa-solid fa-road"></i> The Action Roadmap</h3>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">1</div>
+                    <div class="step-body">
+                        <h4>Naming the Ghost</h4>
+                        <p>Anxiety thrives in the abstract. "I'm worried about money" is a ghost. "I need $4,000 to pay bills and I only have $2,000" is a math problem. You must force your vague fears into concrete sentences. Write down the exact worst-case scenario. Stare it in the face.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">2</div>
+                    <div class="step-body">
+                        <h4>The Decision Tree</h4>
+                        <p>Take that worst-case scenario and build a flowchart. "If I lose my job, I will cut Netflix and Gym ($40). I will call Dave for freelance work. I will apply for unemployment." Once you have a sequence of actions for the disaster, your brain will realize that <strong>you will survive</strong>. The panic subsides when the plan emerges.</p>
+                    </div>
+                </div>
+                <div class="roadmap-step">
+                    <div class="step-num">3</div>
+                    <div class="step-body">
+                        <h4>Information Diet</h4>
+                        <p>As a Strategist, you crave data. But modern media is designed to terrify you. You are likely overdosing on "World Death" (news, politics) which you cannot control. Restrict your input to "Local Data" (your finances, your health, your family). Solve the problems you can touch. Ignore the rest.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
     <script>
-        // --- HELPERS ---
-        const ACC_IDS = ['acc-psycho', 'acc-energy', 'acc-speed', 'acc-ppf', 'acc-sun', 'acc-moon', 'acc-guide'];
-        function toggleAccordion(id) {
-            ACC_IDS.forEach(aid => {
-                const el = document.getElementById(aid), ic = document.getElementById('icon-' + aid);
-                const triggerBtn = el.previousElementSibling; // Trigger button
-                
-                if (aid === id) {
-                    el.classList.toggle('hidden');
-                    const isOpen = !el.classList.contains('hidden');
-                    ic.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-                    
-                    if (isOpen) {
-                        setTimeout(() => {
-                            triggerBtn.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                        }, 300);
-                    }
-                } else {
-                    el.classList.add('hidden');
-                    if(ic) ic.style.transform = 'rotate(0deg)';
-                }
-            });
-        }
-        function populateSelect(id, start, end, mapFn) {
-            const el = document.getElementById(id); el.innerHTML = '';
-            for(let i=start; i<=end; i++) {
-                const opt = document.createElement('option');
-                opt.value = i; opt.text = mapFn ? mapFn(i) : i;
-                el.appendChild(opt);
-            }
-        }
-        const debounce = (func, delay) => { let t; return (...args) => { clearTimeout(t); t = setTimeout(() => func(...args), delay); }; };
-        function pad(n){return n.toString().padStart(2,'0');}
-        function dm(d){let m=Math.round((d-Math.floor(d))*60); if(m===60){d++;m=0;} return `${Math.floor(d)}° ${pad(m)}'`;}
-        function normalize(d){d=d%360;if(d<0)d+=360;return d;}
-        function toRad(d){return d*(Math.PI/180);}
-        function toDeg(r){return r*(180/Math.PI);}
-        function normalizeRashi(n){let r=n%12;return r===0?12:r;}
-        
-        function formatDateFull(date) {
-            return `${pad(date.getDate())} ${date.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${date.getFullYear().toString().slice(-2)}`;
-        }
-        function formatDateMonthTime(date) {
-            return `${pad(date.getDate())} ${date.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} @ ${date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`;
-        }
+        function switchTab(tabId) {
+            // Hide all tabs
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
 
-        // --- CONSTANTS ---
-        const BODIES = [
-            { name: 'Sun', type: 'Planet', icon: 'ph-sun', symbol: 'Su' }, { name: 'Moon', type: 'Planet', icon: 'ph-moon', symbol: 'Mo' },
-            { name: 'Mars', type: 'Planet', icon: 'ph-fire', symbol: 'Ma' }, { name: 'Mercury', type: 'Planet', icon: 'ph-chat-circle-dots', symbol: 'Me' },
-            { name: 'Jupiter', type: 'Planet', icon: 'ph-lightning', symbol: 'Ju' }, { name: 'Venus', type: 'Planet', icon: 'ph-heart', symbol: 'Ve' },
-            { name: 'Saturn', type: 'Planet', icon: 'ph-hourglass', symbol: 'Sa' }, { name: 'Rahu', type: 'Node', icon: 'ph-link', symbol: 'Ra' },
-            { name: 'Ketu', type: 'Node', icon: 'ph-link-break', symbol: 'Ke' }
-        ];
-        const PLANET_SPEEDS = { 'Ketu': 1, 'Venus': 2, 'Sun': 3, 'Moon': 4, 'Mars': 5, 'Rahu': 6, 'Jupiter': 7, 'Saturn': 8, 'Mercury': 9 };
-        const RASHI_NAMES = ["Aries (Mesha)", "Taurus (Vrishabha)", "Gemini (Mithuna)", "Cancer (Karka)", "Leo (Simha)", "Virgo (Kanya)", "Libra (Tula)", "Scorpio (Vrishchika)", "Sagittarius (Dhanu)", "Capricorn (Makara)", "Aquarius (Kumbha)", "Pisces (Meena)"];
-        const NAKSHATRAS = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashirsha", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
-        const OCTAL_HOUSES = [
-            { id: 2, range: [0, 45], label: "STRATEGIST", category: "RAJAS", color: "#e2e8f0", textColor: "#334155", sourceAction: "STRATEGIST action is activating", targetAction: "to do actions as STRATEGIST" },
-            { id: 3, range: [45, 90], label: "SEEKER OF TRUTH", category: "TAMAS", color: "#cbd5e1", textColor: "#334155", sourceAction: "emotionally GUIDING environment is activating", targetAction: "to attract environment that will emotionally GUIDE" },
-            { id: 5, range: [90, 135], label: "COMPANION", category: "TAMAS", color: "#e9d5ff", textColor: "#581c87", sourceAction: "emotionally SUPPORTING environment is activating", targetAction: "to attract environment that will emotionally SUPPORT" },
-            { id: 6, range: [135, 180], label: "CHALLENGER", category: "TAMAS", color: "#d8b4fe", textColor: "#581c87", sourceAction: "emotionally CHALLENGING environment is activating", targetAction: "to attract environment that will emotionally CHALLENGE" },
-            { id: 8, range: [180, 225], label: "THOUGHTS OF DEATH", category: "TAMAS", color: "#bbf7d0", textColor: "#14532d", sourceAction: "Thoughts of Death/Failure is activating", targetAction: "to attract environment that produces THOUGHTS of DEATH/FAILURE" },
-            { id: 9, range: [225, 270], label: "CREATOR", category: "RAJAS", color: "#86efac", textColor: "#14532d", sourceAction: "CREATOR action is activating", targetAction: "to do actions as CREATOR" },
-            { id: 11, range: [270, 315], label: "SELLER", category: "RAJAS", color: "#fecaca", textColor: "#7f1d1d", sourceAction: "SELLER action is activating", targetAction: "to do actions as SELLER" },
-            { id: 12, range: [315, 360], label: "WARRIOR", category: "RAJAS", color: "#fca5a5", textColor: "#7f1d1d", sourceAction: "WARRIOR action is activating", targetAction: "to do actions as WARRIOR" }
-        ];
-        const ENERGY_PAIRS = [{ rajas: 9, tamas: 3 }, { rajas: 11, tamas: 5 }, { rajas: 12, tamas: 6 }, { rajas: 2, tamas: 8 }];
-        const ARCHETYPES = {
-            2: { title: "THE STRATEGIST", icon: "ph-strategy", quote: "Fear is not the end. When effort yields no reward, do not need to push harder. You need a map.", definition: "The Strategist is the resilience that rises from chaos. You are the puzzle solver, transforming the fear of failure into a structured plan for survival. You analyze the wreckage to find invisible leverage points.", method: "Anchor the 'Start' and visualize the 'End.' Build the bridge between your chaotic present and a secure future. Stop panicking; engineer your escape and survive at any cost." },
-            3: { title: "THE SEEKER", icon: "ph-binoculars", quote: "Truth is not found in comfort, but in the questions that disturb your sleep.", definition: "The Seeker represents the gathering of emotional intelligence and data. It is the phase of absorbing truth from the environment to guide future actions.", method: "Observe without judgment. Let the environment reveal its hidden patterns to you before you act. Listen more than you speak." },
-            5: { title: "THE COMPANION", icon: "ph-hand-heart", quote: "We heal not by standing alone, but by letting others stand with us.", definition: "The Companion embodies the need for emotional support and connection. It is the battery charging phase where trust is built.", method: "Seek environments that nurture you. Allow yourself to receive support rather than constantly giving it. Connect with your tribe." },
-            6: { title: "THE CHALLENGER", icon: "ph-fist", quote: "Growth lives in the friction between who you are and who you must become.", definition: "The Challenger brings necessary friction to test your readiness. It represents the emotional spark that precedes transformation.", method: "Do not shy away from conflict or difficulty. Use the challenge as fuel to ignite your warrior spirit. Stand your ground." },
-            8: { title: "THOUGHTS of DEATH/FAILURE", icon: "ph-recycle", quote: "To be reborn, one must first be willing to let the old self die.", definition: "This archetype deals with the deepest fears and the concept of failure as a stepping stone. It is the crucible of profound change.", method: "Embrace the endings. Let go of what no longer serves you to make space for the new creation. Release the old." },
-            9: { title: "THE CREATOR", icon: "ph-paint-brush-broad", quote: "When your mind feels like a storm of unorganized thoughts, you are not lost—you are gathering raw materials.", definition: "This archetype represents the transmutation of mental clutter into tangible reality. It is the dance between the Seeker (who absorbs data) and the Creator (who builds a home for it).", method: "Stop dissipating energy through words. Channel it into your hands. Write it down, build it, make it real. You are the manufacturer of your own peace." },
-            11: { title: "THE SELLER", icon: "ph-storefront", quote: "You possess a unique duality—a power to heal yourself by healing those around you.", definition: "This path merges the nurturing energy of the Companion with the influential charm of the Seller. You transform from a friend into a 'King of Hearts'—a leader who rules by affection, selling hope, comfort, and ideals.", method: "Focus entirely on the comfort of others. By acting as a bridge and speaking with love, you become a beacon that guides others out of their clutter, thereby organizing your own emotions." },
-            12: { title: "THE WARRIOR", icon: "ph-sword", quote: "When gentle diplomacy fails, the Warrior awakens to break the walls enclosing you.", definition: "This domain governs high-intensity transformation. It begins with the Challenger and culminates in the Warrior, who executes the necessary change with red-hot discipline.", method: "Align your dissatisfaction with action. Stop warring with yourself and direct that intensity outward to correct injustices. Your healing comes from urgency and fearless execution." }
-        };
-        const THEMES = {
-            RAJAS: { bg: "bg-[#fff7ed]", border: "border-orange-400", text: "text-orange-900", badge: "bg-orange-600", lightBg: "bg-orange-50", highlight: "text-orange-600", circleBg: "bg-orange-200", circleText: "text-orange-800", divider: "border-orange-200", ring: "ring-orange-400", strip: "bg-orange-500", sub: "RAJAS PHASE", icon: "text-orange-400" },
-            TAMAS: { bg: "bg-[#ecfdf5]", border: "border-emerald-400", text: "text-emerald-900", badge: "bg-emerald-600", lightBg: "bg-emerald-50", highlight: "text-emerald-600", circleBg: "bg-emerald-200", circleText: "text-emerald-800", divider: "border-emerald-200", ring: "ring-emerald-400", strip: "bg-emerald-500", sub: "TAMAS PHASE", icon: "text-emerald-400" }
-        };
+            // Deactivate all buttons
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
 
-        // --- INITIALIZATION ---
-        window.onload = function() {
-            populateSelect('day-input', 1, 31);
-            const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-            populateSelect('month-input', 0, 11, i => months[i]);
-            const yearList = document.getElementById('year-options'); yearList.innerHTML = '';
-            for(let i=1900; i<=2100; i++) { const opt = document.createElement('option'); opt.value = i; yearList.appendChild(opt); }
-            populateSelect('hour-input', 1, 12, i => pad(i));
-            populateSelect('minute-input', 0, 59, i => pad(i));
-            
-            document.getElementById('name-input').value = "FBR Institute";
-            document.getElementById('day-input').value = "3";
-            document.getElementById('month-input').value = "6"; 
-            document.getElementById('year-input').value = "1986";
-            document.getElementById('hour-input').value = "3";
-            document.getElementById('minute-input').value = "50";
-            setAmPm('PM');
-            document.getElementById('location-input').value = "Faridkot, Punjab, India";
-            document.getElementById('latitude').value = "30.6769";
-            document.getElementById('longitude').value = "74.7583";
-            document.getElementById('lat-display').textContent = "30.6769";
-            document.getElementById('lng-display').textContent = "74.7583";
-        };
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
 
-        function setAmPm(val) {
-            document.getElementById('ampm-value').value = val;
-            const btnAm = document.getElementById('btn-am'), btnPm = document.getElementById('btn-pm');
-            btnAm.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${val === 'AM' ? 'active' : ''}`;
-            btnPm.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${val === 'PM' ? 'active' : ''}`;
-        }
+            // Activate button
+            const activeBtn = document.querySelector(`.nav-btn[data-target="${tabId}"]`);
+            if (activeBtn) activeBtn.classList.add('active');
 
-        const searchInput = document.getElementById('location-input'), suggestionsList = document.getElementById('suggestions'), spinner = document.getElementById('loading-spinner'), clearBtn = document.getElementById('clear-btn');
-        searchInput.addEventListener('input', debounce((e) => fetchLocations(e.target.value), 400));
-        document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !suggestionsList.contains(e.target)) suggestionsList.classList.add('hidden'); });
-        clearBtn.addEventListener('click', () => { searchInput.value = ''; suggestionsList.classList.add('hidden'); clearBtn.classList.add('hidden'); });
-        async function fetchLocations(query) {
-            if (!query || query.length < 3) { suggestionsList.classList.add('hidden'); return; }
-            spinner.classList.remove('hidden'); clearBtn.classList.add('hidden');
-            try { const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=5&addressdetails=1`); renderSuggestions(await response.json()); } catch (error) { console.error(error); } finally { spinner.classList.add('hidden'); clearBtn.classList.remove('hidden'); }
-        }
-        function renderSuggestions(data) {
-            suggestionsList.innerHTML = '';
-            if (!data.length) { suggestionsList.classList.add('hidden'); return; }
-            data.forEach(place => {
-                const li = document.createElement('li'); li.className = "px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 last:border-0 flex flex-col";
-                li.innerHTML = `<span class="font-semibold text-slate-700 text-sm">${place.display_name.split(',')[0]}</span><span class="text-xs text-slate-500 truncate">${place.display_name}</span>`;
-                li.onclick = () => {
-                    document.getElementById('latitude').value = parseFloat(place.lat).toFixed(4);
-                    document.getElementById('longitude').value = parseFloat(place.lon).toFixed(4);
-                    document.getElementById('lat-display').textContent = parseFloat(place.lat).toFixed(4);
-                    document.getElementById('lng-display').textContent = parseFloat(place.lon).toFixed(4);
-                    searchInput.value = place.display_name; suggestionsList.classList.add('hidden');
-                };
-                suggestionsList.appendChild(li);
-            }); suggestionsList.classList.remove('hidden');
-        }
-
-        // --- CORE LOGIC ---
-        function calculatePositions() {
-            const vals = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value));
-            if (!vals[0] || isNaN(vals[1]) || !vals[2]) { alert("Please enter a valid date."); return; }
-            let hour = vals[3]; const ampm = document.getElementById('ampm-value').value;
-            if (ampm === 'PM' && hour < 12) hour += 12; if (ampm === 'AM' && hour === 12) hour = 0;
-            const birthDate = new Date(vals[2], vals[1], vals[0], hour, vals[4]);
-            
-            const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value);
-            const name = document.getElementById('name-input').value || "Unknown", loc = document.getElementById('location-input').value || "Unknown Location";
-            const detailStr = `(${name} @ ${formatDateMonthTime(birthDate).replace('@','@')} @ ${loc})`;
-            ['octal-map-details','psycho-details','speed-details','long-cycle-details','monthly-details','daily-details'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent = detailStr; });
-
-            const daysSinceJ2000 = (birthDate - new Date('2000-01-01T12:00:00Z')) / 86400000;
-            const T = daysSinceJ2000 / 36525.0, lahiriAyanamsa = 23.858832 + (1.396042 * T);
-            const obliquity = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(birthDate);
-            const lstRad = toRad(normalize((gmst * 15) + lon)), latRad = toRad(lat);
-            const ascTropical = normalize(toDeg(Math.atan2(Math.cos(lstRad), -((Math.sin(lstRad) * Math.cos(obliquity)) + (Math.tan(latRad) * Math.sin(obliquity))))));
-            const ascSidereal = normalize(ascTropical - lahiriAyanamsa);
-            const lagnaData = { deg: ascSidereal, rashi: Math.floor(ascSidereal / 30) + 1 };
-
-            document.querySelector('#results-table tbody').innerHTML = '';
-            renderRow("Ascendant", ascSidereal, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lagnaData.rashi - 1], ascSidereal % 30, NAKSHATRAS[Math.floor(ascSidereal/13.333)], Math.floor((ascSidereal%13.333)/(13.333/4))+1);
-
-            const rajasP = [], tamasP = [], planetHouseMap = {}, housePlanetList = [], planetData = [];
-            BODIES.forEach(b => {
-                let tropicalLon;
-                if (b.type === 'Node') {
-                    let rMean = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T*T*T)/450000));
-                    tropicalLon = (b.name === 'Rahu') ? rMean : normalize(rMean + 180);
-                } else {
-                    tropicalLon = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(birthDate), true)).elon + (0.013969 * (daysSinceJ2000/365.25));
-                }
-                const siderealLon = normalize(tropicalLon - lahiriAyanamsa), dist = normalize(siderealLon - ascSidereal);
-                const houseInfo = OCTAL_HOUSES.find(h => dist >= h.range[0] && dist < h.range[1]);
-                const houseNo = houseInfo ? houseInfo.id : "Gap";
-                
-                if(houseInfo) {
-                    const pObj = {name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name]};
-                    (houseInfo.category === "RAJAS" ? rajasP : tamasP).push(pObj);
-                    if(!housePlanetList[houseNo]) housePlanetList[houseNo] = [];
-                    housePlanetList[houseNo].push(pObj);
-                }
-                planetHouseMap[b.name] = { symbol: b.symbol, house: houseNo, category: houseInfo?.category, houseInfo, icon: b.icon };
-                planetData.push({ symbol: b.symbol, deg: siderealLon, distFromLagna: dist });
-                renderRow(b.name, siderealLon, b.type, b.icon, houseInfo?.label || "-", houseNo, RASHI_NAMES[Math.floor(siderealLon / 30)], siderealLon % 30, NAKSHATRAS[Math.floor(siderealLon/13.333)], Math.floor((siderealLon%13.333)/(13.333/4))+1);
-            });
-
-            drawOctalChart(lagnaData, planetData);
-            document.getElementById('results-container').classList.remove('hidden');
-            renderAnalysis(rajasP, tamasP);
-            renderEnergyFlow(planetHouseMap);
-            renderEnergyNarrative(planetHouseMap);
-            renderSupportSpeedAnalysis(housePlanetList);
-            const now = new Date();
-            renderLongCycles(now, ascSidereal, planetHouseMap);
-            renderSunCycle(now, ascSidereal, planetHouseMap);
-            renderMoonCycle(now, ascSidereal, planetHouseMap);
-        }
-
-        function renderRow(name, siderealLon, type, icon, hLabel, hNo, rashi, deg, nak, pada) {
-            const tr = document.createElement('tr');
-            tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0" + (type === 'Node' ? ' node-row' : type === 'Ascendant' ? ' asc-row' : '');
-            tr.innerHTML = `<td class="flex items-center gap-2" style="padding: 6px 12px;"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${icon || 'ph-planet'} text-sm"></i></div><span class="font-bold text-xs">${name}</span></td><td>${(hLabel !== "-" && hNo !== "-") ? `<span class="font-bold text-slate-900">${hLabel}</span> <span class="text-slate-900 font-bold">(${hNo})</span>` : "-"}</td><td class="text-slate-700 font-medium">${rashi}</td><td class="font-mono text-slate-600">${dm(deg)}</td><td><span class="font-medium text-slate-700">${nak}</span> <span class="text-[10px] text-slate-400 ml-1">P${pada}</span></td>`;
-            document.querySelector('#results-table tbody').appendChild(tr);
-        }
-
-        function renderAnalysis(rajas, tamas) {
-            const rHtml = rajas.length ? rajas.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-orange-200 text-orange-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-orange-300 italic">No planets</span>`;
-            const tHtml = tamas.length ? tamas.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-emerald-200 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-emerald-300 italic">No planets</span>`;
-            document.getElementById('rajas-list').innerHTML = rHtml; document.getElementById('rajas-count').textContent = `${rajas.length} Planet${rajas.length!==1?'s':''}`;
-            document.getElementById('tamas-list').innerHTML = tHtml; document.getElementById('tamas-count').textContent = `${tamas.length} Planet${tamas.length!==1?'s':''}`;
-            let summary = rajas.length > tamas.length ? "<strong>Active Release Phase:</strong> Dominance in RAJAS houses. Wired for action, expression, and releasing energy." : tamas.length > rajas.length ? "<strong>Recharge & Support Phase:</strong> Dominance in TAMAS houses. Tendency towards gathering resources and introspection." : "<strong>Balanced Energy:</strong> Equilibrium between gathering energy and releasing it.";
-            document.getElementById('analysis-summary').innerHTML = summary;
-        }
-
-        function renderEnergyFlow(planetMap) {
-            const seq = ['Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn', 'Mercury', 'Ketu'];
-            let html = `<h3 class="text-sm font-bold text-slate-800 mb-3">Planetary Energy Flow Sequence</h3><div class="planet-flow-scroll flex items-center justify-between overflow-x-auto gap-1 pb-2">`;
-            seq.forEach((pName, idx) => {
-                const d = planetMap[pName], cat = d.category, bar = cat === "RAJAS" ? "bg-orange-400" : cat === "TAMAS" ? "bg-emerald-400" : "bg-slate-300";
-                html += `<div class="flex-shrink-0 flex flex-col items-center justify-center w-[36px] md:w-[45px] bg-slate-50 border border-slate-200 rounded shadow-sm p-1"><span class="text-[10px] md:text-[11px] font-bold text-slate-800 leading-tight">${d.symbol}</span><span class="text-xs md:text-[13px] font-bold text-indigo-900 leading-tight">${d.house}</span><div class="w-full h-1 rounded-full mt-1 ${bar}"></div></div>`;
-                if (idx < seq.length - 1) html += `<div class="flex-shrink-0 text-slate-400 flex items-center justify-center -mx-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg></div>`;
-            });
-            document.getElementById('energy-flow-container').innerHTML = html + `</div>`;
-        }
-
-        function renderEnergyNarrative(planetMap) {
-            const seq = ['Mercury', 'Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn'], cont = document.getElementById('energy-narrative-container');
-            cont.innerHTML = '';
-            seq.forEach((p, i) => {
-                const next = i === seq.length - 1 ? 'Mercury' : seq[i + 1], curD = planetMap[p], nextD = planetMap[next];
-                if (!curD?.houseInfo || !nextD?.houseInfo) return;
-                const theme = THEMES[curD.houseInfo.category] || THEMES.TAMAS;
-                cont.innerHTML += `<div class="narrative-chip inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${theme.lightBg} ${theme.divider} shadow-sm text-xs cursor-default"><span class="font-bold text-slate-700">${p}</span><i class="ph ph-arrow-right ${theme.icon}"></i><span class="${theme.highlight} font-semibold">${curD.houseInfo.sourceAction}</span><i class="ph ph-caret-right text-black font-bold"></i><span class="font-bold text-slate-700">${next}</span></div>`;
-            });
-        }
-
-        function renderSupportSpeedAnalysis(list) {
-            const cont = document.getElementById('energy-support-container'), res = [];
-            cont.innerHTML = '';
-            ENERGY_PAIRS.forEach(pair => {
-                const rP = (list[pair.rajas] || []).sort((a,b)=>b.speed-a.speed), tP = (list[pair.tamas] || []).sort((a,b)=>b.speed-a.speed);
-                const rInfo = OCTAL_HOUSES.find(h=>h.id===pair.rajas), tInfo = OCTAL_HOUSES.find(h=>h.id===pair.tamas);
-                const rS = rP.length ? rP[0].speed : 0, tS = tP.length ? tP[0].speed : 0;
-                let sc = 0, scVal = 0;
-                if(tP.length && rP.length) { if(tS < rS) { sc=1; scVal=4000+(rS*10)-tS; } else { sc=3; scVal=2000+(10-tS); } }
-                else if(tP.length) { sc=2; scVal=3000+(10-tS); } else if(rP.length) { sc=4; scVal=1000+rS; } else return;
-                res.push({ sc, scVal, rInfo, tInfo, rP, tP });
-            });
-            if(!res.length) { cont.innerHTML = `<div class="col-span-2 text-center text-slate-400 py-8 italic bg-slate-50 rounded-xl border border-slate-100">No planetary pairs found.</div>`; return; }
-            res.sort((a,b) => b.scVal - a.scVal).forEach((d, i) => {
-                const arch = ARCHETYPES[d.rInfo.id], color = i===0?'emerald':i===1?'orange':i===2?'rose':'slate';
-                const meta = {
-                    1: {t:"Fast Charging", i:"ph-battery-charging-vertical", d:"Internal battery charges rapidly, fueling actions with abundance. Rare stamina without burnout."},
-                    2: {t:"Forced Action", i:"ph-waves", d:"Energy building seeking release. Without direction, power finds way out through impulsive actions."},
-                    3: {t:"Slow Charging", i:"ph-battery-warning", d:"Spending energy faster than recovery. Draining battery quickly leading to fatigue."},
-                    4: {t:"Strained Action", i:"ph-fire", d:"Drive to act but unsupported by inner resources. Effort feels heavy, running on reserves."}
-                }[d.sc];
-                const fmt = p => (!p || !p.length) ? '<span class="text-slate-300 italic text-[10px]">Empty</span>' : p.map(x=>`<span class="inline-flex items-center gap-1 font-bold text-slate-800 bg-slate-100/50 px-1.5 py-0.5 rounded border border-slate-200/50 text-xs"><i class="ph ${x.icon} text-slate-500"></i> ${x.name}</span>`).join('');
-                cont.innerHTML += `<div class="rounded-xl border border-slate-300 border-l-[6px] border-l-${color}-500 shadow-md bg-white overflow-hidden flex flex-col hover:shadow-lg transition-shadow">
-                    <div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"><div class="flex items-center gap-3"><div class="p-1.5 rounded-lg bg-white shadow-sm border border-slate-200 text-${color}-500"><i class="ph ${meta.i} text-lg"></i></div><div><h4 class="text-sm font-bold text-slate-800 leading-tight">${meta.t}</h4><div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${d.tInfo.label} <i class="ph ph-arrow-right text-[8px]"></i> ${d.rInfo.label}</div></div></div><span class="bg-${color}-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm">Rank ${i+1}</span></div>
-                    <div class="flex flex-col md:flex-row"><div class="md:w-5/12 p-4 flex flex-col gap-4 border-b md:border-b-0 md:border-r border-slate-100"><div class="flex items-center justify-between gap-2 text-xs bg-slate-50 p-2 rounded border border-slate-100"><div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-emerald-600 uppercase mb-1">Support</span><div class="flex flex-wrap justify-center gap-1">${fmt(d.tP)}</div></div><i class="ph ph-arrow-right text-slate-300"></i><div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-orange-600 uppercase mb-1">Action</span><div class="flex flex-wrap justify-center gap-1">${fmt(d.rP)}</div></div></div><p class="text-xs text-slate-700 font-medium leading-relaxed italic">"${meta.d}"</p></div><div class="md:w-7/12 p-4 bg-slate-50/30 flex flex-col justify-center"><div class="flex items-center gap-2 mb-3"><i class="ph ${arch.icon} text-slate-400 text-lg"></i><span class="text-sm font-bold text-slate-600 uppercase tracking-wider">${arch.title} Insight</span></div><div class="space-y-3"><p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-slate-900">Definition:</span> ${arch.definition}</p><p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-indigo-700">Method:</span> ${arch.method}</p></div></div></div></div>`;
-            });
-        }
-
-        // --- TRANSIT LOGIC ---
-        function getTransitData(pName, date, asc) {
-            const T = (date - new Date('2000-01-01T12:00:00Z')) / 86400000 / 36525.0;
-            let trop, speed;
-            if (['Rahu','Ketu'].includes(pName)) {
-                let r = normalize(125.04452 - (1934.136261*T) + (0.0020708*T*T) + ((T*T*T)/450000));
-                trop = pName === 'Rahu' ? r : normalize(r + 180); speed = -0.05295;
-            } else {
-                const vec = Astronomy.GeoVector(Astronomy.Body[pName], Astronomy.MakeTime(date), true);
-                trop = Astronomy.Ecliptic(vec).elon;
-                const prev = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[pName], Astronomy.MakeTime(new Date(date.getTime()-3600000)), true)).elon;
-                speed = trop - prev; if(speed < -180) speed+=360; if(speed > 180) speed-=360;
-            }
-            const deg = normalize(normalize(trop - (23.858832 + (1.396042 * T))) - asc);
-            return { house: OCTAL_HOUSES.find(h => deg >= h.range[0] && deg < h.range[1]) || OCTAL_HOUSES[0], isRetro: speed < 0 };
-        }
-
-        function findBoundary(pName, start, asc, dir, stepH) {
-            let curr = new Date(start), hId = getTransitData(pName, curr, asc).house.id, step = 0;
-            while(step++ < 10000) {
-                const next = new Date(curr.getTime() + (dir * stepH * 3600000));
-                if (getTransitData(pName, next, asc).house.id !== hId) {
-                    let l = dir===1 ? curr : next, u = dir===1 ? next : curr;
-                    if(l>u) [l,u]=[u,l];
-                    let final = u, lastH;
-                    for(let i=0; i<15; i++) {
-                        let m = new Date((l.getTime()+u.getTime())/2), d = getTransitData(pName, m, asc);
-                        if(d.house.id === hId) { if(dir===1) l=m; else u=m; } 
-                        else { if(dir===1) u=m; else l=m; lastH = d.house; final = m; }
-                    }
-                    return { date: final, newHouse: lastH };
-                }
-                curr = next;
-            }
-            return null;
-        }
-
-        function calcSchedule(pName, now, asc, fCount, pCount) {
-            let step = 24; if(pName==='Moon') step=2; if(['Saturn','Jupiter','Rahu','Ketu'].includes(pName)) step=120; if(pName==='Mars') step=48;
-            const cData = getTransitData(pName, now, asc), exit = findBoundary(pName, now, asc, 1, step)?.date || new Date(now.getTime()+2592000000), entry = findBoundary(pName, now, asc, -1, step)?.date || new Date(now.getTime()-2592000000);
-            const sched = [{ house: {...cData.house, label: cData.house.label + (cData.isRetro ? " (R)" : "")}, entry, exit, type: 'Present' }];
-            let le = exit; 
-            for(let i=0; i<fCount; i++) {
-                const res = findBoundary(pName, new Date(le.getTime()+60000), asc, 1, step);
-                if(res) {
-                    const mid = getTransitData(pName, new Date((le.getTime()+res.date.getTime())/2), asc);
-                    sched.push({ house: {...mid.house, label: mid.house.label + (mid.isRetro ? " (R)" : "")}, entry: le, exit: res.date, type: 'Future' });
-                    le = res.date;
-                }
-            }
-            let lEntry = entry;
-            for(let i=0; i<pCount; i++) {
-                const res = findBoundary(pName, new Date(lEntry.getTime()-60000), asc, -1, step);
-                if(res) {
-                    const mid = getTransitData(pName, new Date((lEntry.getTime()+res.date.getTime())/2), asc);
-                    sched.unshift({ house: {...mid.house, label: mid.house.label + (mid.isRetro ? " (R)" : "")}, entry: res.date, exit: lEntry, type: 'Past' });
-                    lEntry = res.date;
-                }
-            }
-            return sched;
-        }
-
-        function getDesc(hId, p) {
-            const pre = `${p} is`;
-            const m = {3:"attracting environment to GUIDE", 5:"attracting environment to SUPPORT", 6:"attracting environment to CHALLENGE", 8:"triggering THOUGHTS of DEATH/FAILURE", 9:"triggering action as CREATOR", 11:"triggering action as SELLER", 12:"triggering action as WARRIOR", 2:"triggering action as STRATEGIST"};
-            return m[hId] ? `${pre} ${m[hId]}` : "";
-        }
-
-        function renderLongCycles(now, asc, pMap) {
-            const cont = document.getElementById('long-cycle-container'); cont.innerHTML = '';
-            ['Mars','Jupiter','Saturn'].forEach(p => {
-                const data = calcSchedule(p, now, asc, 1, 1), nH = pMap[p]?.houseInfo?.label || "Unknown";
-                let html = `<div class="bg-white rounded-lg border border-slate-200 shadow-sm mb-6 p-1"><div class="flex items-center justify-between p-3 border-b border-slate-100 mb-2"><div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-indigo-600"></span><span class="text-sm font-bold text-slate-800 uppercase">${p} Cycle</span></div><span class="bg-slate-100 text-slate-500 text-xs font-bold px-2 py-0.5 rounded-full">@Birth: ${nH}</span></div><div class="flex flex-col md:flex-row gap-2 p-2">`;
-                data.forEach(item => {
-                    if(!item) return;
-                    const t = THEMES[item.house.category] || THEMES.TAMAS, arch = ARCHETYPES[item.house.id];
-                    const state = item.type === 'Present' ? "opacity-100 ring-2 ring-offset-2 ring-indigo-500 shadow-md scale-[1.01] z-10" : "opacity-80 grayscale-[30%] shadow-sm";
-                    const richDesc = getDesc(item.house.id, p).replace(item.house.label, `<span class="font-bold ${t.highlight}">${item.house.label}</span>`);
-                    html += `<div class="flex-1 rounded-lg border p-4 flex flex-col gap-4 transition-all ${t.bg} ${t.border} ${state}"><div class="flex justify-between items-start"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold text-white uppercase ${t.badge}">${item.type}</span><span class="text-[10px] font-bold text-slate-500">${formatDateFull(item.entry)} - ${formatDateFull(item.exit)}</span></div><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${t.circleBg} ${t.circleText}">${item.house.id}</div><span class="text-sm font-bold text-slate-800 uppercase tracking-tight">${item.house.label}</span></div><div class="flex flex-col gap-3 mt-1"><p class="text-sm text-slate-800 leading-relaxed text-justify font-medium">${richDesc}</p><div class="pl-3 border-l-4 ${t.border} text-sm italic text-slate-700 leading-relaxed my-2 py-1">"${arch.quote}"</div><p class="text-sm text-slate-700 text-justify leading-relaxed pt-3 border-t ${t.divider} mt-auto"><strong class="text-slate-900">Guidance:</strong> ${arch.method}</p></div></div>`;
-                });
-                cont.innerHTML += html + `</div></div>`;
-            });
-        }
-
-        function renderSunCycle(now, asc, pMap) {
-            const cont = document.getElementById('sun-cycle-container'), nH = pMap['Sun']?.houseInfo?.label || "Unknown"; cont.innerHTML = '';
-            calcSchedule('Sun', now, asc, 8, 0).forEach(item => {
-                const t = THEMES[item.house.category] || THEMES.TAMAS, arch = ARCHETYPES[item.house.id], isP = item.type === 'Present';
-                const cls = `bg-white rounded-lg border border-slate-200 overflow-hidden relative flex flex-col md:flex-row shadow-sm mb-4${isP ? " ring-2 ring-indigo-500 z-10 shadow-md transform scale-[1.01]" : ""}`;
-                cont.innerHTML += `<div class="${cls}">${isP ? '<div class="absolute top-0 right-0 bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded-bl-lg z-20 shadow-sm">CURRENTLY ACTIVE</div>' : ''}<div class="w-3 ${t.strip} flex-shrink-0"></div><div class="flex-1 p-5 flex flex-col gap-4"><div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-slate-100 pb-3"><div class="flex items-center gap-3"><div class="w-8 h-8 rounded-full ${t.lightBg} flex items-center justify-center font-bold text-sm ${t.highlight}">${item.house.id}</div><div><h4 class="font-bold text-slate-800 uppercase text-sm leading-none">${item.house.label} <span class="text-slate-400 font-normal text-[10px] ml-1">(@Birth: ${nH})</span></h4><span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">${t.sub}</span></div></div><div class="bg-indigo-50 border border-indigo-100 rounded px-2 py-1 text-[10px] font-bold font-mono text-indigo-700 text-center md:text-right">${formatDateMonthTime(item.entry)} ➜ <br class="md:hidden"/> ${formatDateMonthTime(item.exit)}</div></div><div class="flex flex-col gap-3"><div class="bg-slate-50 rounded p-3 text-sm font-medium text-slate-800 border border-slate-200"><span class="font-bold text-slate-900">Trigger:</span> ${getDesc(item.house.id, 'Sun')}</div><div class="pl-3 border-l-4 ${t.border} text-sm italic text-slate-700 leading-relaxed">"${arch.quote}"</div><p class="text-sm text-slate-700 text-justify leading-relaxed pt-2 border-t border-slate-100 mt-1"><strong class="text-slate-900">Guidance:</strong> ${arch.method}</p></div></div></div>`;
-            });
-        }
-
-        function renderMoonCycle(now, asc, pMap) {
-            const cont = document.getElementById('moon-cycle-container'), nH = pMap['Moon']?.houseInfo?.label || "Unknown"; cont.innerHTML = '';
-            calcSchedule('Moon', now, asc, 5, 2).forEach(item => {
-                const t = THEMES[item.house.category] || THEMES.TAMAS, isP = item.type === 'Present';
-                const st = isP ? `opacity-100 ring-2 ${t.ring} shadow-md z-10` : "opacity-80 grayscale-[30%]";
-                cont.innerHTML += `<div class="w-full rounded-lg border p-0 overflow-hidden flex flex-col md:flex-row ${t.lightBg} ${t.border} ${st} mb-3 transition-all"><div class="md:w-1/4 p-4 border-b md:border-b-0 md:border-r ${t.border} flex flex-row md:flex-col items-center md:items-start justify-between md:justify-center gap-2"><span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-white border border-slate-200 text-slate-600 shadow-sm">${item.type.toUpperCase()}</span><div class="text-xs font-bold text-slate-500 font-mono flex flex-col items-end md:items-start leading-tight"><span>${formatDateMonthTime(item.entry)}</span><span class="text-[9px] text-slate-400 lowercase italic">to</span><span>${formatDateMonthTime(item.exit)}</span></div></div><div class="flex-1 p-4 flex flex-col gap-3"><div class="flex items-center gap-2"><div class="w-6 h-6 rounded-full bg-white border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 shadow-sm">${item.house.id}</div><span class="text-xs font-bold text-slate-800 uppercase tracking-wide">${item.house.label} <span class="text-slate-400 font-normal text-[10px] ml-1">(@Birth: ${nH})</span></span></div><div class="bg-white/60 border border-black/5 rounded p-2 text-xs text-slate-700 font-medium">${getDesc(item.house.id, 'Moon')}</div><p class="text-sm text-slate-700 text-justify leading-relaxed">${ARCHETYPES[item.house.id].definition}</p></div></div>`;
-            });
-        }
-
-        function drawOctalChart(lagna, planets) {
-            const w = 550, h = 550, cx = w/2, cy = h/2, r = 180, labelR = 185, container = document.getElementById('octal-chart-container');
-            planets.forEach(p => {
-                let hs = OCTAL_HOUSES.find(h => p.distFromLagna >= h.range[0] && p.distFromLagna < h.range[1]) || OCTAL_HOUSES[0];
-                p.visualDist = hs.range[0] + 7 + ((p.distFromLagna - hs.range[0]) / (hs.range[1] - hs.range[0]) * (hs.range[1]-hs.range[0]-14));
-            });
-            planets.sort((a,b) => a.visualDist - b.visualDist);
-            const tracks = [60, 105, 150], occ = [[], [], []], symW = 14;
-            planets.forEach(p => {
-                let t = -1;
-                for(let i=0; i<3; i++) {
-                    const th = (symW * 1.8) / (2 * Math.PI * tracks[i]) * 360;
-                    if(!occ[i].some(a => { let d = Math.abs(a - p.visualDist); return (d > 180 ? 360-d : d) < th; })) { t=i; break; }
-                }
-                if(t===-1) t=2;
-                p.radius = tracks[t]; occ[t].push(p.visualDist);
-            });
-
-            let svg = `<svg viewBox="0 0 ${w} ${h}" class="w-full h-full bg-white rounded-full"><defs>`;
-            OCTAL_HOUSES.forEach(h => {
-                const sR = toRad(-90-h.range[0]), eR = toRad(-90-h.range[1]), x1=cx+labelR*Math.cos(sR), y1=cy+labelR*Math.sin(sR), x2=cx+labelR*Math.cos(eR), y2=cy+labelR*Math.sin(eR);
-                const isTop = [2,3,11,12].includes(h.id);
-                svg += `<path id="arc-${h.id}" d="M ${isTop ? x2 : x1} ${isTop ? y2 : y1} A ${labelR} ${labelR} 0 0 ${isTop ? 1 : 0} ${isTop ? x1 : x2} ${isTop ? y1 : y2}" fill="none"/>`;
-            });
-            svg += `</defs>`;
-            OCTAL_HOUSES.forEach(h => {
-                const sR = toRad(-90-h.range[0]), eR = toRad(-90-h.range[1]), x1=cx+r*Math.cos(sR), y1=cy+r*Math.sin(sR), x2=cx+r*Math.cos(eR), y2=cy+r*Math.sin(eR);
-                svg += `<path d="M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 0 0 ${x2} ${y2} Z" fill="${h.color}" stroke="white" stroke-width="2"/><text class="curved-label" fill="${h.textColor}" dy="${[2,3,11,12].includes(h.id)?-5:12}" font-weight="bold"><textPath href="#arc-${h.id}" startOffset="50%" text-anchor="middle">${h.label} (${h.id})</textPath></text>`;
-            });
-            [{n:'E',a:0,r:0,c:"#ef4444"},{n:'N',a:90,r:3,c:"#3b82f6"},{n:'W',a:180,r:6,c:"#10b981"},{n:'S',a:270,r:9,c:"#f59e0b"}].forEach(c => {
-                const rad = toRad(-90-c.a), lx=cx+r*Math.cos(rad), ly=cy+r*Math.sin(rad), tx=cx+(r+45)*Math.cos(rad), ty=cy+(r+45)*Math.sin(rad);
-                svg += `<line x1="${cx}" y1="${cy}" x2="${lx}" y2="${ly}" stroke="#94a3b8" stroke-width="2" stroke-dasharray="4,4"/><g transform="translate(${tx},${ty})"><text y="-8" class="cardinal-label" text-anchor="middle" fill="${c.c}">${c.n}</text><text y="5" class="cardinal-sub" text-anchor="middle">Rashi ${normalizeRashi(lagna.rashi + c.r)}</text><text y="15" class="cardinal-sub" text-anchor="middle" font-family="monospace">${dm(lagna.deg % 30)}</text></g>`;
-            });
-            let lSvg="", dSvg="", tSvg="";
-            planets.forEach(p => {
-                const rad = toRad(-90 - p.visualDist), px=cx+p.radius*Math.cos(rad), py=cy+p.radius*Math.sin(rad), lx=cx+(p.radius+10)*Math.cos(rad), ly=cy+(p.radius+10)*Math.sin(rad);
-                lSvg += `<line x1="${cx}" y1="${cy}" x2="${px}" y2="${py}" stroke="rgba(0,0,0,0.06)" stroke-width="1" />`;
-                dSvg += `<circle cx="${px}" cy="${py}" r="3.5" fill="#1e293b" stroke="white" stroke-width="1.5"/>`;
-                tSvg += `<text x="${lx}" y="${ly}" class="planet-label planet-label-glow" text-anchor="middle" dominant-baseline="central" font-weight="bold" style="font-size: 10px;">${p.symbol}</text>`;
-            });
-            container.innerHTML = svg + lSvg + dSvg + tSvg + `</svg>`;
+            // Scroll to top of container
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     </script>
+
 </body>
 </html>
