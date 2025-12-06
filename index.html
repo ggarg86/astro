@@ -266,9 +266,18 @@
         function toggleAccordion(id) {
             ACC_IDS.forEach(aid => {
                 const el = document.getElementById(aid), ic = document.getElementById('icon-' + aid);
+                const triggerBtn = el.previousElementSibling; // Trigger button
+                
                 if (aid === id) {
                     el.classList.toggle('hidden');
-                    ic.style.transform = el.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
+                    const isOpen = !el.classList.contains('hidden');
+                    ic.style.transform = isOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+                    
+                    if (isOpen) {
+                        setTimeout(() => {
+                            triggerBtn.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }, 300);
+                    }
                 } else {
                     el.classList.add('hidden');
                     if(ic) ic.style.transform = 'rotate(0deg)';
