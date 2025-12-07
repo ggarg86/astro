@@ -34,6 +34,9 @@
             margin: 0;
             padding: 0;
             padding-top: var(--nav-height); /* Space for fixed nav */
+            -webkit-user-select: none; /* Safari */
+            -ms-user-select: none; /* IE 10 and IE 11 */
+            user-select: none; /* Standard syntax */
         }
 
         h1, h2, h3, h4, h5 {
@@ -208,6 +211,23 @@
             font-style: italic;
             max-width: 700px;
             margin: 0 auto;
+            min-height: 1.5em; /* Reserve space for animation */
+        }
+        
+        /* Typewriter Cursor */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 1.2em;
+            background-color: var(--accent-creator);
+            margin-left: 5px;
+            animation: blink 1s step-end infinite;
+            vertical-align: middle;
+        }
+        
+        @keyframes blink {
+            from, to { opacity: 1; }
+            50% { opacity: 0; }
         }
 
         /* --- CHAPTER HEADER --- */
@@ -509,7 +529,10 @@
         <div id="overview" class="tab-content active">
             <div class="hero">
                 <h1 class="hero-title">The Architecture of Self</h1>
-                <p class="hero-subtitle">A Professional Manual for Psychological Reconstruction</p>
+                <!-- Animated Subtitle -->
+                <p class="hero-subtitle">
+                    <span id="type-target"></span><span class="cursor"></span>
+                </p>
             </div>
 
             <div class="content-block">
@@ -672,10 +695,11 @@
                 <div class="section-title">
                     <h3><i class="fa-solid fa-microscope"></i> Deep Psychological Analysis</h3>
                 </div>
-                <p>The <strong>Seller</strong> is the beautiful result of turning your quiet care into powerful charm. However, However, most people with this natural gift stay stuck in the <strong>Companion</strong> phase. The Companion is the safe haven. You are the listener and the healer, soaking up the worries of those around you to bring them peace. This is "Silent Love."</p>
+                <p>The <strong>Seller</strong> is the beautiful result of turning your quiet care into powerful charm. However, most people with this natural gift stay stuck in the <strong>Companion</strong> phase. The Companion is the safe haven. You are the listener and the healer, soaking up the worries of those around you to bring them peace. This is "Silent Love."</p>
                 <p>The struggle begins when <strong>Companion</strong> keep absorbing these emotions without releasing them through the <strong>Seller</strong>. This leads to <strong>Hidden Beauty</strong>. Just as a room feels stuffy without fresh air, your spirit becomes heavy when you nurture the world but refuse to show your own brightness. The Seller is your way of breathing out—using your style, your smile, and your words to turn that internal love into visible hope.</p>
                 <p>The "Charisma Block" is not a lack of talent; it is a fear of <strong>Being Seen.</strong> As long as you remain a Companion, your love is private and safe. No one judges a silent helper. But to become the Seller—to dress up, speak out, and lead—means stepping into the spotlight. You resist this change, hiding in the safety of the shadows instead of becoming the beloved leader your "family" is waiting for. The "Seller's Fatigue" occurs when you are constantly projecting an image (The Seller) without grounding it in care (The Companion). You feel like a fraud because, on some level, you are. You are selling a relationship that is one-sided. You want their admiration, but you aren't offering your protection.</p>
             </div>
+
 
             <div class="content-block">
                 <div class="section-title">
@@ -1012,6 +1036,56 @@
             // Scroll to top of container
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+
+        // Typewriter Effect Script
+        document.addEventListener('DOMContentLoaded', () => {
+            const text = "A Professional Manual for Psychological Reconstruction";
+            const target = document.getElementById('type-target');
+            let index = 0;
+            
+            // Clear text initially (in case of re-renders)
+            if (target) {
+                target.textContent = '';
+                
+                function typeWriter() {
+                    if (index < text.length) {
+                        target.textContent += text.charAt(index);
+                        index++;
+                        setTimeout(typeWriter, 50); // Adjust typing speed here (lower is faster)
+                    } else {
+                        // Loop functionality: wait 2 seconds, reset, and start again
+                        setTimeout(() => {
+                            index = 0;
+                            target.textContent = '';
+                            typeWriter();
+                        }, 2000);
+                    }
+                }
+                
+                // Start typing after a short delay
+                setTimeout(typeWriter, 800);
+            }
+
+            // --- DISABLE RIGHT CLICK & SHORTCUTS (Deterrent) ---
+            document.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                // F12
+                if (e.key === 'F12') {
+                    e.preventDefault();
+                }
+                // Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C (Chrome/Firefox dev tools)
+                if (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C')) {
+                    e.preventDefault();
+                }
+                // Ctrl+U (View Source)
+                if (e.ctrlKey && e.key === 'u') {
+                    e.preventDefault();
+                }
+            });
+        });
     </script>
 
 </body>
