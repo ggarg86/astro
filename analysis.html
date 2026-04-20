@@ -215,36 +215,486 @@
         .text-primary-new { color: var(--primary); }
         .text-accent-new { color: var(--accent-analysis); }
         .text-light-new { color: var(--text-light); }
+
+        /* ── AUTH OVERLAY ── */
+        #auth-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        #auth-overlay.hidden { display: none; }
+        .auth-card {
+            background: #fff; border-radius: 20px; padding: 36px 32px;
+            width: 100%; max-width: 420px; box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+        }
+        .auth-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 28px; }
+        .auth-logo-icon { width: 44px; height: 44px; background: var(--accent-analysis); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.3em; }
+        .auth-logo-text { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1em; color: var(--primary); line-height: 1.2; text-transform: uppercase; letter-spacing: 0.5px; }
+        .auth-logo-sub { font-size: 0.65em; color: #94a3b8; font-weight: 500; text-transform: none; letter-spacing: 0; }
+        .auth-tabs { display: flex; gap: 0; margin-bottom: 24px; background: #f1f5f9; border-radius: 10px; padding: 4px; }
+        .auth-tab {
+            flex: 1; padding: 8px; text-align: center; font-family: 'Montserrat', sans-serif;
+            font-weight: 600; font-size: 0.82em; border-radius: 8px; cursor: pointer;
+            transition: all 0.2s; color: #64748b; border: none; background: none;
+        }
+        .auth-tab.active { background: white; color: var(--primary); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+        .auth-form { display: flex; flex-direction: column; gap: 14px; }
+        .auth-form.hidden { display: none; }
+        .auth-field label { display: block; font-family: 'Montserrat', sans-serif; font-size: 0.72em; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px; }
+        .auth-field input {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: 'Merriweather', serif; font-size: 0.9em; color: #334155;
+            transition: border-color 0.2s; box-sizing: border-box; outline: none;
+        }
+        .auth-field input:focus { border-color: var(--accent-analysis); }
+        .auth-field input::placeholder { color: #cbd5e1; }
+        .auth-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .auth-submit {
+            width: 100%; padding: 12px; background: var(--accent-analysis); color: white;
+            border: none; border-radius: 10px; font-family: 'Montserrat', sans-serif;
+            font-weight: 700; font-size: 0.9em; cursor: pointer; transition: opacity 0.2s;
+            margin-top: 4px; letter-spacing: 0.3px;
+        }
+        .auth-submit:hover { opacity: 0.88; }
+        .auth-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+        .auth-msg { padding: 10px 14px; border-radius: 8px; font-size: 0.82em; font-family: 'Montserrat', sans-serif; font-weight: 600; text-align: center; display: none; }
+        .auth-msg.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; display: block; }
+        .auth-msg.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; display: block; }
+        .auth-msg.info { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; display: block; }
+        .auth-default-hint { text-align: center; font-size: 0.75em; color: #94a3b8; font-family: 'Montserrat', sans-serif; margin-top: 6px; }
+
+        /* ── SEARCH BAR (post-login) ── */
+        #search-section {
+            background: white; border-radius: 16px; border: 1px solid #e2e8f0;
+            padding: 20px 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        #search-section.hidden { display: none; }
+        .search-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; flex-wrap: wrap; gap: 10px; }
+        .search-welcome { font-family: 'Montserrat', sans-serif; font-size: 0.88em; font-weight: 700; color: var(--primary); }
+        .search-welcome span { color: var(--accent-analysis); }
+        #logout-btn {
+            padding: 6px 16px; border: 1.5px solid #e2e8f0; border-radius: 20px;
+            background: none; font-family: 'Montserrat', sans-serif; font-weight: 600;
+            font-size: 0.78em; color: #64748b; cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 6px;
+        }
+        #logout-btn:hover { background: #fef2f2; border-color: #fecaca; color: #dc2626; }
+        .search-input-wrap { position: relative; }
+        #record-search-input {
+            width: 100%; padding: 10px 16px 10px 40px; border: 1.5px solid #e2e8f0;
+            border-radius: 10px; font-family: 'Merriweather', serif; font-size: 0.88em;
+            color: #334155; outline: none; transition: border-color 0.2s; box-sizing: border-box;
+        }
+        #record-search-input:focus { border-color: var(--accent-analysis); }
+        .search-icon { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 1.1em; pointer-events: none; }
+        #search-results-dropdown {
+            position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+            background: white; border: 1px solid #e2e8f0; border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12); z-index: 500; max-height: 320px;
+            overflow-y: auto; display: none;
+        }
+        #search-results-dropdown.show { display: block; }
+        .search-result-item {
+            padding: 12px 16px; cursor: pointer; transition: background 0.15s;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .search-result-item:last-child { border-bottom: none; }
+        .search-result-item:hover { background: #f8fafc; }
+        .sri-name { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.9em; color: #1e293b; margin-bottom: 4px; }
+        .sri-meta { display: flex; flex-wrap: wrap; gap: 6px; }
+        .sri-tag {
+            display: inline-flex; align-items: center; gap: 4px;
+            font-size: 0.72em; font-family: 'Montserrat', sans-serif; font-weight: 600;
+            padding: 3px 8px; border-radius: 20px;
+        }
+        .sri-tag.dob  { background: #eff6ff; color: #1d4ed8; }
+        .sri-tag.tob  { background: #f0fdf4; color: #15803d; }
+        .sri-tag.place{ background: #fdf4ff; color: #7e22ce; }
+        .sri-tag.saved{ background: #fff7ed; color: #c2410c; }
+        .search-no-results { padding: 16px; text-align: center; color: #94a3b8; font-size: 0.85em; font-family: 'Montserrat', sans-serif; }
+
+        /* ── TOAST ── */
+        #toast {
+            position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+            background: #1e293b; color: white; padding: 12px 24px; border-radius: 30px;
+            font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: 0.82em;
+            z-index: 99999; opacity: 0; transition: all 0.35s ease; pointer-events: none;
+            white-space: nowrap; max-width: 90vw; text-align: center;
+        }
+        #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+        #toast.toast-success { background: #166534; }
+        #toast.toast-warning { background: #92400e; }
+        #toast.toast-error   { background: #991b1b; }
+
+
+        /* ── DELETE CONFIRM MODAL ── */
+        #delete-modal-backdrop {
+            position: fixed; inset: 0; z-index: 99999;
+            background: rgba(15,23,42,0.75);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        #delete-modal-backdrop.hidden { display: none; }
+        .delete-modal {
+            background: #fff; border-radius: 20px; padding: 32px 28px;
+            width: 100%; max-width: 380px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            text-align: center;
+        }
+        .delete-modal-icon {
+            width: 56px; height: 56px; border-radius: 50%;
+            background: #fef2f2; border: 2px solid #fecaca;
+            display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px; font-size: 1.6em; color: #dc2626;
+        }
+        .delete-modal-title {
+            font-family: 'Montserrat', sans-serif; font-weight: 800;
+            font-size: 1em; color: #1e293b; margin-bottom: 8px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .delete-modal-desc {
+            font-family: 'Montserrat', sans-serif; font-size: 0.82em;
+            color: #64748b; margin-bottom: 6px; line-height: 1.5;
+        }
+        .delete-modal-name {
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.9em; color: #dc2626; margin-bottom: 20px;
+            background: #fef2f2; padding: 8px 14px; border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+        .delete-modal-footer { display: flex; gap: 10px; }
+        .delete-cancel-btn {
+            flex: 1; padding: 11px; border: 1.5px solid #e2e8f0;
+            border-radius: 10px; background: none;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.85em; color: #64748b; cursor: pointer; transition: all 0.2s;
+        }
+        .delete-cancel-btn:hover { background: #f8fafc; }
+        .delete-confirm-btn {
+            flex: 1; padding: 11px; background: #dc2626; color: white;
+            border: none; border-radius: 10px;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.85em; cursor: pointer; transition: opacity 0.2s;
+        }
+        .delete-confirm-btn:hover { opacity: 0.88; }
+        .delete-confirm-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        /* Delete button inside search result */
+        .sri-delete-btn {
+            padding: 4px 12px; border-radius: 20px;
+            border: 1.5px solid #fecaca; background: #fef2f2;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.7em; color: #dc2626; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+        }
+        .sri-delete-btn:hover { background: #dc2626; color: white; border-color: #dc2626; }
+        /* ── NAV USER BADGE ── */
+        #nav-user-badge {
+            font-family: 'Montserrat', sans-serif; font-size: 0.78em; font-weight: 700;
+            color: var(--accent-analysis); padding: 4px 12px; background: #eff6ff;
+            border-radius: 20px; border: 1px solid #bfdbfe; display: none;
+            align-items: center; gap: 6px; white-space: nowrap;
+        }
+        #nav-user-badge.show { display: flex; }
+
+        /* ── EDIT MODAL ── */
+        #edit-modal-backdrop {
+            position: fixed; inset: 0; z-index: 99998;
+            background: rgba(15,23,42,0.75);
+            display: flex; align-items: center; justify-content: center;
+            padding: 20px;
+        }
+        #edit-modal-backdrop.hidden { display: none; }
+        .edit-modal {
+            background: #fff; border-radius: 20px; padding: 32px 28px;
+            width: 100%; max-width: 480px;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+            position: relative;
+        }
+        .edit-modal-title {
+            font-family: 'Montserrat', sans-serif; font-weight: 800;
+            font-size: 1em; color: var(--primary); margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+            text-transform: uppercase; letter-spacing: 0.5px;
+        }
+        .edit-modal-close {
+            position: absolute; top: 16px; right: 16px;
+            background: #f1f5f9; border: none; border-radius: 8px;
+            width: 32px; height: 32px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            color: #64748b; font-size: 1.1em; transition: all 0.2s;
+        }
+        .edit-modal-close:hover { background: #fef2f2; color: #dc2626; }
+        .edit-field { margin-bottom: 14px; }
+        .edit-field label {
+            display: block; font-family: 'Montserrat', sans-serif;
+            font-size: 0.72em; font-weight: 700; color: #64748b;
+            text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 5px;
+        }
+        .edit-field input, .edit-field select {
+            width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0;
+            border-radius: 10px; font-family: 'Merriweather', serif;
+            font-size: 0.88em; color: #334155; outline: none;
+            transition: border-color 0.2s; box-sizing: border-box;
+            background: white;
+        }
+        .edit-field input:focus, .edit-field select:focus { border-color: var(--accent-analysis); }
+        .edit-grid-3 { display: grid; grid-template-columns: 1fr 1.4fr 1.6fr; gap: 10px; }
+        .edit-grid-time { display: grid; grid-template-columns: 1fr 1fr auto; gap: 10px; align-items: end; }
+        .edit-ampm-row {
+            display: flex; background: #f1f5f9; border-radius: 8px;
+            padding: 3px; border: 1.5px solid #e2e8f0;
+            height: 42px; box-sizing: border-box;
+        }
+        .edit-ampm-btn {
+            flex: 1; border: none; background: none; border-radius: 6px;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.75em; color: #64748b; cursor: pointer; transition: all 0.2s;
+        }
+        .edit-ampm-btn.active { background: var(--accent-analysis); color: white; }
+        .edit-modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+        .edit-cancel-btn {
+            flex: 1; padding: 11px; border: 1.5px solid #e2e8f0; border-radius: 10px;
+            background: none; font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.85em; color: #64748b; cursor: pointer; transition: all 0.2s;
+        }
+        .edit-cancel-btn:hover { background: #f8fafc; }
+        .edit-save-btn {
+            flex: 2; padding: 11px; background: var(--accent-analysis); color: white;
+            border: none; border-radius: 10px; font-family: 'Montserrat', sans-serif;
+            font-weight: 700; font-size: 0.85em; cursor: pointer; transition: opacity 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .edit-save-btn:hover { opacity: 0.88; }
+        .edit-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .edit-msg {
+            padding: 8px 12px; border-radius: 8px; font-size: 0.8em;
+            font-family: 'Montserrat', sans-serif; font-weight: 600;
+            text-align: center; display: none; margin-bottom: 10px;
+        }
+        .edit-msg.error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; display: block; }
+        .edit-msg.success { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; display: block; }
+        .sri-edit-btn {
+            padding: 4px 12px; border-radius: 20px;
+            border: 1.5px solid #bfdbfe; background: #eff6ff;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.7em; color: #1d4ed8; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .sri-edit-btn:hover { background: #2980b9; color: white; border-color: #2980b9; }
+        .sri-top-row { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+        .sri-delete-btn {
+            padding: 4px 12px; border-radius: 20px;
+            border: 1.5px solid #fecaca; background: #fef2f2;
+            font-family: 'Montserrat', sans-serif; font-weight: 700;
+            font-size: 0.7em; color: #dc2626; cursor: pointer;
+            transition: all 0.2s; white-space: nowrap; flex-shrink: 0;
+            display: inline-flex; align-items: center; gap: 4px;
+        }
+        .sri-delete-btn:hover { background: #dc2626; color: white; border-color: #dc2626; }
     </style>
-    
-    <script>
-        /* --- SECURITY LAYER --- */
-        (function() {
-            // Disable right click context menu
-            document.addEventListener('contextmenu', event => event.preventDefault());
-
-            // Disable developer tool shortcuts
-            document.onkeydown = function(e) {
-                // F12
-                if(e.keyCode == 123) return false;
-                // Ctrl+Shift+I (Inspect)
-                if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) return false;
-                // Ctrl+Shift+J (Console)
-                if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) return false;
-                // Ctrl+U (View Source)
-                if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) return false;
-                // Ctrl+Shift+C (Inspect Element)
-                if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) return false;
-            };
-
-            // Anti-debugger loop: triggers debugger pause if dev tools are open
-            setInterval(function() {
-                debugger;
-            }, 500);
-        })();
-    </script>
 </head>
 <body>
+
+
+    <script>
+        // ══════════════════════════════════════════════════════════
+        //  SOURCE CODE PROTECTION
+        // ══════════════════════════════════════════════════════════
+
+        // Disable right click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+            return false;
+        });
+
+        // Block keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            // Block F12 (DevTools)
+            if (e.keyCode === 123) { e.preventDefault(); return false; }
+            // Block Ctrl+U (View Source)
+            if (e.ctrlKey && e.keyCode === 85) { e.preventDefault(); return false; }
+            // Block Ctrl+S (Save Page)
+            if (e.ctrlKey && e.keyCode === 83) { e.preventDefault(); return false; }
+            // Block Ctrl+Shift+I (DevTools)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 73) { e.preventDefault(); return false; }
+            // Block Ctrl+Shift+J (Console)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 74) { e.preventDefault(); return false; }
+            // Block Ctrl+Shift+C (Inspector)
+            if (e.ctrlKey && e.shiftKey && e.keyCode === 67) { e.preventDefault(); return false; }
+            // Block Ctrl+A (Select All) - prevents bulk copy
+            if (e.ctrlKey && e.keyCode === 65) { e.preventDefault(); return false; }
+            // NOTE: Ctrl+P (print) is intentionally NOT blocked — printing is allowed
+        });
+
+        // Block drag selection of source
+        document.addEventListener('selectstart', function(e) {
+            // Allow selection inside input fields and textareas only
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT') return true;
+            e.preventDefault();
+            return false;
+        });
+
+        // DevTools open detection — redirects if DevTools detected
+        (function() {
+            var devtools = { open: false };
+            var threshold = 160;
+            setInterval(function() {
+                if (window.outerWidth - window.innerWidth > threshold ||
+                    window.outerHeight - window.innerHeight > threshold) {
+                    if (!devtools.open) {
+                        devtools.open = true;
+                        document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;flex-direction:column;gap:16px;background:#0f172a;color:white;"><h2 style="font-size:1.5em;">Access Restricted</h2><p style="color:#94a3b8;">Developer tools are not permitted on this page.</p><button onclick="location.reload()" style="padding:10px 24px;background:#2980b9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1em;">Reload Page</button></div>';
+                    }
+                } else {
+                    devtools.open = false;
+                }
+            }, 500);
+        })();
+
+        // ══════════════════════════════════════════════════════════
+        //  END OF PROTECTION
+        // ══════════════════════════════════════════════════════════
+    </script>
+
+    <!-- ══════════════════════════════════════════
+         AUTH OVERLAY — shown until user logs in
+    ══════════════════════════════════════════ -->
+    <div id="auth-overlay">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <div class="auth-logo-icon"><i class="ph ph-star-four"></i></div>
+                <div class="auth-logo-text">
+                    Geo-Time Chart
+                    <div class="auth-logo-sub">Calculator — Architecture of Self</div>
+                </div>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</button>
+                <button class="auth-tab" id="tab-register" onclick="switchAuthTab('register')">Register</button>
+            </div>
+
+            <!-- LOGIN FORM -->
+            <div class="auth-form" id="form-login">
+                <div class="auth-field">
+                    <label>Mobile Number (Username)</label>
+                    <input type="tel" id="login-mobile" placeholder="Enter 10-digit mobile number" maxlength="10">
+                </div>
+                <div class="auth-field">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="Enter your password" onkeydown="if(event.key==='Enter') doLogin()">
+                </div>
+                <div class="auth-msg" id="login-msg"></div>
+                <button class="auth-submit" id="login-btn" onclick="doLogin()">
+                    <i class="ph ph-sign-in"></i> Login
+                </button>
+                <p class="auth-default-hint">Default password is your mobile number</p>
+            </div>
+
+            <!-- REGISTER FORM -->
+            <div class="auth-form hidden" id="form-register">
+                <div class="auth-field">
+                    <label>Full Name</label>
+                    <input type="text" id="reg-name" placeholder="Enter your full name">
+                </div>
+                <div class="auth-field">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="reg-mobile" placeholder="10-digit number (used as username &amp; password)" maxlength="10">
+                </div>
+                <div class="auth-grid-2">
+                    <div class="auth-field">
+                        <label>City</label>
+                        <input type="text" id="reg-city" placeholder="Your city">
+                    </div>
+                    <div class="auth-field">
+                        <label>State</label>
+                        <input type="text" id="reg-state" placeholder="Your state">
+                    </div>
+                </div>
+                <div class="auth-msg" id="register-msg"></div>
+                <button class="auth-submit" id="register-btn" onclick="doRegister()">
+                    <i class="ph ph-user-plus"></i> Create Account
+                </button>
+                <p class="auth-default-hint">Your mobile number will be set as your default password</p>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ══════════════════════════════════════════
+         DELETE CONFIRMATION MODAL
+    ══════════════════════════════════════════ -->
+    <!-- ══════════════════════════════════════════
+         EDIT RECORD MODAL
+    ══════════════════════════════════════════ -->
+    <div id="edit-modal-backdrop" class="hidden">
+        <div class="edit-modal">
+            <button class="edit-modal-close" onclick="closeEditModal()"><i class="ph ph-x"></i></button>
+            <div class="edit-modal-title"><i class="ph ph-pencil-simple"></i> Edit Record</div>
+
+            <div id="edit-msg" class="edit-msg"></div>
+
+            <div class="edit-field">
+                <label>Person Name</label>
+                <input type="text" id="edit-name" placeholder="Full name">
+            </div>
+
+            <div class="edit-field">
+                <label>Place of Birth</label>
+                <input type="text" id="edit-place" placeholder="City, State, Country">
+            </div>
+
+            <div class="edit-field">
+                <label>Date of Birth</label>
+                <div class="edit-grid-3">
+                    <select id="edit-day"></select>
+                    <select id="edit-month"></select>
+                    <input type="number" id="edit-year" placeholder="Year" min="1900" max="2100">
+                </div>
+            </div>
+
+            <div class="edit-field">
+                <label>Time of Birth</label>
+                <div class="edit-grid-time">
+                    <select id="edit-hour"></select>
+                    <select id="edit-minute"></select>
+                    <div class="edit-ampm-row">
+                        <button class="edit-ampm-btn" id="edit-btn-am" onclick="setEditAmPm('AM')">AM</button>
+                        <button class="edit-ampm-btn" id="edit-btn-pm" onclick="setEditAmPm('PM')">PM</button>
+                    </div>
+                </div>
+                <input type="hidden" id="edit-ampm" value="AM">
+            </div>
+
+            <div class="edit-modal-footer">
+                <button class="edit-cancel-btn" onclick="closeEditModal()">Cancel</button>
+                <button class="edit-save-btn" id="edit-save-btn" onclick="saveEditRecord()">
+                    <i class="ph ph-floppy-disk"></i> Save &amp; Generate Report
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-modal-backdrop" class="hidden">
+        <div class="delete-modal">
+            <div class="delete-modal-icon"><i class="ph ph-trash"></i></div>
+            <div class="delete-modal-title">Delete Record?</div>
+            <div class="delete-modal-desc">You are about to permanently delete the record for:</div>
+            <div class="delete-modal-name" id="delete-modal-name">—</div>
+            <div class="delete-modal-desc">This action cannot be undone.</div>
+            <div class="delete-modal-footer" style="margin-top:20px;">
+                <button class="delete-cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+                <button class="delete-confirm-btn" id="delete-confirm-btn" onclick="confirmDelete()">
+                    <i class="ph ph-trash"></i> Yes, Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast"></div>
 
     <!-- Navigation Bar -->
     <nav class="navbar">
@@ -254,6 +704,7 @@
         </a>
 
         <div class="nav-container">
+            <div id="nav-user-badge"><i class="ph ph-user-circle"></i> <span id="nav-user-name"></span></div>
             <a href="index.html" class="nav-btn">
                 <i class="fa-solid fa-arrow-left"></i> Back to Guide
             </a>
@@ -308,6 +759,24 @@
 
     <!-- Main Content -->
     <div class="max-w-6xl mx-auto flex flex-col gap-6 p-4 md:p-8">
+
+        <!-- ── SEARCH SAVED RECORDS (visible after login) ── -->
+        <div id="search-section" class="hidden">
+            <div class="search-header">
+                <div class="search-welcome">
+                    Welcome, <span id="search-welcome-name">User</span> &mdash; Search your saved records or enter new details below
+                </div>
+                <button id="logout-btn" onclick="doLogout()">
+                    <i class="ph ph-sign-out"></i> Logout
+                </button>
+            </div>
+            <div class="search-input-wrap" style="position:relative;">
+                <i class="ph ph-magnifying-glass search-icon"></i>
+                <input type="text" id="record-search-input" placeholder="Type a person's name to search your saved records..." oninput="onSearchInput(this.value)" autocomplete="off">
+                <div id="search-results-dropdown"></div>
+            </div>
+        </div>
+
         <!-- Header -->
         <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 flex flex-col md:flex-row items-center justify-between w-full">
             <div class="flex items-center gap-3">
@@ -826,7 +1295,7 @@
         async function fetchLocations(q) { if (!q || q.length < 3) { suggestionsList.classList.add('hidden'); return; } spinner.classList.remove('hidden'); clearBtn.classList.add('hidden'); try { const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1`); renderSuggestions(await r.json()); } catch (e) { console.error(e); } finally { spinner.classList.add('hidden'); clearBtn.classList.remove('hidden'); } }
         function renderSuggestions(d) { suggestionsList.innerHTML = ''; if (!d.length) { suggestionsList.classList.add('hidden'); return; } d.forEach(p => { const l = document.createElement('li'); l.className = "px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 last:border-0 flex flex-col"; l.innerHTML = `<span class="font-semibold text-slate-700 text-sm">${p.display_name.split(',')[0]}</span><span class="text-xs text-slate-500 truncate">${p.display_name}</span>`; l.onclick = () => { document.getElementById('latitude').value = parseFloat(p.lat).toFixed(4); document.getElementById('longitude').value = parseFloat(p.lon).toFixed(4); document.getElementById('lat-display').textContent = parseFloat(p.lat).toFixed(4); document.getElementById('lng-display').textContent = parseFloat(p.lon).toFixed(4); searchInput.value = p.display_name; suggestionsList.classList.add('hidden'); }; suggestionsList.appendChild(l); }); suggestionsList.classList.remove('hidden'); }
 
-        function calculatePositions() { const v = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value)); if (!v[0] || isNaN(v[1]) || !v[2]) { alert("Please enter a valid date."); return; } let h = v[3]; const ap = document.getElementById('ampm-value').value; if (ap === 'PM' && h < 12) h += 12; if (ap === 'AM' && h === 12) h = 0; const bd = new Date(v[2], v[1], v[0], h, v[4]); const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value); const nm = (document.getElementById('name-input').value || "Unknown").toUpperCase(); const lc = document.getElementById('location-input').value || "Unknown Location"; const dp = `${pad(bd.getDate())} ${bd.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${bd.getFullYear()}`; const tp = bd.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); }
+        function calculatePositions() { const v = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value)); if (!v[0] || isNaN(v[1]) || !v[2]) { alert("Please enter a valid date."); return; } let h = v[3]; const ap = document.getElementById('ampm-value').value; if (ap === 'PM' && h < 12) h += 12; if (ap === 'AM' && h === 12) h = 0; const bd = new Date(v[2], v[1], v[0], h, v[4]); const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value); const nm = (document.getElementById('name-input').value || "Unknown").toUpperCase(); const lc = document.getElementById('location-input').value || "Unknown Location"; const dp = `${pad(bd.getDate())} ${bd.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${bd.getFullYear()}`; const tp = bd.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); saveCurrentRecord(); }
         function renderRow(n, s, t, i, hl, hn, r, dg, nk, pd) { const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0" + (t === 'Node' ? ' node-row' : t === 'Ascendant' ? ' asc-row' : ''); tr.innerHTML = `<td class="flex items-center gap-2" style="padding: 6px 12px;"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${i || 'ph-planet'} text-sm"></i></div><span class="font-bold text-xs">${n}</span></td><td>${(hl !== "-" && hn !== "-") ? `<span class="font-bold text-slate-900">${hl}</span> <span class="text-slate-900 font-bold">(${hn})</span>` : "-"}</td><td class="text-slate-700 font-medium">${r}</td><td class="font-mono text-slate-600">${dm(dg)}</td><td><span class="font-medium text-slate-700">${nk}</span> <span class="text-[10px] text-slate-400 ml-1">P${pd}</span></td>`; document.querySelector('#results-table tbody').appendChild(tr); }
         
         // --- UPDATED ANALYSIS RENDER FUNCTION ---
@@ -892,6 +1361,543 @@
          * 2. Within each house, calculates a "staggered spiral" position.
          * 3. CLAMPING: Ensures visual placement never crosses the 45-degree house boundaries.
          */
+        // ══════════════════════════════════════════════════════════
+        //  AUTH & GOOGLE SHEETS INTEGRATION
+        //  Replace the URL below with your deployed Apps Script URL
+        // ══════════════════════════════════════════════════════════
+        // ============================================================
+        // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW (BETWEEN THE QUOTES)
+        // Example: 'https://script.google.com/macros/s/ABC.../exec'
+        // ============================================================
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhHxRb8ozTPTW9-HPn6UA4JDzT5iqfCL-XM--JiEanFmy2h4V4f-4IjC1rkxdWeYYdeA/exec';
+
+        // ── Session helpers ──────────────────────────────────────
+        function saveSession(user) {
+            localStorage.setItem('gtc_user', JSON.stringify(user));
+        }
+        function getSession() {
+            try { return JSON.parse(localStorage.getItem('gtc_user')); } catch(e) { return null; }
+        }
+        function clearSession() {
+            localStorage.removeItem('gtc_user');
+        }
+
+        // ── Toast ────────────────────────────────────────────────
+        function showToast(msg, type='success') {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.className = 'show toast-' + type;
+            clearTimeout(window._toastTimer);
+            window._toastTimer = setTimeout(() => { t.className = ''; }, 3200);
+        }
+
+        // ── API helper ───────────────────────────────────────────
+        async function apiCall(payload) {
+            const url = APPS_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+            const res = await fetch(url, { method: 'GET' });
+            return await res.json();
+        }
+
+        // ── Tab switch ───────────────────────────────────────────
+        function switchAuthTab(tab) {
+            document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+            document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+            document.getElementById('form-login').classList.toggle('hidden', tab !== 'login');
+            document.getElementById('form-register').classList.toggle('hidden', tab !== 'register');
+            document.getElementById('login-msg').className = 'auth-msg';
+            document.getElementById('register-msg').className = 'auth-msg';
+        }
+
+        // ── Show auth message ────────────────────────────────────
+        function setAuthMsg(id, msg, type) {
+            const el = document.getElementById(id);
+            el.textContent = msg;
+            el.className = 'auth-msg ' + type;
+        }
+
+        // ── Login ────────────────────────────────────────────────
+        async function doLogin() {
+            const mobile   = document.getElementById('login-mobile').value.trim();
+            const password = document.getElementById('login-password').value.trim();
+            if (!mobile || !password) { setAuthMsg('login-msg', 'Please enter mobile and password.', 'error'); return; }
+
+            const btn = document.getElementById('login-btn');
+            btn.disabled = true; btn.textContent = 'Logging in…';
+
+            try {
+                const res = await apiCall({ action: 'login', mobile, password });
+                if (res.success) {
+                    saveSession(res.user);
+                    activateApp(res.user);
+                } else {
+                    setAuthMsg('login-msg', res.message, 'error');
+                }
+            } catch(e) {
+                setAuthMsg('login-msg', 'Connection error. Please try again.', 'error');
+            }
+            btn.disabled = false; btn.innerHTML = '<i class="ph ph-sign-in"></i> Login';
+        }
+
+        // ── Register ─────────────────────────────────────────────
+        async function doRegister() {
+            const full_name = document.getElementById('reg-name').value.trim();
+            const mobile    = document.getElementById('reg-mobile').value.trim();
+            const city      = document.getElementById('reg-city').value.trim();
+            const state     = document.getElementById('reg-state').value.trim();
+
+            if (!full_name || !mobile || !city || !state) {
+                setAuthMsg('register-msg', 'Please fill in all fields.', 'error'); return;
+            }
+            if (!/^\d{10}$/.test(mobile)) {
+                setAuthMsg('register-msg', 'Mobile number must be exactly 10 digits.', 'error'); return;
+            }
+
+            const btn = document.getElementById('register-btn');
+            btn.disabled = true; btn.textContent = 'Creating account…';
+
+            try {
+                const res = await apiCall({ action: 'register', full_name, mobile, city, state });
+                if (res.success) {
+                    saveSession(res.user);
+                    activateApp(res.user);
+                } else {
+                    setAuthMsg('register-msg', res.message, 'error');
+                }
+            } catch(e) {
+                setAuthMsg('register-msg', 'Connection error. Please try again.', 'error');
+            }
+            btn.disabled = false; btn.innerHTML = '<i class="ph ph-user-plus"></i> Create Account';
+        }
+
+        // ── Activate app after login/register ────────────────────
+        function activateApp(user) {
+            document.getElementById('auth-overlay').classList.add('hidden');
+            document.getElementById('search-section').classList.remove('hidden');
+            document.getElementById('search-welcome-name').textContent = user.full_name;
+            document.getElementById('nav-user-name').textContent = user.full_name;
+            document.getElementById('nav-user-badge').classList.add('show');
+        }
+
+        // ── Logout ───────────────────────────────────────────────
+        function doLogout() {
+            clearSession();
+            document.getElementById('auth-overlay').classList.remove('hidden');
+            document.getElementById('search-section').classList.add('hidden');
+            document.getElementById('nav-user-badge').classList.remove('show');
+            document.getElementById('login-mobile').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-msg').className = 'auth-msg';
+            document.getElementById('record-search-input').value = '';
+            document.getElementById('search-results-dropdown').innerHTML = '';
+            document.getElementById('search-results-dropdown').classList.remove('show');
+            switchAuthTab('login');
+        }
+
+        // ── Search input handler ─────────────────────────────────
+        let _searchTimer = null;
+        function onSearchInput(val) {
+            clearTimeout(_searchTimer);
+            const dd = document.getElementById('search-results-dropdown');
+            if (val.trim().length === 0) { dd.classList.remove('show'); dd.innerHTML = ''; return; }
+            _searchTimer = setTimeout(() => fetchSearchResults(val.trim()), 300);
+        }
+
+        async function fetchSearchResults(query) {
+            const user = getSession();
+            if (!user) return;
+            const dd = document.getElementById('search-results-dropdown');
+            dd.innerHTML = '<div class="search-no-results">Searching…</div>';
+            dd.classList.add('show');
+            try {
+                const res = await apiCall({ action: 'search', user_id: user.user_id, query });
+                if (res.success && res.records.length > 0) {
+                    dd.innerHTML = res.records.map(r => buildSearchResultHTML(r)).join('');
+                    dd.classList.add('show');
+                } else {
+                    dd.innerHTML = '<div class="search-no-results">No saved records found for "' + query + '"</div>';
+                }
+            } catch(e) {
+                dd.innerHTML = '<div class="search-no-results">Error fetching records.</div>';
+            }
+        }
+
+        function buildSearchResultHTML(r) {
+            const savedLabel = r.saved_on ? r.saved_on.toString().split(',')[0].split(' ').slice(0,3).join(' ') : '';
+            const rJson = JSON.stringify(r).replace(/"/g,'&quot;');
+            return `<div class="search-result-item" onclick="loadRecord(${rJson})">
+                <div class="sri-top-row">
+                    <span class="sri-name"><i class="ph ph-user" style="margin-right:5px;"></i>${r.person_name}</span>
+                    <button class="sri-edit-btn" onclick="event.stopPropagation(); openEditModal(${rJson})"><i class="ph ph-pencil-simple"></i> Edit</button>
+                    <button class="sri-delete-btn" onclick="event.stopPropagation(); openDeleteModal(${rJson})"><i class="ph ph-trash"></i> Delete</button>
+                </div>
+                <div class="sri-meta">
+                    <span class="sri-tag dob"><i class="ph ph-calendar-blank"></i> ${r.date_of_birth}</span>
+                    <span class="sri-tag tob"><i class="ph ph-clock"></i> ${r.time_of_birth}</span>
+                    <span class="sri-tag place"><i class="ph ph-map-pin"></i> ${r.place}</span>
+                    <span class="sri-tag saved"><i class="ph ph-floppy-disk"></i> Saved ${savedLabel}</span>
+                </div>
+            </div>`;
+        }
+
+        // ── Load record into form ────────────────────────────────
+        function loadRecord(r) {
+            // Close dropdown
+            document.getElementById('search-results-dropdown').classList.remove('show');
+            document.getElementById('record-search-input').value = r.person_name;
+
+            // Fill name
+            document.getElementById('name-input').value = r.person_name;
+
+            // Fill location
+            document.getElementById('location-input').value = r.place;
+            document.getElementById('latitude').value  = r.latitude;
+            document.getElementById('longitude').value = r.longitude;
+            document.getElementById('lat-display').textContent = parseFloat(r.latitude).toFixed(4);
+            document.getElementById('lng-display').textContent = parseFloat(r.longitude).toFixed(4);
+            document.getElementById('clear-btn').classList.remove('hidden');
+
+            // Parse date — stored as "15 Jan 1990"
+            try {
+                const parts = r.date_of_birth.split(' ');
+                if (parts.length === 3) {
+                    const day   = parseInt(parts[0]);
+                    const month = new Date(Date.parse(parts[1] + ' 1, 2000')).getMonth();
+                    const year  = parseInt(parts[2]);
+                    document.getElementById('day-input').value   = day;
+                    document.getElementById('month-input').value = month;
+                    document.getElementById('year-input').value  = year;
+                }
+            } catch(e) {}
+
+            // Parse time — stored as "07:45 PM"
+            try {
+                const timeParts = r.time_of_birth.split(' ');
+                if (timeParts.length === 2) {
+                    const ampm = timeParts[1].toUpperCase();
+                    const hm   = timeParts[0].split(':');
+                    document.getElementById('hour-input').value   = parseInt(hm[0]);
+                    document.getElementById('minute-input').value = parseInt(hm[1]);
+                    setAmPm(ampm);
+                }
+            } catch(e) {}
+
+            showToast('Record loaded — click Generate Report', 'success');
+
+            // Scroll to form
+            setTimeout(() => {
+                document.querySelector('#results-table').closest('.bg-white').previousElementSibling
+                    ? window.scrollTo({ top: document.getElementById('search-section').offsetTop + 200, behavior: 'smooth' })
+                    : null;
+            }, 200);
+        }
+
+        // ── Save record after Generate Report ────────────────────
+        async function saveCurrentRecord() {
+            const user = getSession();
+            if (!user) return;
+
+            const name  = document.getElementById('name-input').value.trim();
+            const place = document.getElementById('location-input').value.trim();
+            const lat   = document.getElementById('latitude').value;
+            const lng   = document.getElementById('longitude').value;
+
+            const day   = document.getElementById('day-input').value;
+            const month = parseInt(document.getElementById('month-input').value);
+            const year  = document.getElementById('year-input').value;
+            const hour  = document.getElementById('hour-input').value;
+            const min   = document.getElementById('minute-input').value;
+            const ampm  = document.getElementById('ampm-value').value;
+
+            if (!name || !place || !day || !year) return;
+
+            // Format date as "15 Jan 1990"
+            const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const dob = `${day.toString().padStart(2,'0')} ${monthNames[month]} ${year}`;
+
+            // Format time as "07:45 PM"
+            const tob = `${hour.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')} ${ampm}`;
+
+            try {
+                const res = await apiCall({
+                    action: 'save',
+                    user_id: user.user_id,
+                    person_name: name,
+                    place, latitude: lat, longitude: lng,
+                    date_of_birth: dob,
+                    time_of_birth: tob
+                });
+
+                if (res.success) {
+                    showToast('Record saved successfully!', 'success');
+                } else if (res.message === 'duplicate') {
+                    showToast('This record already exists — not saved again.', 'warning');
+                } else {
+                    showToast('Could not save: ' + res.message, 'error');
+                }
+            } catch(e) {
+                showToast('Save failed — check your connection.', 'error');
+            }
+        }
+
+        // ── Close search dropdown on outside click ───────────────
+        document.addEventListener('click', function(e) {
+            const dd  = document.getElementById('search-results-dropdown');
+            const inp = document.getElementById('record-search-input');
+            if (dd && !dd.contains(e.target) && e.target !== inp) {
+                dd.classList.remove('show');
+            }
+        });
+
+        // ── Init on page load ─────────────────────────────────────
+        window.addEventListener('DOMContentLoaded', function() {
+            const user = getSession();
+            if (user) { activateApp(user); }
+        });
+
+        // ══════════════════════════════════════════════════════════
+        //  END OF AUTH SECTION
+        // ══════════════════════════════════════════════════════════
+
+        // ══════════════════════════════════════════════════════════
+        //  EDIT RECORD MODAL
+        // ══════════════════════════════════════════════════════════
+
+        var _editRecordId = null;
+
+        function populateEditSelects() {
+            const pad = n => n.toString().padStart(2,'0');
+            // Days
+            const dayEl = document.getElementById('edit-day');
+            dayEl.innerHTML = '';
+            for (let i=1;i<=31;i++){const o=document.createElement('option');o.value=i;o.text=i;dayEl.appendChild(o);}
+            // Months
+            const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const monEl = document.getElementById('edit-month');
+            monEl.innerHTML = '';
+            months.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.text=m;monEl.appendChild(o);});
+            // Hours
+            const hrEl = document.getElementById('edit-hour');
+            hrEl.innerHTML = '';
+            for (let i=1;i<=12;i++){const o=document.createElement('option');o.value=i;o.text=pad(i);hrEl.appendChild(o);}
+            // Minutes
+            const minEl = document.getElementById('edit-minute');
+            minEl.innerHTML = '';
+            for (let i=0;i<=59;i++){const o=document.createElement('option');o.value=i;o.text=pad(i);minEl.appendChild(o);}
+        }
+
+        function setEditAmPm(val) {
+            document.getElementById('edit-ampm').value = val;
+            document.getElementById('edit-btn-am').classList.toggle('active', val === 'AM');
+            document.getElementById('edit-btn-pm').classList.toggle('active', val === 'PM');
+        }
+
+        function openEditModal(r) {
+            _editRecordId = r.record_id;
+            populateEditSelects();
+
+            // Fill name and place
+            document.getElementById('edit-name').value  = r.person_name || '';
+            document.getElementById('edit-place').value = r.place || '';
+
+            // Parse date e.g. "03 Jul 1986"
+            try {
+                const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                const parts = r.date_of_birth.toString().trim().split(' ');
+                if (parts.length === 3) {
+                    document.getElementById('edit-day').value   = parseInt(parts[0], 10);
+                    const mIdx = months.indexOf(parts[1]);
+                    document.getElementById('edit-month').value = mIdx >= 0 ? mIdx : 0;
+                    document.getElementById('edit-year').value  = parts[2];
+                }
+            } catch(e) {}
+
+            // Parse time e.g. "03:50 PM"
+            try {
+                const tp = r.time_of_birth.split(' ');
+                if (tp.length === 2) {
+                    const hm = tp[0].split(':');
+                    document.getElementById('edit-hour').value   = parseInt(hm[0]);
+                    document.getElementById('edit-minute').value = parseInt(hm[1]);
+                    setEditAmPm(tp[1].toUpperCase());
+                }
+            } catch(e) {}
+
+            // Clear message
+            const msg = document.getElementById('edit-msg');
+            msg.className = 'edit-msg';
+            msg.textContent = '';
+
+            document.getElementById('edit-modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeEditModal() {
+            document.getElementById('edit-modal-backdrop').classList.add('hidden');
+            _editRecordId = null;
+        }
+
+        async function saveEditRecord() {
+            const user = getSession();
+            if (!user || !_editRecordId) return;
+
+            const name  = document.getElementById('edit-name').value.trim();
+            const place = document.getElementById('edit-place').value.trim();
+            const day   = document.getElementById('edit-day').value;
+            const month = parseInt(document.getElementById('edit-month').value);
+            const year  = document.getElementById('edit-year').value;
+            const hour  = document.getElementById('edit-hour').value;
+            const min   = document.getElementById('edit-minute').value;
+            const ampm  = document.getElementById('edit-ampm').value;
+
+            if (!name || !place || !day || !year) {
+                const msg = document.getElementById('edit-msg');
+                msg.textContent = 'Please fill in all fields.';
+                msg.className = 'edit-msg error';
+                return;
+            }
+
+            const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const pad = n => n.toString().padStart(2,'0');
+            const dob = pad(day) + ' ' + monthNames[month] + ' ' + year;
+            const tob = pad(hour) + ':' + pad(min) + ' ' + ampm;
+
+            const btn = document.getElementById('edit-save-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph ph-spinner"></i> Saving…';
+
+            try {
+                const res = await apiCall({
+                    action:        'update',
+                    user_id:       user.user_id,
+                    record_id:     _editRecordId,
+                    person_name:   name,
+                    place:         place,
+                    date_of_birth: dob,
+                    time_of_birth: tob
+                });
+
+                if (res.success) {
+                    closeEditModal();
+                    showToast('Record updated successfully!', 'success');
+
+                    // Now load the updated values into the main form and generate report
+                    document.getElementById('name-input').value = name;
+                    document.getElementById('location-input').value = place;
+                    // Keep existing lat/lng since place text didn't change via geocoder
+                    // Update date fields
+                    document.getElementById('day-input').value   = parseInt(day);
+                    document.getElementById('month-input').value = month;
+                    document.getElementById('year-input').value  = year;
+                    document.getElementById('hour-input').value  = parseInt(hour);
+                    document.getElementById('minute-input').value = parseInt(min);
+                    setAmPm(ampm);
+
+                    // Clear search bar
+                    document.getElementById('record-search-input').value = '';
+                    document.getElementById('search-results-dropdown').classList.remove('show');
+
+                    // Generate report
+                    setTimeout(() => calculatePositions(), 300);
+                } else {
+                    const msg = document.getElementById('edit-msg');
+                    msg.textContent = res.message || 'Update failed.';
+                    msg.className = 'edit-msg error';
+                }
+            } catch(e) {
+                const msg = document.getElementById('edit-msg');
+                msg.textContent = 'Connection error. Please try again.';
+                msg.className = 'edit-msg error';
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save & Generate Report';
+        }
+
+        // Close modal on backdrop click
+        document.getElementById('edit-modal-backdrop').addEventListener('click', function(e) {
+            if (e.target === this) closeEditModal();
+        });
+
+        // ══════════════════════════════════════════════════════════
+        //  END OF EDIT SECTION
+        // ══════════════════════════════════════════════════════════
+
+        // ══════════════════════════════════════════════════════════
+        //  DELETE RECORD
+        // ══════════════════════════════════════════════════════════
+
+        var _deleteRecordId   = null;
+        var _deletePersonName = null;
+        var _deleteSearchQuery = '';
+
+        function openDeleteModal(r) {
+            _deleteRecordId   = r.record_id;
+            _deletePersonName = r.person_name;
+            // Remember current search so we can refresh after delete
+            _deleteSearchQuery = document.getElementById('record-search-input').value.trim();
+
+            document.getElementById('delete-modal-name').textContent =
+                r.person_name + '  |  ' + r.date_of_birth + '  |  ' + r.place;
+            document.getElementById('delete-modal-backdrop').classList.remove('hidden');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('delete-modal-backdrop').classList.add('hidden');
+            _deleteRecordId   = null;
+            _deletePersonName = null;
+        }
+
+        async function confirmDelete() {
+            const user = getSession();
+            if (!user || !_deleteRecordId) return;
+
+            const btn = document.getElementById('delete-confirm-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph ph-spinner"></i> Deleting…';
+
+            try {
+                const res = await apiCall({
+                    action:    'delete',
+                    user_id:   user.user_id,
+                    record_id: _deleteRecordId
+                });
+
+                if (res.success) {
+                    closeDeleteModal();
+                    showToast(_deletePersonName + ' — record deleted.', 'warning');
+
+                    // Refresh search results
+                    const dd = document.getElementById('search-results-dropdown');
+                    if (_deleteSearchQuery.length > 0) {
+                        fetchSearchResults(_deleteSearchQuery);
+                    } else {
+                        dd.classList.remove('show');
+                        dd.innerHTML = '';
+                        document.getElementById('record-search-input').value = '';
+                    }
+                } else {
+                    closeDeleteModal();
+                    showToast('Delete failed: ' + (res.message || 'Unknown error'), 'error');
+                }
+            } catch(e) {
+                closeDeleteModal();
+                showToast('Connection error. Please try again.', 'error');
+            }
+
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ph ph-trash"></i> Yes, Delete';
+        }
+
+        // Close on backdrop click
+        document.getElementById('delete-modal-backdrop').addEventListener('click', function(e) {
+            if (e.target === this) closeDeleteModal();
+        });
+
+        // ══════════════════════════════════════════════════════════
+        //  END OF DELETE SECTION
+        // ══════════════════════════════════════════════════════════
+
+
+
         function drawOctalChart(l, p) {
             const w = 550, h = 550, cx = w / 2, cy = h / 2, r = 180, lr = 185;
             const c = document.getElementById('octal-chart-container');
