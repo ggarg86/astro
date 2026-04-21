@@ -562,6 +562,7 @@
                     </div>
                     <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
                     <button onclick="calculatePositions()" class="w-full py-3 btn-primary-new text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2"><i class="ph ph-chart-polar"></i> Generate Report</button>
+                    <button id="save-record-btn" onclick="manualSaveRecord()" class="w-full py-3 hidden text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2 mt-2" style="background:#16a34a;"><i class="ph ph-floppy-disk"></i> Save Record</button>
                 </div>
             </div>
         </div>
@@ -1018,7 +1019,7 @@
         async function fetchLocations(q) { if (!q || q.length < 3) { suggestionsList.classList.add('hidden'); return; } spinner.classList.remove('hidden'); clearBtn.classList.add('hidden'); try { const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1`); renderSuggestions(await r.json()); } catch (e) { console.error(e); } finally { spinner.classList.add('hidden'); clearBtn.classList.remove('hidden'); } }
         function renderSuggestions(d) { suggestionsList.innerHTML = ''; if (!d.length) { suggestionsList.classList.add('hidden'); return; } d.forEach(p => { const l = document.createElement('li'); l.className = "px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 last:border-0 flex flex-col"; l.innerHTML = `<span class="font-semibold text-slate-700 text-sm">${p.display_name.split(',')[0]}</span><span class="text-xs text-slate-500 truncate">${p.display_name}</span>`; l.onclick = () => { document.getElementById('latitude').value = parseFloat(p.lat).toFixed(4); document.getElementById('longitude').value = parseFloat(p.lon).toFixed(4); document.getElementById('lat-display').textContent = parseFloat(p.lat).toFixed(4); document.getElementById('lng-display').textContent = parseFloat(p.lon).toFixed(4); searchInput.value = p.display_name; suggestionsList.classList.add('hidden'); }; suggestionsList.appendChild(l); }); suggestionsList.classList.remove('hidden'); }
 
-        function calculatePositions() { const v = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value)); if (!v[0] || isNaN(v[1]) || !v[2]) { alert("Please enter a valid date."); return; } let h = v[3]; const ap = document.getElementById('ampm-value').value; if (ap === 'PM' && h < 12) h += 12; if (ap === 'AM' && h === 12) h = 0; const bd = new Date(v[2], v[1], v[0], h, v[4]); const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value); const nm = (document.getElementById('name-input').value || "Unknown").toUpperCase(); const lc = document.getElementById('location-input').value || "Unknown Location"; const dp = `${pad(bd.getDate())} ${bd.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${bd.getFullYear()}`; const tp = bd.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); saveCurrentRecord(); }
+        function calculatePositions() { const v = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value)); if (!v[0] || isNaN(v[1]) || !v[2]) { alert("Please enter a valid date."); return; } let h = v[3]; const ap = document.getElementById('ampm-value').value; if (ap === 'PM' && h < 12) h += 12; if (ap === 'AM' && h === 12) h = 0; const bd = new Date(v[2], v[1], v[0], h, v[4]); const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value); const nm = (document.getElementById('name-input').value || "Unknown").toUpperCase(); const lc = document.getElementById('location-input').value || "Unknown Location"; const dp = `${pad(bd.getDate())} ${bd.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${bd.getFullYear()}`; const tp = bd.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); showSaveButton(); }
         function renderRow(n, s, t, i, hl, hn, r, dg, nk, pd) { const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0" + (t === 'Node' ? ' node-row' : t === 'Ascendant' ? ' asc-row' : ''); tr.innerHTML = `<td class="flex items-center gap-2" style="padding: 6px 12px;"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${i || 'ph-planet'} text-sm"></i></div><span class="font-bold text-xs">${n}</span></td><td>${(hl !== "-" && hn !== "-") ? `<span class="font-bold text-slate-900">${hl}</span> <span class="text-slate-900 font-bold">(${hn})</span>` : "-"}</td><td class="text-slate-700 font-medium">${r}</td><td class="font-mono text-slate-600">${dm(dg)}</td><td><span class="font-medium text-slate-700">${nk}</span> <span class="text-[10px] text-slate-400 ml-1">P${pd}</span></td>`; document.querySelector('#results-table tbody').appendChild(tr); }
         
         // --- UPDATED ANALYSIS RENDER FUNCTION ---
@@ -1250,6 +1251,7 @@
                     else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
                 }else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
             }else{badge.className='valid';badgeTxt.textContent='Active';}
+            loadRecordsCache();
         }
 
         function doLogout(){
@@ -1262,7 +1264,7 @@
             document.getElementById('login-mobile').value='';
             document.getElementById('login-password').value='';
             document.getElementById('login-msg').className='auth-msg';
-            document.getElementById('record-search-input').value='';
+            document.getElementById('record-search-input').value='';_recordsCache=null;
             document.getElementById('search-results-dropdown').innerHTML='';
             document.getElementById('search-results-dropdown').classList.remove('show');
             switchAuthTab('login');
@@ -1331,29 +1333,63 @@
         // ── END AUTO LOGOUT ──────────────────────────────────────
 
 
-        let _searchTimer=null;
-        function onSearchInput(val){
-            clearTimeout(_searchTimer);
-            const dd=document.getElementById('search-results-dropdown');
-            if(val.trim().length===0){dd.classList.remove('show');dd.innerHTML='';return;}
-            _searchTimer=setTimeout(()=>fetchSearchResults(val.trim()),300);
+        // ── CACHED SEARCH — loads once, searches locally (instant) ──
+        let _recordsCache = null;   // in-memory cache of all user records
+        let _searchTimer  = null;
+
+        async function loadRecordsCache(){
+            const user = getSession(); if(!user) return;
+            try{
+                const res = await apiCall({action:'search', user_id:user.user_id, query:''});
+                if(res.success){ _recordsCache = res.records; }
+            }catch(e){ _recordsCache = null; }
         }
 
-        async function fetchSearchResults(query){
-            const user=getSession();if(!user)return;
-            const dd=document.getElementById('search-results-dropdown');
-            dd.innerHTML='<div class="search-no-results">Searching…</div>';
+        function invalidateCache(){ _recordsCache = null; } // call after save/edit/delete
+
+        function onSearchInput(val){
+            clearTimeout(_searchTimer);
+            const dd = document.getElementById('search-results-dropdown');
+            if(val.trim().length === 0){ dd.classList.remove('show'); dd.innerHTML=''; return; }
+            // If cache is ready, search instantly with no delay
+            if(_recordsCache !== null){
+                _searchTimer = setTimeout(()=>searchFromCache(val.trim()), 50);
+            } else {
+                // Cache not loaded yet — fetch from sheet then search
+                _searchTimer = setTimeout(()=>fetchAndSearch(val.trim()), 300);
+            }
+        }
+
+        function searchFromCache(query){
+            const dd = document.getElementById('search-results-dropdown');
+            const q  = query.toLowerCase();
+            const results = _recordsCache.filter(r => r.person_name.toLowerCase().indexOf(q) !== -1);
+            if(results.length > 0){
+                dd.innerHTML = results.map(r => buildSearchResultHTML(r)).join('');
+                dd.classList.add('show');
+            } else {
+                dd.innerHTML = '<div class="search-no-results">No records found for "'+query+'"</div>';
+                dd.classList.add('show');
+            }
+        }
+
+        async function fetchAndSearch(query){
+            const user = getSession(); if(!user) return;
+            const dd = document.getElementById('search-results-dropdown');
+            dd.innerHTML = '<div class="search-no-results">Searching…</div>';
             dd.classList.add('show');
             try{
-                const res=await apiCall({action:'search',user_id:user.user_id,query});
-                if(res.success&&res.records.length>0){
-                    dd.innerHTML=res.records.map(r=>buildSearchResultHTML(r)).join('');
-                    dd.classList.add('show');
-                }else{
-                    dd.innerHTML='<div class="search-no-results">No records found for "'+query+'"</div>';
+                const res = await apiCall({action:'search', user_id:user.user_id, query:''});
+                if(res.success){
+                    _recordsCache = res.records;
+                    searchFromCache(query);
+                } else {
+                    dd.innerHTML = '<div class="search-no-results">No records found.</div>';
                 }
-            }catch(e){dd.innerHTML='<div class="search-no-results">Error fetching records.</div>';}
+            }catch(e){ dd.innerHTML = '<div class="search-no-results">Error fetching records.</div>'; }
         }
+
+        async function fetchSearchResults(query){ await fetchAndSearch(query); }
 
         function buildSearchResultHTML(r){
             const savedLabel=r.saved_on?r.saved_on.toString().split(',')[0]:'';
@@ -1404,30 +1440,65 @@
             setTimeout(() => calculatePositions(), 300);
         }
 
-        async function saveCurrentRecord(){
-            const user=getSession();if(!user)return;
-            const name=document.getElementById('name-input').value.trim();
-            const place=document.getElementById('location-input').value.trim();
-            const lat=document.getElementById('latitude').value;
-            const lng=document.getElementById('longitude').value;
-            const day=document.getElementById('day-input').value;
-            const month=parseInt(document.getElementById('month-input').value);
-            const year=document.getElementById('year-input').value;
-            const hour=document.getElementById('hour-input').value;
-            const min=document.getElementById('minute-input').value;
-            const ampm=document.getElementById('ampm-value').value;
-            if(!name||!place||!day||!year)return;
-            const mN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            const pad=n=>n.toString().padStart(2,'0');
-            const dob=pad(day)+' '+mN[month]+' '+year;
-            const tob=pad(hour)+':'+pad(min)+' '+ampm;
-            try{
-                const res=await apiCall({action:'save',user_id:user.user_id,person_name:name,place,latitude:lat,longitude:lng,date_of_birth:dob,time_of_birth:tob});
-                if(res.success){showToast('Record saved successfully!','success');}
-                else if(res.message==='duplicate'){showToast('This record already exists — not saved again.','warning');}
-                else{showToast('Could not save: '+res.message,'error');}
-            }catch(e){showToast('Save failed — check your connection.','error');}
+        function showSaveButton(){
+            const btn = document.getElementById('save-record-btn');
+            if(!btn) return;
+            btn.classList.remove('hidden');
+            btn.disabled = false;
+            btn.style.background = '#16a34a';
+            btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Record';
         }
+
+        async function manualSaveRecord(){
+            const user = getSession(); if(!user) return;
+            const name  = document.getElementById('name-input').value.trim();
+            const place = document.getElementById('location-input').value.trim();
+            const lat   = document.getElementById('latitude').value;
+            const lng   = document.getElementById('longitude').value;
+            const day   = document.getElementById('day-input').value;
+            const month = parseInt(document.getElementById('month-input').value);
+            const year  = document.getElementById('year-input').value;
+            const hour  = document.getElementById('hour-input').value;
+            const min   = document.getElementById('minute-input').value;
+            const ampm  = document.getElementById('ampm-value').value;
+            if(!name||!place||!day||!year){ showToast('Please fill all fields first.','error'); return; }
+            const mN  = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const pad = n => n.toString().padStart(2,'0');
+            const dob = pad(day)+' '+mN[month]+' '+year;
+            const tob = pad(hour)+':'+pad(min)+' '+ampm;
+
+            const btn = document.getElementById('save-record-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="ph ph-spinner"></i> Saving…';
+
+            try{
+                const res = await apiCall({action:'save',user_id:user.user_id,person_name:name,place,latitude:lat,longitude:lng,date_of_birth:dob,time_of_birth:tob});
+                if(res.success){
+                    btn.style.background = '#16a34a';
+                    btn.innerHTML = '<i class="ph ph-check-circle"></i> Saved!';
+                    btn.disabled = true;
+                    showToast('Record saved successfully!','success');
+                    invalidateCache(); // refresh cache on next search
+                } else if(res.message==='duplicate'){
+                    btn.style.background = '#92400e';
+                    btn.innerHTML = '<i class="ph ph-warning"></i> Already Saved';
+                    btn.disabled = true;
+                    showToast('This record already exists — not saved again.','warning');
+                } else {
+                    btn.disabled = false;
+                    btn.style.background = '#16a34a';
+                    btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Record';
+                    showToast('Could not save: '+res.message,'error');
+                }
+            }catch(e){
+                btn.disabled = false;
+                btn.style.background = '#16a34a';
+                btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Record';
+                showToast('Save failed — check your connection.','error');
+            }
+        }
+
+        function saveCurrentRecord(){ /* replaced by manualSaveRecord */ }
 
         // ── EDIT MODAL ──
         var _editRecordId=null;
@@ -1502,7 +1573,7 @@
             try{
                 const res=await apiCall({action:'update',user_id:user.user_id,record_id:_editRecordId,person_name:name,place,date_of_birth:dob,time_of_birth:tob});
                 if(res.success){
-                    closeEditModal();showToast('Record updated successfully!','success');
+                    closeEditModal();showToast('Record updated successfully!','success');invalidateCache();
                     document.getElementById('name-input').value=name;
                     document.getElementById('location-input').value=place;
                     document.getElementById('day-input').value=parseInt(day);
@@ -1511,7 +1582,7 @@
                     document.getElementById('hour-input').value=parseInt(hour);
                     document.getElementById('minute-input').value=parseInt(min);
                     setAmPm(ampm);
-                    document.getElementById('record-search-input').value='';
+                    document.getElementById('record-search-input').value='';_recordsCache=null;
                     document.getElementById('search-results-dropdown').classList.remove('show');
                     setTimeout(()=>calculatePositions(),300);
                 }else{
@@ -1545,10 +1616,10 @@
             try{
                 const res=await apiCall({action:'delete',user_id:user.user_id,record_id:_deleteRecordId});
                 if(res.success){
-                    closeDeleteModal();showToast(_deletePersonName+' — record deleted.','warning');
+                    closeDeleteModal();showToast(_deletePersonName+' — record deleted.','warning');invalidateCache();
                     const dd=document.getElementById('search-results-dropdown');
                     if(_deleteSearchQuery.length>0){fetchSearchResults(_deleteSearchQuery);}
-                    else{dd.classList.remove('show');dd.innerHTML='';document.getElementById('record-search-input').value='';}
+                    else{dd.classList.remove('show');dd.innerHTML='';document.getElementById('record-search-input').value='';_recordsCache=null;}
                 }else{closeDeleteModal();showToast('Delete failed: '+(res.message||'Unknown error'),'error');}
             }catch(e){closeDeleteModal();showToast('Connection error.','error');}
             btn.disabled=false;btn.innerHTML='<i class="ph ph-trash"></i> Yes, Delete';
