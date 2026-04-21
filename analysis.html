@@ -251,6 +251,14 @@
         .search-welcome span { color:var(--accent-analysis); }
         #logout-btn { padding:6px 16px;border:1.5px solid #e2e8f0;border-radius:20px;background:none;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.78em;color:#64748b;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px; }
         #logout-btn:hover { background:#fef2f2;border-color:#fecaca;color:#dc2626; }
+        #validity-badge {
+            font-family:'Montserrat',sans-serif; font-size:0.72em; font-weight:700;
+            padding:5px 12px; border-radius:20px; white-space:nowrap;
+            display:none; align-items:center; gap:5px;
+        }
+        #validity-badge.valid   { background:#f0fdf4; color:#166534; border:1.5px solid #bbf7d0; display:flex; }
+        #validity-badge.warning { background:#fefce8; color:#854d0e; border:1.5px solid #fef08a; display:flex; }
+        #validity-badge.expired { background:#fef2f2; color:#991b1b; border:1.5px solid #fecaca; display:flex; }
         .search-input-wrap { position:relative; }
         #record-search-input { width:100%;padding:10px 16px 10px 40px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Merriweather',serif;font-size:0.88em;color:#334155;outline:none;transition:border-color 0.2s;box-sizing:border-box; }
         #record-search-input:focus { border-color:var(--accent-analysis); }
@@ -481,7 +489,10 @@
         <div id="search-section" class="hidden">
             <div class="search-header">
                 <div class="search-welcome">Welcome, <span id="search-welcome-name">User</span> &mdash; Search your saved records or enter new details below</div>
-                <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
+                <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+                    <div id="validity-badge"><i class="ph ph-calendar-check"></i> <span id="validity-text">Valid until —</span></div>
+                    <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
+                </div>
             </div>
             <div class="search-input-wrap" style="position:relative;">
                 <i class="ph ph-magnifying-glass search-icon"></i>
@@ -1163,7 +1174,7 @@
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxhHxRb8ozTPTW9-HPn6UA4JDzT5iqfCL-XM--JiEanFmy2h4V4f-4IjC1rkxdWeYYdeA/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2pCsAK61pHyRlQ1LBfzNXrHXO0ZxpGabH5Ax-la2KVDRe2KRYjnIkZJ4jIOBmoxS12w/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -1200,6 +1211,7 @@
             try{
                 const res=await apiCall({action:'login',mobile,password});
                 if(res.success){saveSession(res.user);activateApp(res.user);}
+                else if(res.expired){setAuthMsg('login-msg',res.message,'error');}
                 else{setAuthMsg('login-msg',res.message,'error');}
             }catch(e){setAuthMsg('login-msg','Connection error. Please try again.','error');}
             btn.disabled=false;btn.innerHTML='<i class="ph ph-sign-in"></i> Login';
@@ -1225,14 +1237,27 @@
             document.getElementById('auth-overlay').classList.add('hidden');
             document.getElementById('search-section').classList.remove('hidden');
             document.getElementById('search-welcome-name').textContent=user.full_name;
-
-
+            var badge=document.getElementById('validity-badge');
+            var badgeTxt=document.getElementById('validity-text');
+            var vUntil=user.valid_until||'';
+            if(vUntil){
+                var parts=vUntil.split(' ');
+                if(parts.length===3){
+                    var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+                    var expiry=new Date(parseInt(parts[2]),mMap[parts[1]],parseInt(parts[0]),23,59,59);
+                    var diff=(expiry-new Date())/(1000*60*60*24);
+                    if(diff<=7){badge.className='warning';badgeTxt.textContent='Expires soon: '+vUntil;}
+                    else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
+                }else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
+            }else{badge.className='valid';badgeTxt.textContent='Active';}
         }
 
         function doLogout(){
             clearSession();
             document.getElementById('auth-overlay').classList.remove('hidden');
             document.getElementById('search-section').classList.add('hidden');
+            var badge = document.getElementById('validity-badge');
+            if(badge){ badge.className=''; }
 
             document.getElementById('login-mobile').value='';
             document.getElementById('login-password').value='';
@@ -1242,6 +1267,69 @@
             document.getElementById('search-results-dropdown').classList.remove('show');
             switchAuthTab('login');
         }
+
+        // ── AUTO LOGOUT ON EXPIRY ────────────────────────────────
+        function checkExpiryAndLogout(){
+            var user = getSession();
+            if(!user) return;
+            var vUntil = user.valid_until || '';
+            if(!vUntil) return;
+            var parts = vUntil.split(' ');
+            if(parts.length !== 3) return;
+            var mMap = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+            var expiry = new Date(parseInt(parts[2]), mMap[parts[1]], parseInt(parts[0]), 23, 59, 59);
+            if(new Date() > expiry){
+                clearSession();
+                // Reset UI to login screen
+                document.getElementById('auth-overlay').classList.remove('hidden');
+                document.getElementById('search-section').classList.add('hidden');
+                var badge = document.getElementById('validity-badge');
+                if(badge){ badge.className=''; }
+                // Show expired message on login form
+                switchAuthTab('login');
+                setAuthMsg('login-msg','Your session has expired. Contact Admin Team at 8360362525.','error');
+            }
+        }
+
+        // Re-verify from Google Sheets every 60 seconds
+        setInterval(async function(){
+            const user = getSession();
+            if(!user) return;
+            try {
+                const res = await apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+                if(res.expired || !res.success){
+                    clearSession();
+                    document.getElementById('auth-overlay').classList.remove('hidden');
+                    document.getElementById('search-section').classList.add('hidden');
+                    var badge = document.getElementById('validity-badge');
+                    if(badge){ badge.className=''; }
+                    switchAuthTab('login');
+                    setAuthMsg('login-msg', res.message || 'Your session has expired. Contact Admin Team at 8360362525.', 'error');
+                } else {
+                    // Update local session with latest valid_until
+                    user.valid_until = res.valid_until;
+                    saveSession(user);
+                    // Refresh badge
+                    var badge = document.getElementById('validity-badge');
+                    var badgeTxt = document.getElementById('validity-text');
+                    if(badge && badgeTxt && res.valid_until){
+                        var parts = res.valid_until.split(' ');
+                        if(parts.length===3){
+                            var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+                            var expiry=new Date(parseInt(parts[2]),mMap[parts[1]],parseInt(parts[0]),23,59,59);
+                            var diff=(expiry-new Date())/(1000*60*60*24);
+                            if(diff<=7){badge.className='warning';badgeTxt.textContent='Expires soon: '+res.valid_until;}
+                            else{badge.className='valid';badgeTxt.textContent='Valid until: '+res.valid_until;}
+                        }
+                    }
+                }
+            } catch(e){
+                // Network error — fall back to local check
+                checkExpiryAndLogout();
+            }
+        }, 60000);
+        // ── END AUTO LOGOUT ──────────────────────────────────────
+
 
         let _searchTimer=null;
         function onSearchInput(val){
@@ -1467,8 +1555,43 @@
         }
         document.getElementById('delete-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
 
-        window.addEventListener('DOMContentLoaded',function(){
-            const user=getSession();if(user){activateApp(user);}
+        window.addEventListener('DOMContentLoaded', async function(){
+            const user = getSession();
+            if(!user) return;
+
+            // Re-verify validity from Google Sheets on every page load
+            try {
+                const res = await apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+                if(res.expired || !res.success){
+                    clearSession();
+                    switchAuthTab('login');
+                    setAuthMsg('login-msg', res.message || 'Your session has expired. Contact Admin Team at 8360362525.', 'error');
+                    return;
+                }
+                // Update session with latest valid_until from sheet
+                user.valid_until = res.valid_until;
+                saveSession(user);
+                activateApp(user);
+            } catch(e) {
+                // If network fails, fall back to locally stored expiry check
+                var vUntil = user.valid_until || '';
+                var expired = false;
+                if(vUntil){
+                    var parts = vUntil.split(' ');
+                    if(parts.length === 3){
+                        var mMap = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+                        var expiry = new Date(parseInt(parts[2]), mMap[parts[1]], parseInt(parts[0]), 23, 59, 59);
+                        if(new Date() > expiry){ expired = true; }
+                    }
+                }
+                if(expired){
+                    clearSession();
+                    switchAuthTab('login');
+                    setAuthMsg('login-msg','Your session has expired. Contact Admin Team at 8360362525.','error');
+                } else {
+                    activateApp(user);
+                }
+            }
         });
 
         document.addEventListener('click',function(e){
