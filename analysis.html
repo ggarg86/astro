@@ -1175,7 +1175,7 @@
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz2pCsAK61pHyRlQ1LBfzNXrHXO0ZxpGabH5Ax-la2KVDRe2KRYjnIkZJ4jIOBmoxS12w/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMOhINT0y9pTHOIVfUgfSPh7i5bjx6SyCi1roo_zw6wp-q9tdXuxLyXp5uZnmSq8Pkyw/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -1209,6 +1209,22 @@
             const password=document.getElementById('login-password').value.trim();
             if(!mobile||!password){setAuthMsg('login-msg','Please enter mobile and password.','error');return;}
             const btn=document.getElementById('login-btn');btn.disabled=true;btn.textContent='Logging in…';
+
+            // Try instant login from cache first
+            if(_usersCache){
+                const found = _usersCache.find(u => u.mobile === mobile && u.password === password);
+                if(found){
+                    if(found.expired){
+                        setAuthMsg('login-msg', found.message || 'Your login has expired. Contact Admin Team at 8360362525.','error');
+                        btn.disabled=false; btn.innerHTML='<i class="ph ph-sign-in"></i> Login'; return;
+                    }
+                    saveSession(found.user); activateApp(found.user);
+                    btn.disabled=false; btn.innerHTML='<i class="ph ph-sign-in"></i> Login'; return;
+                }
+                // Not found in cache — fall through to server call
+            }
+
+            // Server call (first time or cache miss)
             try{
                 const res=await apiCall({action:'login',mobile,password});
                 if(res.success){saveSession(res.user);activateApp(res.user);}
@@ -1335,6 +1351,7 @@
 
         // ── CACHED SEARCH — loads once, searches locally (instant) ──
         let _recordsCache = null;   // in-memory cache of all user records
+        let _usersCache   = null;   // in-memory cache of users for instant login
         let _searchTimer  = null;
 
         async function loadRecordsCache(){
@@ -1343,6 +1360,13 @@
                 const res = await apiCall({action:'search', user_id:user.user_id, query:''});
                 if(res.success){ _recordsCache = res.records; }
             }catch(e){ _recordsCache = null; }
+        }
+
+        async function loadUsersCache(){
+            try{
+                const res = await apiCall({action:'getusers'});
+                if(res.success){ _usersCache = res.users; }
+            }catch(e){ _usersCache = null; }
         }
 
         function invalidateCache(){ _recordsCache = null; } // call after save/edit/delete
@@ -1440,13 +1464,45 @@
             setTimeout(() => calculatePositions(), 300);
         }
 
+        function getCurrentFormKey(){
+            const name  = document.getElementById('name-input').value.trim().toLowerCase();
+            const place = document.getElementById('location-input').value.trim().toLowerCase();
+            const day   = (document.getElementById('day-input').value||'').toString().padStart(2,'0');
+            const month = parseInt(document.getElementById('month-input').value||0);
+            const year  = document.getElementById('year-input').value||'';
+            const hour  = (document.getElementById('hour-input').value||'').toString().padStart(2,'0');
+            const min   = (document.getElementById('minute-input').value||'').toString().padStart(2,'0');
+            const ampm  = document.getElementById('ampm-value').value;
+            const mN    = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const dob   = day+' '+mN[month]+' '+year;
+            const tob   = hour+':'+min+' '+ampm;
+            return name+'|'+place.toLowerCase()+'|'+dob.toLowerCase()+'|'+tob.toLowerCase();
+        }
+
+        function isAlreadySaved(){
+            if(!_recordsCache) return false;
+            const key = getCurrentFormKey();
+            return _recordsCache.some(r =>
+                (r.person_name||'').toLowerCase().trim()+'|'+
+                (r.place||'').toLowerCase().trim()+'|'+
+                (r.date_of_birth||'').toLowerCase().trim()+'|'+
+                (r.time_of_birth||'').toLowerCase().trim() === key
+            );
+        }
+
         function showSaveButton(){
             const btn = document.getElementById('save-record-btn');
             if(!btn) return;
             btn.classList.remove('hidden');
-            btn.disabled = false;
-            btn.style.background = '#16a34a';
-            btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Record';
+            if(isAlreadySaved()){
+                btn.disabled = true;
+                btn.style.background = '#92400e';
+                btn.innerHTML = '<i class="ph ph-warning"></i> Already Saved';
+            } else {
+                btn.disabled = false;
+                btn.style.background = '#16a34a';
+                btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Record';
+            }
         }
 
         async function manualSaveRecord(){
@@ -1625,6 +1681,9 @@
             btn.disabled=false;btn.innerHTML='<i class="ph ph-trash"></i> Yes, Delete';
         }
         document.getElementById('delete-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
+
+        // Pre-load users cache so login is instant
+        loadUsersCache();
 
         window.addEventListener('DOMContentLoaded', async function(){
             const user = getSession();
