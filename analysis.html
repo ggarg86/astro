@@ -246,7 +246,7 @@
 
         /* AUTH OVERLAY */
         #auth-overlay { position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);display:flex;align-items:center;justify-content:center;padding:20px; }
-        #auth-overlay.hidden { display:none; }
+        #auth-overlay.hidden { display:none !important; }
         .auth-card { background:#fff;border-radius:20px;padding:36px 32px;width:100%;max-width:420px;box-shadow:0 25px 60px rgba(0,0,0,0.4); }
         .auth-logo { display:flex;align-items:center;gap:10px;margin-bottom:28px; }
         .auth-logo-icon { width:44px;height:44px;background:var(--accent-analysis);border-radius:12px;display:flex;align-items:center;justify-content:center;color:white;font-size:1.3em; }
@@ -380,7 +380,7 @@
 
     </script>
 
-    <div id="auth-overlay">
+    <div id="auth-overlay" class="hidden">
         <div class="auth-card">
             <div class="auth-logo">
                 <div class="auth-logo-icon"><i class="ph ph-star-four"></i></div>
@@ -1766,43 +1766,70 @@
 
         window.addEventListener('DOMContentLoaded', async function(){
             const user = getSession();
-            if(!user) return;
 
-            // Re-verify validity from Google Sheets on every page load
-            // Use race with timeout — if sheet takes >4s, load from local session
-            const verifyPromise = apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000));
+            if(!user){
+                // No session — show login screen
+                document.getElementById('auth-overlay').classList.remove('hidden');
+                return;
+            }
 
+            // ── INSTANT RESTORE: show app immediately from local session ──
+            // Do NOT wait for network — user sees no flash at all
+            activateApp(user);
+
+            // ── SILENT BACKGROUND VERIFY: check with Google Sheets quietly ──
+            // If expired or invalid — log out smoothly without any flash
             try {
+                const verifyPromise  = apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+                const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
                 const res = await Promise.race([verifyPromise, timeoutPromise]);
+
                 if(res.expired || !res.success){
+                    // Session is invalid — log out silently
                     clearSession();
+                    document.getElementById('search-section').classList.add('hidden');
+                    document.getElementById('auth-overlay').classList.remove('hidden');
+                    var badge = document.getElementById('validity-badge');
+                    if(badge){ badge.className=''; }
                     switchAuthTab('login');
                     setAuthMsg('login-msg', res.message || 'Your session has expired. Contact Admin Team at 8360362525.', 'error');
                     return;
                 }
-                // Update session with latest valid_until from sheet
+                // Update local session with latest valid_until from sheet
                 user.valid_until = res.valid_until;
                 saveSession(user);
-                activateApp(user);
-            } catch(e) {
-                // If network fails, fall back to locally stored expiry check
-                var vUntil = user.valid_until || '';
-                var expired = false;
-                if(vUntil){
-                    var parts = vUntil.split(' ');
-                    if(parts.length === 3){
-                        var mMap = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-                        var expiry = new Date(parseInt(parts[2]), mMap[parts[1]], parseInt(parts[0]), 23, 59, 59);
-                        if(new Date() > expiry){ expired = true; }
+                // Refresh validity badge with latest data
+                var badge    = document.getElementById('validity-badge');
+                var badgeTxt = document.getElementById('validity-text');
+                if(badge && badgeTxt && res.valid_until){
+                    var parts = res.valid_until.split(' ');
+                    if(parts.length===3){
+                        var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+                        var expiry=new Date(parseInt(parts[2]),mMap[parts[1]],parseInt(parts[0]),23,59,59);
+                        var diff=(expiry-new Date())/(1000*60*60*24);
+                        if(diff<=7){badge.className='warning';badgeTxt.textContent='Expires soon: '+res.valid_until;}
+                        else{badge.className='valid';badgeTxt.textContent='Valid until: '+res.valid_until;}
                     }
                 }
-                if(expired){
-                    clearSession();
-                    switchAuthTab('login');
-                    setAuthMsg('login-msg','Your session has expired. Contact Admin Team at 8360362525.','error');
-                } else {
-                    activateApp(user);
+            } catch(e) {
+                // Network error or timeout — app already showing, do nothing
+                // Local expiry check as last resort
+                var vUntil = user.valid_until || '';
+                if(vUntil){
+                    var parts = vUntil.split(' ');
+                    if(parts.length===3){
+                        var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+                        var expiry=new Date(parseInt(parts[2]),mMap[parts[1]],parseInt(parts[0]),23,59,59);
+                        if(new Date()>expiry){
+                            clearSession();
+                            document.getElementById('search-section').classList.add('hidden');
+                            document.getElementById('auth-overlay').classList.remove('hidden');
+                            var badge=document.getElementById('validity-badge');
+                            if(badge){badge.className='';}
+                            switchAuthTab('login');
+                            setAuthMsg('login-msg','Your session has expired. Contact Admin Team at 8360362525.','error');
+                        }
+                    }
                 }
             }
         });
