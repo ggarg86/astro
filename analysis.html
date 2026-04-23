@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>Geo-Time Chart Calculator</title>
+    <title>GeoAstro</title>
 
     <!-- PWA Meta Tags -->
     <link rel="manifest" href="/manifest.json">
@@ -16,11 +16,21 @@
     <meta name="msapplication-TileColor" content="#2980b9">
     <meta name="msapplication-TileImage" content="/icons/icon-144.png">
 
-    <!-- PWA Icons -->
+    <!-- PWA Icons — Android -->
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="/icons/icon-512.png">
+
+    <!-- iOS Icons — Safari reads these, NOT manifest.json -->
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="/icons/icon-128.png">
     <link rel="apple-touch-icon" sizes="152x152" href="/icons/icon-152.png">
+    <link rel="apple-touch-icon" sizes="167x167" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/icons/icon-192.png">
+
+    <!-- iOS Splash / Status bar -->
+    <meta name="apple-mobile-web-app-title" content="GeoAstro">
+    <meta name="apple-touch-fullscreen" content="yes">
     <!-- Import Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1284,7 +1294,8 @@
                     else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
                 }else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
             }else{badge.className='valid';badgeTxt.textContent='Active';}
-            loadRecordsCache();
+            // Load records + refresh users cache in parallel for speed
+            Promise.all([loadRecordsCache(), loadUsersCache()]);
         }
 
         function doLogout(){
@@ -1331,7 +1342,9 @@
             const user = getSession();
             if(!user) return;
             try {
-                const res = await apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+                const vPromise = apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+                const vTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
+                const res = await Promise.race([vPromise, vTimeout]);
                 if(res.expired || !res.success){
                     clearSession();
                     document.getElementById('auth-overlay').classList.remove('hidden');
@@ -1524,6 +1537,9 @@
 
         async function manualSaveRecord(){
             const user = getSession(); if(!user) return;
+            // Show spinner instantly — don't wait for network
+            const btn = document.getElementById('save-record-btn');
+            if(btn){ btn.disabled=true; btn.innerHTML='<i class="ph ph-spinner"></i> Saving…'; }
             const name  = document.getElementById('name-input').value.trim();
             const place = document.getElementById('location-input').value.trim();
             const lat   = document.getElementById('latitude').value;
@@ -1540,9 +1556,7 @@
             const dob = pad(day)+' '+mN[month]+' '+year;
             const tob = pad(hour)+':'+pad(min)+' '+ampm;
 
-            const btn = document.getElementById('save-record-btn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="ph ph-spinner"></i> Saving…';
+            // btn already set above
 
             try{
                 const res = await apiCall({action:'save',user_id:user.user_id,person_name:name,place,latitude:lat,longitude:lng,date_of_birth:dob,time_of_birth:tob});
@@ -1699,7 +1713,8 @@
         }
         document.getElementById('delete-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
 
-        // Pre-load users cache so login is instant
+        // Pre-load users cache immediately so login is instant
+        // Start loading in background as soon as page opens
         loadUsersCache();
 
         window.addEventListener('DOMContentLoaded', async function(){
@@ -1707,8 +1722,12 @@
             if(!user) return;
 
             // Re-verify validity from Google Sheets on every page load
+            // Use race with timeout — if sheet takes >4s, load from local session
+            const verifyPromise = apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 4000));
+
             try {
-                const res = await apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+                const res = await Promise.race([verifyPromise, timeoutPromise]);
                 if(res.expired || !res.success){
                     clearSession();
                     switchAuthTab('login');
