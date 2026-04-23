@@ -1657,30 +1657,50 @@
             const tob=pad(hour)+':'+pad(min)+' '+ampm;
             const btn=document.getElementById('edit-save-btn');
             btn.disabled=true;btn.innerHTML='<i class="ph ph-spinner"></i> Saving…';
+
+            // Capture edit record id before closing
+            const cachedRecordId = _editRecordId;
+
+            // OPTIMISTIC UI: update local cache immediately
+            if(_recordsCache){
+                const idx = _recordsCache.findIndex(r => r.record_id.toString() === cachedRecordId.toString());
+                if(idx > -1){
+                    _recordsCache[idx].person_name   = name;
+                    _recordsCache[idx].place         = place;
+                    _recordsCache[idx].date_of_birth = dob;
+                    _recordsCache[idx].time_of_birth = tob;
+                }
+            }
+
+            // Close modal and update form immediately — don't wait for server
+            closeEditModal();
+            showToast('Record updated successfully!', 'success');
+            document.getElementById('name-input').value=name;
+            document.getElementById('location-input').value=place;
+            document.getElementById('day-input').value=parseInt(day);
+            document.getElementById('month-input').value=month;
+            document.getElementById('year-input').value=year;
+            document.getElementById('hour-input').value=parseInt(hour);
+            document.getElementById('minute-input').value=parseInt(min);
+            setAmPm(ampm);
+            document.getElementById('record-search-input').value='';
+            document.getElementById('search-results-dropdown').classList.remove('show');
+            setTimeout(()=>calculatePositions(), 300);
+
+            // Send update to server in background
             try{
-                const res=await apiCall({action:'update',user_id:user.user_id,record_id:_editRecordId,person_name:name,place,date_of_birth:dob,time_of_birth:tob});
-                if(res.success){
-                    closeEditModal();showToast('Record updated successfully!','success');invalidateCache();
-                    document.getElementById('name-input').value=name;
-                    document.getElementById('location-input').value=place;
-                    document.getElementById('day-input').value=parseInt(day);
-                    document.getElementById('month-input').value=month;
-                    document.getElementById('year-input').value=year;
-                    document.getElementById('hour-input').value=parseInt(hour);
-                    document.getElementById('minute-input').value=parseInt(min);
-                    setAmPm(ampm);
-                    document.getElementById('record-search-input').value='';_recordsCache=null;
-                    document.getElementById('search-results-dropdown').classList.remove('show');
-                    setTimeout(()=>calculatePositions(),300);
-                }else{
-                    const msg=document.getElementById('edit-msg');
-                    msg.textContent=res.message||'Update failed.';msg.className='edit-msg error';
+                const res=await apiCall({action:'update',user_id:user.user_id,record_id:cachedRecordId,person_name:name,place,date_of_birth:dob,time_of_birth:tob});
+                if(!res.success){
+                    // Revert on failure
+                    invalidateCache();
+                    loadRecordsCache();
+                    showToast('Update failed: ' + (res.message || 'Unknown error'), 'error');
                 }
             }catch(e){
-                const msg=document.getElementById('edit-msg');
-                msg.textContent='Connection error.';msg.className='edit-msg error';
+                invalidateCache();
+                loadRecordsCache();
+                showToast('Connection error. Changes may not be saved.', 'error');
             }
-            btn.disabled=false;btn.innerHTML='<i class="ph ph-floppy-disk"></i> Save &amp; Generate Report';
         }
         document.getElementById('edit-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeEditModal();});
 
@@ -1700,16 +1720,43 @@
             const user=getSession();if(!user||!_deleteRecordId)return;
             const btn=document.getElementById('delete-confirm-btn');
             btn.disabled=true;btn.innerHTML='<i class="ph ph-spinner"></i> Deleting…';
+
+            // Capture values before closing modal
+            const cachedName  = _deletePersonName;
+            const cachedId    = _deleteRecordId;
+            const cachedQuery = _deleteSearchQuery;
+
+            // OPTIMISTIC UI: close modal and update cache immediately
+            // so user sees instant response — don't wait for network
+            closeDeleteModal();
+
+            // Remove from local cache instantly
+            if(_recordsCache){
+                _recordsCache = _recordsCache.filter(r => r.record_id.toString() !== cachedId.toString());
+            }
+
+            // Refresh search results from updated cache instantly
+            const dd = document.getElementById('search-results-dropdown');
+            if(cachedQuery.length > 0){ searchFromCache(cachedQuery); }
+            else{ dd.classList.remove('show'); dd.innerHTML=''; document.getElementById('record-search-input').value=''; }
+
+            showToast(cachedName + ' — record deleted.', 'warning');
+
+            // Send delete to server in background
             try{
-                const res=await apiCall({action:'delete',user_id:user.user_id,record_id:_deleteRecordId});
-                if(res.success){
-                    closeDeleteModal();showToast(_deletePersonName+' — record deleted.','warning');invalidateCache();
-                    const dd=document.getElementById('search-results-dropdown');
-                    if(_deleteSearchQuery.length>0){fetchSearchResults(_deleteSearchQuery);}
-                    else{dd.classList.remove('show');dd.innerHTML='';document.getElementById('record-search-input').value='';_recordsCache=null;}
-                }else{closeDeleteModal();showToast('Delete failed: '+(res.message||'Unknown error'),'error');}
-            }catch(e){closeDeleteModal();showToast('Connection error.','error');}
-            btn.disabled=false;btn.innerHTML='<i class="ph ph-trash"></i> Yes, Delete';
+                const res = await apiCall({action:'delete', user_id:user.user_id, record_id:cachedId});
+                if(!res.success){
+                    // Revert: refresh cache from server on failure
+                    invalidateCache();
+                    loadRecordsCache();
+                    showToast('Delete failed: ' + (res.message || 'Unknown error'), 'error');
+                }
+            }catch(e){
+                // Network error — refresh cache to resync
+                invalidateCache();
+                loadRecordsCache();
+                showToast('Connection error. Record may not be deleted.', 'error');
+            }
         }
         document.getElementById('delete-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeDeleteModal();});
 
