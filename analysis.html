@@ -309,6 +309,32 @@
         .sri-delete-btn:hover { background:#dc2626;color:white;border-color:#dc2626; }
         .search-no-results { padding:16px;text-align:center;color:#94a3b8;font-size:0.85em;font-family:'Montserrat',sans-serif; }
 
+        /* TIMEZONE SELECTOR */
+        .tz-wrapper { margin-top:10px; }
+        .tz-label { display:block;font-family:'Montserrat',sans-serif;font-size:0.72em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:5px; }
+        .tz-row { display:flex;gap:8px;align-items:center;flex-wrap:wrap; }
+        #tz-select {
+            flex:1;min-width:0;padding:8px 10px;border:1.5px solid #e2e8f0;border-radius:10px;
+            font-family:'Montserrat',sans-serif;font-size:0.78em;color:#334155;
+            background:white;outline:none;transition:border-color 0.2s;cursor:pointer;
+        }
+        #tz-select:focus { border-color:var(--accent-analysis); }
+        .dst-badge {
+            font-family:'Montserrat',sans-serif;font-size:0.7em;font-weight:700;
+            padding:4px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0;
+        }
+        .dst-badge.dst-on  { background:#fef3c7;color:#92400e;border:1px solid #fcd34d; }
+        .dst-badge.dst-off { background:#f0fdf4;color:#166534;border:1px solid #bbf7d0; }
+        .dst-badge.dst-na  { background:#f1f5f9;color:#64748b;border:1px solid #e2e8f0; }
+        .dst-override { display:flex;gap:6px;align-items:center;margin-top:6px;flex-wrap:wrap; }
+        .dst-btn {
+            font-family:'Montserrat',sans-serif;font-size:0.68em;font-weight:700;
+            padding:3px 10px;border-radius:20px;border:1.5px solid #e2e8f0;
+            background:none;color:#64748b;cursor:pointer;transition:all 0.2s;
+        }
+        .dst-btn.active { background:var(--accent-analysis);color:white;border-color:var(--accent-analysis); }
+        .tz-offset-display { font-size:0.72em;color:#64748b;font-family:'Montserrat',sans-serif;font-weight:600; }
+
         /* TOAST */
         #toast { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:12px 24px;border-radius:30px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.82em;z-index:99999;opacity:0;transition:all 0.35s ease;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center; }
         #toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
@@ -560,6 +586,24 @@
                             <button id="clear-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"><i class="ph ph-x-circle text-lg"></i></button>
                         </div>
                         <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list"></ul>
+                    </div>
+
+                    <!-- TIMEZONE & DST -->
+                    <div class="tz-wrapper">
+                        <label class="tz-label"><i class="ph ph-clock" style="margin-right:4px;"></i>Time Zone of Birth Place</label>
+                        <div class="tz-row">
+                            <select id="tz-select">
+                                <option value="">— Select birth place first —</option>
+                            </select>
+                            <span id="dst-badge" class="dst-badge dst-na">DST: Auto</span>
+                        </div>
+                        <div class="dst-override">
+                            <span class="tz-offset-display">DST Override:</span>
+                            <button type="button" class="dst-btn active" id="dst-auto" onclick="setDSTOverride('auto')">Auto</button>
+                            <button type="button" class="dst-btn" id="dst-yes"  onclick="setDSTOverride('yes')">Force ON</button>
+                            <button type="button" class="dst-btn" id="dst-no"   onclick="setDSTOverride('no')">Force OFF</button>
+                            <span id="tz-offset-display" class="tz-offset-display"></span>
+                        </div>
                     </div>
                 </div>
                 <!-- Col 2 -->
@@ -1038,15 +1082,44 @@
         const ARCHETYPES = { 2: { title: "THE STRATEGIST", icon: "ph-strategy", quote: "Fear is not the end. When effort yields no reward, do not need to push harder. You need a map.", definition: "The Strategist is the resilience that rises from chaos. You are the puzzle solver, transforming the fear of failure into a structured plan for survival. You analyze the wreckage to find invisible leverage points.", method: "Anchor the 'Start' and visualize the 'End.' Build the bridge between your chaotic present and a secure future. Stop panicking; engineer your escape and survive at any cost." }, 3: { title: "THE SEEKER", icon: "ph-binoculars", quote: "Truth is not found in comfort, but in the questions that disturb your sleep.", definition: "The Seeker represents the gathering of emotional intelligence and data. It is the phase of absorbing truth from the environment to guide future actions.", method: "Observe without judgment. Let the environment reveal its hidden patterns to you before you act. Listen more than you speak." }, 5: { title: "THE COMPANION", icon: "ph-hand-heart", quote: "We heal not by standing alone, but by letting others stand with us.", definition: "The Companion embodies the need for emotional support and connection. It is the battery charging phase where trust is built.", method: "Seek environments that nurture you. Allow yourself to receive support rather than constantly giving it. Connect with your tribe." }, 6: { title: "THE CHALLENGER", icon: "ph-fist", quote: "Growth lives in the friction between who you are and who you must become.", definition: "The Challenger brings necessary friction to test your readiness. It represents the emotional spark that precedes transformation.", method: "Do not shy away from conflict or difficulty. Use the challenge as fuel to ignite your warrior spirit. Stand your ground." }, 8: { title: "THOUGHTS of DEATH/FAILURE", icon: "ph-recycle", quote: "To be reborn, one must first be willing to let the old self die.", definition: "This archetype deals with the deepest fears and the concept of failure as a stepping stone. It is the crucible of profound change.", method: "Embrace the endings. Let go of what no longer serves you to make space for the new creation. Release the old." }, 9: { title: "THE CREATOR", icon: "ph-paint-brush-broad", quote: "When your mind feels like a storm of unorganized thoughts, you are not lost—you are gathering raw materials.", definition: "This archetype represents the transmutation of mental clutter into tangible reality. It is the dance between the Seeker (who absorbs data) and the Creator (who builds a home for it).", method: "Stop dissipating energy through words. Channel it into your hands. Write it down, build it, make it real. You are the manufacturer of your own peace." }, 11: { title: "THE SELLER", icon: "ph-storefront", quote: "You possess a unique duality—a power to heal yourself by healing those around you.", definition: "This path merges the nurturing energy of the Companion with the influential charm of the Seller. You transform from a friend into a 'King of Hearts'—a leader who rules by affection, selling hope, comfort, and ideals.", method: "Focus entirely on the comfort of others. By acting as a bridge and speaking with love, you become a beacon that guides others out of their clutter, thereby organizing your own emotions." }, 12: { title: "THE WARRIOR", icon: "ph-sword", quote: "When gentle diplomacy fails, the Warrior awakens to break the walls enclosing you.", definition: "This domain governs high-intensity transformation. It begins with the Challenger and culminates in the Warrior, who executes the necessary change with red-hot discipline.", method: "Align your dissatisfaction with action. Stop warring with yourself and direct that intensity outward to correct injustices. Your healing comes from urgency and fearless execution." } };
         const THEMES = { RAJAS: { bg: "bg-[#fff7ed]", border: "border-orange-400", text: "text-orange-900", badge: "bg-orange-600", lightBg: "bg-orange-50", highlight: "text-orange-600", circleBg: "bg-orange-200", circleText: "text-orange-800", divider: "border-orange-200", ring: "ring-orange-400", strip: "bg-orange-500", sub: "RAJAS PHASE", icon: "text-orange-400" }, TAMAS: { bg: "bg-[#ecfdf5]", border: "border-emerald-400", text: "text-emerald-900", badge: "bg-emerald-600", lightBg: "bg-emerald-50", highlight: "text-emerald-600", circleBg: "bg-emerald-200", circleText: "text-emerald-800", divider: "border-emerald-200", ring: "ring-emerald-400", strip: "bg-emerald-500", sub: "TAMAS PHASE", icon: "text-emerald-400" } };
 
-        window.onload = function () { populateSelect('day-input', 1, 31); const m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]; populateSelect('month-input', 0, 11, i => m[i]); const yl = document.getElementById('year-options'); yl.innerHTML = ''; for (let i = 1900; i <= 2100; i++) { const o = document.createElement('option'); o.value = i; yl.appendChild(o); } populateSelect('hour-input', 1, 12, i => pad(i)); populateSelect('minute-input', 0, 59, i => pad(i)); document.getElementById('name-input').value = "FBR Institute"; document.getElementById('day-input').value = "3"; document.getElementById('month-input').value = "6"; document.getElementById('year-input').value = "1986"; document.getElementById('hour-input').value = "3"; document.getElementById('minute-input').value = "50"; setAmPm('PM'); document.getElementById('location-input').value = "Faridkot, Punjab, India"; document.getElementById('latitude').value = "30.6769"; document.getElementById('longitude').value = "74.7583"; document.getElementById('lat-display').textContent = "30.6769"; document.getElementById('lng-display').textContent = "74.7583"; }; function setAmPm(v) { document.getElementById('ampm-value').value = v; const a = document.getElementById('btn-am'), p = document.getElementById('btn-pm'); a.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'AM' ? 'active' : ''}`; p.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'PM' ? 'active' : ''}`; }
+        window.onload = function () { populateSelect('day-input', 1, 31); const m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]; populateSelect('month-input', 0, 11, i => m[i]); const yl = document.getElementById('year-options'); yl.innerHTML = ''; for (let i = 1900; i <= 2100; i++) { const o = document.createElement('option'); o.value = i; yl.appendChild(o); } populateSelect('hour-input', 1, 12, i => pad(i)); populateSelect('minute-input', 0, 59, i => pad(i));
+            // When date changes, recalculate DST display
+            ['day-input','month-input','year-input'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.addEventListener('change', () => setTimeout(updateTZDisplay, 10));
+            }); document.getElementById('name-input').value = "FBR Institute"; document.getElementById('day-input').value = "3"; document.getElementById('month-input').value = "6"; document.getElementById('year-input').value = "1986"; document.getElementById('hour-input').value = "3"; document.getElementById('minute-input').value = "50"; setAmPm('PM'); document.getElementById('location-input').value = "Faridkot, Punjab, India"; document.getElementById('latitude').value = "30.6769"; document.getElementById('longitude').value = "74.7583"; document.getElementById('lat-display').textContent = "30.6769"; document.getElementById('lng-display').textContent = "74.7583"; }; function setAmPm(v) { document.getElementById('ampm-value').value = v; const a = document.getElementById('btn-am'), p = document.getElementById('btn-pm'); a.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'AM' ? 'active' : ''}`; p.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'PM' ? 'active' : ''}`; }
         const searchInput = document.getElementById('location-input'), suggestionsList = document.getElementById('suggestions'), spinner = document.getElementById('loading-spinner'), clearBtn = document.getElementById('clear-btn');
         searchInput.addEventListener('input', debounce((e) => fetchLocations(e.target.value), 400));
         document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !suggestionsList.contains(e.target)) suggestionsList.classList.add('hidden'); });
         clearBtn.addEventListener('click', () => { searchInput.value = ''; suggestionsList.classList.add('hidden'); clearBtn.classList.add('hidden'); });
         async function fetchLocations(q) { if (!q || q.length < 3) { suggestionsList.classList.add('hidden'); return; } spinner.classList.remove('hidden'); clearBtn.classList.add('hidden'); try { const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1`); renderSuggestions(await r.json()); } catch (e) { console.error(e); } finally { spinner.classList.add('hidden'); clearBtn.classList.remove('hidden'); } }
-        function renderSuggestions(d) { suggestionsList.innerHTML = ''; if (!d.length) { suggestionsList.classList.add('hidden'); return; } d.forEach(p => { const l = document.createElement('li'); l.className = "px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 last:border-0 flex flex-col"; l.innerHTML = `<span class="font-semibold text-slate-700 text-sm">${p.display_name.split(',')[0]}</span><span class="text-xs text-slate-500 truncate">${p.display_name}</span>`; l.onclick = () => { document.getElementById('latitude').value = parseFloat(p.lat).toFixed(4); document.getElementById('longitude').value = parseFloat(p.lon).toFixed(4); document.getElementById('lat-display').textContent = parseFloat(p.lat).toFixed(4); document.getElementById('lng-display').textContent = parseFloat(p.lon).toFixed(4); searchInput.value = p.display_name; suggestionsList.classList.add('hidden'); }; suggestionsList.appendChild(l); }); suggestionsList.classList.remove('hidden'); }
+        function renderSuggestions(d) { suggestionsList.innerHTML = ''; if (!d.length) { suggestionsList.classList.add('hidden'); return; } d.forEach(p => { const l = document.createElement('li'); l.className = "px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 last:border-0 flex flex-col"; l.innerHTML = `<span class="font-semibold text-slate-700 text-sm">${p.display_name.split(',')[0]}</span><span class="text-xs text-slate-500 truncate">${p.display_name}</span>`; l.onclick = () => {
+                    const lat = parseFloat(p.lat).toFixed(4);
+                    const lon = parseFloat(p.lon).toFixed(4);
+                    document.getElementById('latitude').value       = lat;
+                    document.getElementById('longitude').value      = lon;
+                    document.getElementById('lat-display').textContent = lat;
+                    document.getElementById('lng-display').textContent = lon;
+                    searchInput.value = p.display_name;
+                    suggestionsList.classList.add('hidden');
+                    // Auto-detect timezone from coordinates
+                    const nearest = findNearestTimezone(parseFloat(lat), parseFloat(lon));
+                    _currentTZ = nearest.tz;
+                    populateTZDropdown(nearest.tz);
+                    updateTZDisplay();
+                }; suggestionsList.appendChild(l); }); suggestionsList.classList.remove('hidden'); }
 
-        function calculatePositions() { const v = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value)); if (!v[0] || isNaN(v[1]) || !v[2]) { alert("Please enter a valid date."); return; } let h = v[3]; const ap = document.getElementById('ampm-value').value; if (ap === 'PM' && h < 12) h += 12; if (ap === 'AM' && h === 12) h = 0; const bd = new Date(v[2], v[1], v[0], h, v[4]); const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value); const nm = (document.getElementById('name-input').value || "Unknown").toUpperCase(); const lc = document.getElementById('location-input').value || "Unknown Location"; const dp = `${pad(bd.getDate())} ${bd.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${bd.getFullYear()}`; const tp = bd.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true }); const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); showSaveButton(); }
+        function calculatePositions() { const v = ['day-input', 'month-input', 'year-input', 'hour-input', 'minute-input'].map(id => parseInt(document.getElementById(id).value)); if (!v[0] || isNaN(v[1]) || !v[2]) { alert("Please enter a valid date."); return; } let h = v[3]; const ap = document.getElementById('ampm-value').value; if (ap === 'PM' && h < 12) h += 12; if (ap === 'AM' && h === 12) h = 0;
+        // Get timezone offset for birth place and date (handles DST automatically)
+        const tzOffsetMins = getEffectiveOffsetMinutes();
+        // Create UTC-corrected Date: local birth time → UTC
+        // UTC = local time - offset
+        const localMs = Date.UTC(v[2], v[1], v[0], h, v[4], 0);
+        const bd = new Date(localMs - (tzOffsetMins * 60 * 1000)); const lat = parseFloat(document.getElementById('latitude').value), lon = parseFloat(document.getElementById('longitude').value); const nm = (document.getElementById('name-input').value || "Unknown").toUpperCase(); const lc = document.getElementById('location-input').value || "Unknown Location"; // Display the ENTERED local birth time — not the UTC-converted time
+        const dp = `${pad(v[0])} ${['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][v[1]]} ${v[2]}`;
+        const displayHour = v[3] === 0 ? 12 : (v[3] > 12 ? v[3] - 12 : v[3]);
+        const displayAmPm = document.getElementById('ampm-value').value;
+        const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); showSaveButton(); }
         function renderRow(n, s, t, i, hl, hn, r, dg, nk, pd) { const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0" + (t === 'Node' ? ' node-row' : t === 'Ascendant' ? ' asc-row' : ''); tr.innerHTML = `<td class="flex items-center gap-2" style="padding: 6px 12px;"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${i || 'ph-planet'} text-sm"></i></div><span class="font-bold text-xs">${n}</span></td><td>${(hl !== "-" && hn !== "-") ? `<span class="font-bold text-slate-900">${hl}</span> <span class="text-slate-900 font-bold">(${hn})</span>` : "-"}</td><td class="text-slate-700 font-medium">${r}</td><td class="font-mono text-slate-600">${dm(dg)}</td><td><span class="font-medium text-slate-700">${nk}</span> <span class="text-[10px] text-slate-400 ml-1">P${pd}</span></td>`; document.querySelector('#results-table tbody').appendChild(tr); }
         
         // --- UPDATED ANALYSIS RENDER FUNCTION ---
@@ -1112,6 +1185,267 @@
          * 2. Within each house, calculates a "staggered spiral" position.
          * 3. CLAMPING: Ensures visual placement never crosses the 45-degree house boundaries.
          */
+
+        // ══════════════════════════════════════════════════════════
+        //  TIMEZONE DATABASE & DST HANDLING
+        // ══════════════════════════════════════════════════════════
+
+const TZ_DATABASE = [
+  // North America
+  {tz:"America/New_York",      lat:40.71, lon:-74.01, label:"New York / Eastern US"},
+  {tz:"America/Chicago",       lat:41.88, lon:-87.63, label:"Chicago / Central US"},
+  {tz:"America/Denver",        lat:39.74, lon:-104.99, label:"Denver / Mountain US"},
+  {tz:"America/Los_Angeles",   lat:34.05, lon:-118.24, label:"Los Angeles / Pacific US"},
+  {tz:"America/Phoenix",       lat:33.45, lon:-112.07, label:"Phoenix (no DST)"},
+  {tz:"America/Anchorage",     lat:61.22, lon:-149.90, label:"Anchorage / Alaska"},
+  {tz:"Pacific/Honolulu",      lat:21.31, lon:-157.86, label:"Honolulu / Hawaii"},
+  {tz:"America/Toronto",       lat:43.65, lon:-79.38, label:"Toronto / Eastern Canada"},
+  {tz:"America/Vancouver",     lat:49.25, lon:-123.12, label:"Vancouver / Pacific Canada"},
+  {tz:"America/Winnipeg",      lat:49.90, lon:-97.14, label:"Winnipeg / Central Canada"},
+  {tz:"America/Halifax",       lat:44.65, lon:-63.58, label:"Halifax / Atlantic Canada"},
+  {tz:"America/St_Johns",      lat:47.56, lon:-52.71, label:"St. Johns / Newfoundland"},
+  {tz:"America/Mexico_City",   lat:19.43, lon:-99.13, label:"Mexico City"},
+  {tz:"America/Bogota",        lat:4.71,  lon:-74.07, label:"Bogota / Colombia"},
+  {tz:"America/Lima",          lat:-12.05,lon:-77.04, label:"Lima / Peru"},
+  {tz:"America/Santiago",      lat:-33.46,lon:-70.65, label:"Santiago / Chile"},
+  {tz:"America/Buenos_Aires",  lat:-34.61,lon:-58.38, label:"Buenos Aires / Argentina"},
+  {tz:"America/Sao_Paulo",     lat:-23.55,lon:-46.64, label:"Sao Paulo / Brazil"},
+  {tz:"America/Caracas",       lat:10.48, lon:-66.88, label:"Caracas / Venezuela"},
+  {tz:"America/La_Paz",        lat:-16.50,lon:-68.15, label:"La Paz / Bolivia"},
+  // Europe
+  {tz:"Europe/London",         lat:51.51, lon:-0.13,  label:"London / UK"},
+  {tz:"Europe/Dublin",         lat:53.33, lon:-6.25,  label:"Dublin / Ireland"},
+  {tz:"Europe/Paris",          lat:48.85, lon:2.35,   label:"Paris / France"},
+  {tz:"Europe/Berlin",         lat:52.52, lon:13.41,  label:"Berlin / Germany"},
+  {tz:"Europe/Rome",           lat:41.90, lon:12.50,  label:"Rome / Italy"},
+  {tz:"Europe/Madrid",         lat:40.42, lon:-3.70,  label:"Madrid / Spain"},
+  {tz:"Europe/Amsterdam",      lat:52.37, lon:4.90,   label:"Amsterdam / Netherlands"},
+  {tz:"Europe/Brussels",       lat:50.85, lon:4.35,   label:"Brussels / Belgium"},
+  {tz:"Europe/Zurich",         lat:47.38, lon:8.54,   label:"Zurich / Switzerland"},
+  {tz:"Europe/Vienna",         lat:48.21, lon:16.37,  label:"Vienna / Austria"},
+  {tz:"Europe/Warsaw",         lat:52.23, lon:21.01,  label:"Warsaw / Poland"},
+  {tz:"Europe/Prague",         lat:50.08, lon:14.44,  label:"Prague / Czech Republic"},
+  {tz:"Europe/Budapest",       lat:47.50, lon:19.04,  label:"Budapest / Hungary"},
+  {tz:"Europe/Bucharest",      lat:44.43, lon:26.10,  label:"Bucharest / Romania"},
+  {tz:"Europe/Athens",         lat:37.98, lon:23.73,  label:"Athens / Greece"},
+  {tz:"Europe/Helsinki",       lat:60.17, lon:24.94,  label:"Helsinki / Finland"},
+  {tz:"Europe/Stockholm",      lat:59.33, lon:18.07,  label:"Stockholm / Sweden"},
+  {tz:"Europe/Oslo",           lat:59.91, lon:10.75,  label:"Oslo / Norway"},
+  {tz:"Europe/Copenhagen",     lat:55.68, lon:12.57,  label:"Copenhagen / Denmark"},
+  {tz:"Europe/Lisbon",         lat:38.72, lon:-9.14,  label:"Lisbon / Portugal"},
+  {tz:"Europe/Istanbul",       lat:41.01, lon:28.97,  label:"Istanbul / Turkey"},
+  {tz:"Europe/Moscow",         lat:55.75, lon:37.62,  label:"Moscow / Russia"},
+  {tz:"Europe/Kiev",           lat:50.45, lon:30.52,  label:"Kyiv / Ukraine"},
+  // Asia
+  {tz:"Asia/Kolkata",          lat:28.61, lon:77.21,  label:"India (IST) — All India"},
+  {tz:"Asia/Colombo",          lat:6.93,  lon:79.85,  label:"Colombo / Sri Lanka"},
+  {tz:"Asia/Karachi",          lat:24.86, lon:67.01,  label:"Karachi / Pakistan"},
+  {tz:"Asia/Dhaka",            lat:23.72, lon:90.41,  label:"Dhaka / Bangladesh"},
+  {tz:"Asia/Kathmandu",        lat:27.71, lon:85.31,  label:"Kathmandu / Nepal"},
+  {tz:"Asia/Kabul",            lat:34.53, lon:69.17,  label:"Kabul / Afghanistan"},
+  {tz:"Asia/Tehran",           lat:35.69, lon:51.42,  label:"Tehran / Iran"},
+  {tz:"Asia/Dubai",            lat:25.20, lon:55.27,  label:"Dubai / UAE"},
+  {tz:"Asia/Riyadh",           lat:24.69, lon:46.72,  label:"Riyadh / Saudi Arabia"},
+  {tz:"Asia/Kuwait",           lat:29.37, lon:47.98,  label:"Kuwait City"},
+  {tz:"Asia/Baghdad",          lat:33.34, lon:44.40,  label:"Baghdad / Iraq"},
+  {tz:"Asia/Beirut",           lat:33.89, lon:35.50,  label:"Beirut / Lebanon"},
+  {tz:"Asia/Jerusalem",        lat:31.77, lon:35.22,  label:"Jerusalem / Israel"},
+  {tz:"Asia/Amman",            lat:31.96, lon:35.95,  label:"Amman / Jordan"},
+  {tz:"Asia/Tashkent",         lat:41.30, lon:69.27,  label:"Tashkent / Uzbekistan"},
+  {tz:"Asia/Almaty",           lat:43.25, lon:76.95,  label:"Almaty / Kazakhstan"},
+  {tz:"Asia/Yekaterinburg",    lat:56.85, lon:60.61,  label:"Yekaterinburg / Russia"},
+  {tz:"Asia/Novosibirsk",      lat:54.99, lon:82.90,  label:"Novosibirsk / Russia"},
+  {tz:"Asia/Rangoon",          lat:16.87, lon:96.19,  label:"Yangon / Myanmar"},
+  {tz:"Asia/Bangkok",          lat:13.75, lon:100.52, label:"Bangkok / Thailand"},
+  {tz:"Asia/Ho_Chi_Minh",      lat:10.82, lon:106.63, label:"Ho Chi Minh / Vietnam"},
+  {tz:"Asia/Jakarta",          lat:-6.21, lon:106.85, label:"Jakarta / Indonesia"},
+  {tz:"Asia/Singapore",        lat:1.35,  lon:103.82, label:"Singapore"},
+  {tz:"Asia/Kuala_Lumpur",     lat:3.14,  lon:101.69, label:"Kuala Lumpur / Malaysia"},
+  {tz:"Asia/Manila",           lat:14.60, lon:120.98, label:"Manila / Philippines"},
+  {tz:"Asia/Hong_Kong",        lat:22.40, lon:114.11, label:"Hong Kong"},
+  {tz:"Asia/Shanghai",         lat:31.23, lon:121.47, label:"Shanghai / China"},
+  {tz:"Asia/Taipei",           lat:25.05, lon:121.53, label:"Taipei / Taiwan"},
+  {tz:"Asia/Seoul",            lat:37.57, lon:126.98, label:"Seoul / South Korea"},
+  {tz:"Asia/Tokyo",            lat:35.69, lon:139.69, label:"Tokyo / Japan"},
+  {tz:"Asia/Vladivostok",      lat:43.13, lon:131.91, label:"Vladivostok / Russia"},
+  // Africa
+  {tz:"Africa/Cairo",          lat:30.06, lon:31.25,  label:"Cairo / Egypt"},
+  {tz:"Africa/Lagos",          lat:6.45,  lon:3.40,   label:"Lagos / Nigeria"},
+  {tz:"Africa/Nairobi",        lat:-1.29, lon:36.82,  label:"Nairobi / Kenya"},
+  {tz:"Africa/Johannesburg",   lat:-26.20,lon:28.04,  label:"Johannesburg / South Africa"},
+  {tz:"Africa/Casablanca",     lat:33.59, lon:-7.62,  label:"Casablanca / Morocco"},
+  {tz:"Africa/Addis_Ababa",    lat:9.02,  lon:38.75,  label:"Addis Ababa / Ethiopia"},
+  {tz:"Africa/Accra",          lat:5.56,  lon:-0.20,  label:"Accra / Ghana"},
+  {tz:"Africa/Khartoum",       lat:15.55, lon:32.53,  label:"Khartoum / Sudan"},
+  // Oceania
+  {tz:"Australia/Sydney",      lat:-33.87,lon:151.21, label:"Sydney / NSW Australia"},
+  {tz:"Australia/Melbourne",   lat:-37.81,lon:144.96, label:"Melbourne / VIC Australia"},
+  {tz:"Australia/Brisbane",    lat:-27.47,lon:153.03, label:"Brisbane / QLD Australia"},
+  {tz:"Australia/Perth",       lat:-31.95,lon:115.86, label:"Perth / WA Australia"},
+  {tz:"Australia/Adelaide",    lat:-34.93,lon:138.60, label:"Adelaide / SA Australia"},
+  {tz:"Pacific/Auckland",      lat:-36.87,lon:174.77, label:"Auckland / New Zealand"},
+  {tz:"Pacific/Fiji",          lat:-18.14,lon:178.44, label:"Fiji"},
+  // Atlantic / Others
+  {tz:"Atlantic/Reykjavik",    lat:64.13, lon:-21.82, label:"Reykjavik / Iceland"},
+  {tz:"UTC",                   lat:0,     lon:0,      label:"UTC / Coordinated Universal Time"}
+];
+
+function findNearestTimezone(lat, lon) {
+    let best = TZ_DATABASE[0];
+    let bestDist = Infinity;
+    for (const tz of TZ_DATABASE) {
+        const dLat = lat - tz.lat;
+        const dLon = lon - tz.lon;
+        const dist = dLat*dLat + dLon*dLon;
+        if (dist < bestDist) { bestDist = dist; best = tz; }
+    }
+    return best;
+}
+
+function getTimezoneOffsetForDate(tzName, date) {
+    // Use Intl API to get the UTC offset for a specific timezone on a specific date
+    // This automatically handles historical DST rules
+    try {
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: tzName,
+            timeZoneName: 'shortOffset',
+            year: 'numeric'
+        });
+        const parts = formatter.formatToParts(date);
+        const tzPart = parts.find(p => p.type === 'timeZoneName');
+        if (tzPart) {
+            const match = tzPart.value.match(/GMT([+-])(\d+)(?::(\d+))?/);
+            if (match) {
+                const sign   = match[1] === '+' ? 1 : -1;
+                const hours  = parseInt(match[2]);
+                const mins   = parseInt(match[3] || '0');
+                return sign * (hours * 60 + mins); // offset in minutes
+            }
+        }
+        return 0;
+    } catch(e) {
+        return 0;
+    }
+}
+
+function getDSTInfo(tzName, date) {
+    // Check if DST is in effect by comparing Jan offset vs current offset
+    try {
+        const jan = new Date(date.getFullYear(), 0, 15);
+        const jul = new Date(date.getFullYear(), 6, 15);
+        const janOff = getTimezoneOffsetForDate(tzName, jan);
+        const julOff = getTimezoneOffsetForDate(tzName, jul);
+        const curOff = getTimezoneOffsetForDate(tzName, date);
+        // If Jan and Jul offsets are different, DST exists in this timezone
+        const hasDST = janOff !== julOff;
+        if (!hasDST) return { hasDST: false, isDST: false, dstHours: 0 };
+        // DST is in effect if current offset matches the summer offset
+        const summerOff = Math.max(janOff, julOff);
+        const isDST = curOff === summerOff;
+        const dstHours = Math.abs(summerOff - Math.min(janOff, julOff)) / 60;
+        return { hasDST: true, isDST, dstHours };
+    } catch(e) {
+        return { hasDST: false, isDST: false, dstHours: 0 };
+    }
+}
+
+        var _dstOverride = 'auto'; // 'auto' | 'yes' | 'no'
+        var _currentTZ   = 'UTC';
+
+        function setDSTOverride(val) {
+            _dstOverride = val;
+            ['auto','yes','no'].forEach(v => {
+                const btn = document.getElementById('dst-' + v);
+                if(btn) btn.className = 'dst-btn' + (v === val ? ' active' : '');
+            });
+            updateTZDisplay();
+        }
+
+        function populateTZDropdown(selectedTZ) {
+            const sel = document.getElementById('tz-select');
+            if(!sel) return;
+            sel.innerHTML = '';
+            TZ_DATABASE.forEach(tz => {
+                const opt = document.createElement('option');
+                opt.value = tz.tz;
+                opt.text  = tz.label + ' — ' + tz.tz;
+                if(tz.tz === selectedTZ) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            sel.onchange = function() {
+                _currentTZ = this.value;
+                updateTZDisplay();
+            };
+        }
+
+        function updateTZDisplay() {
+            const tzName = _currentTZ || 'UTC';
+            // Read date from form — use safe fallbacks
+            const dayEl   = document.getElementById('day-input');
+            const monthEl = document.getElementById('month-input');
+            const yearEl  = document.getElementById('year-input');
+            const day   = parseInt((dayEl   && dayEl.value)   || 1);
+            const month = parseInt((monthEl && monthEl.value) || 0);
+            const year  = parseInt((yearEl  && yearEl.value)  || 2000);
+            // Validate — if any value is NaN use safe defaults
+            const safeDay   = isNaN(day)   ? 1    : day;
+            const safeMonth = isNaN(month) ? 0    : month;
+            const safeYear  = isNaN(year)  ? 2000 : year;
+            const testDate  = new Date(safeYear, safeMonth, safeDay, 12, 0, 0);
+
+            const offsetMins = getTimezoneOffsetForDate(tzName, testDate);
+            const dstInfo    = getDSTInfo(tzName, testDate);
+
+            const badge = document.getElementById('dst-badge');
+            const disp  = document.getElementById('tz-offset-display');
+
+            // Determine effective DST
+            let effectiveDST = false;
+            if(_dstOverride === 'auto')  effectiveDST = dstInfo.isDST;
+            else if(_dstOverride === 'yes') effectiveDST = dstInfo.hasDST;
+            else effectiveDST = false;
+
+            // Format offset
+            const sign    = offsetMins >= 0 ? '+' : '-';
+            const absMin  = Math.abs(offsetMins);
+            const offH    = Math.floor(absMin / 60).toString().padStart(2,'0');
+            const offM    = (absMin % 60).toString().padStart(2,'0');
+            const offStr  = 'UTC' + sign + offH + ':' + offM;
+
+            if(badge) {
+                if(!dstInfo.hasDST) {
+                    badge.className = 'dst-badge dst-na';
+                    badge.textContent = 'No DST';
+                } else if(effectiveDST) {
+                    badge.className = 'dst-badge dst-on';
+                    badge.textContent = 'DST: ON (+' + dstInfo.dstHours + 'h)';
+                } else {
+                    badge.className = 'dst-badge dst-off';
+                    badge.textContent = 'DST: OFF';
+                }
+            }
+            if(disp) disp.textContent = offStr;
+        }
+
+        function getEffectiveOffsetMinutes() {
+            const tzName = _currentTZ || 'UTC';
+            const day    = parseInt(document.getElementById('day-input').value   || 1);
+            const month  = parseInt(document.getElementById('month-input').value || 0);
+            const year   = parseInt(document.getElementById('year-input').value  || 2000);
+            const hour   = parseInt(document.getElementById('hour-input').value  || 0);
+            const min    = parseInt(document.getElementById('minute-input').value|| 0);
+            const ampm   = document.getElementById('ampm-value').value;
+            let h24 = hour;
+            if(ampm === 'PM' && h24 < 12) h24 += 12;
+            if(ampm === 'AM' && h24 === 12) h24 = 0;
+            const birthDate = new Date(year, month, day, h24, min, 0);
+            return getTimezoneOffsetForDate(tzName, birthDate);
+        }
+
+        // ══════════════════════════════════════════════════════════
+        //  END TIMEZONE SECTION
+        // ══════════════════════════════════════════════════════════
+
         function drawOctalChart(l, p) {
             const w = 550, h = 550, cx = w / 2, cy = h / 2, r = 180, lr = 185;
             const c = document.getElementById('octal-chart-container');
@@ -1202,7 +1536,7 @@
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyMOhINT0y9pTHOIVfUgfSPh7i5bjx6SyCi1roo_zw6wp-q9tdXuxLyXp5uZnmSq8Pkyw/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQk05i7lUzKs488TrHYufFhpzi0Fn6p5Kpbg5Oe2XWCr7boG3lR--yTVtz8FlzabVjzQ/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -1490,8 +1824,29 @@
                     setAmPm(tp[1].toUpperCase());
                 }
             }catch(e){}
-            // Auto-generate report after short delay to let DOM update
-            setTimeout(() => calculatePositions(), 300);
+            // Restore timezone AFTER all form fields are set
+            // Using setTimeout so DOM is fully updated before DST is calculated
+            setTimeout(() => {
+                if(r.timezone && r.timezone !== '' && r.timezone !== 'UTC'){
+                    // Record has a saved timezone — use it
+                    _currentTZ = r.timezone;
+                    populateTZDropdown(r.timezone);
+                } else {
+                    // No saved timezone — detect from coordinates
+                    // Use form lat/lng values (guaranteed to be set above)
+                    const formLat = parseFloat(document.getElementById('latitude').value || '0');
+                    const formLon = parseFloat(document.getElementById('longitude').value || '0');
+                    // Only use coordinates if they are valid (not 0,0)
+                    if(formLat !== 0 || formLon !== 0){
+                        const nearest = findNearestTimezone(formLat, formLon);
+                        _currentTZ = nearest.tz;
+                        populateTZDropdown(nearest.tz);
+                    }
+                }
+                updateTZDisplay();
+            }, 50);
+            // Auto-generate report after all fields + timezone are set
+            setTimeout(() => calculatePositions(), 350);
         }
 
         function getCurrentFormKey(){
@@ -1559,7 +1914,7 @@
             // btn already set above
 
             try{
-                const res = await apiCall({action:'save',user_id:user.user_id,person_name:name,place,latitude:lat,longitude:lng,date_of_birth:dob,time_of_birth:tob});
+                const res = await apiCall({action:'save',user_id:user.user_id,person_name:name,place,latitude:lat,longitude:lng,date_of_birth:dob,time_of_birth:tob,timezone:_currentTZ||'UTC'});
                 if(res.success){
                     btn.style.background = '#16a34a';
                     btn.innerHTML = '<i class="ph ph-check-circle"></i> Saved!';
@@ -1689,7 +2044,7 @@
 
             // Send update to server in background
             try{
-                const res=await apiCall({action:'update',user_id:user.user_id,record_id:cachedRecordId,person_name:name,place,date_of_birth:dob,time_of_birth:tob});
+                const res=await apiCall({action:'update',user_id:user.user_id,record_id:cachedRecordId,person_name:name,place,date_of_birth:dob,time_of_birth:tob,timezone:_currentTZ||'UTC'});
                 if(!res.success){
                     // Revert on failure
                     invalidateCache();
