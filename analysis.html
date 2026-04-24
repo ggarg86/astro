@@ -1333,6 +1333,22 @@ const TZ_DATABASE = [
   {tz:"Asia/Seoul",            lat:37.57, lon:126.98, label:"Seoul / South Korea"},
   {tz:"Asia/Tokyo",            lat:35.69, lon:139.69, label:"Tokyo / Japan"},
   {tz:"Asia/Vladivostok",      lat:43.13, lon:131.91, label:"Vladivostok / Russia"},
+  // China — 5 anchors covering all regions (all use Asia/Shanghai — China has one official timezone)
+  {tz:"Asia/Shanghai", lat:30.57, lon:104.07, label:"Shanghai / China"},
+  {tz:"Asia/Shanghai", lat:43.82, lon: 87.60, label:"Shanghai / China"},
+  {tz:"Asia/Shanghai", lat:45.75, lon:126.63, label:"Shanghai / China"},
+  {tz:"Asia/Shanghai", lat:39.91, lon:116.39, label:"Shanghai / China"},
+  {tz:"Asia/Shanghai", lat:23.13, lon:113.26, label:"Shanghai / China"},
+  // Australia — Darwin area anchor
+  {tz:"Australia/Brisbane", lat:-12.46, lon:130.84, label:"Brisbane / QLD Australia"},
+  // USA — Seattle and El Paso anchors
+  {tz:"America/Los_Angeles", lat:47.61, lon:-122.33, label:"Los Angeles / Pacific US"},
+  {tz:"America/Denver",      lat:31.76, lon:-106.49, label:"Denver / Mountain US"},
+  // Brazil — Amazon region anchor
+  {tz:"America/Sao_Paulo",   lat:-3.10, lon:-60.02, label:"Sao Paulo / Brazil"},
+  // Canada — Calgary and Montreal anchors
+  {tz:"America/Denver",      lat:51.05, lon:-114.07, label:"Denver / Mountain US"},
+  {tz:"America/Toronto",     lat:45.51, lon:-73.55,  label:"Toronto / Eastern Canada"},
   // Africa
   {tz:"Africa/Cairo",          lat:30.06, lon:31.25,  label:"Cairo / Egypt"},
   {tz:"Africa/Lagos",          lat:6.45,  lon:3.40,   label:"Lagos / Nigeria"},
@@ -1432,10 +1448,17 @@ function getDSTInfo(tzName, date) {
             const sel = document.getElementById('tz-select');
             if(!sel) return;
             sel.innerHTML = '';
+            // Deduplicate: show only first occurrence of each tz value in dropdown
+            // All entries still used for nearest-city detection in findNearestTimezone
+            const seen = new Set();
             TZ_DATABASE.forEach(tz => {
+                if(seen.has(tz.tz)) return; // skip duplicates
+                seen.add(tz.tz);
                 const opt = document.createElement('option');
                 opt.value = tz.tz;
-                opt.text  = tz.label + ' — ' + tz.tz;
+                // Use clean label — strip region suffixes like "North India", "West India" etc
+                const cleanLabel = tz.label.replace(/ — (North|South|East|West|Northeast|Bihar.*|Tripura.*|Kerala.*|Kashmir.*|All India|Central India)$/, '');
+                opt.text = cleanLabel + ' — ' + tz.tz;
                 if(tz.tz === selectedTZ) opt.selected = true;
                 sel.appendChild(opt);
             });
