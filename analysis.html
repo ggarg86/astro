@@ -309,6 +309,30 @@
         .sri-delete-btn:hover { background:#dc2626;color:white;border-color:#dc2626; }
         .search-no-results { padding:16px;text-align:center;color:#94a3b8;font-size:0.85em;font-family:'Montserrat',sans-serif; }
 
+        /* GENERATE REPORT BUTTON — STALE STATE */
+        .btn-stale {
+            background: linear-gradient(135deg, #f97316, #ea580c) !important;
+            box-shadow: 0 0 0 0 rgba(249,115,22,0.7);
+            animation: pulse-orange 1.8s ease-in-out infinite;
+        }
+        @keyframes pulse-orange {
+            0%   { box-shadow: 0 0 0 0 rgba(249,115,22,0.7); }
+            50%  { box-shadow: 0 0 0 10px rgba(249,115,22,0); }
+            100% { box-shadow: 0 0 0 0 rgba(249,115,22,0); }
+        }
+        .btn-fresh {
+            animation: none !important;
+            box-shadow: none;
+        }
+        .btn-fresh-green {
+            background: linear-gradient(135deg, #16a34a, #15803d) !important;
+            animation: none !important;
+            box-shadow: none !important;
+        }
+        .btn-fresh-green::after {
+            content: ' ✓';
+        }
+
         /* TIMEZONE SELECTOR */
         .tz-wrapper { margin-top:10px; }
         .tz-label { display:block;font-family:'Montserrat',sans-serif;font-size:0.72em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:5px; }
@@ -334,6 +358,16 @@
         }
         .dst-btn.active { background:var(--accent-analysis);color:white;border-color:var(--accent-analysis); }
         .tz-offset-display { font-size:0.72em;color:#64748b;font-family:'Montserrat',sans-serif;font-weight:600; }
+        .tz-advanced-toggle { font-size:0.72em;color:#94a3b8;font-family:'Montserrat',sans-serif;font-weight:600;cursor:pointer;text-decoration:underline;margin-top:4px;display:inline-block; }
+        .tz-advanced-toggle:hover { color:#2980b9; }
+        .tz-manual-row { display:none;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;padding:10px 12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0; }
+        .tz-manual-row.show { display:flex; }
+        .tz-manual-label { font-size:0.72em;font-family:'Montserrat',sans-serif;font-weight:700;color:#64748b;white-space:nowrap; }
+        .tz-manual-input { width:52px;padding:5px 8px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Montserrat',sans-serif;font-size:0.82em;color:#334155;text-align:center;outline:none; }
+        .tz-manual-input:focus { border-color:var(--accent-analysis); }
+        .tz-manual-apply { padding:5px 14px;background:var(--accent-analysis);color:white;border:none;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;cursor:pointer; }
+        .tz-manual-apply:hover { opacity:0.88; }
+        .tz-manual-reset { padding:5px 10px;background:none;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.78em;color:#64748b;cursor:pointer; }
 
         /* TOAST */
         #toast { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:12px 24px;border-radius:30px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.82em;z-index:99999;opacity:0;transition:all 0.35s ease;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center; }
@@ -344,31 +378,6 @@
 
         /* NAV USER BADGE */
 
-
-        /* EDIT MODAL */
-        #edit-modal-backdrop { position:fixed;inset:0;z-index:99998;background:rgba(15,23,42,0.75);display:flex;align-items:center;justify-content:center;padding:20px; }
-        #edit-modal-backdrop.hidden { display:none; }
-        .edit-modal { background:#fff;border-radius:20px;padding:32px 28px;width:100%;max-width:480px;box-shadow:0 25px 60px rgba(0,0,0,0.35);position:relative; }
-        .edit-modal-title { font-family:'Montserrat',sans-serif;font-weight:800;font-size:1em;color:var(--primary);margin-bottom:20px;display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:0.5px; }
-        .edit-modal-close { position:absolute;top:16px;right:16px;background:#f1f5f9;border:none;border-radius:8px;width:32px;height:32px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#64748b;font-size:1.1em;transition:all 0.2s; }
-        .edit-modal-close:hover { background:#fef2f2;color:#dc2626; }
-        .edit-field { margin-bottom:14px; }
-        .edit-field label { display:block;font-family:'Montserrat',sans-serif;font-size:0.72em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:5px; }
-        .edit-field input,.edit-field select { width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Merriweather',serif;font-size:0.88em;color:#334155;outline:none;transition:border-color 0.2s;box-sizing:border-box;background:white; }
-        .edit-field input:focus,.edit-field select:focus { border-color:var(--accent-analysis); }
-        .edit-grid-3 { display:grid;grid-template-columns:1fr 1.4fr 1.6fr;gap:10px; }
-        .edit-grid-time { display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:end; }
-        .edit-ampm-row { display:flex;background:#f1f5f9;border-radius:8px;padding:3px;border:1.5px solid #e2e8f0;height:42px;box-sizing:border-box; }
-        .edit-ampm-btn { flex:1;border:none;background:none;border-radius:6px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.75em;color:#64748b;cursor:pointer;transition:all 0.2s; }
-        .edit-ampm-btn.active { background:var(--accent-analysis);color:white; }
-        .edit-modal-footer { display:flex;gap:10px;margin-top:20px; }
-        .edit-cancel-btn { flex:1;padding:11px;border:1.5px solid #e2e8f0;border-radius:10px;background:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85em;color:#64748b;cursor:pointer;transition:all 0.2s; }
-        .edit-cancel-btn:hover { background:#f8fafc; }
-        .edit-save-btn { flex:2;padding:11px;background:var(--accent-analysis);color:white;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;transition:opacity 0.2s;display:flex;align-items:center;justify-content:center;gap:6px; }
-        .edit-save-btn:hover { opacity:0.88; }
-        .edit-save-btn:disabled { opacity:0.5;cursor:not-allowed; }
-        .edit-msg { padding:8px 12px;border-radius:8px;font-size:0.8em;font-family:'Montserrat',sans-serif;font-weight:600;text-align:center;display:none;margin-bottom:10px; }
-        .edit-msg.error { background:#fef2f2;color:#dc2626;border:1px solid #fecaca;display:block; }
 
         /* DELETE MODAL */
         #delete-modal-backdrop { position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.75);display:flex;align-items:center;justify-content:center;padding:20px; }
@@ -433,29 +442,6 @@
                 <div class="auth-msg" id="register-msg"></div>
                 <button class="auth-submit" id="register-btn" onclick="doRegister()"><i class="ph ph-user-plus"></i> Create Account</button>
                 <p class="auth-default-hint">Your mobile number will be set as your default password</p>
-            </div>
-        </div>
-    </div>
-
-    <div id="edit-modal-backdrop" class="hidden">
-        <div class="edit-modal">
-            <button class="edit-modal-close" onclick="closeEditModal()"><i class="ph ph-x"></i></button>
-            <div class="edit-modal-title"><i class="ph ph-pencil-simple"></i> Edit Record</div>
-            <div id="edit-msg" class="edit-msg"></div>
-            <div class="edit-field"><label>Person Name</label><input type="text" id="edit-name" placeholder="Full name"></div>
-            <div class="edit-field"><label>Place of Birth</label><input type="text" id="edit-place" placeholder="City, State, Country"></div>
-            <div class="edit-field"><label>Date of Birth</label>
-                <div class="edit-grid-3"><select id="edit-day"></select><select id="edit-month"></select><input type="number" id="edit-year" placeholder="Year" min="1900" max="2100"></div>
-            </div>
-            <div class="edit-field"><label>Time of Birth</label>
-                <div class="edit-grid-time"><select id="edit-hour"></select><select id="edit-minute"></select>
-                    <div class="edit-ampm-row"><button class="edit-ampm-btn" id="edit-btn-am" onclick="setEditAmPm('AM')">AM</button><button class="edit-ampm-btn" id="edit-btn-pm" onclick="setEditAmPm('PM')">PM</button></div>
-                </div>
-                <input type="hidden" id="edit-ampm" value="AM">
-            </div>
-            <div class="edit-modal-footer">
-                <button class="edit-cancel-btn" onclick="closeEditModal()">Cancel</button>
-                <button class="edit-save-btn" id="edit-save-btn" onclick="saveEditRecord()"><i class="ph ph-floppy-disk"></i> Save &amp; Generate Report</button>
             </div>
         </div>
     </div>
@@ -575,13 +561,13 @@
                 <div class="space-y-4">
                     <div>
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name</label>
-                        <input type="text" id="name-input" placeholder="Enter Name" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new text-slate-700 font-medium">
+                        <input type="text" id="name-input" placeholder="Enter Name" oninput="markStale()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new text-slate-700 font-medium">
                     </div>
                     <div class="relative w-full">
                         <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">PLACE OF BIRTH</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-map-pin text-slate-400 text-lg"></i></div>
-                            <input type="text" id="location-input" class="w-full pl-9 pr-9 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new transition shadow-sm" placeholder="Start typing a city..." autocomplete="off">
+                            <input type="text" id="location-input" oninput="markStale()" class="w-full pl-9 pr-9 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new transition shadow-sm" placeholder="Start typing a city..." autocomplete="off">
                             <div id="loading-spinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden"><div class="loader ease-linear rounded-full border-2 border-t-2 border-slate-200 h-4 w-4"></div></div>
                             <button id="clear-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"><i class="ph ph-x-circle text-lg"></i></button>
                         </div>
@@ -604,7 +590,25 @@
                             <button type="button" class="dst-btn" id="dst-no"   onclick="setDSTOverride('no')">Force OFF</button>
                             <span id="tz-offset-display" class="tz-offset-display"></span>
                         </div>
+                    
+                    <!-- Advanced manual UTC override (hidden by default) -->
+                    <span class="tz-advanced-toggle" onclick="toggleManualOffset()">
+                        &#9881; Advanced: override offset manually
+                    </span>
+                    <div class="tz-manual-row" id="tz-manual-row">
+                        <span class="tz-manual-label">UTC</span>
+                        <select id="manual-sign" class="tz-manual-input" style="width:60px;">
+                            <option value="+">+</option>
+                            <option value="-">&minus;</option>
+                        </select>
+                        <input type="number" id="manual-hours" class="tz-manual-input" min="0" max="14" value="0" placeholder="HH">
+                        <span class="tz-manual-label">h</span>
+                        <input type="number" id="manual-mins" class="tz-manual-input" min="0" max="59" value="0" placeholder="MM">
+                        <span class="tz-manual-label">min</span>
+                        <button class="tz-manual-apply" onclick="applyManualOffset()">Apply</button>
+                        <button class="tz-manual-reset" onclick="resetManualOffset()">Reset</button>
                     </div>
+</div>
                 </div>
                 <!-- Col 2 -->
                 <div class="space-y-3">
@@ -615,9 +619,9 @@
                         <div class="flex flex-col w-[40%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span><div class="relative w-full"><input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY"><datalist id="year-options"></datalist></div></div>
                     </div>
                     <div class="flex items-end gap-2 mt-2">
-                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span><div class="relative w-full"><select id="hour-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span><div class="relative w-full"><select id="hour-input" oninput="markStale()" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
                         <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
-                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span><div class="relative w-full"><select id="minute-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span><div class="relative w-full"><select id="minute-input" oninput="markStale()" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
                         <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
                             <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
                             <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
@@ -632,7 +636,7 @@
                         <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Longitude</span><span id="lng-display" class="font-mono font-medium text-slate-700">77.2090</span></div>
                     </div>
                     <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
-                    <button onclick="calculatePositions()" class="w-full py-3 btn-primary-new text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2"><i class="ph ph-chart-polar"></i> Generate Report</button>
+                    <button onclick="calculatePositions()" id="generate-btn" class="w-full py-3 btn-primary-new btn-stale text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2"><i class="ph ph-chart-polar"></i> Generate Report</button>
                     <button id="save-record-btn" onclick="manualSaveRecord()" class="w-full py-3 hidden text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2 mt-2" style="background:#16a34a;"><i class="ph ph-floppy-disk"></i> Save Record</button>
                 </div>
             </div>
@@ -1086,12 +1090,39 @@
             // When date changes, recalculate DST display
             ['day-input','month-input','year-input'].forEach(id => {
                 const el = document.getElementById(id);
-                if(el) el.addEventListener('change', () => setTimeout(updateTZDisplay, 10));
-            }); document.getElementById('name-input').value = "FBR Institute"; document.getElementById('day-input').value = "3"; document.getElementById('month-input').value = "6"; document.getElementById('year-input').value = "1986"; document.getElementById('hour-input').value = "3"; document.getElementById('minute-input').value = "50"; setAmPm('PM'); document.getElementById('location-input').value = "Faridkot, Punjab, India"; document.getElementById('latitude').value = "30.6769"; document.getElementById('longitude').value = "74.7583"; document.getElementById('lat-display').textContent = "30.6769"; document.getElementById('lng-display').textContent = "74.7583"; }; function setAmPm(v) { document.getElementById('ampm-value').value = v; const a = document.getElementById('btn-am'), p = document.getElementById('btn-pm'); a.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'AM' ? 'active' : ''}`; p.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'PM' ? 'active' : ''}`; }
+                if(el){
+                    el.addEventListener('change', () => { setTimeout(updateTZDisplay, 10); markStale(); });
+                }
+            });
+            // Hook hour and minute change events too
+            ['hour-input','minute-input'].forEach(id => {
+                const el = document.getElementById(id);
+                if(el) el.addEventListener('change', markStale);
+            });
+            // Clear loaded record ID if name changes (new person being entered)
+            const nameEl = document.getElementById('name-input');
+            if(nameEl && !nameEl._loadedWatcher){
+                nameEl._loadedWatcher = true;
+                nameEl.addEventListener('input', function(){
+                    const currentName = this.value.trim().toLowerCase();
+                    if(_loadedRecordName && currentName !== _loadedRecordName){
+                        _loadedRecordId   = null;
+                        _loadedRecordName = '';
+                    }
+                });
+            } document.getElementById('name-input').value = "FBR Institute"; document.getElementById('day-input').value = "3"; document.getElementById('month-input').value = "6"; document.getElementById('year-input').value = "1986"; document.getElementById('hour-input').value = "3"; document.getElementById('minute-input').value = "50"; setAmPm('PM'); document.getElementById('location-input').value = "Faridkot, Punjab, India"; document.getElementById('latitude').value = "30.6769"; document.getElementById('longitude').value = "74.7583"; document.getElementById('lat-display').textContent = "30.6769"; document.getElementById('lng-display').textContent = "74.7583";
+            // Initialize timezone dropdown with default location (India)
+            setTimeout(function(){
+                var defNearest = findNearestTimezone(30.6769, 74.7583);
+                _currentTZ = defNearest.tz;
+                populateTZDropdown(defNearest.tz);
+                updateTZDisplay();
+            }, 100);
+            }; function setAmPm(v) { document.getElementById('ampm-value').value = v; markStale(); const a = document.getElementById('btn-am'), p = document.getElementById('btn-pm'); a.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'AM' ? 'active' : ''}`; p.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'PM' ? 'active' : ''}`; }
         const searchInput = document.getElementById('location-input'), suggestionsList = document.getElementById('suggestions'), spinner = document.getElementById('loading-spinner'), clearBtn = document.getElementById('clear-btn');
         searchInput.addEventListener('input', debounce((e) => fetchLocations(e.target.value), 400));
         document.addEventListener('click', (e) => { if (!searchInput.contains(e.target) && !suggestionsList.contains(e.target)) suggestionsList.classList.add('hidden'); });
-        clearBtn.addEventListener('click', () => { searchInput.value = ''; suggestionsList.classList.add('hidden'); clearBtn.classList.add('hidden'); });
+        clearBtn.addEventListener('click', () => { searchInput.value = ''; suggestionsList.classList.add('hidden'); clearBtn.classList.add('hidden'); _loadedRecordId = null; _loadedRecordName = ''; });
         async function fetchLocations(q) { if (!q || q.length < 3) { suggestionsList.classList.add('hidden'); return; } spinner.classList.remove('hidden'); clearBtn.classList.add('hidden'); try { const r = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}&limit=5&addressdetails=1`); renderSuggestions(await r.json()); } catch (e) { console.error(e); } finally { spinner.classList.add('hidden'); clearBtn.classList.remove('hidden'); } }
         function renderSuggestions(d) { suggestionsList.innerHTML = ''; if (!d.length) { suggestionsList.classList.add('hidden'); return; } d.forEach(p => { const l = document.createElement('li'); l.className = "px-4 py-3 hover:bg-indigo-50 cursor-pointer border-b border-slate-100 last:border-0 flex flex-col"; l.innerHTML = `<span class="font-semibold text-slate-700 text-sm">${p.display_name.split(',')[0]}</span><span class="text-xs text-slate-500 truncate">${p.display_name}</span>`; l.onclick = () => {
                     const lat = parseFloat(p.lat).toFixed(4);
@@ -1119,7 +1150,7 @@
         const dp = `${pad(v[0])} ${['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][v[1]]} ${v[2]}`;
         const displayHour = v[3] === 0 ? 12 : (v[3] > 12 ? v[3] - 12 : v[3]);
         const displayAmPm = document.getElementById('ampm-value').value;
-        const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); showSaveButton(); }
+        const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden'); renderAnalysis(rP, tP); renderEnergyFlow(pMap); renderEnergyNarrative(pMap); renderSupportSpeedAnalysis(hList); const now = new Date(); renderLongCycles(now, asS, pMap); renderSunCycle(now, asS, pMap); renderMoonCycle(now, asS, pMap); showSaveButton(); markFresh(); }
         function renderRow(n, s, t, i, hl, hn, r, dg, nk, pd) { const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0" + (t === 'Node' ? ' node-row' : t === 'Ascendant' ? ' asc-row' : ''); tr.innerHTML = `<td class="flex items-center gap-2" style="padding: 6px 12px;"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${i || 'ph-planet'} text-sm"></i></div><span class="font-bold text-xs">${n}</span></td><td>${(hl !== "-" && hn !== "-") ? `<span class="font-bold text-slate-900">${hl}</span> <span class="text-slate-900 font-bold">(${hn})</span>` : "-"}</td><td class="text-slate-700 font-medium">${r}</td><td class="font-mono text-slate-600">${dm(dg)}</td><td><span class="font-medium text-slate-700">${nk}</span> <span class="text-[10px] text-slate-400 ml-1">P${pd}</span></td>`; document.querySelector('#results-table tbody').appendChild(tr); }
         
         // --- UPDATED ANALYSIS RENDER FUNCTION ---
@@ -1359,6 +1390,8 @@ function getDSTInfo(tzName, date) {
                 if(btn) btn.className = 'dst-btn' + (v === val ? ' active' : '');
             });
             updateTZDisplay();
+            // Mark stale so user knows to click Generate Report
+            markStale();
         }
 
         function populateTZDropdown(selectedTZ) {
@@ -1375,6 +1408,7 @@ function getDSTInfo(tzName, date) {
             sel.onchange = function() {
                 _currentTZ = this.value;
                 updateTZDisplay();
+                markStale();
             };
         }
 
@@ -1424,10 +1458,13 @@ function getDSTInfo(tzName, date) {
                     badge.textContent = 'DST: OFF';
                 }
             }
-            if(disp) disp.textContent = offStr;
+            if(disp) disp.textContent = offStr + (offStr === 'UTC+00:00' ? ' (GMT)' : '');
         }
 
         function getEffectiveOffsetMinutes() {
+            // Manual override takes highest priority
+            if(_manualOffsetMins !== null) return _manualOffsetMins;
+
             const tzName = _currentTZ || 'UTC';
             const day    = parseInt(document.getElementById('day-input').value   || 1);
             const month  = parseInt(document.getElementById('month-input').value || 0);
@@ -1439,12 +1476,102 @@ function getDSTInfo(tzName, date) {
             if(ampm === 'PM' && h24 < 12) h24 += 12;
             if(ampm === 'AM' && h24 === 12) h24 = 0;
             const birthDate = new Date(year, month, day, h24, min, 0);
+
+            // Auto mode — let Intl API decide based on actual birth date
+            if(_dstOverride === 'auto'){
+                return getTimezoneOffsetForDate(tzName, birthDate);
+            }
+
+            // For Force ON / Force OFF we need standard vs summer offsets
+            // Standard offset = January 15 of birth year (always winter = no DST)
+            // Summer offset   = July 15 of birth year (always summer = DST if applicable)
+            const stdDate = new Date(year, 0, 15, 12, 0, 0);  // Jan 15 = standard time
+            const dstDate = new Date(year, 6, 15, 12, 0, 0);  // Jul 15 = DST time
+            const stdOffset = getTimezoneOffsetForDate(tzName, stdDate);
+            const sumOffset = getTimezoneOffsetForDate(tzName, dstDate);
+
+            if(_dstOverride === 'no'){
+                // Force OFF — always use standard (winter) offset
+                // Standard = the smaller absolute offset for positive zones,
+                // or the one matching January for all zones
+                return stdOffset;
+            }
+
+            if(_dstOverride === 'yes'){
+                // Force ON — always use summer (DST) offset
+                return sumOffset;
+            }
+
+            // Fallback
             return getTimezoneOffsetForDate(tzName, birthDate);
         }
+
+
+        // ── MANUAL UTC OFFSET ────────────────────────────────────
+        var _manualOffsetMins = null; // null = not active, use auto
+
+        function toggleManualOffset(){
+            const row = document.getElementById('tz-manual-row');
+            if(row) row.classList.toggle('show');
+        }
+
+        function applyManualOffset(){
+            const sign  = document.getElementById('manual-sign').value === '+' ? 1 : -1;
+            const hours = parseInt(document.getElementById('manual-hours').value||'0');
+            const mins  = parseInt(document.getElementById('manual-mins').value||'0');
+            _manualOffsetMins = sign * (hours * 60 + mins);
+            const offStr = 'UTC' + (sign>0?'+':'-') +
+                hours.toString().padStart(2,'0') + ':' +
+                mins.toString().padStart(2,'0');
+            const disp = document.getElementById('tz-offset-display');
+            if(disp) disp.textContent = offStr + ' (Manual)';
+            const badge = document.getElementById('dst-badge');
+            if(badge){ badge.className='dst-badge dst-na'; badge.textContent='Manual offset'; }
+            showToast('Manual offset applied: '+offStr, 'success');
+            // Mark stale so user knows to click Generate Report
+            markStale();
+        }
+
+        function resetManualOffset(){
+            _manualOffsetMins = null;
+            document.getElementById('manual-hours').value = '0';
+            document.getElementById('manual-mins').value  = '0';
+            document.getElementById('manual-sign').value  = '+';
+            updateTZDisplay();
+            showToast('Manual offset cleared — auto timezone restored', 'success');
+        }
+        // ── END MANUAL OFFSET ─────────────────────────────────────
 
         // ══════════════════════════════════════════════════════════
         //  END TIMEZONE SECTION
         // ══════════════════════════════════════════════════════════
+
+
+        // ── STALE / FRESH INDICATOR ──────────────────────────────
+        var _reportFresh = false; // false = stale (needs regeneration)
+
+        function markStale(){
+            _reportFresh = false;
+            const btn = document.getElementById('generate-btn');
+            if(btn){
+                btn.classList.add('btn-stale');
+                btn.classList.remove('btn-fresh-green');
+                btn.style.background = '';
+                btn.innerHTML = '<i class="ph ph-chart-polar"></i> Generate Report';
+            }
+        }
+
+        function markFresh(){
+            _reportFresh = true;
+            const btn = document.getElementById('generate-btn');
+            if(btn){
+                btn.classList.remove('btn-stale');
+                btn.style.background = '';
+                btn.classList.add('btn-fresh-green');
+                btn.innerHTML = '<i class="ph ph-check-circle"></i> Report Generated';
+            }
+        }
+        // ── END STALE / FRESH ─────────────────────────────────────
 
         function drawOctalChart(l, p) {
             const w = 550, h = 550, cx = w / 2, cy = h / 2, r = 180, lr = 185;
@@ -1457,31 +1584,151 @@ function getDSTInfo(tzName, date) {
                 houseGroups[hs.id].push(x);
             });
 
-            // Apply Spiral Clustering with Strict Boundary Clamping
+            // ── FORCE-DIRECTED PLANET SEPARATION ─────────────────────────
+            const SVG_CX = 275, SVG_CY = 275;
+            const MIN_RADIUS    = 48;   // inner bound
+            const MAX_RADIUS    = 162;  // outer bound
+            const MIN_DIST_PX   = 26;   // FIX 1: increased from 16→26 for comfortable visual separation
+            const LABEL_OFFSET  = 14;   // label is placed radius+14 from center
+            const BOUNDARY_PAD  = 4.0;  // degrees padding from house boundary
+            const MIN_ANG_SEP   = 4.0;  // FIX 3: minimum angular separation in degrees
+            const MAX_ITERS     = 80;   // more iterations for tighter packing
+
             Object.entries(houseGroups).forEach(([houseId, group]) => {
-                // Find the boundary for this specific house
                 const hsInfo = OCTAL_HOUSES.find(h => h.id == houseId);
                 const [minBound, maxBound] = hsInfo.range;
-                const boundaryPadding = 3.5; // Padding in degrees to keep icons away from the line
+                const houseSpan = maxBound - minBound;
 
+                // ── Initial placement — spread radii evenly ──
                 group.sort((a, b) => a.distFromLagna - b.distFromLagna);
-                
-                group.forEach((planet, index) => {
-                    const baseRadius = 55;
-                    const radiusStep = 30; 
-                    planet.radius = baseRadius + (index % 4) * radiusStep;
-                    
-                    // Base angular stagger
-                    const angleOffset = (index % 2 === 0 ? 1 : -1) * (2.8 + (index * 0.4));
-                    let vAngle = planet.distFromLagna + angleOffset;
 
-                    // CLAMPING LOGIC: Do not let planet cross the house boundaries visually
-                    if (vAngle < minBound + boundaryPadding) vAngle = minBound + boundaryPadding;
-                    if (vAngle > maxBound - boundaryPadding) vAngle = maxBound - boundaryPadding;
-                    
-                    planet.visualAngle = vAngle;
+                if(group.length === 1){
+                    group[0].radius = (MIN_RADIUS + MAX_RADIUS) / 2;
+                } else {
+                    // FIX: use tighter spread leaving room for label footprint
+                    const usable = MAX_RADIUS - MIN_RADIUS - 20;
+                    const radStep = usable / (group.length - 1 || 1);
+                    group.forEach((pl, i) => {
+                        pl.radius = MIN_RADIUS + 10 + i * radStep;
+                    });
+                }
+
+                group.forEach(pl => {
+                    pl.visualAngle = pl.distFromLagna;
+                    if(pl.visualAngle < minBound + BOUNDARY_PAD) pl.visualAngle = minBound + BOUNDARY_PAD;
+                    if(pl.visualAngle > maxBound - BOUNDARY_PAD) pl.visualAngle = maxBound - BOUNDARY_PAD;
                 });
+
+                if(group.length < 2) return;
+
+                // ── FIX 3: Pre-pass — enforce minimum angular separation ──
+                // Sort by angle and push apart any planets that are too close angularly
+                group.sort((a, b) => a.visualAngle - b.visualAngle);
+                for(let pass = 0; pass < 20; pass++){
+                    let angMoved = false;
+                    for(let a = 0; a < group.length - 1; a++){
+                        const angDiff = group[a+1].visualAngle - group[a].visualAngle;
+                        if(angDiff < MIN_ANG_SEP){
+                            const push = (MIN_ANG_SEP - angDiff) / 2;
+                            const newA = group[a].visualAngle - push;
+                            const newB = group[a+1].visualAngle + push;
+                            if(newA >= minBound + BOUNDARY_PAD){ group[a].visualAngle = newA; angMoved = true; }
+                            if(newB <= maxBound - BOUNDARY_PAD){ group[a+1].visualAngle = newB; angMoved = true; }
+                        }
+                    }
+                    if(!angMoved) break;
+                }
+
+                // ── Force-directed iteration ──────────────────
+                for(let iter = 0; iter < MAX_ITERS; iter++){
+                    let moved = false;
+
+                    // FIX 2: Build positions INCLUDING label footprint
+                    // Each planet occupies: dot at radius, label at radius+LABEL_OFFSET
+                    // Effective collision zone = dot radius (4px) + label height (~12px) = ~26px
+                    const positions = group.map(pl => {
+                        const rd = (-90 - pl.visualAngle) * Math.PI / 180;
+                        return {
+                            x: SVG_CX + pl.radius * Math.cos(rd),
+                            y: SVG_CY + pl.radius * Math.sin(rd),
+                            // Label position
+                            lx: SVG_CX + (pl.radius + LABEL_OFFSET) * Math.cos(rd),
+                            ly: SVG_CY + (pl.radius + LABEL_OFFSET) * Math.sin(rd)
+                        };
+                    });
+
+                    for(let a = 0; a < group.length; a++){
+                        for(let b = a + 1; b < group.length; b++){
+                            // Check both dot-to-dot AND label-to-label distances
+                            const ddx = positions[b].x  - positions[a].x;
+                            const ddy = positions[b].y  - positions[a].y;
+                            const dotDist = Math.sqrt(ddx*ddx + ddy*ddy) || 0.01;
+
+                            const llx = positions[b].lx - positions[a].lx;
+                            const lly = positions[b].ly - positions[a].ly;
+                            const lblDist = Math.sqrt(llx*llx + lly*lly) || 0.01;
+
+                            // Use the smaller of the two distances as the effective distance
+                            const dist = Math.min(dotDist, lblDist);
+
+                            if(dist < MIN_DIST_PX){
+                                const overlap = (MIN_DIST_PX - dist) / 2 + 1; // +1 buffer
+
+                                // Angular separation check — if within MIN_ANG_SEP push apart
+                                const angDiff = Math.abs(group[b].visualAngle - group[a].visualAngle);
+                                if(angDiff < MIN_ANG_SEP){
+                                    const midAng = (group[a].visualAngle + group[b].visualAngle) / 2;
+                                    const halfSep = MIN_ANG_SEP / 2;
+                                    let newA = midAng - halfSep;
+                                    let newB = midAng + halfSep;
+                                    newA = Math.max(minBound + BOUNDARY_PAD, newA);
+                                    newB = Math.min(maxBound - BOUNDARY_PAD, newB);
+                                    if(newA !== group[a].visualAngle || newB !== group[b].visualAngle){
+                                        group[a].visualAngle = newA;
+                                        group[b].visualAngle = newB;
+                                        moved = true;
+                                    }
+                                }
+
+                                // Radial separation — push a inward, b outward
+                                const newRadA = group[a].radius - overlap * 0.7;
+                                const newRadB = group[b].radius + overlap * 0.7;
+
+                                if(newRadA >= MIN_RADIUS && newRadB <= MAX_RADIUS){
+                                    group[a].radius = newRadA;
+                                    group[b].radius = newRadB;
+                                    moved = true;
+                                } else if(newRadB <= MAX_RADIUS){
+                                    group[b].radius = newRadB;
+                                    moved = true;
+                                } else if(newRadA >= MIN_RADIUS){
+                                    group[a].radius = newRadA;
+                                    moved = true;
+                                } else {
+                                    // Both radial limits hit — force angular spread
+                                    const midAng2 = (group[a].visualAngle + group[b].visualAngle) / 2;
+                                    const angSpread = MIN_ANG_SEP;
+                                    let nA = Math.max(minBound + BOUNDARY_PAD, midAng2 - angSpread);
+                                    let nB = Math.min(maxBound - BOUNDARY_PAD, midAng2 + angSpread);
+                                    group[a].visualAngle = nA;
+                                    group[b].visualAngle = nB;
+                                    moved = true;
+                                }
+                            }
+                        }
+                    }
+
+                    // Final clamp every iteration
+                    group.forEach(pl => {
+                        pl.radius      = Math.max(MIN_RADIUS, Math.min(MAX_RADIUS, pl.radius));
+                        pl.visualAngle = Math.max(minBound + BOUNDARY_PAD,
+                                         Math.min(maxBound - BOUNDARY_PAD, pl.visualAngle));
+                    });
+
+                    if(!moved) break;
+                }
             });
+            // ── END FORCE-DIRECTED SEPARATION ─────────────────────────
 
             let svg = `<svg viewBox="0 0 ${w} ${h}" class="w-full h-full bg-white rounded-full"><defs>`;
             
@@ -1536,7 +1783,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwQk05i7lUzKs488TrHYufFhpzi0Fn6p5Kpbg5Oe2XWCr7boG3lR--yTVtz8FlzabVjzQ/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXUxyDi1d9fQa1ZcEbdMRcqYwhGUQy15Og2YPdAaCH6CEPA4pv9LxtlYlORg0lsPfisw/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -1638,11 +1885,14 @@ function getDSTInfo(tzName, date) {
             document.getElementById('search-section').classList.add('hidden');
             var badge = document.getElementById('validity-badge');
             if(badge){ badge.className=''; }
+            // Hide save button on logout
+            var saveBtn = document.getElementById('save-record-btn');
+            if(saveBtn){ saveBtn.classList.add('hidden'); }
 
             document.getElementById('login-mobile').value='';
             document.getElementById('login-password').value='';
             document.getElementById('login-msg').className='auth-msg';
-            document.getElementById('record-search-input').value='';_recordsCache=null;
+            document.getElementById('record-search-input').value='';_recordsCache=null;_loadedRecordId=null;_loadedRecordName='';
             document.getElementById('search-results-dropdown').innerHTML='';
             document.getElementById('search-results-dropdown').classList.remove('show');
             switchAuthTab('login');
@@ -1714,7 +1964,9 @@ function getDSTInfo(tzName, date) {
 
 
         // ── CACHED SEARCH — loads once, searches locally (instant) ──
-        let _recordsCache = null;   // in-memory cache of all user records
+        let _recordsCache    = null;   // in-memory cache of all user records
+        let _loadedRecordId  = null;   // record_id of currently loaded record (null = new entry)
+        let _loadedRecordName = '';    // name of loaded record for change detection
         let _usersCache   = null;   // in-memory cache of users for instant login
         let _searchTimer  = null;
 
@@ -1785,7 +2037,7 @@ function getDSTInfo(tzName, date) {
             return '<div class="search-result-item" onclick="loadRecord('+rJson+')">'
                 +'<div class="sri-top-row">'
                 +'<span class="sri-name"><i class="ph ph-user" style="margin-right:5px;"></i>'+r.person_name+'</span>'
-                +'<button class="sri-edit-btn" onclick="event.stopPropagation();openEditModal('+rJson+')"><i class="ph ph-pencil-simple"></i> Edit</button>'
+                
                 +'<button class="sri-delete-btn" onclick="event.stopPropagation();openDeleteModal('+rJson+')"><i class="ph ph-trash"></i> Delete</button>'
                 +'</div>'
                 +'<div class="sri-meta">'
@@ -1797,6 +2049,19 @@ function getDSTInfo(tzName, date) {
         }
 
         function loadRecord(r){
+            // Store the loaded record ID for update detection
+            _loadedRecordId   = r.record_id;
+            _loadedRecordName = (r.person_name || '').trim().toLowerCase();
+            markStale(); // form is being filled — needs regeneration
+
+            // Reset save button — hide until Generate Report is clicked for this record
+            const saveBtn = document.getElementById('save-record-btn');
+            if(saveBtn){
+                saveBtn.classList.add('hidden');
+                saveBtn.disabled = false;
+                saveBtn.classList.remove('btn-stale');
+                saveBtn.style.background = '';
+            }
             document.getElementById('search-results-dropdown').classList.remove('show');
             document.getElementById('record-search-input').value=r.person_name;
             document.getElementById('name-input').value=r.person_name;
@@ -1843,10 +2108,24 @@ function getDSTInfo(tzName, date) {
                         populateTZDropdown(nearest.tz);
                     }
                 }
+                // Restore DST override from saved record
+                if(r.dst_override && r.dst_override !== ''){
+                    _dstOverride = r.dst_override;
+                    // Update DST button visual states
+                    ['auto','yes','no'].forEach(function(v){
+                        const b = document.getElementById('dst-' + v);
+                        if(b) b.className = 'dst-btn' + (v === _dstOverride ? ' active' : '');
+                    });
+                } else {
+                    _dstOverride = 'auto';
+                    ['auto','yes','no'].forEach(function(v){
+                        const b = document.getElementById('dst-' + v);
+                        if(b) b.className = 'dst-btn' + (v === 'auto' ? ' active' : '');
+                    });
+                }
                 updateTZDisplay();
             }, 50);
-            // Auto-generate report after all fields + timezone are set
-            setTimeout(() => calculatePositions(), 350);
+            // User clicks Generate Report to see the chart
         }
 
         function getCurrentFormKey(){
@@ -1875,25 +2154,88 @@ function getDSTInfo(tzName, date) {
             );
         }
 
+        function detectLoadedRecord(){
+            // Smart detection: check if current form matches any cached record
+            // Matches on name + coordinates (within 0.1 degree)
+            if(!_recordsCache) return null;
+            const formName = (document.getElementById('name-input').value||'').trim().toLowerCase();
+            const formLat  = parseFloat(document.getElementById('latitude').value||'0');
+            const formLon  = parseFloat(document.getElementById('longitude').value||'0');
+            if(!formName) return null;
+            for(const r of _recordsCache){
+                const rName = (r.person_name||'').trim().toLowerCase();
+                const rLat  = parseFloat(r.latitude||'0');
+                const rLon  = parseFloat(r.longitude||'0');
+                const nameMatch = rName === formName;
+                const coordMatch = Math.abs(rLat - formLat) < 0.1 && Math.abs(rLon - formLon) < 0.1;
+                if(nameMatch && coordMatch) return r;
+            }
+            return null;
+        }
+
         function showSaveButton(){
             const btn = document.getElementById('save-record-btn');
             if(!btn) return;
             btn.classList.remove('hidden');
-            if(isAlreadySaved()){
-                btn.disabled = true;
-                btn.style.background = '#92400e';
-                btn.innerHTML = '<i class="ph ph-warning"></i> Already Saved';
+
+            // Smart detection: new record or update?
+            const matchedRecord = detectLoadedRecord();
+
+            if(matchedRecord){
+                // Found matching record in cache — check if anything changed
+                const day   = (document.getElementById('day-input').value||'').toString().padStart(2,'0');
+                const month = parseInt(document.getElementById('month-input').value||0);
+                const year  = document.getElementById('year-input').value||'';
+                const hour  = (document.getElementById('hour-input').value||'').toString().padStart(2,'0');
+                const min   = (document.getElementById('minute-input').value||'').toString().padStart(2,'0');
+                const ampm  = document.getElementById('ampm-value').value;
+                const mN    = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                const dob   = day+' '+mN[month]+' '+year;
+                const tob   = hour+':'+min+' '+ampm;
+                const place = (document.getElementById('location-input').value||'').trim().toLowerCase();
+
+                const noChange = matchedRecord.date_of_birth === dob &&
+                                 matchedRecord.time_of_birth === tob &&
+                                 (matchedRecord.place||'').trim().toLowerCase() === place &&
+                                 (matchedRecord.timezone||'UTC') === (_currentTZ||'UTC') &&
+                                 (matchedRecord.dst_override||'auto') === (_dstOverride||'auto');
+
+                if(noChange){
+                    // Nothing changed — already saved
+                    btn.disabled = true;
+                    btn.style.background = '#92400e';
+                    btn.classList.remove('btn-stale');
+                    btn.innerHTML = '<i class="ph ph-warning"></i> Already Saved';
+                } else {
+                    // Something changed — show Update button
+                    _loadedRecordId = matchedRecord.record_id;
+                    btn.disabled = false;
+                    btn.style.background = '#f97316';
+                    btn.classList.add('btn-stale');
+                    btn.innerHTML = '<i class="ph ph-pencil-simple"></i> Update Record';
+                }
             } else {
+                // No matching record — new entry
+                _loadedRecordId = null;
                 btn.disabled = false;
-                btn.style.background = '#16a34a';
+                btn.style.background = '#f97316';
+                btn.classList.add('btn-stale');
                 btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Record';
             }
         }
 
         async function manualSaveRecord(){
             const user = getSession(); if(!user) return;
-            // Show spinner instantly — don't wait for network
             const btn = document.getElementById('save-record-btn');
+
+            // If Update mode — call updateRecord instead
+            if(_loadedRecordId){
+                if(btn){ btn.disabled=true; btn.innerHTML='<i class="ph ph-spinner"></i> Updating…'; }
+                await doUpdateRecord(user);
+                return;
+            }
+
+            // Show spinner instantly — don't wait for network
             if(btn){ btn.disabled=true; btn.innerHTML='<i class="ph ph-spinner"></i> Saving…'; }
             const name  = document.getElementById('name-input').value.trim();
             const place = document.getElementById('location-input').value.trim();
@@ -1914,9 +2256,10 @@ function getDSTInfo(tzName, date) {
             // btn already set above
 
             try{
-                const res = await apiCall({action:'save',user_id:user.user_id,person_name:name,place,latitude:lat,longitude:lng,date_of_birth:dob,time_of_birth:tob,timezone:_currentTZ||'UTC'});
+                const res = await apiCall({action:'save',user_id:user.user_id,person_name:name,place,latitude:lat,longitude:lng,date_of_birth:dob,time_of_birth:tob,timezone:_currentTZ||'UTC',dst_override:_dstOverride||'auto'});
                 if(res.success){
                     btn.style.background = '#16a34a';
+                    btn.classList.remove('btn-stale');
                     btn.innerHTML = '<i class="ph ph-check-circle"></i> Saved!';
                     btn.disabled = true;
                     showToast('Record saved successfully!','success');
@@ -1934,7 +2277,8 @@ function getDSTInfo(tzName, date) {
                 }
             }catch(e){
                 btn.disabled = false;
-                btn.style.background = '#16a34a';
+                btn.style.background = '#f97316';
+                btn.classList.add('btn-stale');
                 btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Record';
                 showToast('Save failed — check your connection.','error');
             }
@@ -1942,123 +2286,71 @@ function getDSTInfo(tzName, date) {
 
         function saveCurrentRecord(){ /* replaced by manualSaveRecord */ }
 
-        // ── EDIT MODAL ──
-        var _editRecordId=null;
-        function populateEditSelects(){
-            const pad=n=>n.toString().padStart(2,'0');
-            const dEl=document.getElementById('edit-day');dEl.innerHTML='';
-            for(let i=1;i<=31;i++){const o=document.createElement('option');o.value=i;o.text=i;dEl.appendChild(o);}
-            const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            const mEl=document.getElementById('edit-month');mEl.innerHTML='';
-            months.forEach((m,i)=>{const o=document.createElement('option');o.value=i;o.text=m;mEl.appendChild(o);});
-            const hEl=document.getElementById('edit-hour');hEl.innerHTML='';
-            for(let i=1;i<=12;i++){const o=document.createElement('option');o.value=i;o.text=pad(i);hEl.appendChild(o);}
-            const minEl=document.getElementById('edit-minute');minEl.innerHTML='';
-            for(let i=0;i<=59;i++){const o=document.createElement('option');o.value=i;o.text=pad(i);minEl.appendChild(o);}
-        }
-        function setEditAmPm(val){
-            document.getElementById('edit-ampm').value=val;
-            document.getElementById('edit-btn-am').classList.toggle('active',val==='AM');
-            document.getElementById('edit-btn-pm').classList.toggle('active',val==='PM');
-        }
-        function openEditModal(r){
-            _editRecordId=r.record_id;
-            populateEditSelects();
-            document.getElementById('edit-name').value=r.person_name||'';
-            document.getElementById('edit-place').value=r.place||'';
-            try{
-                const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-                const parts=r.date_of_birth.toString().trim().split(' ');
-                if(parts.length===3){
-                    document.getElementById('edit-day').value=parseInt(parts[0],10);
-                    const mIdx=months.indexOf(parts[1]);
-                    document.getElementById('edit-month').value=mIdx>=0?mIdx:0;
-                    document.getElementById('edit-year').value=parts[2];
-                }
-            }catch(e){}
-            try{
-                const tp=r.time_of_birth.split(' ');
-                if(tp.length===2){
-                    const hm=tp[0].split(':');
-                    document.getElementById('edit-hour').value=parseInt(hm[0]);
-                    document.getElementById('edit-minute').value=parseInt(hm[1]);
-                    setEditAmPm(tp[1].toUpperCase());
-                }
-            }catch(e){}
-            const msg=document.getElementById('edit-msg');msg.className='edit-msg';msg.textContent='';
-            document.getElementById('edit-modal-backdrop').classList.remove('hidden');
-        }
-        function closeEditModal(){
-            document.getElementById('edit-modal-backdrop').classList.add('hidden');
-            _editRecordId=null;
-        }
-        async function saveEditRecord(){
-            const user=getSession();if(!user||!_editRecordId)return;
-            const name=document.getElementById('edit-name').value.trim();
-            const place=document.getElementById('edit-place').value.trim();
-            const day=document.getElementById('edit-day').value;
-            const month=parseInt(document.getElementById('edit-month').value);
-            const year=document.getElementById('edit-year').value;
-            const hour=document.getElementById('edit-hour').value;
-            const min=document.getElementById('edit-minute').value;
-            const ampm=document.getElementById('edit-ampm').value;
-            if(!name||!place||!day||!year){
-                const msg=document.getElementById('edit-msg');
-                msg.textContent='Please fill in all fields.';msg.className='edit-msg error';return;
-            }
-            const mN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-            const pad=n=>n.toString().padStart(2,'0');
-            const dob=pad(day)+' '+mN[month]+' '+year;
-            const tob=pad(hour)+':'+pad(min)+' '+ampm;
-            const btn=document.getElementById('edit-save-btn');
-            btn.disabled=true;btn.innerHTML='<i class="ph ph-spinner"></i> Saving…';
+        async function doUpdateRecord(user){
+            const btn   = document.getElementById('save-record-btn');
+            const name  = document.getElementById('name-input').value.trim();
+            const place = document.getElementById('location-input').value.trim();
+            const lat   = document.getElementById('latitude').value;
+            const lng   = document.getElementById('longitude').value;
+            const day   = document.getElementById('day-input').value;
+            const month = parseInt(document.getElementById('month-input').value);
+            const year  = document.getElementById('year-input').value;
+            const hour  = document.getElementById('hour-input').value;
+            const min   = document.getElementById('minute-input').value;
+            const ampm  = document.getElementById('ampm-value').value;
+            const mN    = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+            const pad   = n => n.toString().padStart(2,'0');
+            const dob   = pad(day)+' '+mN[month]+' '+year;
+            const tob   = pad(hour)+':'+pad(min)+' '+ampm;
+            const tz    = _currentTZ || 'UTC';
 
-            // Capture edit record id before closing
-            const cachedRecordId = _editRecordId;
+            // Capture record_id BEFORE clearing _loadedRecordId
+            const recordIdToUpdate = _loadedRecordId;
+            const dstToSave        = _dstOverride || 'auto';
 
-            // OPTIMISTIC UI: update local cache immediately
+            // Optimistic cache update
             if(_recordsCache){
-                const idx = _recordsCache.findIndex(r => r.record_id.toString() === cachedRecordId.toString());
+                const idx = _recordsCache.findIndex(r => r.record_id.toString() === recordIdToUpdate.toString());
                 if(idx > -1){
                     _recordsCache[idx].person_name   = name;
                     _recordsCache[idx].place         = place;
                     _recordsCache[idx].date_of_birth = dob;
                     _recordsCache[idx].time_of_birth = tob;
+                    _recordsCache[idx].timezone      = tz;
+                    _recordsCache[idx].dst_override  = dstToSave;
                 }
             }
 
-            // Close modal and update form immediately — don't wait for server
-            closeEditModal();
-            showToast('Record updated successfully!', 'success');
-            document.getElementById('name-input').value=name;
-            document.getElementById('location-input').value=place;
-            document.getElementById('day-input').value=parseInt(day);
-            document.getElementById('month-input').value=month;
-            document.getElementById('year-input').value=year;
-            document.getElementById('hour-input').value=parseInt(hour);
-            document.getElementById('minute-input').value=parseInt(min);
-            setAmPm(ampm);
-            document.getElementById('record-search-input').value='';
-            document.getElementById('search-results-dropdown').classList.remove('show');
-            setTimeout(()=>calculatePositions(), 300);
+            showToast('Record updated!', 'success');
+            if(btn){
+                btn.disabled = true;
+                btn.style.background = '#16a34a';
+                btn.classList.remove('btn-stale');
+                btn.innerHTML = '<i class="ph ph-check-circle"></i> Updated!';
+            }
+            _loadedRecordId   = null;
+            _loadedRecordName = '';
 
-            // Send update to server in background
             try{
-                const res=await apiCall({action:'update',user_id:user.user_id,record_id:cachedRecordId,person_name:name,place,date_of_birth:dob,time_of_birth:tob,timezone:_currentTZ||'UTC'});
+                const res = await apiCall({
+                    action:'update', user_id:user.user_id,
+                    record_id: recordIdToUpdate,
+                    person_name:name, place, date_of_birth:dob, time_of_birth:tob,
+                    timezone:tz, dst_override:dstToSave
+                });
                 if(!res.success){
-                    // Revert on failure
-                    invalidateCache();
-                    loadRecordsCache();
-                    showToast('Update failed: ' + (res.message || 'Unknown error'), 'error');
+                    invalidateCache(); loadRecordsCache();
+                    showToast('Update failed: '+(res.message||'Unknown error'),'error');
                 }
             }catch(e){
-                invalidateCache();
-                loadRecordsCache();
-                showToast('Connection error. Changes may not be saved.', 'error');
+                invalidateCache(); loadRecordsCache();
+                showToast('Connection error. Changes may not be saved.','error');
             }
         }
-        document.getElementById('edit-modal-backdrop').addEventListener('click',function(e){if(e.target===this)closeEditModal();});
 
+
+        // ── EDIT MODAL ──
+        var _editRecordId=null;
         // ── DELETE MODAL ──
         var _deleteRecordId=null,_deletePersonName=null,_deleteSearchQuery='';
         function openDeleteModal(r){
