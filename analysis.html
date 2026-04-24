@@ -1074,8 +1074,26 @@
         function toRad(d) { return d * (Math.PI / 180); }
         function toDeg(r) { return r * (180 / Math.PI); }
         function normalizeRashi(n) { let r = n % 12; return r === 0 ? 12 : r; }
-        function formatDateFull(d) { return `${pad(d.getDate())} ${d.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} ${d.getFullYear().toString().slice(-2)}`; }
-        function formatDateMonthTime(d) { return `${pad(d.getDate())} ${d.toLocaleString('en-GB', { month: 'short' }).toUpperCase()} @ ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`; }
+        function toLocalTZ(d) {
+            // Convert UTC Date to birth place timezone for display
+            // Uses _currentTZ (IANA timezone set when birth place is selected)
+            try {
+                const offsetMins = getTimezoneOffsetForDate(_currentTZ || 'UTC', d);
+                return new Date(d.getTime() + offsetMins * 60000);
+            } catch(e) { return d; }
+        }
+        function formatDateFull(d) {
+            const ld = toLocalTZ(d);
+            return `${pad(ld.getUTCDate())} ${ld.toLocaleString('en-GB', { month: 'short', timeZone: 'UTC' }).toUpperCase()} ${ld.getUTCFullYear().toString().slice(-2)}`;
+        }
+        function formatDateMonthTime(d) {
+            const ld = toLocalTZ(d);
+            const h  = ld.getUTCHours();
+            const m  = ld.getUTCMinutes();
+            const ampm = h >= 12 ? 'PM' : 'AM';
+            const h12  = h % 12 || 12;
+            return `${pad(ld.getUTCDate())} ${ld.toLocaleString('en-GB', { month: 'short', timeZone: 'UTC' }).toUpperCase()} @ ${h12}:${pad(m)} ${ampm}`;
+        }
 
         const BODIES = [{ name: 'Sun', type: 'Planet', icon: 'ph-sun', symbol: 'Su' }, { name: 'Moon', type: 'Planet', icon: 'ph-moon', symbol: 'Mo' }, { name: 'Mars', type: 'Planet', icon: 'ph-fire', symbol: 'Ma' }, { name: 'Mercury', type: 'Planet', icon: 'ph-chat-circle-dots', symbol: 'Me' }, { name: 'Jupiter', type: 'Planet', icon: 'ph-lightning', symbol: 'Ju' }, { name: 'Venus', type: 'Planet', icon: 'ph-heart', symbol: 'Ve' }, { name: 'Saturn', type: 'Planet', icon: 'ph-hourglass', symbol: 'Sa' }, { name: 'Rahu', type: 'Node', icon: 'ph-link', symbol: 'Ra' }, { name: 'Ketu', type: 'Node', icon: 'ph-link-break', symbol: 'Ke' }];
         const PLANET_SPEEDS = { 'Ketu': 1, 'Venus': 2, 'Sun': 3, 'Moon': 4, 'Mars': 5, 'Rahu': 6, 'Jupiter': 7, 'Saturn': 8, 'Mercury': 9 };
