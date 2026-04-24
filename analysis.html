@@ -358,6 +358,11 @@
         }
         .dst-btn.active { background:var(--accent-analysis);color:white;border-color:var(--accent-analysis); }
         .tz-offset-display { font-size:0.72em;color:#64748b;font-family:'Montserrat',sans-serif;font-weight:600; }
+        .owner-badge {
+            font-family:'Montserrat',sans-serif; font-size:0.65em; font-weight:700;
+            padding:2px 8px; border-radius:20px; background:#fef3c7; color:#92400e;
+            border:1px solid #fcd34d; white-space:nowrap; flex-shrink:0;
+        }
         .tz-advanced-toggle { font-size:0.72em;color:#94a3b8;font-family:'Montserrat',sans-serif;font-weight:600;cursor:pointer;text-decoration:underline;margin-top:4px;display:inline-block; }
         .tz-advanced-toggle:hover { color:#2980b9; }
         .tz-manual-row { display:none;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap;padding:10px 12px;background:#f8fafc;border-radius:8px;border:1px solid #e2e8f0; }
@@ -1287,7 +1292,17 @@ const TZ_DATABASE = [
   {tz:"Europe/Moscow",         lat:55.75, lon:37.62,  label:"Moscow / Russia"},
   {tz:"Europe/Kiev",           lat:50.45, lon:30.52,  label:"Kyiv / Ukraine"},
   // Asia
-  {tz:"Asia/Kolkata",          lat:28.61, lon:77.21,  label:"India (IST) — All India"},
+  // India — 10 anchor points covering all regions of the subcontinent
+  {tz:"Asia/Kolkata", lat:21.15, lon:79.09, label:"India (IST) — All India"},
+  {tz:"Asia/Kolkata", lat:28.61, lon:77.21, label:"India (IST) — North India"},
+  {tz:"Asia/Kolkata", lat:22.57, lon:88.36, label:"India (IST) — East India"},
+  {tz:"Asia/Kolkata", lat:13.08, lon:80.27, label:"India (IST) — South India"},
+  {tz:"Asia/Kolkata", lat:19.08, lon:72.88, label:"India (IST) — West India"},
+  {tz:"Asia/Kolkata", lat:26.14, lon:91.74, label:"India (IST) — Northeast India"},
+  {tz:"Asia/Kolkata", lat:25.59, lon:85.14, label:"India (IST) — Bihar / Jharkhand"},
+  {tz:"Asia/Kolkata", lat:23.84, lon:91.28, label:"India (IST) — Tripura / NE Border"},
+  {tz:"Asia/Kolkata", lat: 9.93, lon:76.27, label:"India (IST) — Kerala / South"},
+  {tz:"Asia/Kolkata", lat:34.09, lon:74.80, label:"India (IST) — Kashmir / Northwest"},
   {tz:"Asia/Colombo",          lat:6.93,  lon:79.85,  label:"Colombo / Sri Lanka"},
   {tz:"Asia/Karachi",          lat:24.86, lon:67.01,  label:"Karachi / Pakistan"},
   {tz:"Asia/Dhaka",            lat:23.72, lon:90.41,  label:"Dhaka / Bangladesh"},
@@ -1802,7 +1817,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyXUxyDi1d9fQa1ZcEbdMRcqYwhGUQy15Og2YPdAaCH6CEPA4pv9LxtlYlORg0lsPfisw/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbytqEQ-dqnTotH4QhRoJTQ0gmAq6um2ar9CEBdb5BRUBy_p0V5GcQ4vxDXmgD--D4Tyaw/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -1878,9 +1893,11 @@ function getDSTInfo(tzName, date) {
         }
 
         function activateApp(user){
+            _isAdmin = (user.role === 'admin');
             document.getElementById('auth-overlay').classList.add('hidden');
             document.getElementById('search-section').classList.remove('hidden');
-            document.getElementById('search-welcome-name').textContent=user.full_name;
+            document.getElementById('search-welcome-name').textContent =
+                _isAdmin ? 'Admin Dashboard — ' + user.full_name : user.full_name;
             var badge=document.getElementById('validity-badge');
             var badgeTxt=document.getElementById('validity-text');
             var vUntil=user.valid_until||'';
@@ -1911,7 +1928,7 @@ function getDSTInfo(tzName, date) {
             document.getElementById('login-mobile').value='';
             document.getElementById('login-password').value='';
             document.getElementById('login-msg').className='auth-msg';
-            document.getElementById('record-search-input').value='';_recordsCache=null;_loadedRecordId=null;_loadedRecordName='';
+            document.getElementById('record-search-input').value='';_recordsCache=null;_loadedRecordId=null;_loadedRecordName='';_isAdmin=false;
             document.getElementById('search-results-dropdown').innerHTML='';
             document.getElementById('search-results-dropdown').classList.remove('show');
             switchAuthTab('login');
@@ -1986,13 +2003,14 @@ function getDSTInfo(tzName, date) {
         let _recordsCache    = null;   // in-memory cache of all user records
         let _loadedRecordId  = null;   // record_id of currently loaded record (null = new entry)
         let _loadedRecordName = '';    // name of loaded record for change detection
+        let _isAdmin         = false;  // true if logged in user has admin role
         let _usersCache   = null;   // in-memory cache of users for instant login
         let _searchTimer  = null;
 
         async function loadRecordsCache(){
             const user = getSession(); if(!user) return;
             try{
-                const res = await apiCall({action:'search', user_id:user.user_id, query:''});
+                const res = await apiCall({action:'search', user_id:user.user_id, query:'', is_admin:_isAdmin});
                 if(res.success){ _recordsCache = res.records; }
             }catch(e){ _recordsCache = null; }
         }
@@ -2038,7 +2056,7 @@ function getDSTInfo(tzName, date) {
             dd.innerHTML = '<div class="search-no-results">Searching…</div>';
             dd.classList.add('show');
             try{
-                const res = await apiCall({action:'search', user_id:user.user_id, query:''});
+                const res = await apiCall({action:'search', user_id:user.user_id, query:'', is_admin:_isAdmin});
                 if(res.success){
                     _recordsCache = res.records;
                     searchFromCache(query);
@@ -2056,6 +2074,7 @@ function getDSTInfo(tzName, date) {
             return '<div class="search-result-item" onclick="loadRecord('+rJson+')">'
                 +'<div class="sri-top-row">'
                 +'<span class="sri-name"><i class="ph ph-user" style="margin-right:5px;"></i>'+r.person_name+'</span>'
+                +(_isAdmin && r.owner_name ? '<span class="owner-badge" style="margin-left:6px;">'+r.owner_name+'</span>' : '')
                 
                 +'<button class="sri-delete-btn" onclick="event.stopPropagation();openDeleteModal('+rJson+')"><i class="ph ph-trash"></i> Delete</button>'
                 +'</div>'
@@ -2367,7 +2386,7 @@ function getDSTInfo(tzName, date) {
                     action:'update', user_id:user.user_id,
                     record_id: recordIdToUpdate,
                     person_name:name, place, date_of_birth:dob, time_of_birth:tob,
-                    timezone:tz, dst_override:dstToSave
+                    timezone:tz, dst_override:dstToSave, is_admin:_isAdmin
                 });
                 if(!res.success){
                     invalidateCache(); loadRecordsCache();
@@ -2422,7 +2441,7 @@ function getDSTInfo(tzName, date) {
 
             // Send delete to server in background
             try{
-                const res = await apiCall({action:'delete', user_id:user.user_id, record_id:cachedId});
+                const res = await apiCall({action:'delete', user_id:user.user_id, record_id:cachedId, is_admin:_isAdmin});
                 if(!res.success){
                     // Revert: refresh cache from server on failure
                     invalidateCache();
