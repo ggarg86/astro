@@ -410,23 +410,7 @@
 </head>
 <body>
 
-    <script>
-        document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
-        document.addEventListener('keydown',function(e){
-            if(e.keyCode===123){e.preventDefault();return false;}
-            if(e.ctrlKey&&e.keyCode===85){e.preventDefault();return false;}
-            if(e.ctrlKey&&e.keyCode===83){e.preventDefault();return false;}
-            if(e.ctrlKey&&e.shiftKey&&e.keyCode===73){e.preventDefault();return false;}
-            if(e.ctrlKey&&e.shiftKey&&e.keyCode===74){e.preventDefault();return false;}
-            if(e.ctrlKey&&e.shiftKey&&e.keyCode===67){e.preventDefault();return false;}
-            if(e.ctrlKey&&e.keyCode===65){e.preventDefault();return false;}
-        });
-        document.addEventListener('selectstart',function(e){
-            if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return true;
-            e.preventDefault();return false;
-        });
-
-    </script>
+    
 
     <div id="auth-overlay" class="hidden">
         <div class="auth-card">
@@ -578,188 +562,104 @@
         </div>
 
         <!-- Input Section -->
-        <div class="w-full" style="background:linear-gradient(135deg,#f0f4ff 0%,#e8eeff 100%);border-radius:20px;border:1.5px solid #c7d2fe;box-shadow:0 4px 24px rgba(99,102,241,0.08);overflow:hidden;">
-            <!-- Section Header -->
-            <div style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);padding:16px 24px;display:flex;align-items:center;gap:14px;">
-                <div style="width:40px;height:40px;background:rgba(99,102,241,0.25);border-radius:10px;display:flex;align-items:center;justify-content:center;border:1.5px solid rgba(99,102,241,0.4);">
-                    <i class="ph ph-sliders-horizontal" style="font-size:20px;color:#818cf8;"></i>
-                </div>
-                <div>
-                    <h2 style="font-family:Montserrat,sans-serif;font-size:15px;font-weight:800;color:white;margin:0;text-transform:uppercase;letter-spacing:0.08em;">Input Details</h2>
-                    <p style="font-size:11px;color:#94a3b8;margin:0;font-family:Montserrat,sans-serif;">Enter birth details to generate chart</p>
-                </div>
-            </div>
-
-
-            <div style="padding:20px 24px;">
-                <!-- TWO COLUMN LAYOUT -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;" class="input-two-col">
-
-                    <!-- ═══ LEFT COLUMN: Person & Place ═══ -->
-                    <div style="display:flex;flex-direction:column;gap:0;">
-
-                        <!-- PERSON CARD -->
-                        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;margin-bottom:12px;">
-                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
-                                <i class="ph ph-user-circle" style="color:var(--accent-analysis);font-size:1em;"></i>
-                                <span style="font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Person</span>
-                            </div>
-                            <!-- Name -->
-                            <div style="margin-bottom:10px;">
-                                <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Name</label>
-                                <input type="text" id="name-input" placeholder="Enter full name" oninput="markStale()" style="width:100%;padding:9px 12px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:Merriweather,serif;font-size:0.88em;color:#334155;outline:none;transition:border-color 0.2s;box-sizing:border-box;background:white;" onfocus="this.style.borderColor='#2980b9'" onblur="this.style.borderColor='#e2e8f0'">
-                            </div>
-                            <!-- Gender -->
-                            <div>
-                                <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Gender</label>
-                                <div class="gender-toggle">
-                                    <button type="button" id="btn-male"   class="gender-btn active" onclick="setGender('Male')">&#9794; Male</button>
-                                    <button type="button" id="btn-female" class="gender-btn"        onclick="setGender('Female')">&#9792; Female</button>
-                                </div>
-                            </div>
+        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 w-full">
+            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
+                <i class="ph ph-sliders-horizontal"></i> Input Details
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Col 1 -->
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name</label>
+                        <input type="text" id="name-input" placeholder="Enter Name" oninput="markStale()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new text-slate-700 font-medium">
+                    </div>
+                    <!-- GENDER -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Gender</label>
+                        <div class="gender-toggle">
+                            <button type="button" id="btn-male"   class="gender-btn active" onclick="setGender('Male')">Male</button>
+                            <button type="button" id="btn-female" class="gender-btn"        onclick="setGender('Female')">Female</button>
                         </div>
-
-                        <!-- PLACE CARD -->
-                        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;margin-bottom:12px;">
-                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
-                                <i class="ph ph-map-trifold" style="color:#10b981;font-size:1em;"></i>
-                                <span style="font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Place &amp; Coordinates</span>
-                            </div>
-                            <!-- Place of Birth -->
-                            <div style="margin-bottom:10px;">
-                                <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:4px;">Place of Birth</label>
-                                <div class="relative w-full">
-                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-map-pin text-slate-400 text-lg"></i></div>
-                                    <input type="text" id="location-input" oninput="markStale()" class="w-full pl-9 pr-9 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new transition shadow-sm" placeholder="Start typing a city..." autocomplete="off">
-                                    <div id="loading-spinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden"><div class="loader ease-linear rounded-full border-2 border-t-2 border-slate-200 h-4 w-4"></div></div>
-                                    <button id="clear-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"><i class="ph ph-x-circle text-lg"></i></button>
-                                
-                                    <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list" style="top:100%;left:0;right:0;"></ul>
-</div>
-                                
-                            </div>
-                            <!-- Lat / Lng inline -->
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                                <div style="background:white;border:1.5px solid #c7d2fe;border-left:3px solid #6366f1;border-radius:8px;padding:7px 10px;display:flex;flex-direction:column;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.6em;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:4px;"><i class="ph ph-arrows-vertical" style="font-size:0.9em;"></i>Latitude</span>
-                                    <span id="lat-display" style="font-family:'Courier New',monospace;font-size:0.92em;font-weight:700;color:#1e293b;letter-spacing:0.02em;">28.6139</span>
-                                </div>
-                                <div style="background:white;border:1.5px solid #c7d2fe;border-left:3px solid #6366f1;border-radius:8px;padding:7px 10px;display:flex;flex-direction:column;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.6em;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:4px;"><i class="ph ph-arrows-horizontal" style="font-size:0.9em;"></i>Longitude</span>
-                                    <span id="lng-display" style="font-family:'Courier New',monospace;font-size:0.92em;font-weight:700;color:#1e293b;letter-spacing:0.02em;">77.2090</span>
-                                </div>
-                            </div>
-                            <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
+                    </div>
+                    <!-- PLACE OF BIRTH -->
+                    <div class="relative w-full">
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">PLACE OF BIRTH</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-map-pin text-slate-400 text-lg"></i></div>
+                            <input type="text" id="location-input" oninput="markStale()" class="w-full pl-9 pr-9 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new transition shadow-sm" placeholder="Start typing a city..." autocomplete="off">
+                            <div id="loading-spinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden"><div class="loader ease-linear rounded-full border-2 border-t-2 border-slate-200 h-4 w-4"></div></div>
+                            <button id="clear-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"><i class="ph ph-x-circle text-lg"></i></button>
                         </div>
-
+                        <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list"></ul>
                     </div>
 
-                    <!-- ═══ RIGHT COLUMN: Date, Time, Timezone, Actions ═══ -->
-                    <div style="display:flex;flex-direction:column;gap:0;">
-
-                        <!-- DATE & TIME CARD -->
-                        <div style="background:white;border:1.5px solid #c7d2fe;border-radius:14px;padding:14px 16px;margin-bottom:12px;">
-                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
-                                <i class="ph ph-calendar-blank" style="color:#6366f1;font-size:1em;"></i>
-                                <span style="font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Date &amp; Time of Birth</span>
-                            </div>
-
-                            <!-- Date Row: Day | Month | Year -->
-                            <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px;">Date</label>
-                            <div style="display:flex;gap:8px;margin-bottom:12px;">
-                                <div style="flex:0 0 28%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Day</span>
-                                    <select id="day-input" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
-                                </div>
-                                <div style="flex:0 0 40%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Month</span>
-                                    <select id="month-input" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
-                                </div>
-                                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Year</span>
-                                    <input type="number" id="year-input" list="year-options" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;box-sizing:border-box;box-shadow:0 1px 3px rgba(99,102,241,0.06);" placeholder="YYYY">
-                                    <datalist id="year-options"></datalist>
-                                </div>
-                            </div>
-
-                            <!-- Time Row: HH : MM + AM/PM -->
-                            <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px;">Time</label>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="flex:0 0 30%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Hours</span>
-                                    <select id="hour-input" oninput="markStale()" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
-                                </div>
-                                <span style="font-size:1.4em;font-weight:700;color:#94a3b8;margin-top:14px;">:</span>
-                                <div style="flex:0 0 30%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Mins</span>
-                                    <select id="minute-input" oninput="markStale()" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
-                                </div>
-                                <div style="flex:1;margin-top:14px;">
-                                    <div style="display:flex;background:#eef2ff;border-radius:10px;padding:3px;border:1.5px solid #c7d2fe;height:40px;box-shadow:0 1px 3px rgba(99,102,241,0.1);">
-                                        <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn" style="flex:1;border-radius:7px;font-family:Montserrat,sans-serif;font-size:0.75em;font-weight:800;border:none;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;">AM</button>
-                                        <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn" style="flex:1;border-radius:7px;font-family:Montserrat,sans-serif;font-size:0.75em;font-weight:800;border:none;cursor:pointer;transition:all 0.2s;letter-spacing:0.05em;">PM</button>
-                                    </div>
-                                </div>
-                                <input type="hidden" id="ampm-value" value="AM">
-                            </div>
+                    <!-- TIMEZONE & DST -->
+                    <div class="tz-wrapper">
+                        <label class="tz-label"><i class="ph ph-clock" style="margin-right:4px;"></i>Time Zone of Birth Place</label>
+                        <div class="tz-row">
+                            <select id="tz-select">
+                                <option value="">— Select birth place first —</option>
+                            </select>
+                            <span id="dst-badge" class="dst-badge dst-na">DST: Auto</span>
                         </div>
-
-                        <!-- TIMEZONE CARD -->
-                        <div style="background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:14px;padding:14px 16px;margin-bottom:12px;">
-                            <div style="display:flex;align-items:center;gap:6px;margin-bottom:10px;">
-                                <i class="ph ph-clock" style="color:#f59e0b;font-size:1em;"></i>
-                                <span style="font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Timezone</span>
-                            </div>
-                            <div class="tz-wrapper" style="margin-top:0;">
-                                <div class="tz-row">
-                                    <select id="tz-select">
-                                        <option value="">— Select birth place first —</option>
-                                    </select>
-                                    <span id="dst-badge" class="dst-badge dst-na">DST: Auto</span>
-                                </div>
-                                <div class="dst-override">
-                                    <span class="tz-offset-display">DST Override:</span>
-                                    <button type="button" class="dst-btn active" id="dst-auto" onclick="setDSTOverride('auto')">Auto</button>
-                                    <button type="button" class="dst-btn" id="dst-yes"  onclick="setDSTOverride('yes')">Force ON</button>
-                                    <button type="button" class="dst-btn" id="dst-no"   onclick="setDSTOverride('no')">Force OFF</button>
-                                    <span id="tz-offset-display" class="tz-offset-display"></span>
-                                </div>
-                                <span class="tz-advanced-toggle" onclick="toggleManualOffset()">
-                                    &#9881; Advanced: override offset manually
-                                </span>
-                                <div class="tz-manual-row" id="tz-manual-row">
-                                    <span class="tz-manual-label">UTC</span>
-                                    <select id="manual-sign" class="tz-manual-input" style="width:60px;">
-                                        <option value="+">+</option>
-                                        <option value="-">&minus;</option>
-                                    </select>
-                                    <input type="number" id="manual-hours" class="tz-manual-input" min="0" max="14" value="0" placeholder="HH">
-                                    <span class="tz-manual-label">h</span>
-                                    <input type="number" id="manual-mins" class="tz-manual-input" min="0" max="59" value="0" placeholder="MM">
-                                    <span class="tz-manual-label">min</span>
-                                    <button class="tz-manual-apply" onclick="applyManualOffset()">Apply</button>
-                                    <button class="tz-manual-reset" onclick="resetManualOffset()">Reset</button>
-                                </div>
-                            </div>
+                        <div class="dst-override">
+                            <span class="tz-offset-display">DST Override:</span>
+                            <button type="button" class="dst-btn active" id="dst-auto" onclick="setDSTOverride('auto')">Auto</button>
+                            <button type="button" class="dst-btn" id="dst-yes"  onclick="setDSTOverride('yes')">Force ON</button>
+                            <button type="button" class="dst-btn" id="dst-no"   onclick="setDSTOverride('no')">Force OFF</button>
+                            <span id="tz-offset-display" class="tz-offset-display"></span>
                         </div>
-
-                        <!-- ACTION BUTTONS -->
-                        <div style="display:flex;flex-direction:column;gap:8px;">
-                            <button onclick="calculatePositions()" id="generate-btn" class="w-full py-3 btn-primary-new btn-stale text-white rounded-xl font-semibold transition shadow-sm flex items-center justify-center gap-2" style="font-family:Montserrat,sans-serif;font-size:0.92em;letter-spacing:0.3px;border-radius:12px;">
-                                <i class="ph ph-chart-polar"></i> Generate Report
-                            </button>
-                            <button id="save-record-btn" onclick="manualSaveRecord()" class="w-full py-3 hidden text-white rounded-xl font-semibold transition shadow-sm flex items-center justify-center gap-2" style="background:#16a34a;font-family:Montserrat,sans-serif;font-size:0.92em;letter-spacing:0.3px;border-radius:12px;">
-                                <i class="ph ph-floppy-disk"></i> Save Record
-                            </button>
+                        <!-- Advanced manual UTC override (hidden by default) -->
+                        <span class="tz-advanced-toggle" onclick="toggleManualOffset()">
+                            &#9881; Advanced: override offset manually
+                        </span>
+                        <div class="tz-manual-row" id="tz-manual-row">
+                            <span class="tz-manual-label">UTC</span>
+                            <select id="manual-sign" class="tz-manual-input" style="width:60px;">
+                                <option value="+">+</option>
+                                <option value="-">&minus;</option>
+                            </select>
+                            <input type="number" id="manual-hours" class="tz-manual-input" min="0" max="14" value="0" placeholder="HH">
+                            <span class="tz-manual-label">h</span>
+                            <input type="number" id="manual-mins" class="tz-manual-input" min="0" max="59" value="0" placeholder="MM">
+                            <span class="tz-manual-label">min</span>
+                            <button class="tz-manual-apply" onclick="applyManualOffset()">Apply</button>
+                            <button class="tz-manual-reset" onclick="resetManualOffset()">Reset</button>
                         </div>
-
                     </div>
+                </div>
+
+                                <!-- Col 2 -->
+                <div class="space-y-3">
+                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Date & Time</label>
+                    <div class="flex items-end gap-2 w-full">
+                        <div class="flex flex-col w-[25%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span><div class="relative w-full"><select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <div class="flex flex-col w-[35%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span><div class="relative w-full"><select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <div class="flex flex-col w-[40%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span><div class="relative w-full"><input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY"><datalist id="year-options"></datalist></div></div>
+                    </div>
+                    <div class="flex items-end gap-2 mt-2">
+                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span><div class="relative w-full"><select id="hour-input" oninput="markStale()" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
+                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span><div class="relative w-full"><select id="minute-input" oninput="markStale()" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
+                        <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
+                            <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
+                            <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
+                        </div>
+                        <input type="hidden" id="ampm-value" value="AM">
+                    </div>
+                </div>
+                <!-- Col 3 -->
+                <div class="flex flex-col gap-3">
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Latitude</span><span id="lat-display" class="font-mono font-medium text-slate-700">28.6139</span></div>
+                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Longitude</span><span id="lng-display" class="font-mono font-medium text-slate-700">77.2090</span></div>
+                    </div>
+                    <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
+                    <button onclick="calculatePositions()" id="generate-btn" class="w-full py-3 btn-primary-new btn-stale text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2"><i class="ph ph-chart-polar"></i> Generate Report</button>
+                    <button id="save-record-btn" onclick="manualSaveRecord()" class="w-full py-3 hidden text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2" style="background:#16a34a;"><i class="ph ph-floppy-disk"></i> Save Record</button>
                 </div>
             </div>
         </div>
-
-
-        
         <!-- Result Sections -->
         <div id="all-results-wrapper" class="w-full space-y-6 hidden">
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col items-center">
