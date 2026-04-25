@@ -640,13 +640,13 @@
                             </div>
                             <!-- Lat / Lng inline -->
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                                <div style="background:white;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.6em;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:4px;"><i class="ph ph-arrows-vertical" style="font-size:0.9em;"></i>Latitude</span>
-                                    <span id="lat-display" style="font-family:monospace;font-size:0.88em;font-weight:600;color:#334155;">28.6139</span>
+                                <div style="background:white;border:1.5px solid #c7d2fe;border-left:3px solid #6366f1;border-radius:8px;padding:7px 10px;display:flex;flex-direction:column;gap:3px;">
+                                    <span style="font-family:Montserrat,sans-serif;font-size:0.6em;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:4px;"><i class="ph ph-arrows-vertical" style="font-size:0.9em;"></i>Latitude</span>
+                                    <span id="lat-display" style="font-family:'Courier New',monospace;font-size:0.92em;font-weight:700;color:#1e293b;letter-spacing:0.02em;">28.6139</span>
                                 </div>
-                                <div style="background:white;border:1.5px solid #e2e8f0;border-radius:8px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.6em;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:4px;"><i class="ph ph-arrows-horizontal" style="font-size:0.9em;"></i>Longitude</span>
-                                    <span id="lng-display" style="font-family:monospace;font-size:0.88em;font-weight:600;color:#334155;">77.2090</span>
+                                <div style="background:white;border:1.5px solid #c7d2fe;border-left:3px solid #6366f1;border-radius:8px;padding:7px 10px;display:flex;flex-direction:column;gap:3px;">
+                                    <span style="font-family:Montserrat,sans-serif;font-size:0.6em;font-weight:700;color:#6366f1;text-transform:uppercase;letter-spacing:0.08em;display:flex;align-items:center;gap:4px;"><i class="ph ph-arrows-horizontal" style="font-size:0.9em;"></i>Longitude</span>
+                                    <span id="lng-display" style="font-family:'Courier New',monospace;font-size:0.92em;font-weight:700;color:#1e293b;letter-spacing:0.02em;">77.2090</span>
                                 </div>
                             </div>
                             <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
@@ -658,41 +658,41 @@
                     <div style="display:flex;flex-direction:column;gap:0;">
 
                         <!-- DATE & TIME CARD -->
-                        <div style="background:linear-gradient(135deg,#f8faff 0%,#eef2ff 100%);border:1.5px solid #c7d2fe;border-radius:14px;padding:14px 16px;margin-bottom:12px;">
+                        <div style="background:white;border:1.5px solid #c7d2fe;border-radius:14px;padding:14px 16px;margin-bottom:12px;">
                             <div style="display:flex;align-items:center;gap:6px;margin-bottom:12px;">
                                 <i class="ph ph-calendar-blank" style="color:#6366f1;font-size:1em;"></i>
                                 <span style="font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.08em;">Date &amp; Time of Birth</span>
                             </div>
 
                             <!-- Date Row: Day | Month | Year -->
-                            <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.7em;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;">Date</label>
+                            <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px;">Date</label>
                             <div style="display:flex;gap:8px;margin-bottom:12px;">
                                 <div style="flex:0 0 28%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:0.06em;">Day</span>
-                                    <select id="day-input" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:800;color:#0f172a;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.08);"></select>
+                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Day</span>
+                                    <select id="day-input" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
                                 </div>
                                 <div style="flex:0 0 40%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:0.06em;">Month</span>
-                                    <select id="month-input" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:800;color:#0f172a;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.08);"></select>
+                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Month</span>
+                                    <select id="month-input" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
                                 </div>
                                 <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:0.06em;">Year</span>
-                                    <input type="number" id="year-input" list="year-options" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:800;color:#0f172a;background:white;text-align:center;outline:none;box-sizing:border-box;box-shadow:0 1px 3px rgba(99,102,241,0.08);" placeholder="YYYY">
+                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Year</span>
+                                    <input type="number" id="year-input" list="year-options" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;box-sizing:border-box;box-shadow:0 1px 3px rgba(99,102,241,0.06);" placeholder="YYYY">
                                     <datalist id="year-options"></datalist>
                                 </div>
                             </div>
 
                             <!-- Time Row: HH : MM + AM/PM -->
-                            <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.7em;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:5px;">Time</label>
+                            <label style="display:block;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:5px;">Time</label>
                             <div style="display:flex;align-items:center;gap:8px;">
                                 <div style="flex:0 0 30%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:0.06em;">Hours</span>
-                                    <select id="hour-input" oninput="markStale()" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:800;color:#0f172a;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.08);"></select>
+                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Hours</span>
+                                    <select id="hour-input" oninput="markStale()" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
                                 </div>
-                                <span style="font-size:1.4em;font-weight:900;color:#6366f1;margin-top:14px;">:</span>
+                                <span style="font-size:1.4em;font-weight:700;color:#94a3b8;margin-top:14px;">:</span>
                                 <div style="flex:0 0 30%;display:flex;flex-direction:column;align-items:center;gap:3px;">
-                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:800;color:#6366f1;text-transform:uppercase;letter-spacing:0.06em;">Mins</span>
-                                    <select id="minute-input" oninput="markStale()" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:800;color:#0f172a;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.08);"></select>
+                                    <span style="font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.06em;">Mins</span>
+                                    <select id="minute-input" oninput="markStale()" class="input-center" style="width:100%;padding:10px 4px;border:1.5px solid #c7d2fe;border-radius:10px;font-family:Montserrat,sans-serif;font-size:1em;font-weight:600;color:#1e293b;background:white;text-align:center;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;box-shadow:0 1px 3px rgba(99,102,241,0.06);"></select>
                                 </div>
                                 <div style="flex:1;margin-top:14px;">
                                     <div style="display:flex;background:#eef2ff;border-radius:10px;padding:3px;border:1.5px solid #c7d2fe;height:40px;box-shadow:0 1px 3px rgba(99,102,241,0.1);">
