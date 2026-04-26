@@ -406,11 +406,146 @@
         .delete-confirm-btn { flex:1;padding:11px;background:#dc2626;color:white;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;transition:opacity 0.2s; }
         .delete-confirm-btn:hover { opacity:0.88; }
         .delete-confirm-btn:disabled { opacity:0.5;cursor:not-allowed; }
+
+        /* ══════════════════════════════════
+           INPUT SECTION — REFINED DASHBOARD
+           ══════════════════════════════════ */
+        .inp-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #e8ecf0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .inp-card-header {
+            padding: 12px 16px 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .inp-card-icon {
+            width: 32px; height: 32px;
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px; flex-shrink: 0;
+        }
+        .inp-card-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.88em; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 0.07em;
+        }
+        .inp-card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 12px; }
+        .inp-field-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.68em; font-weight: 700;
+            color: #475569; text-transform: uppercase;
+            letter-spacing: 0.05em; margin-bottom: 4px; display: block;
+        }
+        .inp-text {
+            width: 100%; padding: 9px 12px;
+            border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: 'Merriweather', serif; font-size: 0.88em;
+            color: #1e293b; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+            box-sizing: border-box; background: #fafbfc;
+        }
+        .inp-text:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.1); background: white; }
+        /* Gender */
+        .inp-gender { display: flex; gap: 0; border-radius: 10px; overflow: hidden; border: 1.5px solid #e2e8f0; }
+        .inp-gender-btn {
+            flex: 1; padding: 8px 0; border: none; cursor: pointer;
+            font-family: 'Montserrat', sans-serif; font-size: 0.78em; font-weight: 700;
+            background: #f8fafc; color: #64748b; transition: all 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 5px;
+        }
+        .inp-gender-btn.active { background: #1e40af; color: white; }
+        .inp-gender-btn.active.female { background: #9d174d; }
+        /* Coordinates */
+        .inp-coords { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .inp-coord-chip {
+            background: #f8fafc; border: 1.5px solid #e2e8f0;
+            border-radius: 10px; padding: 8px 10px;
+            display: flex; flex-direction: column; gap: 2px;
+        }
+        .inp-coord-chip-label {
+            font-family: 'Montserrat', sans-serif; font-size: 0.58em;
+            font-weight: 800; color: #6366f1; text-transform: uppercase;
+            letter-spacing: 0.08em; display: flex; align-items: center; gap: 3px;
+        }
+        .inp-coord-chip-val {
+            font-family: 'Courier New', monospace; font-size: 0.85em;
+            font-weight: 700; color: #1e293b;
+        }
+        /* Date selects */
+        .inp-select {
+            width: 100%; padding: 9px 4px;
+            border: 1.5px solid #e2e8f0; border-radius: 10px;
+            font-family: 'Montserrat', sans-serif; font-size: 0.9em;
+            font-weight: 600; color: #1e293b;
+            background: #fafbfc; text-align: center;
+            outline: none; cursor: pointer;
+            appearance: none; -webkit-appearance: none;
+            transition: border-color 0.2s;
+        }
+        .inp-select:focus { border-color: #6366f1; background: white; }
+        .inp-sublabel {
+            font-family: 'Montserrat', sans-serif; font-size: 0.65em;
+            font-weight: 700; color: #64748b; text-transform: uppercase;
+            letter-spacing: 0.05em; text-align: center; margin-bottom: 3px;
+        }
+        /* AMPM */
+        .inp-ampm {
+            display: flex; background: #f1f5f9; border-radius: 8px;
+            padding: 2px; border: 1.5px solid #e2e8f0; height: 38px;
+        }
+        /* Action buttons */
+        .inp-btn-generate {
+            width: 100%; padding: 13px;
+            border: none; border-radius: 12px; cursor: pointer;
+            font-family: 'Montserrat', sans-serif; font-size: 0.88em;
+            font-weight: 800; letter-spacing: 0.04em;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            transition: all 0.2s; color: white;
+        }
+        /* Responsive grid */
+        .inp-outer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 14px;
+        }
+        @media (max-width: 900px) {
+            .inp-outer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .inp-who { grid-column: 1 / 2; }
+            .inp-where { grid-column: 2 / 3; }
+            .inp-when { grid-column: 1 / 3; }
+        }
+        @media (max-width: 580px) {
+            .inp-outer-grid { grid-template-columns: 1fr; }
+            .inp-who, .inp-where, .inp-when { grid-column: 1 / 2; }
+        }
     </style>
 </head>
 <body>
 
-    
+    <script>
+        document.addEventListener('contextmenu',function(e){e.preventDefault();return false;});
+        document.addEventListener('keydown',function(e){
+            if(e.keyCode===123){e.preventDefault();return false;}
+            if(e.ctrlKey&&e.keyCode===85){e.preventDefault();return false;}
+            if(e.ctrlKey&&e.keyCode===83){e.preventDefault();return false;}
+            if(e.ctrlKey&&e.shiftKey&&e.keyCode===73){e.preventDefault();return false;}
+            if(e.ctrlKey&&e.shiftKey&&e.keyCode===74){e.preventDefault();return false;}
+            if(e.ctrlKey&&e.shiftKey&&e.keyCode===67){e.preventDefault();return false;}
+            if(e.ctrlKey&&e.keyCode===65){e.preventDefault();return false;}
+        });
+        document.addEventListener('selectstart',function(e){
+            if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'||e.target.tagName==='SELECT')return true;
+            e.preventDefault();return false;
+        });
+
+    </script>
 
     <div id="auth-overlay" class="hidden">
         <div class="auth-card">
@@ -562,104 +697,127 @@
         </div>
 
         <!-- Input Section -->
-        <div class="bg-white p-6 rounded-2xl shadow-md border border-slate-200 w-full">
-            <h2 class="text-lg font-bold mb-4 flex items-center gap-2 border-b border-slate-100 pb-2">
-                <i class="ph ph-sliders-horizontal"></i> Input Details
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <!-- Col 1 -->
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Name</label>
-                        <input type="text" id="name-input" placeholder="Enter Name" oninput="markStale()" class="w-full px-3 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new text-slate-700 font-medium">
+        <div class="bg-white rounded-2xl shadow-md border border-slate-200 w-full" style="overflow:hidden;">
+            <!-- Section Title -->
+            <div style="padding:14px 20px 12px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;">
+                <i class="ph ph-sliders-horizontal" style="color:#6366f1;font-size:18px;"></i>
+                <span style="font-family:Montserrat,sans-serif;font-size:0.92em;font-weight:800;color:#1e293b;letter-spacing:0.02em;">Input Details</span>
+            </div>
+            <!-- Main Grid -->
+            <div class="inp-outer-grid" style="padding:16px;">
+                <!-- ══ WHO ══ -->
+                <div class="inp-card inp-who">
+                    <div class="inp-card-header">
+                        <div class="inp-card-icon" style="background:#ede9fe;"><i class="ph ph-user" style="color:#7c3aed;"></i></div>
+                        <span class="inp-card-label" style="color:#7c3aed;">Who</span>
                     </div>
-                    <!-- GENDER -->
-                    <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Gender</label>
-                        <div class="gender-toggle">
-                            <button type="button" id="btn-male"   class="gender-btn active" onclick="setGender('Male')">Male</button>
-                            <button type="button" id="btn-female" class="gender-btn"        onclick="setGender('Female')">Female</button>
+                    <div class="inp-card-body">
+                        <div>
+                            <span class="inp-field-label">Full Name</span>
+                            <input type="text" id="name-input" placeholder="Enter name" oninput="markStale()" class="inp-text" autocomplete="off">
                         </div>
-                    </div>
-                    <!-- PLACE OF BIRTH -->
-                    <div class="relative w-full">
-                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">PLACE OF BIRTH</label>
-                        <div class="relative">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-map-pin text-slate-400 text-lg"></i></div>
-                            <input type="text" id="location-input" oninput="markStale()" class="w-full pl-9 pr-9 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new transition shadow-sm" placeholder="Start typing a city..." autocomplete="off">
-                            <div id="loading-spinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden"><div class="loader ease-linear rounded-full border-2 border-t-2 border-slate-200 h-4 w-4"></div></div>
-                            <button id="clear-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"><i class="ph ph-x-circle text-lg"></i></button>
-                        </div>
-                        <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-lg shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list"></ul>
-                    </div>
-
-                    <!-- TIMEZONE & DST -->
-                    <div class="tz-wrapper">
-                        <label class="tz-label"><i class="ph ph-clock" style="margin-right:4px;"></i>Time Zone of Birth Place</label>
-                        <div class="tz-row">
-                            <select id="tz-select">
-                                <option value="">— Select birth place first —</option>
-                            </select>
-                            <span id="dst-badge" class="dst-badge dst-na">DST: Auto</span>
-                        </div>
-                        <div class="dst-override">
-                            <span class="tz-offset-display">DST Override:</span>
-                            <button type="button" class="dst-btn active" id="dst-auto" onclick="setDSTOverride('auto')">Auto</button>
-                            <button type="button" class="dst-btn" id="dst-yes"  onclick="setDSTOverride('yes')">Force ON</button>
-                            <button type="button" class="dst-btn" id="dst-no"   onclick="setDSTOverride('no')">Force OFF</button>
-                            <span id="tz-offset-display" class="tz-offset-display"></span>
-                        </div>
-                        <!-- Advanced manual UTC override (hidden by default) -->
-                        <span class="tz-advanced-toggle" onclick="toggleManualOffset()">
-                            &#9881; Advanced: override offset manually
-                        </span>
-                        <div class="tz-manual-row" id="tz-manual-row">
-                            <span class="tz-manual-label">UTC</span>
-                            <select id="manual-sign" class="tz-manual-input" style="width:60px;">
-                                <option value="+">+</option>
-                                <option value="-">&minus;</option>
-                            </select>
-                            <input type="number" id="manual-hours" class="tz-manual-input" min="0" max="14" value="0" placeholder="HH">
-                            <span class="tz-manual-label">h</span>
-                            <input type="number" id="manual-mins" class="tz-manual-input" min="0" max="59" value="0" placeholder="MM">
-                            <span class="tz-manual-label">min</span>
-                            <button class="tz-manual-apply" onclick="applyManualOffset()">Apply</button>
-                            <button class="tz-manual-reset" onclick="resetManualOffset()">Reset</button>
+                        <div>
+                            <span class="inp-field-label">Gender</span>
+                            <div class="inp-gender">
+                                <button type="button" id="btn-male" class="inp-gender-btn active" onclick="setGender('Male')"><i class="ph ph-gender-male"></i> Male</button>
+                                <button type="button" id="btn-female" class="inp-gender-btn female" onclick="setGender('Female')"><i class="ph ph-gender-female"></i> Female</button>
+                            </div>
                         </div>
                     </div>
                 </div>
-
-                                <!-- Col 2 -->
-                <div class="space-y-3">
-                    <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Date & Time</label>
-                    <div class="flex items-end gap-2 w-full">
-                        <div class="flex flex-col w-[25%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Day</span><div class="relative w-full"><select id="day-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <div class="flex flex-col w-[35%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Month</span><div class="relative w-full"><select id="month-input" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <div class="flex flex-col w-[40%]"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Year</span><div class="relative w-full"><input type="number" id="year-input" list="year-options" class="input-center w-full px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs" placeholder="YYYY"><datalist id="year-options"></datalist></div></div>
+                <!-- ══ WHERE ══ -->
+                <div class="inp-card inp-where">
+                    <div class="inp-card-header">
+                        <div class="inp-card-icon" style="background:#dcfce7;"><i class="ph ph-map-trifold" style="color:#16a34a;"></i></div>
+                        <span class="inp-card-label" style="color:#16a34a;">Where</span>
                     </div>
-                    <div class="flex items-end gap-2 mt-2">
-                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Hours</span><div class="relative w-full"><select id="hour-input" oninput="markStale()" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <span class="text-slate-400 font-bold mb-2 pb-0.5">:</span>
-                        <div class="flex flex-col w-20"><span class="text-[10px] font-bold text-slate-400 uppercase text-center mb-1">Mins</span><div class="relative w-full"><select id="minute-input" oninput="markStale()" class="input-center w-full appearance-none px-1 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 ring-accent-new bg-white text-slate-700 font-medium text-center text-xs"></select></div></div>
-                        <div class="flex bg-slate-100 rounded-lg p-0.5 border border-slate-200 w-24 h-[34px] mb-[1px]">
-                            <button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">AM</button>
-                            <button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors">PM</button>
+                    <div class="inp-card-body">
+                        <div>
+                            <span class="inp-field-label">Place of Birth</span>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"><i class="ph ph-map-pin text-slate-400 text-lg"></i></div>
+                                <input type="text" id="location-input" oninput="markStale()" class="w-full pl-9 pr-9 py-2 border border-slate-200 rounded-xl focus:outline-none transition" style="background:#fafbfc;font-family:Merriweather,serif;font-size:0.88em;color:#1e293b;" placeholder="Start typing a city..." autocomplete="off">
+                                <div id="loading-spinner" class="absolute inset-y-0 right-0 pr-3 flex items-center hidden"><div class="loader ease-linear rounded-full border-2 border-t-2 border-slate-200 h-4 w-4"></div></div>
+                                <button id="clear-btn" class="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 hidden"><i class="ph ph-x-circle text-lg"></i></button>
+                                <ul id="suggestions" class="absolute z-50 w-full bg-white border border-slate-200 rounded-xl shadow-xl mt-1 max-h-60 overflow-y-auto hidden suggestions-list"></ul>
+                            </div>
                         </div>
-                        <input type="hidden" id="ampm-value" value="AM">
+                        <div class="tz-wrapper" style="margin-top:0;">
+                            <label class="tz-label"><i class="ph ph-clock" style="margin-right:4px;"></i>Time Zone</label>
+                            <div class="tz-row">
+                                <select id="tz-select"><option value="">— Select birth place first —</option></select>
+                                <span id="dst-badge" class="dst-badge dst-na">DST: Auto</span>
+                            </div>
+                            <div class="dst-override">
+                                <span class="tz-offset-display">DST Override:</span>
+                                <button type="button" class="dst-btn active" id="dst-auto" onclick="setDSTOverride('auto')">Auto</button>
+                                <button type="button" class="dst-btn" id="dst-yes" onclick="setDSTOverride('yes')">Force ON</button>
+                                <button type="button" class="dst-btn" id="dst-no" onclick="setDSTOverride('no')">Force OFF</button>
+                                <span id="tz-offset-display" class="tz-offset-display"></span>
+                            </div>
+                            <span class="tz-advanced-toggle" onclick="toggleManualOffset()">&#9881; Advanced: override offset manually</span>
+                            <div class="tz-manual-row" id="tz-manual-row">
+                                <span class="tz-manual-label">UTC</span>
+                                <select id="manual-sign" class="tz-manual-input" style="width:60px;"><option value="+">+</option><option value="-">&minus;</option></select>
+                                <input type="number" id="manual-hours" class="tz-manual-input" min="0" max="14" value="0" placeholder="HH">
+                                <span class="tz-manual-label">h</span>
+                                <input type="number" id="manual-mins" class="tz-manual-input" min="0" max="59" value="0" placeholder="MM">
+                                <span class="tz-manual-label">min</span>
+                                <button class="tz-manual-apply" onclick="applyManualOffset()">Apply</button>
+                                <button class="tz-manual-reset" onclick="resetManualOffset()">Reset</button>
+                            </div>
+                        </div>
+                        <div class="inp-coords">
+                            <div class="inp-coord-chip">
+                                <span class="inp-coord-chip-label"><i class="ph ph-arrows-vertical" style="font-size:10px;"></i> Latitude</span>
+                                <span id="lat-display" class="inp-coord-chip-val">28.6139</span>
+                            </div>
+                            <div class="inp-coord-chip">
+                                <span class="inp-coord-chip-label"><i class="ph ph-arrows-horizontal" style="font-size:10px;"></i> Longitude</span>
+                                <span id="lng-display" class="inp-coord-chip-val">77.2090</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="latitude" value="28.6139">
+                        <input type="hidden" id="longitude" value="77.2090">
                     </div>
                 </div>
-                <!-- Col 3 -->
-                <div class="flex flex-col gap-3">
-                    <div class="grid grid-cols-2 gap-3 mb-4">
-                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Latitude</span><span id="lat-display" class="font-mono font-medium text-slate-700">28.6139</span></div>
-                        <div class="bg-slate-50 p-2 rounded border border-slate-200"><span class="block text-[10px] font-bold text-slate-400 uppercase">Longitude</span><span id="lng-display" class="font-mono font-medium text-slate-700">77.2090</span></div>
+                <!-- ══ WHEN + ACTION ══ -->
+                <div class="inp-when" style="display:flex;flex-direction:column;gap:14px;">
+                    <div class="inp-card" style="flex:1;">
+                        <div class="inp-card-header">
+                            <div class="inp-card-icon" style="background:#fef3c7;"><i class="ph ph-calendar-blank" style="color:#d97706;"></i></div>
+                            <span class="inp-card-label" style="color:#d97706;">When</span>
+                        </div>
+                        <div class="inp-card-body">
+                            <div>
+                                <span class="inp-field-label">Date of Birth</span>
+                                <div style="display:flex;gap:6px;align-items:flex-end;">
+                                    <div style="flex:1;display:flex;flex-direction:column;"><span class="inp-sublabel">Day</span><select id="day-input" class="inp-select"></select></div>
+                                    <div style="flex:1.6;display:flex;flex-direction:column;"><span class="inp-sublabel">Month</span><select id="month-input" class="inp-select"></select></div>
+                                    <div style="flex:1.6;display:flex;flex-direction:column;"><span class="inp-sublabel">Year</span><input type="number" id="year-input" list="year-options" class="inp-select" placeholder="YYYY"><datalist id="year-options"></datalist></div>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="inp-field-label">Time of Birth</span>
+                                <div style="display:flex;gap:6px;align-items:flex-end;">
+                                    <div style="flex:1;display:flex;flex-direction:column;"><span class="inp-sublabel">Hours</span><select id="hour-input" oninput="markStale()" class="inp-select"></select></div>
+                                    <span style="color:#94a3b8;font-weight:700;font-size:1.1em;padding-bottom:8px;flex-shrink:0;">:</span>
+                                    <div style="flex:1;display:flex;flex-direction:column;"><span class="inp-sublabel">Mins</span><select id="minute-input" oninput="markStale()" class="inp-select"></select></div>
+                                    <div style="flex:1.2;display:flex;flex-direction:column;"><span class="inp-sublabel">&nbsp;</span><div class="inp-ampm"><button type="button" onclick="setAmPm('AM')" id="btn-am" class="ampm-btn flex-1 rounded text-xs font-bold text-slate-500 transition-colors">AM</button><button type="button" onclick="setAmPm('PM')" id="btn-pm" class="ampm-btn flex-1 rounded text-xs font-bold text-slate-500 transition-colors">PM</button></div></div>
+                                    <input type="hidden" id="ampm-value" value="AM">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <input type="hidden" id="latitude" value="28.6139"><input type="hidden" id="longitude" value="77.2090">
-                    <button onclick="calculatePositions()" id="generate-btn" class="w-full py-3 btn-primary-new btn-stale text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2"><i class="ph ph-chart-polar"></i> Generate Report</button>
-                    <button id="save-record-btn" onclick="manualSaveRecord()" class="w-full py-3 hidden text-white rounded-lg font-semibold transition shadow-sm flex items-center justify-center gap-2" style="background:#16a34a;"><i class="ph ph-floppy-disk"></i> Save Record</button>
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <button onclick="calculatePositions()" id="generate-btn" class="inp-btn-generate btn-primary-new btn-stale"><i class="ph ph-chart-polar"></i> Generate Report</button>
+                        <button id="save-record-btn" onclick="manualSaveRecord()" class="inp-btn-generate hidden" style="background:#16a34a;"><i class="ph ph-floppy-disk"></i> Save Record</button>
+                    </div>
                 </div>
             </div>
         </div>
+
+
         <!-- Result Sections -->
         <div id="all-results-wrapper" class="w-full space-y-6 hidden">
             <div class="bg-white rounded-2xl shadow-md border border-slate-200 p-6 flex flex-col items-center">
@@ -1539,8 +1697,8 @@
 
         function setGender(v) {
             _gender = v;
-            document.getElementById('btn-male').className   = 'gender-btn' + (v==='Male'   ? ' active' : '');
-            document.getElementById('btn-female').className = 'gender-btn' + (v==='Female' ? ' active' : '');
+            document.getElementById('btn-male').className   = 'inp-gender-btn' + (v==='Male'   ? ' active' : '');
+            document.getElementById('btn-female').className = 'inp-gender-btn female' + (v==='Female' ? ' active' : '');
             markStale();
         }
         function setAmPm(v) { document.getElementById('ampm-value').value = v; markStale(); const a = document.getElementById('btn-am'), p = document.getElementById('btn-pm'); a.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'AM' ? 'active' : ''}`; p.className = `ampm-btn flex-1 rounded text-[10px] font-bold py-1 text-slate-500 transition-colors ${v === 'PM' ? 'active' : ''}`; }
@@ -2044,8 +2202,8 @@ function getDSTInfo(tzName, date) {
                 tunnel: 'Strategist ↔ Thoughts of Death/Failure',
                 s1: {
                     name: 'The Sleepless Architect',
-                    subtitle: 'Overdrawn Circuit · Ketu in House 2, Rahu in House 8',
-                    core: 'Your planning engine runs at Ketu speed -- always first to fire, always fastest to build. The fear-processing engine beneath it runs at Rahu speed -- slow, thorough, never finished by the time the next plan has already started.',
+                    subtitle: 'Overdrawn Circuit · Charge Node in House 2, Release Node in House 8',
+                    core: 'Your planning engine runs at Charge Node speed -- always first to fire, always fastest to build. The fear-processing engine beneath it runs at Release Node speed -- slow, thorough, never finished by the time the next plan has already started.',
                     struggle: 'You become a high-functioning risk manager who never truly rests. Your plans are solid, even brilliant. But underneath each completed strategy, there is another fear that has not yet been processed. You rebuild the exit routes before the current route has been walked to its end.',
                     healing: 'The pause before the push is not laziness — it is the most strategic move you can make. Sit with the fear until it tells you its real name. Only then does your architecture stand on ground that cannot shake.',
                     male_struggle: 'You are the person people call when things fall apart. You stay calm, build the plan, and hold the weight quietly. But underneath all that reliability, your inner world never fully relaxes. There is always one more exit route to map, one more risk to account for. Not because you are anxious by nature -- but because the part of you that processes fear deeply is still working when you have already moved on to the next strategy. You keep building bridges on emotional ground that has not fully settled yet. The outer world sees strength. The inner world is quietly exhausted.',
@@ -2072,8 +2230,8 @@ function getDSTInfo(tzName, date) {
                 },
                 s2: {
                     name: 'The Fearless Founder',
-                    subtitle: 'Nourished Circuit · Ketu in House 8, Rahu in House 2',
-                    core: 'Your fear-processing engine runs at Ketu speed -- it digests endings, worst cases and mortality signals fast and fully. The strategy engine builds at Rahu speed -- slow, steady, and always grounded in what the fear has already completed.',
+                    subtitle: 'Nourished Circuit · Charge Node in House 8, Release Node in House 2',
+                    core: 'Your fear-processing engine runs at Charge Node speed -- it digests endings, worst cases and mortality signals fast and fully. The strategy engine builds at Release Node speed -- slow, steady, and always grounded in what the fear has already completed.',
                     struggle: 'You are rarely panicked in crises because you have already emotionally pre-lived the failure many times. When the crisis arrives, you are not surprised. You are ready.',
                     healing: 'Your power is in staying filled. Your only job is to protect the conditions that allow rapid inner processing before strategy begins.',
                     male_struggle: 'Crises do not shake you the way they shake other people -- because in your mind, you have already lived through the worst version of this scenario many times. By the time the problem arrives, you are not surprised. You are ready. People around you see calm and read it as coldness, or worse, as not caring. It is neither. You have simply already done the emotional work that others are only beginning. Your challenge is that you can be so thoroughly prepared inside that you forget to let others see your process -- and they end up feeling alone in their fear because you look like you never had any.',
@@ -2103,8 +2261,8 @@ function getDSTInfo(tzName, date) {
                 tunnel: 'Creator ↔ Seeker of Truth',
                 s1: {
                     name: 'The Premature Builder',
-                    subtitle: 'Overdrawn Circuit · Ketu in House 9, Rahu in House 3',
-                    core: 'Your creative engine runs at Ketu speed -- always first to build, always fastest to produce. The observation and truth-gathering engine runs at Rahu speed -- still absorbing when your hands are already moving.',
+                    subtitle: 'Overdrawn Circuit · Charge Node in House 9, Release Node in House 3',
+                    core: 'Your creative engine runs at Charge Node speed -- always first to build, always fastest to produce. The observation and truth-gathering engine runs at Release Node speed -- still absorbing when your hands are already moving.',
                     struggle: 'You produce prolifically and then feel a quiet dissatisfaction with your own work — not because it is bad, but because you sense something is missing. You build quickly, revise often, and restart more than feels fair. The Seeker had more to tell you. You did not wait.',
                     healing: 'Build in drafts. The first version is for the Creator. The revision is for the Seeker. When you honour both phases, what you make stops needing to be rebuilt.',
                     male_struggle: 'You are always building something. Three projects at once, five ideas in various stages, a restless need to be making, doing, producing. This is not a character flaw -- it is the way your system is wired. Your creative engine runs at full speed. The problem is that the part of you that observes, listens, and truly understands the situation is still gathering information when your hands are already moving. So you build. You finish. And then something feels slightly off -- not because the work is bad, but because the deeper truth arrived after you had already committed to the first version.',
@@ -2131,8 +2289,8 @@ function getDSTInfo(tzName, date) {
                 },
                 s2: {
                     name: 'The Aligned Maker',
-                    subtitle: 'Nourished Circuit · Ketu in House 3, Rahu in House 9',
-                    core: 'Your truth-gathering engine runs at Ketu speed -- absorbing signals, patterns, and emotional data from your environment almost instantly. The creative engine builds at Rahu speed -- slow, considered, and always built on what the Seeker has already fully understood.',
+                    subtitle: 'Nourished Circuit · Charge Node in House 3, Release Node in House 9',
+                    core: 'Your truth-gathering engine runs at Charge Node speed -- absorbing signals, patterns, and emotional data from your environment almost instantly. The creative engine builds at Release Node speed -- slow, considered, and always built on what the Seeker has already fully understood.',
                     struggle: 'In a world that rewards speed and output, your pace can feel like a liability. Others have already shipped five versions while you are still in the Seeker cycle. But their five versions often need rebuilding. Yours does not.',
                     healing: 'Protect the Seeker cycle as if it is the work — because for you, it is. The creation is the visible tip. The observation is the mountain beneath it.',
                     male_struggle: 'You notice things other people miss. The thing no one said out loud in the meeting. The pattern underneath the pattern. The real question hiding inside the stated question. You process situations at a depth and speed that most people cannot keep up with -- which means you are often sitting on insights that no one around you has reached yet. The challenge is that your creative output, the actual making and producing, moves slowly. By the time your ideas are ready to be expressed, the moment can feel like it has passed. It has not. What you produce when you do release it carries a weight that faster work rarely achieves.',
@@ -2162,8 +2320,8 @@ function getDSTInfo(tzName, date) {
                 tunnel: 'Seller ↔ Companion',
                 s1: {
                     name: 'The Overcrowded Healer',
-                    subtitle: 'Overdrawn Circuit · Ketu in House 11, Rahu in House 5',
-                    core: 'Your giving engine runs at Ketu speed -- always the first to offer warmth, support and connection. The receiving engine runs at Rahu speed -- slow to fill, always a cycle behind the giving.',
+                    subtitle: 'Overdrawn Circuit · Charge Node in House 11, Release Node in House 5',
+                    core: 'Your giving engine runs at Charge Node speed -- always the first to offer warmth, support and connection. The receiving engine runs at Release Node speed -- slow to fill, always a cycle behind the giving.',
                     struggle: 'The crowd loves you and you go home alone. You are the most supportive person in every room and the least supported person in your private life. Not because people do not care — but because you never slow down long enough for the Companion cycle to complete.',
                     healing: 'The most radical act in your configuration is to receive. Not to give better or more strategically — to actually stop and be held. The Companion cycle cannot complete while the Seller is still active.',
                     male_struggle: 'You are the one people turn to. You make others feel seen, motivated, and held -- naturally, effortlessly, without having to try. In any room you enter, your warmth is felt. The invisible cost of this gift is that the part of you that needs to receive the same warmth -- to feel held, seen, and supported yourself -- charges very slowly. You give out faster than it comes back in. You are not dramatic about it. You do not complain. But late at night, after you have shown up for everyone else, there is a quiet question you do not always say aloud: does anyone actually see me?',
@@ -2190,8 +2348,8 @@ function getDSTInfo(tzName, date) {
                 },
                 s2: {
                     name: 'The Nourished Connector',
-                    subtitle: 'Nourished Circuit · Ketu in House 5, Rahu in House 11',
-                    core: 'Your receiving engine runs at Ketu speed -- love, connection and belonging fill you almost immediately. The giving engine releases at Rahu speed -- unhurried, deliberate, and always carrying the weight of something genuinely full.',
+                    subtitle: 'Nourished Circuit · Charge Node in House 5, Release Node in House 11',
+                    core: 'Your receiving engine runs at Charge Node speed -- love, connection and belonging fill you almost immediately. The giving engine releases at Release Node speed -- unhurried, deliberate, and always carrying the weight of something genuinely full.',
                     struggle: 'You can feel full of warmth with nowhere to direct it. The abundance builds up inside without enough outlets, creating a restless inner pressure — a longing to connect that has not yet found its right channel.',
                     healing: 'One intentional act of genuine connection per day is enough to keep this circuit flowing. You do not need a crowd. You need one real moment of chosen giving each day.',
                     male_struggle: 'You love deeply and genuinely. When you care about someone, they feel it -- not as a performance, but as something real and consistent. Your warmth is not manufactured. It is simply who you are. The challenge is that this warmth flows outward slowly. Deliberately. You feel full inside but the expression of that fullness is unhurried. People who do not know you well may read this as you being distant, hard to reach, or emotionally closed. You are none of these things. Your love is not less because it moves at a different pace. It is often more -- because it was never shallow enough to be fast.',
@@ -2221,8 +2379,8 @@ function getDSTInfo(tzName, date) {
                 tunnel: 'Warrior ↔ Challenger',
                 s1: {
                     name: 'The Restless Combatant',
-                    subtitle: 'Overdrawn Circuit · Ketu in House 12, Rahu in House 6',
-                    core: 'Your action engine runs at Ketu speed -- the moment something is wrong, the Warrior is already moving. The readiness-building engine runs at Rahu speed -- still refining the pre-fight preparation when the arena has already been entered.',
+                    subtitle: 'Overdrawn Circuit · Charge Node in House 12, Release Node in House 6',
+                    core: 'Your action engine runs at Charge Node speed -- the moment something is wrong, the Warrior is already moving. The readiness-building engine runs at Release Node speed -- still refining the pre-fight preparation when the arena has already been entered.',
                     struggle: 'You are always in motion — pushing, correcting, confronting, transforming. But the target keeps shifting because the Challenger has not yet completed its cycle of identifying what actually needs to change. You exhaust yourself fighting battles that were not yet fully formed.',
                     healing: 'The pause before the strike is not weakness. It is the Challenger finishing its report. Let the friction build until the target becomes unmistakable. Then move with everything you have.',
                     male_struggle: 'You do not hesitate when something is wrong. You move. You correct. You confront. This decisiveness is one of your greatest strengths -- and in genuinely urgent situations, it is exactly what is needed. The cost is that your action instinct sometimes fires before the inner preparation is complete. The part of you that builds readiness through friction and testing is still loading when the Warrior in you has already entered the arena. You win battles. But you sometimes win battles that did not need to be fought yet -- and the toll of constant combat, even successful combat, accumulates in a way that can be hard to explain to people who only see you winning.',
@@ -2249,8 +2407,8 @@ function getDSTInfo(tzName, date) {
                 },
                 s2: {
                     name: 'The Tempered Warrior',
-                    subtitle: 'Nourished Circuit · Ketu in House 6, Rahu in House 12',
-                    core: 'Your readiness engine runs at Ketu speed -- friction, difficulty, and pre-battle testing are processed almost instantly. The action engine releases at Rahu speed -- slow to move, but when it does, the Challenger has already completed every necessary preparation.',
+                    subtitle: 'Nourished Circuit · Charge Node in House 6, Release Node in House 12',
+                    core: 'Your readiness engine runs at Charge Node speed -- friction, difficulty, and pre-battle testing are processed almost instantly. The action engine releases at Release Node speed -- slow to move, but when it does, the Challenger has already completed every necessary preparation.',
                     struggle: 'You feel the pressure of unacted force building inside. You see the wall clearly. You know how to bring it down. But the Warrior energy releases slowly, creating internal pressure that can feel like paralysis — when actually it is precision loading.',
                     healing: 'Your deliberateness is not weakness. It is your strategic advantage. The warrior who moves at the right moment wins the war that the impatient lose in the first hour.',
                     male_struggle: 'You have been tested. Not just once -- many times, across many situations. And each time, you came out the other side not broken but sharper. You process difficulty fast. You do not spiral in self-pity for long. You feel the hardness, absorb the lesson, and are ready to move again before most people have even named what went wrong. The challenge is that your action -- the actual decisive move -- comes slowly. People around you see your composure and sometimes mistake it for passivity, or for not caring, or for avoiding the fight. None of these is accurate. You are not passive. You are loading. And when you finally move, the precision of it tends to end the conversation quickly.',
@@ -2306,7 +2464,7 @@ function getDSTInfo(tzName, date) {
             if(!result || result.noTunnel){
                 var rL = pMap['Rahu']&&pMap['Rahu'].houseInfo&&pMap['Rahu'].houseInfo.label ? pMap['Rahu'].houseInfo.label : 'Gap zone';
                 var kL = pMap['Ketu']&&pMap['Ketu'].houseInfo&&pMap['Ketu'].houseInfo.label ? pMap['Ketu'].houseInfo.label : 'Gap zone';
-                container.innerHTML = '<div class="p-5 bg-slate-50 rounded-xl border border-slate-200"><p class="font-semibold text-slate-600 mb-1">No Active Tunnel Found</p><p class="text-sm text-slate-400 italic">Ketu (' + kL + ') and Rahu (' + rL + ') do not form one of the four tunnels (2-8, 9-3, 11-5, 12-6).</p></div>';
+                container.innerHTML = '<div class="p-5 bg-slate-50 rounded-xl border border-slate-200"><p class="font-semibold text-slate-600 mb-1">No Active Tunnel Found</p><p class="text-sm text-slate-400 italic">Charge Node (' + kL + ') and Release Node (' + rL + ') do not form one of the four tunnels (2-8, 9-3, 11-5, 12-6).</p></div>';
                 return;
             }
 
@@ -2328,8 +2486,8 @@ function getDSTInfo(tzName, date) {
                 '12-6': { title: 'Tunnel 4 - Warrior vs Challenger',                    governs: 'The relationship between being tested and taking decisive action to correct what is wrong.', tamas: 'Challenger (House 6)', rajas: 'Warrior (House 12)', icon: 'ph-sword' }
             };
             var INTEGRATION_GUIDE = {
-                male_s1:   { title: 'Your Path Forward - The Logic Mode',        text: 'You are built for this current. The forced drive does not break you - it builds you. Schedule your inner life deliberately, write down the fear, give Rahu time to charge. The man who can act with force and process with depth is not soft - he is complete.',                                                                                                       cta: 'Give your inner world a scheduled appointment - not when you break, but before.' },
-                male_s2:   { title: 'Your Path Forward - The Emotional Mode',    text: 'You are a healer and a nurturer. The world benefits deeply from your presence. Train your Rahu in Rajas into hard deadlines and firm decisions. Let your emotion inform your logic - not replace it. Set the boundary not because you do not care, but because you care enough to protect the quality of your care.',                                                  cta: 'Make one firm decision today without asking permission from anyone.' },
+                male_s1:   { title: 'Your Path Forward - The Logic Mode',        text: 'You are built for this current. The forced drive does not break you - it builds you. Schedule your inner life deliberately, write down the fear, give your Release Node time to charge. The man who can act with force and process with depth is not soft - he is complete.',                                                                                                       cta: 'Give your inner world a scheduled appointment - not when you break, but before.' },
+                male_s2:   { title: 'Your Path Forward - The Emotional Mode',    text: 'You are a healer and a nurturer. The world benefits deeply from your presence. Train your Release Node into hard deadlines and firm decisions. Let your emotion inform your logic - not replace it. Set the boundary not because you do not care, but because you care enough to protect the quality of your care.',                                                  cta: 'Make one firm decision today without asking permission from anyone.' },
                 female_s1: { title: 'Your Path Forward - The Career Mode',       text: 'You are doing something extraordinary: achieving at a level your biological current was not natively designed for. Many women carry this and build remarkable lives. But protect your Tamas time like your health depends on it - because long-term, it does. Rest before you are empty, not after.',                                                                  cta: 'Delegate one thing this week. Your deepest value is in the quality of your expression, not the speed of your output.' },
                 female_s2: { title: 'Your Path Forward - The Relationship Mode', text: 'This is your power zone. Your relationships are deeper, your health is better, your connection more authentic than anyone running on forced energy can replicate. Your growth edge is intention - because action is effortless for you, choose consciously where you direct it.',                                                                                  cta: 'You are not a resource. You are a presence. And a presence gets to choose where it shows up.' }
             };
@@ -2340,7 +2498,7 @@ function getDSTInfo(tzName, date) {
                 s2_female: [ 'You are everyone support system and it feels effortless - until one day it suddenly does not', 'You hold back your own direction because your warmth flows so naturally', 'People mistake your availability for limitlessness', 'You give because it is natural - but you rarely stop to choose where intentionally' ]
             };
 
-            var hdrGrad      = isS1 ? 'background:linear-gradient(135deg,#431407 0%,#9a3412 60%,#c2410c 100%)' : 'background:linear-gradient(135deg,#022c22 0%,#065f46 60%,#059669 100%)';
+            var hdrGrad      = isS1 ? 'background:linear-gradient(135deg,#92400e 0%,#b45309 100%)' : 'background:linear-gradient(135deg,#065f46 0%,#047857 100%)';
             var scenLabel    = isS1 ? 'The Overdrawn Circuit' : 'The Nourished Circuit';
             var oppLabel     = isS1 ? 'The Nourished Circuit' : 'The Overdrawn Circuit';
             var scenIcon     = isS1 ? 'ph-lightning' : 'ph-leaf';
@@ -2350,7 +2508,7 @@ function getDSTInfo(tzName, date) {
             var scenBg       = isS1 ? 'background:#fff7ed;border:1px solid #fed7aa;' : 'background:#f0fdf4;border:1px solid #a7f3d0;';
             var oppBg        = isS1 ? 'background:#f0fdf4;border:1px solid #a7f3d0;' : 'background:#fff7ed;border:1px solid #fed7aa;';
             var genderBorder = isFem ? '#f9a8d4' : '#93c5fd';
-            var genderHdrBg  = isFem ? 'background:linear-gradient(135deg,#831843 0%,#be185d 100%)' : 'background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%)';
+            var genderHdrBg  = isFem ? 'background:linear-gradient(135deg,#9d174d 0%,#be185d 100%)' : 'background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%)';
             var genderIcon   = isFem ? 'ph-gender-female' : 'ph-gender-male';
             var genderLabel  = isFem ? 'For Women - Personalised Profile' : 'For Men - Personalised Profile';
             var chargeW      = isS1 ? '35%' : '85%';
@@ -2390,14 +2548,14 @@ function getDSTInfo(tzName, date) {
                 + '</div>'
 
                 // 2. TUNNEL IDENTITY
-                + '<div style="background:linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);border-radius:14px;padding:16px 20px;">'
+                + '<div style="background:linear-gradient(135deg,#312e81 0%,#3730a3 100%);border-radius:14px;padding:16px 20px;">'
                 +   '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#a5b4fc;margin:0 0 6px 0;display:flex;align-items:center;gap:6px;">'
                 +     '<i class="ph ' + (ti.icon || 'ph-circles-four') + '" style="font-size:13px;"></i>YOUR ACTIVE TUNNEL'
                 +   '</p>'
                 +   '<p style="font-size:15px;font-weight:700;color:white;margin:0 0 6px 0;font-family:Georgia,serif;">' + (ti.title || tunnelKey) + '</p>'
                 +   '<p style="font-size:12.5px;color:#c7d2fe;line-height:1.65;margin:0 0 10px 0;">' + (ti.governs || '') + '</p>'
                 +   '<div style="display:flex;flex-wrap:wrap;gap:8px;">'
-                +     '<span style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#6ee7b7;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;">TAMAS (Charges): ' + (ti.tamas || '') + '</span>'
+                +     '<span style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#0d9488;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;">TAMAS (Charges): ' + (ti.tamas || '') + '</span>'
                 +     '<span style="background:rgba(251,146,60,0.2);border:1px solid rgba(251,146,60,0.4);color:#fdba74;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;">RAJAS (Releases): ' + (ti.rajas || '') + '</span>'
                 +   '</div>'
                 + '</div>'
@@ -2486,7 +2644,7 @@ function getDSTInfo(tzName, date) {
                 +         '<h5 style="font-size:16px;font-weight:800;color:white;margin:0;font-family:Georgia,serif;">' + gd.headline + '</h5>'
                 +       '</div>'
                 +     '</div>'
-                +     (gd.expression ? '<div style="margin-top:10px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:8px;padding:8px 14px;display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-chat-dots" style="font-size:14px;color:rgba(255,255,255,0.75);flex-shrink:0;margin-top:2px;"></i><p style="font-size:12px;color:rgba(255,255,255,0.9);line-height:1.6;margin:0;font-style:italic;">' + gd.expression + '</p></div>' : '')
+                +     (gd.expression ? '<div style="margin-top:10px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);border-radius:8px;padding:8px 14px;display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-chat-dots" style="font-size:14px;color:rgba(255,255,255,0.9);flex-shrink:0;margin-top:2px;"></i><p style="font-size:12px;color:rgba(255,255,255,0.92);line-height:1.6;margin:0;font-style:italic;">' + gd.expression + '</p></div>' : '')
                 +   '</div>'
                 +   '<div style="background:white;padding:20px 20px 0 20px;">'
                 +     '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#475569;margin:0 0 8px 0;display:flex;align-items:center;gap:6px;">'
@@ -2525,7 +2683,250 @@ function getDSTInfo(tzName, date) {
                 + SWOT_HTML[tunnelKey + '_' + (isFem ? 'female' : 'male') + '_' + (isS1 ? 's1' : 's2')]
 
                 // 11. YOUR DIRECTION - changed to deep violet so it does NOT clash with dark section headers
-                + '<div style="background:linear-gradient(135deg,#1e1b4b 0%,#2e1065 60%,#3730a3 100%);border-radius:16px;padding:20px 24px;border:1px solid rgba(139,92,246,0.3);box-shadow:0 4px 20px rgba(109,40,217,0.25);">'
+                + '<div style="background:linear-gradient(135deg,#4c1d95 0%,#5b21b6 100%);border-radius:16px;padding:20px 24px;border:1px solid rgba(139,92,246,0.3);box-shadow:0 4px 20px rgba(109,40,217,0.25);">'
+                +   '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#c4b5fd;margin:0 0 6px 0;display:flex;align-items:center;gap:6px;">'
+                +     '<i class="ph ph-compass" style="font-size:13px;color:#a78bfa;"></i>YOUR DIRECTION FROM HERE'
+                +   '</p>'
+                +   '<p style="font-size:16px;font-weight:700;color:white;margin:0 0 10px 0;font-family:Georgia,serif;">' + (ig.title || '') + '</p>'
+                +   '<p style="font-size:13px;color:#ddd6fe;line-height:1.75;margin:0 0 14px 0;">' + (ig.text || '') + '</p>'
+                +   '<div style="background:rgba(139,92,246,0.2);border:1px solid rgba(139,92,246,0.4);border-radius:10px;padding:12px 16px;display:flex;align-items:flex-start;gap:10px;">'
+                +     '<i class="ph ph-arrow-circle-right" style="font-size:18px;color:#a78bfa;flex-shrink:0;margin-top:1px;"></i>'
+                +     '<p style="font-size:13px;font-weight:600;color:#ede9fe;line-height:1.6;margin:0;font-style:italic;">' + (ig.cta || '') + '</p>'
+                +   '</div>'
+                + '</div>'
+
+                + '</div>';
+        }
+
+        function renderRhythmSection(pMap) {
+            var container = document.getElementById('rhythm-container');
+            if(!container) return;
+
+            var result = computeRhythm(pMap);
+            _rhythmScenario = result;
+            if(!result || result.noTunnel){
+                var rL = pMap['Rahu']&&pMap['Rahu'].houseInfo&&pMap['Rahu'].houseInfo.label ? pMap['Rahu'].houseInfo.label : 'Gap zone';
+                var kL = pMap['Ketu']&&pMap['Ketu'].houseInfo&&pMap['Ketu'].houseInfo.label ? pMap['Ketu'].houseInfo.label : 'Gap zone';
+                container.innerHTML = '<div class="p-5 bg-slate-50 rounded-xl border border-slate-200"><p class="font-semibold text-slate-600 mb-1">No Active Tunnel Found</p><p class="text-sm text-slate-400 italic">Charge Node (' + kL + ') and Release Node (' + rL + ') do not form one of the four tunnels (2-8, 9-3, 11-5, 12-6).</p></div>';
+                return;
+            }
+
+            var scenario  = result.scenario;
+            var data      = result.data;
+            var tunnelKey = result.tunnel;
+            var sd        = scenario === 1 ? data.s1 : data.s2;
+            var gender    = _gender;
+            var isFem     = gender === 'Female';
+            var gd        = isFem ? sd.female : sd.male;
+            var isS1      = scenario === 1;
+            var genderedStruggle = isFem ? (sd.female_struggle || sd.struggle) : (sd.male_struggle || sd.struggle);
+            var genderedHealing  = isFem ? (sd.female_healing  || sd.healing)  : (sd.male_healing  || sd.healing);
+
+            var TUNNEL_IDENTITY = {
+                '2-8':  { title: 'Tunnel 1 - Strategist vs Thoughts of Death/Failure', governs: 'The relationship between knowing how things die and building a plan to survive.', tamas: 'Thoughts of Death / Failure (House 8)', rajas: 'Strategist (House 2)', icon: 'ph-strategy' },
+                '9-3':  { title: 'Tunnel 2 - Creator vs Seeker of Truth',               governs: 'The relationship between observing reality and building something from what you observe.', tamas: 'Seeker of Truth (House 3)', rajas: 'Creator (House 9)', icon: 'ph-paint-brush-broad' },
+                '11-5': { title: 'Tunnel 3 - Seller vs Companion',                      governs: 'The tension between giving warmth to others and needing warmth from others.', tamas: 'Companion (House 5)', rajas: 'Seller (House 11)', icon: 'ph-storefront' },
+                '12-6': { title: 'Tunnel 4 - Warrior vs Challenger',                    governs: 'The relationship between being tested and taking decisive action to correct what is wrong.', tamas: 'Challenger (House 6)', rajas: 'Warrior (House 12)', icon: 'ph-sword' }
+            };
+            var INTEGRATION_GUIDE = {
+                male_s1:   { title: 'Your Path Forward - The Logic Mode',        text: 'You are built for this current. The forced drive does not break you - it builds you. Schedule your inner life deliberately, write down the fear, give your Release Node time to charge. The man who can act with force and process with depth is not soft - he is complete.',                                                                                                       cta: 'Give your inner world a scheduled appointment - not when you break, but before.' },
+                male_s2:   { title: 'Your Path Forward - The Emotional Mode',    text: 'You are a healer and a nurturer. The world benefits deeply from your presence. Train your Release Node into hard deadlines and firm decisions. Let your emotion inform your logic - not replace it. Set the boundary not because you do not care, but because you care enough to protect the quality of your care.',                                                  cta: 'Make one firm decision today without asking permission from anyone.' },
+                female_s1: { title: 'Your Path Forward - The Career Mode',       text: 'You are doing something extraordinary: achieving at a level your biological current was not natively designed for. Many women carry this and build remarkable lives. But protect your Tamas time like your health depends on it - because long-term, it does. Rest before you are empty, not after.',                                                                  cta: 'Delegate one thing this week. Your deepest value is in the quality of your expression, not the speed of your output.' },
+                female_s2: { title: 'Your Path Forward - The Relationship Mode', text: 'This is your power zone. Your relationships are deeper, your health is better, your connection more authentic than anyone running on forced energy can replicate. Your growth edge is intention - because action is effortless for you, choose consciously where you direct it.',                                                                                  cta: 'You are not a resource. You are a presence. And a presence gets to choose where it shows up.' }
+            };
+            var WARNING_SIGNS = {
+                s1_male:   [ 'You push through exhaustion and call it discipline - but the hollow feeling keeps returning', 'You have done everything right, yet it still feels like a fight', 'Sleep does not fully restore you - the low-grade urgency is still there in the morning', 'You are very good at doing and increasingly poor at feeling' ],
+                s1_female: [ 'You feel pressure to keep proving yourself even when you are already successful', 'Stopping feels like failure - rest feels unearned', 'Hormonal imbalance, sleep disruption, or chronic tension that no fix fully resolves', 'Softness has begun to feel like a luxury you cannot afford' ],
+                s2_male:   [ 'Everyone leans on you - but no one asks how you are', 'You give more than you receive, not by choice but by wiring', 'You absorb others emotions so quickly that your own needs become invisible to you', 'A quiet burning question: why does everyone else seem to get what they want except me?' ],
+                s2_female: [ 'You are everyone support system and it feels effortless - until one day it suddenly does not', 'You hold back your own direction because your warmth flows so naturally', 'People mistake your availability for limitlessness', 'You give because it is natural - but you rarely stop to choose where intentionally' ]
+            };
+
+            var hdrGrad      = isS1 ? 'background:linear-gradient(135deg,#92400e 0%,#b45309 100%)' : 'background:linear-gradient(135deg,#065f46 0%,#047857 100%)';
+            var scenLabel    = isS1 ? 'The Overdrawn Circuit' : 'The Nourished Circuit';
+            var oppLabel     = isS1 ? 'The Nourished Circuit' : 'The Overdrawn Circuit';
+            var scenIcon     = isS1 ? 'ph-lightning' : 'ph-leaf';
+            var oppIcon      = isS1 ? 'ph-leaf' : 'ph-lightning';
+            var scenColor    = isS1 ? '#c2410c' : '#065f46';
+            var oppColor     = isS1 ? '#065f46' : '#c2410c';
+            var scenBg       = isS1 ? 'background:#fff7ed;border:1px solid #fed7aa;' : 'background:#f0fdf4;border:1px solid #a7f3d0;';
+            var oppBg        = isS1 ? 'background:#f0fdf4;border:1px solid #a7f3d0;' : 'background:#fff7ed;border:1px solid #fed7aa;';
+            var genderBorder = isFem ? '#f9a8d4' : '#93c5fd';
+            var genderHdrBg  = isFem ? 'background:linear-gradient(135deg,#9d174d 0%,#be185d 100%)' : 'background:linear-gradient(135deg,#1e40af 0%,#2563eb 100%)';
+            var genderIcon   = isFem ? 'ph-gender-female' : 'ph-gender-male';
+            var genderLabel  = isFem ? 'For Women - Personalised Profile' : 'For Men - Personalised Profile';
+            var chargeW      = isS1 ? '35%' : '85%';
+            var drainW       = isS1 ? '85%' : '35%';
+            var chargeLabel  = isS1 ? 'Slow' : 'Fast';
+            var drainLabel   = isS1 ? 'Fast' : 'Slow';
+            var chargeColor  = isS1 ? '#f97316' : '#10b981';
+            var drainColor   = isS1 ? '#ef4444' : '#94a3b8';
+            var accentColor  = isS1 ? '#f97316' : '#10b981';
+            var ti           = TUNNEL_IDENTITY[tunnelKey] || {};
+            var ig           = INTEGRATION_GUIDE[(isFem ? 'female' : 'male') + '_' + (isS1 ? 's1' : 's2')] || {};
+            var ws           = WARNING_SIGNS[(isS1 ? 's1' : 's2') + '_' + (isFem ? 'female' : 'male')] || [];
+
+            var wsHTML = '';
+            for(var wi = 0; wi < ws.length; wi++){
+                wsHTML += '<div style="display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,0.6);border-radius:8px;padding:8px 12px;">'
+                       +  '<i class="ph ph-check-circle" style="font-size:16px;color:#dc2626;flex-shrink:0;margin-top:1px;"></i>'
+                       +  '<p style="font-size:12.5px;color:#450a0a;line-height:1.6;margin:0;">' + ws[wi] + '</p>'
+                       +  '</div>';
+            }
+
+            container.innerHTML =
+                '<div style="display:flex;flex-direction:column;gap:16px;">'
+
+                // 1. HEADER BANNER
+                + '<div style="border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.15);">'
+                +   '<div style="' + hdrGrad + ';padding:20px 24px;">'
+                +     '<div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-bottom:12px;">'
+                +       '<span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.15);color:white;font-size:11px;font-weight:700;padding:4px 12px;border-radius:999px;border:1px solid rgba(255,255,255,0.25);letter-spacing:.05em;text-transform:uppercase;">'
+                +         '<i class="ph ' + scenIcon + '" style="font-size:13px;"></i>' + scenLabel
+                +       '</span>'
+                +       '<span style="color:rgba(255,255,255,0.55);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;">' + data.tunnel + '</span>'
+                +     '</div>'
+                +     '<h4 style="font-size:24px;font-weight:800;color:white;margin:0 0 4px 0;font-family:Georgia,serif;">' + sd.name + '</h4>'
+                +     '<p style="font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,0.6);margin:0;">' + sd.subtitle + '</p>'
+                +   '</div>'
+                + '</div>'
+
+                // 2. TUNNEL IDENTITY
+                + '<div style="background:linear-gradient(135deg,#312e81 0%,#3730a3 100%);border-radius:14px;padding:16px 20px;">'
+                +   '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#a5b4fc;margin:0 0 6px 0;display:flex;align-items:center;gap:6px;">'
+                +     '<i class="ph ' + (ti.icon || 'ph-circles-four') + '" style="font-size:13px;"></i>YOUR ACTIVE TUNNEL'
+                +   '</p>'
+                +   '<p style="font-size:15px;font-weight:700;color:white;margin:0 0 6px 0;font-family:Georgia,serif;">' + (ti.title || tunnelKey) + '</p>'
+                +   '<p style="font-size:12.5px;color:#c7d2fe;line-height:1.65;margin:0 0 10px 0;">' + (ti.governs || '') + '</p>'
+                +   '<div style="display:flex;flex-wrap:wrap;gap:8px;">'
+                +     '<span style="background:rgba(16,185,129,0.2);border:1px solid rgba(16,185,129,0.4);color:#0d9488;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;">TAMAS (Charges): ' + (ti.tamas || '') + '</span>'
+                +     '<span style="background:rgba(251,146,60,0.2);border:1px solid rgba(251,146,60,0.4);color:#fdba74;font-size:11px;font-weight:700;padding:3px 10px;border-radius:999px;">RAJAS (Releases): ' + (ti.rajas || '') + '</span>'
+                +   '</div>'
+                + '</div>'
+
+                // 3. SCENARIO COMPARISON
+                + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">'
+                +   '<div style="' + scenBg + 'border-radius:12px;padding:14px 16px;position:relative;">'
+                +     '<span style="position:absolute;top:10px;right:10px;background:' + scenColor + ';color:white;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;text-transform:uppercase;">YOUR CIRCUIT</span>'
+                +     '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:' + scenColor + ';margin:0 0 5px 0;">' + scenLabel + '</p>'
+                +     '<p style="font-size:12px;color:#374151;line-height:1.6;margin:0;">' + (isS1 ? 'Action demand exceeds inner supply. You spend before you are fully charged. The cost is real - but so is the output.' : 'Inner supply exceeds action demand. You fill faster than you empty. Expression flows without force.') + '</p>'
+                +   '</div>'
+                +   '<div style="' + oppBg + 'border-radius:12px;padding:14px 16px;opacity:0.75;">'
+                +     '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:' + oppColor + ';margin:0 0 5px 0;">' + oppLabel + '</p>'
+                +     '<p style="font-size:12px;color:#374151;line-height:1.6;margin:0;">' + (isS1 ? 'Inner supply exceeds action demand. Fills faster than it empties. The other side of this tunnel.' : 'Action demand exceeds inner supply. Spends before fully charged. The other side of this tunnel.') + '</p>'
+                +   '</div>'
+                + '</div>'
+
+                // 4. BATTERY VISUAL
+                + '<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:16px 20px;">'
+                +   '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#475569;margin:0 0 12px 0;">YOUR CHARGE / DRAIN BALANCE</p>'
+                +   '<div style="margin-bottom:10px;">'
+                +     '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+                +       '<span style="font-size:11px;font-weight:700;color:#15803d;">Charge Rate (Tamas)</span>'
+                +       '<span style="font-size:11px;font-weight:800;color:' + chargeColor + ';">' + chargeLabel + '</span>'
+                +     '</div>'
+                +     '<div style="background:#e2e8f0;border-radius:999px;height:10px;overflow:hidden;">'
+                +       '<div style="width:' + chargeW + ';height:100%;border-radius:999px;background:' + chargeColor + ';"></div>'
+                +     '</div>'
+                +   '</div>'
+                +   '<div>'
+                +     '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">'
+                +       '<span style="font-size:11px;font-weight:700;color:#b45309;">Drain Rate (Rajas)</span>'
+                +       '<span style="font-size:11px;font-weight:800;color:' + drainColor + ';">' + drainLabel + '</span>'
+                +     '</div>'
+                +     '<div style="background:#e2e8f0;border-radius:999px;height:10px;overflow:hidden;">'
+                +       '<div style="width:' + drainW + ';height:100%;border-radius:999px;background:' + drainColor + ';"></div>'
+                +     '</div>'
+                +   '</div>'
+                +   '<p style="font-size:11px;color:#64748b;margin:10px 0 0 0;font-style:italic;">'
+                +     (isS1 ? 'Your drain outpaces your charge. Protect your charge time before you act.' : 'Your charge outpaces your drain. Choose consciously where to direct the overflow.')
+                +   '</p>'
+                + '</div>'
+
+                // 5. CORE ENERGY
+                + '<div style="background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 100%);border:1px solid #7dd3fc;border-radius:14px;padding:18px 20px;">'
+                +   '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#0369a1;margin:0 0 8px 0;display:flex;align-items:center;gap:6px;">'
+                +     '<i class="ph ph-circles-three" style="font-size:14px;"></i>THE ENERGETIC REALITY'
+                +   '</p>'
+                +   '<p style="font-size:13.5px;color:#1e293b;line-height:1.7;margin:0;">' + sd.core + '</p>'
+                + '</div>'
+
+                // 6. WARNING SIGNS
+                + '<div style="background:linear-gradient(135deg,#fef2f2 0%,#fff1f2 100%);border:1px solid #fecaca;border-radius:14px;padding:16px 20px;">'
+                +   '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#991b1b;margin:0 0 10px 0;display:flex;align-items:center;gap:6px;">'
+                +     '<i class="ph ph-warning-circle" style="font-size:13px;"></i>IS THIS ACTIVE IN YOUR LIFE RIGHT NOW?'
+                +   '</p>'
+                +   '<p style="font-size:12px;color:#7f1d1d;margin:0 0 10px 0;font-style:italic;">If 2 or more of these feel true, your circuit is running its pattern clearly:</p>'
+                +   '<div style="display:flex;flex-direction:column;gap:7px;">' + wsHTML + '</div>'
+                + '</div>'
+
+                // 7. EXPERIENCE + HEALING
+                + '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;">'
+                +   '<div style="background:linear-gradient(135deg,#fdf4ff 0%,#fae8ff 100%);border:1px solid #d8b4fe;border-radius:14px;padding:18px 20px;">'
+                +     '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#7e22ce;margin:0 0 8px 0;display:flex;align-items:center;gap:6px;">'
+                +       '<i class="ph ph-heartbeat" style="font-size:14px;"></i>THE INNER EXPERIENCE'
+                +     '</p>'
+                +     '<p style="font-size:13px;color:#3b0764;line-height:1.7;margin:0;">' + genderedStruggle + '</p>'
+                +   '</div>'
+                +   '<div style="background:linear-gradient(135deg,#fffbeb 0%,#fef3c7 100%);border:1px solid #fcd34d;border-radius:14px;padding:18px 20px;">'
+                +     '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#92400e;margin:0 0 8px 0;display:flex;align-items:center;gap:6px;">'
+                +       '<i class="ph ph-lightbulb" style="font-size:14px;color:#d97706;"></i>THE HEALING INSIGHT'
+                +     '</p>'
+                +     '<p style="font-size:13px;color:#451a03;line-height:1.7;margin:0;">' + genderedHealing + '</p>'
+                +   '</div>'
+                + '</div>'
+
+                // 8. GENDER DEEP DIVE
+                + '<div style="border-radius:16px;overflow:hidden;border:2px solid ' + genderBorder + ';box-shadow:0 2px 10px rgba(0,0,0,0.08);">'
+                +   '<div style="' + genderHdrBg + ';padding:14px 20px;">'
+                +     '<div style="display:flex;align-items:center;gap:12px;">'
+                +       '<div style="width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,0.2);border:2px solid rgba(255,255,255,0.4);display:flex;align-items:center;justify-content:center;color:white;font-size:18px;">'
+                +         '<i class="ph ' + genderIcon + '"></i>'
+                +       '</div>'
+                +       '<div>'
+                +         '<p style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,0.7);margin:0 0 2px 0;">' + genderLabel + '</p>'
+                +         '<h5 style="font-size:16px;font-weight:800;color:white;margin:0;font-family:Georgia,serif;">' + gd.headline + '</h5>'
+                +       '</div>'
+                +     '</div>'
+                +     (gd.expression ? '<div style="margin-top:10px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);border-radius:8px;padding:8px 14px;display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-chat-dots" style="font-size:14px;color:rgba(255,255,255,0.9);flex-shrink:0;margin-top:2px;"></i><p style="font-size:12px;color:rgba(255,255,255,0.92);line-height:1.6;margin:0;font-style:italic;">' + gd.expression + '</p></div>' : '')
+                +   '</div>'
+                +   '<div style="background:white;padding:20px 20px 0 20px;">'
+                +     '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#475569;margin:0 0 8px 0;display:flex;align-items:center;gap:6px;">'
+                +       '<i class="ph ph-eye" style="font-size:13px;"></i>HOW OTHERS SEE YOU'
+                +     '</p>'
+                +     '<p style="font-size:13.5px;color:#1e293b;line-height:1.75;margin:0 0 16px 0;border-left:3px solid ' + (isFem ? '#f9a8d4' : '#93c5fd') + ';padding-left:12px;">' + gd.body + '</p>'
+                +   '</div>'
+                +   '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border-top:1px solid #f1f5f9;">'
+                +     '<div style="background:linear-gradient(135deg,#1e293b 0%,#334155 100%);padding:16px 18px;">'
+                +       '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#94a3b8;margin:0 0 8px 0;display:flex;align-items:center;gap:5px;">'
+                +         '<i class="ph ph-moon" style="font-size:13px;"></i>THE BLIND SPOT'
+                +       '</p>'
+                +       '<p style="font-size:12px;color:#e2e8f0;line-height:1.65;margin:0;">' + gd.shadow + '</p>'
+                +     '</div>'
+                +     '<div style="background:linear-gradient(135deg,#f0fdf4 0%,#dcfce7 100%);border-left:1px solid #e2e8f0;border-right:1px solid #e2e8f0;padding:16px 18px;">'
+                +       '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#15803d;margin:0 0 8px 0;display:flex;align-items:center;gap:5px;">'
+                +         '<i class="ph ph-star" style="font-size:13px;"></i>ACTIVATED GIFT'
+                +       '</p>'
+                +       '<p style="font-size:12px;color:#14532d;line-height:1.65;margin:0;">' + gd.gift + '</p>'
+                +     '</div>'
+                +     '<div style="background:linear-gradient(135deg,#fdf4ff 0%,#fae8ff 100%);padding:16px 18px;">'
+                +       '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#7e22ce;margin:0 0 8px 0;display:flex;align-items:center;gap:5px;">'
+                +         '<i class="ph ph-heart" style="font-size:13px;"></i>IN CLOSE RELATIONSHIP'
+                +       '</p>'
+                +       '<p style="font-size:12px;color:#3b0764;line-height:1.65;margin:0;">' + (gd.relationship || '') + '</p>'
+                +     '</div>'
+                +   '</div>'
+                + '</div>'
+
+                // 9. SOUL QUOTE
+                + '<div style="border-left:4px solid ' + accentColor + ';padding:10px 16px;">'
+                +   '<p style="font-size:14px;font-weight:600;font-style:italic;color:' + (isS1 ? '#c2410c' : '#065f46') + ';margin:0;">' + sd.quote + '</p>'
+                + '</div>'
+
+                // 10. SWOT
+                + SWOT_HTML[tunnelKey + '_' + (isFem ? 'female' : 'male') + '_' + (isS1 ? 's1' : 's2')]
+
+                // 11. YOUR DIRECTION - changed to deep violet so it does NOT clash with dark section headers
+                + '<div style="background:linear-gradient(135deg,#4c1d95 0%,#5b21b6 100%);border-radius:16px;padding:20px 24px;border:1px solid rgba(139,92,246,0.3);box-shadow:0 4px 20px rgba(109,40,217,0.25);">'
                 +   '<p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.12em;color:#c4b5fd;margin:0 0 6px 0;display:flex;align-items:center;gap:6px;">'
                 +     '<i class="ph ph-compass" style="font-size:13px;color:#a78bfa;"></i>YOUR DIRECTION FROM HERE'
                 +   '</p>'
@@ -3218,8 +3619,8 @@ function getDSTInfo(tzName, date) {
                 _gender = savedGender;
                 var bm = document.getElementById('btn-male');
                 var bf = document.getElementById('btn-female');
-                if(bm) bm.className = 'gender-btn' + (savedGender === 'Male'   ? ' active' : '');
-                if(bf) bf.className = 'gender-btn' + (savedGender === 'Female' ? ' active' : '');
+                if(bm) bm.className = 'inp-gender-btn' + (savedGender === 'Male'   ? ' active' : '');
+                if(bf) bf.className = 'inp-gender-btn female' + (savedGender === 'Female' ? ' active' : '');
                 updateTZDisplay();
             }, 50);
             // User clicks Generate Report to see the chart
