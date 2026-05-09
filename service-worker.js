@@ -1,10 +1,8 @@
 // Geo-Time Chart Calculator — Service Worker
 // Handles caching for PWA install and offline shell
 
-const CACHE_NAME = 'geotimechart-v1';
+const CACHE_NAME = 'geotimechart-v3'; // bumped: forces iOS Safari to evict stale cache
 
-// Files to cache for offline shell
-// (app still needs internet for Google Sheets data)
 const SHELL_FILES = [
   '/analysis.html',
   '/manifest.json',
@@ -17,7 +15,6 @@ self.addEventListener('install', function(event) {
   event.waitUntil(
     caches.open(CACHE_NAME).then(function(cache) {
       return cache.addAll(SHELL_FILES).catch(function() {
-        // Silently fail if some files not found — app still works
         return Promise.resolve();
       });
     })
@@ -39,17 +36,40 @@ self.addEventListener('activate', function(event) {
   self.clients.claim();
 });
 
-// Fetch — network first, fallback to cache for shell files
+// Fetch — network first with iOS Safari fixes
 self.addEventListener('fetch', function(event) {
   // Skip cross-origin requests (Google Fonts, CDN, Apps Script)
   if (!event.request.url.startsWith(self.location.origin)) {
     return;
   }
 
+  // iOS Safari fix: for navigate (page load / pull-to-refresh) requests,
+  // always go network-first with cache:'no-cache' so iOS never serves stale HTML
+  // and pull-to-refresh actually fetches fresh content.
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request, { cache: 'no-cache' })
+        .then(function(response) {
+          if (response && response.status === 200) {
+            var responseClone = response.clone();
+            caches.open(CACHE_NAME).then(function(cache) {
+              cache.put(event.request, responseClone);
+            });
+          }
+          return response;
+        })
+        .catch(function() {
+          // Network failed — serve cached shell as offline fallback
+          return caches.match('/analysis.html');
+        })
+    );
+    return;
+  }
+
+  // For all other requests: network first, fallback to cache
   event.respondWith(
     fetch(event.request)
       .then(function(response) {
-        // Cache successful responses for shell files
         if (response && response.status === 200) {
           var responseClone = response.clone();
           caches.open(CACHE_NAME).then(function(cache) {
@@ -59,14 +79,7 @@ self.addEventListener('fetch', function(event) {
         return response;
       })
       .catch(function() {
-        // Network failed — try cache
-        return caches.match(event.request).then(function(cached) {
-          if (cached) return cached;
-          // Return offline page for navigation requests
-          if (event.request.mode === 'navigate') {
-            return caches.match('/analysis.html');
-          }
-        });
+        return caches.match(event.request);
       })
   );
 });
