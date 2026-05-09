@@ -485,6 +485,8 @@
             font-family: 'Montserrat', sans-serif; font-size: 0.9em;
             font-weight: 600; color: #1e293b;
             background: #fafbfc; text-align: center;
+            text-align-last: center;           /* iOS Safari: centers selected value in <select> */
+            -webkit-text-align-last: center;   /* iOS 13 and below fallback */
             outline: none; cursor: pointer;
             appearance: none; -webkit-appearance: none;
             transition: border-color 0.2s;
