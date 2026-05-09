@@ -278,6 +278,8 @@
         .search-welcome span { color:var(--accent-analysis); }
         #logout-btn { padding:6px 16px;border:1.5px solid #e2e8f0;border-radius:20px;background:none;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.78em;color:#64748b;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px; }
         #logout-btn:hover { background:#fef2f2;border-color:#fecaca;color:#dc2626; }
+        #course-access-btn { padding:6px 16px;border:1.5px solid #bfdbfe;border-radius:20px;background:#eff6ff;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.78em;color:#1d4ed8;cursor:pointer;display:none;align-items:center;gap:6px; }
+        #course-access-btn:hover { background:#2980b9;color:white;border-color:#2980b9; }
         #validity-badge {
             font-family:'Montserrat',sans-serif; font-size:0.72em; font-weight:700;
             padding:5px 12px; border-radius:20px; white-space:nowrap;
@@ -676,7 +678,8 @@
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                         <div id="validity-badge"><i class="ph ph-calendar-check"></i> <span id="validity-text">Valid until —</span></div>
-                        <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
+                        <button id="course-access-btn" onclick="window.open('https://sites.google.com/view/geotimezonecourse/home','_blank')"><i class="ph ph-book-open"></i> My Course</button>
+                    <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
                     </div>
                 </div>
                 <div style="margin-bottom:6px;">
@@ -3258,7 +3261,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzDBeLldUCoqadUb9YVS-reEJQfb8OjAtDw0ZdWIzT7NdsIiF-bm9t1n_FIVU20TsiefA/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwYsm1-AdBM-O2bjP58xvwB-2U5ecUP7PFpWyR2E0o3zWg6awkuJ7rqSWBpWR3KgzRHqg/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -3335,6 +3338,8 @@ function getDSTInfo(tzName, date) {
 
         function activateApp(user){
             _isAdmin = (user.role === 'admin');
+            var courseBtn=document.getElementById('course-access-btn');
+            if(courseBtn) courseBtn.style.display=(user.course_access==='yes')?'flex':'none';
             document.getElementById('auth-overlay').classList.add('hidden');
             document.getElementById('search-section').classList.remove('hidden');
             document.getElementById('search-welcome-name').textContent =
@@ -3945,6 +3950,12 @@ function getDSTInfo(tzName, date) {
                 // Update local session with latest valid_until from sheet
                 user.valid_until = res.valid_until;
                 saveSession(user);
+                if(res.course_access !== undefined){
+                    user.course_access = res.course_access;
+                    saveSession(user);
+                    var courseBtn=document.getElementById('course-access-btn');
+                    if(courseBtn) courseBtn.style.display=(user.course_access==='yes')?'flex':'none';
+                }
                 // Refresh validity badge with latest data
                 var badge    = document.getElementById('validity-badge');
                 var badgeTxt = document.getElementById('validity-text');
