@@ -3422,9 +3422,14 @@ function getDSTInfo(tzName, date) {
                     switchAuthTab('login');
                     setAuthMsg('login-msg', res.message || 'Your session has expired. Contact Admin Team at 8360362525.', 'error');
                 } else {
-                    // Update local session with latest valid_until
+                    // Update local session with latest valid_until AND courseaccess
                     user.valid_until = res.valid_until;
+                    if(res.courseaccess !== undefined)  { user.courseaccess = res.courseaccess;  user.course_access = res.courseaccess;  }
+                    if(res.course_access !== undefined) { user.course_access = res.course_access; user.courseaccess = res.course_access; }
                     saveSession(user);
+                    // Refresh course access button immediately
+                    var courseBtn = document.getElementById('course-access-btn');
+                    if(courseBtn) { courseBtn.style.display = (user.courseaccess === 'yes') ? 'flex' : 'none'; }
                     // Refresh badge
                     var badge = document.getElementById('validity-badge');
                     var badgeTxt = document.getElementById('validity-text');
@@ -3925,7 +3930,7 @@ function getDSTInfo(tzName, date) {
             var u = getSession();
             if (!u) return;
             var cb = document.getElementById('course-access-btn');
-            if (cb) cb.style.display = (u.courseaccess === 'yes') ? 'flex' : 'none';
+            if (cb) cb.style.display = (u.course_access === 'yes' || u.courseaccess === 'yes') ? 'flex' : 'none';
         }
 
         // pageshow fires on bfcache restore (persisted=true) — iOS returns to app
@@ -4061,11 +4066,13 @@ function getDSTInfo(tzName, date) {
                 // Update local session with latest valid_until from sheet
                 user.valid_until = res.valid_until;
                 saveSession(user);
-                if(res.course_access !== undefined){
-                    user.course_access = res.course_access;
+                if(res.course_access !== undefined || res.courseaccess !== undefined){
+                    var caVal = res.course_access !== undefined ? res.course_access : res.courseaccess;
+                    user.course_access = caVal;
+                    user.courseaccess  = caVal;
                     saveSession(user);
                     var courseBtn=document.getElementById('course-access-btn');
-                    if(courseBtn) courseBtn.style.display=(user.course_access==='yes')?'flex':'none';
+                    if(courseBtn) courseBtn.style.display=(caVal==='yes')?'flex':'none';
                 }
                 // Refresh validity badge with latest data
                 var badge    = document.getElementById('validity-badge');
