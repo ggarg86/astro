@@ -408,6 +408,30 @@
         .delete-confirm-btn { flex:1;padding:11px;background:#dc2626;color:white;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;transition:opacity 0.2s; }
         .delete-confirm-btn:hover { opacity:0.88; }
         .delete-confirm-btn:disabled { opacity:0.5;cursor:not-allowed; }
+        /* ══ Extend Confirm Modal ══ */
+        #extend-confirm-modal{position:fixed;inset:0;z-index:99999;background:rgba(15,23,42,0.75);display:flex;align-items:center;justify-content:center;padding:20px;}
+        #extend-confirm-modal.hidden{display:none;}
+        .ecm-card{background:#fff;border-radius:20px;padding:28px 24px;width:100%;max-width:400px;box-shadow:0 25px 60px rgba(0,0,0,0.35);text-align:center;}
+        .ecm-icon{width:56px;height:56px;border-radius:50%;background:#f0fdf4;border:2px solid #86efac;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:1.6em;color:#16a34a;}
+        .ecm-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:1em;color:#1e293b;margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;}
+        .ecm-username{font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.92em;color:#4338ca;background:#eef2ff;border:1px solid #c7d2fe;border-radius:8px;padding:7px 16px;margin:6px auto 14px;display:inline-block;}
+        .ecm-badge{display:inline-flex;align-items:center;gap:5px;background:#ede9fe;color:#5b21b6;border:1.5px solid #c4b5fd;border-radius:20px;padding:4px 12px;font-family:'Montserrat',sans-serif;font-size:0.72em;font-weight:800;margin-bottom:14px;}
+        .ecm-detail-row{display:flex;justify-content:center;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
+        .ecm-date-box{display:flex;flex-direction:column;align-items:center;gap:3px;}
+        .ecm-date-label{font-family:'Montserrat',sans-serif;font-size:0.60em;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.08em;}
+        .ecm-date-val{font-family:'Montserrat',sans-serif;font-size:0.82em;font-weight:800;color:#334155;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:8px;padding:5px 12px;}
+        .ecm-date-val.new-date{color:#15803d;background:#f0fdf4;border-color:#86efac;}
+        .ecm-arrow{font-size:1.3em;color:#6366f1;font-weight:900;padding-top:14px;}
+        .ecm-footer{display:flex;gap:10px;margin-top:6px;}
+        .ecm-cancel-btn{flex:1;padding:11px;border:1.5px solid #e2e8f0;border-radius:10px;background:none;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85em;color:#64748b;cursor:pointer;}
+        .ecm-confirm-btn{flex:1;padding:11px;background:linear-gradient(135deg,#16a34a,#15803d);color:white;border:none;border-radius:10px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.85em;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;}
+        .ecm-confirm-btn:disabled{opacity:0.5;cursor:not-allowed;}
+        /* ══ Toolbar tweaks: sort label + no search ══ */
+        .u-toolbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+        .u-toolbar-label{font-family:'Montserrat',sans-serif;font-size:0.75em;font-weight:700;color:#6366f1;white-space:nowrap;}
+        .u-extend-btn-3m{border-color:#818cf8 !important;color:#4338ca !important;}
+        .u-extend-btn-3m:hover{background:#eef2ff !important;border-color:#6366f1 !important;}
+
 
         /* ══════════════════════════════════
            INPUT SECTION — REFINED DASHBOARD
@@ -529,7 +553,233 @@
             .inp-outer-grid { grid-template-columns: 1fr; }
             .inp-who, .inp-where, .inp-when { grid-column: 1 / 2; }
         }
-    </style>
+    
+/* ═══════════════════════════════════════════════
+   ADMIN v9 — User Management Styles (Fixed + Enhanced)
+   ═══════════════════════════════════════════════ */
+.admin-tab-bar {
+  display:flex; gap:6px; margin:14px 0 12px 0; width:fit-content;
+}
+.admin-tab-btn {
+  display:flex; align-items:center; gap:6px; padding:8px 20px; border-radius:10px;
+  font-family:Montserrat,sans-serif; font-size:0.80em; font-weight:800; letter-spacing:0.04em;
+  cursor:pointer; transition:all 0.18s; border:2px solid #c7d2fe; background:white; color:#94a3b8;
+}
+.admin-tab-btn.active {
+  background:linear-gradient(135deg,#6366f1,#4338ca); color:white; border-color:transparent;
+  box-shadow:0 3px 10px rgba(99,102,241,0.35);
+}
+.admin-tab-btn:not(.active):hover { border-color:#6366f1; color:#4338ca; }
+.admin-tab-count {
+  background:rgba(255,255,255,0.25); border-radius:20px; padding:1px 7px;
+  font-size:0.85em; font-weight:900; min-width:20px; text-align:center;
+}
+.admin-tab-btn:not(.active) .admin-tab-count {
+  background:#eef2ff; color:#4338ca;
+}
+#admin-users-panel { margin-top:0; display:none; }
+
+/* Users panel top toolbar */
+.u-toolbar {
+  display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap;
+}
+.u-search-wrap {
+  flex:1; min-width:180px; position:relative;
+}
+.u-search-icon {
+  position:absolute; left:11px; top:50%; transform:translateY(-50%);
+  color:#6366f1; font-size:1em; pointer-events:none;
+}
+.u-search-input {
+  width:100%; box-sizing:border-box;
+  padding:9px 14px 9px 34px;
+  border:2px solid #a5b4fc; border-radius:10px;
+  font-family:Montserrat,sans-serif; font-size:0.82em; color:#1e1b4b;
+  background:white; outline:none;
+  transition:border-color 0.2s, box-shadow 0.2s;
+}
+.u-search-input:focus { border-color:#6366f1; box-shadow:0 0 0 3px rgba(99,102,241,0.15); }
+.u-search-input::placeholder { color:#a5b4fc; }
+.u-search-clear {
+  position:absolute; right:10px; top:50%; transform:translateY(-50%);
+  background:none; border:none; color:#94a3b8; cursor:pointer; font-size:14px;
+  display:none; padding:2px; line-height:1;
+}
+.u-search-clear.visible { display:block; }
+.u-sort-select {
+  padding:9px 12px; border:2px solid #e2e8f0; border-radius:10px;
+  font-family:Montserrat,sans-serif; font-size:0.78em; font-weight:700; color:#334155;
+  background:white; outline:none; cursor:pointer; transition:border-color 0.2s;
+}
+.u-sort-select:focus { border-color:#6366f1; }
+.u-refresh-btn {
+  display:inline-flex; align-items:center; gap:5px; padding:9px 14px;
+  border:2px solid #e2e8f0; border-radius:10px; background:white;
+  font-family:Montserrat,sans-serif; font-size:0.78em; font-weight:800; color:#64748b;
+  cursor:pointer; transition:all 0.18s; white-space:nowrap; flex-shrink:0;
+}
+.u-refresh-btn:hover { border-color:#6366f1; color:#4338ca; background:#eef2ff; }
+.u-refresh-btn.spinning i { animation:u-spin 0.8s linear infinite; }
+@keyframes u-spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+/* Count bar */
+.u-count-bar {
+  font-family:Montserrat,sans-serif; font-size:0.70em; font-weight:800;
+  color:#64748b; text-transform:uppercase; letter-spacing:0.08em;
+  padding:0 2px 8px; display:flex; align-items:center; gap:6px;
+}
+.u-count-num { background:linear-gradient(135deg,#6366f1,#4338ca); color:white; border-radius:20px; padding:1px 8px; }
+
+/* Cards */
+.u-card-list { display:flex; flex-direction:column; gap:8px; }
+.u-card {
+  background:white; border:1.5px solid #e2e8f0; border-radius:14px;
+  padding:14px 16px; display:flex; align-items:center; gap:14px;
+  transition:box-shadow 0.15s, border-color 0.15s;
+  border-left:4px solid #e2e8f0;
+}
+.u-card:hover { box-shadow:0 3px 12px rgba(99,102,241,0.12); border-color:#c7d2fe; }
+.u-card.expired-card { background:#fafafa; border-left-color:#fca5a5; opacity:0.85; }
+.u-card.expiring-soon-card { border-left-color:#fbbf24; }
+.u-card.active-card { border-left-color:#34d399; }
+.u-card-id {
+  min-width:32px; height:32px; border-radius:50%;
+  background:linear-gradient(135deg,#eef2ff,#e0e7ff); border:1.5px solid #c7d2fe;
+  display:flex; align-items:center; justify-content:center;
+  font-family:Montserrat,sans-serif; font-size:0.72em; font-weight:800; color:#4338ca; flex-shrink:0;
+}
+.u-card.expired-card .u-card-id { background:#fef2f2; border-color:#fecaca; color:#991b1b; }
+.u-card-body { flex:1; min-width:0; }
+.u-card-name {
+  font-family:Montserrat,sans-serif; font-size:0.88em; font-weight:800;
+  color:#1e293b; margin:0 0 3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+}
+.u-card-name mark, .u-card-meta mark { background:#fef08a; color:#1e293b; border-radius:3px; padding:0 1px; font-weight:900; }
+.u-card-meta {
+  font-family:Montserrat,sans-serif; font-size:0.72em; color:#64748b;
+  display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-bottom:4px;
+}
+.u-card-meta-sep { color:#cbd5e1; }
+.u-card-tags { display:flex; flex-wrap:wrap; align-items:center; gap:5px; margin-top:4px; }
+.u-card-right { display:flex; flex-direction:column; align-items:flex-end; gap:6px; flex-shrink:0; }
+.u-badge {
+  display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px;
+  font-size:0.75em; font-weight:700; font-family:Montserrat,sans-serif; white-space:nowrap;
+}
+.u-badge.active  { background:#dcfce7; color:#166534; }
+.u-badge.expired { background:#fee2e2; color:#991b1b; }
+.u-badge.yes     { background:#ede9fe; color:#5b21b6; }
+.u-badge.admin   { background:#fef3c7; color:#92400e; }
+.u-badge.valid-date      { background:#f0fdf4; color:#166534; }
+.u-badge.valid-date.soon { background:#fff7ed; color:#9a3412; }
+.u-badge.valid-date.exp  { background:#fef2f2; color:#991b1b; }
+
+/* Buttons on card */
+.u-card-actions { display:flex; align-items:center; gap:6px; }
+.u-edit-btn {
+  display:inline-flex; align-items:center; gap:5px; padding:7px 14px;
+  background:linear-gradient(135deg,#6366f1,#4338ca); color:white; border:none; border-radius:9px;
+  font-family:Montserrat,sans-serif; font-size:0.78em; font-weight:800; cursor:pointer; transition:opacity 0.15s; white-space:nowrap;
+}
+.u-edit-btn:hover { opacity:0.85; }
+.u-extend-btn {
+  display:inline-flex; align-items:center; gap:4px; padding:6px 11px;
+  background:white; border:1.5px solid #34d399; color:#065f46; border-radius:9px;
+  font-family:Montserrat,sans-serif; font-size:0.75em; font-weight:800; cursor:pointer;
+  transition:all 0.15s; white-space:nowrap;
+}
+.u-extend-btn:hover { background:#f0fdf4; border-color:#059669; }
+
+/* Empty / loading states */
+.users-loading { text-align:center; padding:32px; color:#94a3b8; font-family:Montserrat,sans-serif; font-size:0.85em; }
+.u-empty-state {
+  text-align:center; padding:32px 16px;
+  font-family:Montserrat,sans-serif;
+}
+.u-empty-icon { font-size:2.5em; color:#c7d2fe; margin-bottom:10px; }
+.u-empty-title { font-size:0.9em; font-weight:800; color:#4338ca; margin-bottom:6px; }
+.u-empty-sub { font-size:0.78em; color:#94a3b8; margin-bottom:14px; }
+.u-empty-clear {
+  display:inline-flex; align-items:center; gap:6px; padding:8px 18px;
+  background:linear-gradient(135deg,#6366f1,#4338ca); color:white; border:none; border-radius:10px;
+  font-family:Montserrat,sans-serif; font-size:0.78em; font-weight:800; cursor:pointer;
+  transition:opacity 0.15s;
+}
+.u-empty-clear:hover { opacity:0.85; }
+
+/* "Load more" pagination */
+.u-load-more-bar {
+  text-align:center; padding:12px 0 4px;
+}
+.u-load-more-btn {
+  display:inline-flex; align-items:center; gap:7px; padding:9px 22px;
+  border:2px solid #c7d2fe; border-radius:10px; background:white;
+  font-family:Montserrat,sans-serif; font-size:0.80em; font-weight:800; color:#4338ca;
+  cursor:pointer; transition:all 0.18s;
+}
+.u-load-more-btn:hover { background:#eef2ff; border-color:#6366f1; }
+
+/* Edit User Modal */
+#edit-user-backdrop {
+  position:fixed; inset:0; background:rgba(15,23,42,0.55); backdrop-filter:blur(4px);
+  z-index:9000; display:flex; align-items:center; justify-content:center; padding:16px;
+}
+#edit-user-backdrop.hidden { display:none; }
+.eu-card {
+  background:white; border-radius:20px; border:1.5px solid #c7d2fe;
+  box-shadow:0 8px 40px rgba(99,102,241,0.18); width:100%; max-width:520px;
+  max-height:90vh; overflow-y:auto; animation:euSlide 0.22s ease;
+}
+@keyframes euSlide { from{transform:translateY(18px);opacity:0} to{transform:translateY(0);opacity:1} }
+.eu-header {
+  background:linear-gradient(135deg,#1e293b 0%,#334155 100%); border-radius:18px 18px 0 0;
+  padding:18px 22px 16px; display:flex; align-items:center; justify-content:space-between;
+}
+.eu-header-left { display:flex; align-items:center; gap:12px; }
+.eu-header-icon { width:38px;height:38px;background:rgba(99,102,241,0.25);border:1.5px solid rgba(99,102,241,0.4);border-radius:10px;display:flex;align-items:center;justify-content:center;color:#a5b4fc;font-size:18px; }
+.eu-header-title { font-family:Montserrat,sans-serif;font-size:1em;font-weight:800;color:white;letter-spacing:0.02em; }
+.eu-header-sub   { font-family:Montserrat,sans-serif;font-size:0.72em;color:#94a3b8;margin-top:2px; }
+.eu-close-btn { background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#cbd5e1;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:15px;transition:background 0.15s; }
+.eu-close-btn:hover { background:rgba(255,255,255,0.2);color:white; }
+.eu-body { padding:20px 22px; }
+.eu-label { font-family:Montserrat,sans-serif;font-size:0.65em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:5px;display:block; }
+.eu-input { width:100%;box-sizing:border-box;border:2px solid #a5b4fc;border-radius:10px;padding:11px 14px;font-family:Merriweather,serif;font-size:0.88em;color:#1e293b;background:white;outline:none;transition:border-color 0.2s,box-shadow 0.2s; }
+.eu-input:focus { border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.15); }
+.eu-date-picker { width:100%;box-sizing:border-box;border:2px solid #a5b4fc;border-radius:10px;padding:10px 14px;font-family:Montserrat,sans-serif;font-size:0.86em;color:#1e293b;background:white;outline:none;transition:border-color 0.2s,box-shadow 0.2s;cursor:pointer; }
+.eu-date-picker:focus { border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.15); }
+.eu-date-display { font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#6366f1;margin-top:4px;min-height:14px; }
+.eu-quick-pick { display:flex;flex-wrap:wrap;gap:6px;margin-top:8px; }
+.eu-qp-btn { flex:1;min-width:52px;padding:6px 4px;border-radius:8px;border:1.5px solid #c7d2fe;background:white;font-family:Montserrat,sans-serif;font-size:0.72em;font-weight:800;color:#4338ca;cursor:pointer;transition:all 0.15s;text-align:center; }
+.eu-qp-btn:hover { background:#eef2ff;border-color:#6366f1; }
+.eu-qp-btn.active-qp { background:linear-gradient(135deg,#6366f1,#4338ca);color:white;border-color:transparent; }
+.eu-grid-2 { display:grid;grid-template-columns:1fr 1fr;gap:12px; }
+.eu-field  { margin-bottom:14px; }
+.eu-toggle-group { display:flex;background:#f1f5f9;border-radius:8px;padding:2px;border:1.5px solid #e2e8f0;height:38px;gap:2px; }
+.eu-toggle-btn { flex:1;border:none;border-radius:6px;font-family:Montserrat,sans-serif;font-size:0.75em;font-weight:800;cursor:pointer;transition:all 0.15s;background:transparent;color:#64748b;display:flex;align-items:center;justify-content:center;gap:5px; }
+.eu-toggle-btn.active { background:white;color:#4338ca;box-shadow:0 1px 4px rgba(99,102,241,0.2); }
+.eu-toggle-btn.active.course-yes { color:#5b21b6; }
+.eu-toggle-btn.active.admin-role { color:#92400e;background:#fef3c7; }
+.eu-footer { display:flex;gap:10px;justify-content:flex-end;margin-top:6px;padding-top:16px;border-top:1px solid #f1f5f9; }
+.eu-cancel-btn { padding:10px 20px;border:1.5px solid #cbd5e1;border-radius:10px;background:white;color:#64748b;font-family:Montserrat,sans-serif;font-size:0.82em;font-weight:700;cursor:pointer;transition:border-color 0.15s; }
+.eu-cancel-btn:hover { border-color:#94a3b8;color:#334155; }
+.eu-save-btn { display:flex;align-items:center;gap:7px;padding:10px 22px;border:none;border-radius:10px;background:linear-gradient(135deg,#6366f1,#4338ca);color:white;font-family:Montserrat,sans-serif;font-size:0.82em;font-weight:800;letter-spacing:0.04em;cursor:pointer;transition:opacity 0.15s; }
+.eu-save-btn:hover { opacity:0.88; }
+.eu-save-btn:disabled { opacity:0.5;cursor:not-allowed; }
+.eu-msg { font-family:Montserrat,sans-serif;font-size:0.78em;font-weight:700;padding:8px 12px;border-radius:8px;margin-bottom:14px;display:none; }
+.eu-msg.error   { background:#fee2e2;color:#991b1b;display:block; }
+.eu-msg.success { background:#dcfce7;color:#166534;display:block; }
+.eu-info-chip { display:inline-flex;align-items:center;gap:5px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:3px 9px;font-family:Montserrat,sans-serif;font-size:0.68em;font-weight:700;color:#a5b4fc;margin-top:6px; }
+@media(max-width:520px){
+  .eu-grid-2{grid-template-columns:1fr}
+  .admin-tab-bar{width:100%}
+  .admin-tab-btn{flex:1;justify-content:center}
+  .u-card{flex-wrap:wrap}
+  .u-card-right{flex-direction:row;align-items:center;width:100%;justify-content:space-between}
+  .u-toolbar{flex-direction:column;align-items:stretch}
+  .u-sort-select,.u-refresh-btn{width:100%}
+}
+
+</style>
 </head>
 <body>
 
@@ -592,6 +842,34 @@
             <div class="delete-modal-footer" style="margin-top:20px;">
                 <button class="delete-cancel-btn" onclick="closeDeleteModal()">Cancel</button>
                 <button class="delete-confirm-btn" id="delete-confirm-btn" onclick="confirmDelete()"><i class="ph ph-trash"></i> Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- Extend Confirm Modal -->
+    <div id="extend-confirm-modal" class="hidden">
+        <div class="ecm-card">
+            <div class="ecm-icon"><i class="ph ph-calendar-plus"></i></div>
+            <div class="ecm-title">Extend Validity?</div>
+            <div class="ecm-username" id="ecm-name">—</div>
+            <div class="ecm-badge"><i class="ph ph-clock-clockwise"></i> <span id="ecm-label">—</span></div>
+            <div class="ecm-detail-row">
+                <div class="ecm-date-box">
+                    <span class="ecm-date-label">Current Expiry</span>
+                    <span class="ecm-date-val" id="ecm-current">—</span>
+                </div>
+                <div class="ecm-arrow">→</div>
+                <div class="ecm-date-box">
+                    <span class="ecm-date-label">New Expiry</span>
+                    <span class="ecm-date-val new-date" id="ecm-new">—</span>
+                </div>
+            </div>
+            <div class="ecm-footer">
+                <button class="ecm-cancel-btn" onclick="_closeExtendModal()">Cancel</button>
+                <button class="ecm-confirm-btn" id="ecm-confirm-btn" onclick="_confirmExtend()">
+                    <i class="ph ph-check"></i> Yes, Extend <span id="ecm-months"></span>
+                </button>
             </div>
         </div>
     </div>
@@ -685,7 +963,7 @@
                     </div>
                 </div>
                 <div style="margin-bottom:6px;">
-                    <p style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4338ca;margin:0 0 6px 0;display:flex;align-items:center;gap:5px;">
+                    <p id="admin-records-search-label" style="font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#4338ca;margin:0 0 6px 0;display:flex;align-items:center;gap:5px;">
                         <i class="ph ph-magnifying-glass" style="font-size:13px;"></i>Search Saved Records
                     </p>
                     <div class="search-input-wrap" style="position:relative;">
@@ -702,7 +980,7 @@
         </div>
 
         <!-- Input Section -->
-        <div class="bg-white rounded-2xl shadow-md border border-slate-200 w-full" style="overflow:hidden;">
+        <div id="admin-input-card" class="bg-white rounded-2xl shadow-md border border-slate-200 w-full" style="overflow:hidden;">
             <!-- Section Title -->
             <div style="padding:14px 20px 12px;border-bottom:1px solid #f1f5f9;display:flex;align-items:center;gap:10px;">
                 <i class="ph ph-sliders-horizontal" style="color:#6366f1;font-size:18px;"></i>
@@ -1739,7 +2017,7 @@
         const displayHour = v[3] === 0 ? 12 : (v[3] > 12 ? v[3] - 12 : v[3]);
         const displayAmPm = document.getElementById('ampm-value').value;
         const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'rhythm-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden');
-            document.getElementById('all-results-wrapper').classList.remove('hidden'); try{renderAnalysis(rP,tP);}catch(e){console.error('renderAnalysis',e);}
+            _reportGenerated = true; document.getElementById('all-results-wrapper').classList.remove('hidden'); try{renderAnalysis(rP,tP);}catch(e){console.error('renderAnalysis',e);}
             try{renderRhythmSection(pMap);}catch(e){console.error('renderRhythmSection',e);}
             try{renderArchetypeRhythm(pMap);}catch(e){console.error('renderArchetypeRhythm',e);}
             try{renderEnergyFlow(pMap);}catch(e){console.error('renderEnergyFlow',e);}
@@ -3263,7 +3541,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwYsm1-AdBM-O2bjP58xvwB-2U5ecUP7PFpWyR2E0o3zWg6awkuJ7rqSWBpWR3KgzRHqg/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyLXEYClsI1d3Wq7YKMzsOBWO1KmXXHrMWHdPUS-OqQof-kDVf_5kI3nro3QlfSuomBDQ/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -3300,7 +3578,7 @@ function getDSTInfo(tzName, date) {
 
             // Try instant login from cache first
             if(_usersCache){
-                const found = _usersCache.find(u => u.mobile === mobile && u.password === password);
+                const found = _usersCache.find(u => u.user && u.user.mobile === mobile && u.password === password);
                 if(found){
                     if(found.expired){
                         setAuthMsg('login-msg', found.message || 'Your login has expired. Contact Admin Team at 8360362525.','error');
@@ -3361,6 +3639,7 @@ function getDSTInfo(tzName, date) {
             }else{badge.className='valid';badgeTxt.textContent='Active';}
             // Load records + refresh users cache in parallel for speed
             Promise.all([loadRecordsCache(), loadUsersCache()]);
+            if (_isAdmin) { injectAdminTabBar(); preRenderUsersPanel(); }
         }
 
         function doLogout(){
@@ -3457,7 +3736,7 @@ function getDSTInfo(tzName, date) {
         let _loadedRecordId  = null;   // record_id of currently loaded record (null = new entry)
         let _loadedRecordName = '';    // name of loaded record for change detection
         let _isAdmin         = false;  // true if logged in user has admin role
-        let _usersCache   = null;   // in-memory cache of users for instant login
+        var _usersCache   = null;   // in-memory cache of users for instant login
         let _searchTimer  = null;
 
         async function loadRecordsCache(){
@@ -3556,6 +3835,7 @@ function getDSTInfo(tzName, date) {
             }
 
             // Hide all results — clean slate for new person (chart + table + all sections)
+            _reportGenerated = false;
             const allResultsWrapper = document.getElementById('all-results-wrapper');
             if(allResultsWrapper) allResultsWrapper.classList.add('hidden');
 
@@ -4131,7 +4411,577 @@ function getDSTInfo(tzName, date) {
                     });
             });
         }
-    </script>
+    
+// ═══════════════════════════════════════════════════════════
+// ADMIN v9 — Fixed + Enhanced User Management
+// _adminCurrentTab MUST be global — declared early so the
+// oninput inline attribute can reference it before DOMContentLoaded
+// ═══════════════════════════════════════════════════════════
+var _adminCurrentTab = 'records';   // global: records | users
+var _reportGenerated = false;       // FIX: track if report was generated
+var _usersRendered   = false;
+var euCurrentUserId  = null;
+var _EU_MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var _usersPageSize   = 20;          // Pagination: cards per page
+var _usersPageShown  = 20;          // How many currently shown
+var _usersFiltered   = [];          // Current filtered+sorted result set
 
+// ── Date helpers ──────────────────────────────────────────────────────────
+function _pickerToGS(v) {
+  if (!v) return '';
+  var p = v.split('-');
+  if (p.length !== 3) return v;
+  return parseInt(p[2]) + ' ' + _EU_MONTHS[parseInt(p[1])-1] + ' ' + p[0];
+}
+function _gsToP(v) {
+  if (!v) return '';
+  var p = v.trim().split(' ');
+  if (p.length !== 3) return '';
+  var m = _EU_MONTHS.indexOf(p[1]);
+  if (m === -1) return '';
+  return p[2] + '-' + String(m+1).padStart(2,'0') + '-' + String(parseInt(p[0])).padStart(2,'0');
+}
+
+// ── Highlight helper ──────────────────────────────────────────────────────
+function _highlight(text, q) {
+  if (!q || !text) return text || '';
+  var esc = q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return text.replace(new RegExp('(' + esc + ')', 'gi'), '<mark>$1</mark>');
+}
+
+// ── Days until expiry helper ──────────────────────────────────────────────
+var _mMap = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+function _daysUntil(gsDate) {
+  if (!gsDate) return Infinity;
+  var p = (gsDate||'').trim().split(' ');
+  if (p.length !== 3) return Infinity;
+  var ex = new Date(parseInt(p[2]), _mMap[p[1]], parseInt(p[0]), 23, 59, 59);
+  return (ex - new Date()) / (1000*60*60*24);
+}
+
+// ── Inject tab bar (called once on admin login) ───────────────────────────
+function injectAdminTabBar() {
+  if (document.getElementById('admin-tab-bar')) return;
+
+  // Wire date picker display labels in Edit User modal
+  var fp = document.getElementById('eu-valid-from');
+  var up = document.getElementById('eu-valid-until');
+  if (fp) fp.addEventListener('change', function() {
+    document.getElementById('eu-valid-from-display').textContent =
+      this.value ? '→ Will save as: ' + _pickerToGS(this.value) : '';
+    document.querySelectorAll('.eu-qp-btn').forEach(function(b){ b.classList.remove('active-qp'); });
+  });
+  if (up) up.addEventListener('change', function() {
+    document.getElementById('eu-valid-until-display').textContent =
+      this.value ? '→ Will save as: ' + _pickerToGS(this.value) : '';
+    document.querySelectorAll('.eu-qp-btn').forEach(function(b){ b.classList.remove('active-qp'); });
+  });
+
+  // Build tab bar — insert after welcome flex row
+  var searchSection = document.getElementById('search-section');
+  if (!searchSection) return;
+  var cardDiv = searchSection.firstElementChild;
+  var flexRow = cardDiv ? cardDiv.firstElementChild : null;
+
+  var tabBar = document.createElement('div');
+  tabBar.id = 'admin-tab-bar';
+  tabBar.className = 'admin-tab-bar';
+  tabBar.innerHTML =
+    '<button class="admin-tab-btn active" id="admin-tab-records" onclick="switchAdminTab(\'records\')">' +
+      '<i class="ph ph-clipboard-text"></i> Records</button>' +
+    '<button class="admin-tab-btn" id="admin-tab-users" onclick="switchAdminTab(\'users\')">' +
+      '<i class="ph ph-users-three"></i> Users <span class="admin-tab-count" id="admin-tab-users-count">—</span></button>';
+
+  if (cardDiv && flexRow && flexRow.nextSibling) {
+    cardDiv.insertBefore(tabBar, flexRow.nextSibling);
+  } else if (cardDiv) {
+    cardDiv.appendChild(tabBar);
+  }
+
+  // ── Build dedicated Users panel (separate from records search) ────────
+  // Inject AFTER the card div, as a sibling — not inside the search input wrap
+  var usersPanel = document.createElement('div');
+  usersPanel.id = 'admin-users-panel';
+  usersPanel.style.cssText = 'display:none;margin-top:10px;';
+  usersPanel.innerHTML =
+    // Toolbar: Sort dropdown + Refresh button (search removed)
+    '<div class="u-toolbar">' +
+      '<span class="u-toolbar-label"><i class="ph ph-funnel-simple"></i> Sort:</span>' +
+      '<select class="u-sort-select" id="u-sort-select">' +
+        '<option value="name">Name A–Z</option>' +
+        '<option value="newest">Newest First</option>' +
+        '<option value="expiring">Expiring Soon</option>' +
+        '<option value="active">Active First</option>' +
+      '</select>' +
+      '<button class="u-refresh-btn" id="u-refresh-btn">' +
+        '<i class="ph ph-arrows-clockwise"></i> Refresh' +
+      '</button>' +
+    '</div>' +
+    '<div id="u-cards-area"><div class="users-loading"><i class="ph ph-spinner"></i> Loading users...</div></div>';
+
+  // Insert users panel INSIDE the card, after the search input wrapper div
+  // cardDiv is the gradient div inside #search-section
+  // Structure: search-section > cardDiv > [flexRow(welcome), tabBar, searchRow(label+input)]
+  // We append usersPanel as last child of cardDiv so it sits inside the same card
+  if (cardDiv) {
+    cardDiv.appendChild(usersPanel);
+  }
+  // Wire sort and refresh via addEventListener (reliable vs inline onchange)
+  var _ss = document.getElementById('u-sort-select');
+  var _rb = document.getElementById('u-refresh-btn');
+  if (_ss) _ss.addEventListener('change', function() { _buildUsersCards(); });
+  if (_rb) _rb.addEventListener('click', function() { _refreshUsersPanel(); });
+}
+
+// ── Refresh users from server ─────────────────────────────────────────────
+async function _refreshUsersPanel() {
+  var btn = document.getElementById('u-refresh-btn');
+  if (btn) { btn.innerHTML = '<i class="ph ph-arrows-clockwise" style="animation:u-spin 0.8s linear infinite;display:inline-block"></i> Refreshing…'; btn.disabled = true; }
+  try {
+    var r = await apiCall({action:'getusers'});
+    if (r.success) { _usersCache = r.users; showToast('Users refreshed (' + r.users.length + ')', 'success'); }
+  } catch(e) { showToast('Refresh failed — check connection', 'error'); }
+  if (btn) { btn.innerHTML = '<i class="ph ph-arrows-clockwise"></i> Refresh'; btn.disabled = false; }
+  _buildUsersCards();
+  _updateUsersTabCount();
+}
+
+// ── Pre-render cards at login ─────────────────────────────────────────────
+async function preRenderUsersPanel() {
+  var waited = 0;
+  while ((!_usersCache || _usersCache.length === 0) && waited < 8000) {
+    await new Promise(function(r){ setTimeout(r, 300); }); waited += 300;
+  }
+  if (!_usersCache || _usersCache.length === 0) {
+    try { var r = await apiCall({action:'getusers'}); if(r.success) _usersCache=r.users; } catch(e){}
+  }
+  _buildUsersCards();
+  _updateUsersTabCount();
+  _usersRendered = true;
+}
+
+// ── Update count badge on Users tab button ────────────────────────────────
+function _updateUsersTabCount() {
+  var el = document.getElementById('admin-tab-users-count');
+  if (!el) return;
+  el.textContent = (_usersCache && _usersCache.length) ? _usersCache.length : '—';
+}
+
+// ── Clear users search ────────────────────────────────────────────────────
+function _clearUsersSearch() {
+  var inp = document.getElementById('u-search-input');
+  if (inp) { inp.value = ''; inp.focus(); }
+  document.getElementById('u-search-clear').classList.remove('visible');
+  _onUsersSearch('');
+}
+
+// ── Main users search + sort + render entry point ─────────────────────────
+function _onUsersSearch(val) {
+  var clearBtn = document.getElementById('u-search-clear');
+  if (clearBtn) clearBtn.classList.toggle('visible', (val||'').trim().length > 0);
+  _usersPageShown = _usersPageSize; // reset pagination on new search
+  _buildUsersCards(val);
+}
+
+// ── Build user cards (filtering + sorting + pagination) ───────────────────
+function _buildUsersCards() {
+  var area = document.getElementById('u-cards-area');
+  if (!area) return;
+
+  if (!_usersCache || _usersCache.length === 0) {
+    area.innerHTML = '<div class="users-loading">No users found.</div>'; return;
+  }
+  var sortVal = document.getElementById('u-sort-select') ? document.getElementById('u-sort-select').value : 'name';
+
+  // Filter
+  // No search filter — sort only
+  var filtered = (_usersCache || []).filter(function(u) { return u && u.user; });
+
+  // Sort
+  filtered = filtered.slice().sort(function(a, b) {
+    if (sortVal === 'name') {
+      return (a.user.full_name||'').localeCompare(b.user.full_name||'');
+    } else if (sortVal === 'newest') {
+      return parseInt(b.user.user_id||0) - parseInt(a.user.user_id||0);
+    } else if (sortVal === 'expiring') {
+      return _daysUntil(a.user.valid_until) - _daysUntil(b.user.valid_until);
+    } else if (sortVal === 'active') {
+      // Active first, then expiring soon, then expired
+      var aE = a.expired ? 2 : (_daysUntil(a.user.valid_until) <= 7 ? 1 : 0);
+      var bE = b.expired ? 2 : (_daysUntil(b.user.valid_until) <= 7 ? 1 : 0);
+      return aE - bE;
+    }
+    return 0;
+  });
+
+  _usersFiltered = filtered; // store for pagination
+
+  // Empty state
+  if (filtered.length === 0) {
+    area.innerHTML =
+      '<div class="u-empty-state">' +
+        '<div class="u-empty-icon"><i class="ph ph-magnifying-glass"></i></div>' +
+        '<div class="u-empty-title">No users match your search</div>' +
+        '<div class="u-empty-sub">Try a different name or mobile number</div>' +
+        '<button class="u-empty-clear" onclick="_clearUsersSearch()"><i class="ph ph-x-circle"></i> Clear Search</button>' +
+      '</div>';
+    return;
+  }
+
+  // Paginate
+  var toShow = filtered.slice(0, _usersPageShown);
+  var cards = toShow.map(function(u) {
+    var oi = _usersCache.findIndex(function(c){ return c.user && c.user.user_id === u.user.user_id; });
+    var user = u.user;
+    var days = _daysUntil(user.valid_until);
+    var expired = u.expired || days < 0;
+    var expiringSoon = !expired && days <= 7;
+
+    var borderClass = expired ? 'expired-card' : (expiringSoon ? 'expiring-soon-card' : 'active-card');
+    var vc = expired ? 'valid-date exp' : (expiringSoon ? 'valid-date soon' : 'valid-date');
+    var sb = expired
+      ? '<span class="u-badge expired"><i class="ph ph-warning-circle"></i> Expired</span>'
+      : (expiringSoon
+          ? '<span class="u-badge" style="background:#fff7ed;color:#9a3412;"><i class="ph ph-clock-countdown"></i> Expiring</span>'
+          : '<span class="u-badge active"><i class="ph ph-check-circle"></i> Active</span>');
+
+    var tags =
+      (user.valid_until ? '<span class="u-badge '+vc+'"><i class="ph ph-calendar"></i> '+user.valid_until+'</span>' : '') +
+      (user.course_access==='yes' ? '<span class="u-badge yes"><i class="ph ph-book-bookmark"></i> Course</span>' : '') +
+      (user.role==='admin' ? '<span class="u-badge admin"><i class="ph ph-crown"></i> Admin</span>' : '');
+
+    var loc = [user.city, user.state].filter(Boolean).join(', ');
+
+    return '<div class="u-card ' + borderClass + '">' +
+      '<div class="u-card-id">' + user.user_id + '</div>' +
+      '<div class="u-card-body">' +
+        '<div class="u-card-name">' + (user.full_name||'') + '</div>' +
+        '<div class="u-card-meta"><i class="ph ph-device-mobile"></i> ' + (user.mobile||'') +
+          (loc ? '<span class="u-card-meta-sep">•</span><i class="ph ph-map-pin"></i> ' + loc : '') +
+        '</div>' +
+        '<div class="u-card-tags">' + tags + '</div>' +
+      '</div>' +
+      '<div class="u-card-right">' + sb +
+        '<div class="u-card-actions">' +
+          '<button class="u-extend-btn" data-oi="' + oi + '" data-mo="1" title="+1 Month"><i class="ph ph-calendar-plus"></i> +1 Mo</button>' +
+          '<button class="u-extend-btn u-extend-btn-3m" data-oi="' + oi + '" data-mo="3" title="+3 Months"><i class="ph ph-calendar-plus"></i> +3 Mo</button>' +
+          '<button class="u-edit-btn" data-oi="' + oi + '"><i class="ph ph-pencil-simple"></i> Edit</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+
+  var hasMore = filtered.length > _usersPageShown;
+  var countText = '<span class="u-count-num">' + filtered.length + '</span> User' + (filtered.length !== 1 ? 's' : '');
+
+  area.innerHTML =
+    '<div class="u-count-bar">' + countText + '</div>' +
+    '<div class="u-card-list">' + cards + '</div>' +
+    (hasMore
+      ? '<div class="u-load-more-bar"><button class="u-load-more-btn" id="u-load-more-btn"><i class="ph ph-caret-down"></i> Show more (' + (filtered.length - _usersPageShown) + ' remaining)</button></div>'
+      : '');
+  // Wire buttons via event delegation each render
+  var _ca = document.getElementById('u-cards-area');
+  if (_ca && !_ca._delegated) {
+    _ca._delegated = true;
+    _ca.addEventListener('click', function(e) {
+      var t = e.target.closest('[data-oi]');
+      if (!t) return;
+      var oi = parseInt(t.getAttribute('data-oi'));
+      var mo = t.getAttribute('data-mo');
+      if (t.classList.contains('u-extend-btn')) _openExtendConfirm(oi, parseInt(mo));
+      else if (t.classList.contains('u-edit-btn')) openEditUserModal(oi);
+    });
+  }
+  var _lmb = document.getElementById('u-load-more-btn');
+  if (_lmb) _lmb.addEventListener('click', _loadMoreUsers);
+}
+
+// ── Load more (pagination) ────────────────────────────────────────────────
+function _loadMoreUsers() {
+  _usersPageShown += _usersPageSize;
+  _buildUsersCards(document.getElementById('u-search-input') ? document.getElementById('u-search-input').value : '');
+}
+
+// ── Quick +1 Year extend ──────────────────────────────────────────────────
+// ── Extend Confirmation Modal ─────────────────────────────────────────────
+var _extendPending = null;
+
+function _calcExtendDate(idx, months) {
+  var u = _usersCache[idx]; var user = u.user;
+  var base = new Date();
+  if (_daysUntil(user.valid_until) > 0) {
+    var p = (user.valid_until||'').trim().split(' ');
+    if (p.length === 3) base = new Date(parseInt(p[2]), _mMap[p[1]], parseInt(p[0]), 12, 0, 0);
+  }
+  base.setMonth(base.getMonth() + months);
+  return parseInt(base.getDate()) + ' ' + _EU_MONTHS[base.getMonth()] + ' ' + base.getFullYear();
+}
+
+function _openExtendConfirm(idx, months) {
+  var u = _usersCache[idx]; var user = u.user;
+  var newUntil = _calcExtendDate(idx, months);
+  var label = months === 1 ? '1 Month' : '3 Months';
+  document.getElementById('ecm-name').textContent    = user.full_name || user.mobile;
+  document.getElementById('ecm-label').textContent   = '+ ' + label;
+  document.getElementById('ecm-months').textContent  = label;
+  document.getElementById('ecm-current').textContent = user.valid_until || 'Not set';
+  document.getElementById('ecm-new').textContent     = newUntil;
+  _extendPending = { idx: idx, months: months };
+  document.getElementById('extend-confirm-modal').classList.remove('hidden');
+}
+
+function _closeExtendModal() {
+  document.getElementById('extend-confirm-modal').classList.add('hidden');
+  _extendPending = null;
+}
+
+async function _confirmExtend() {
+  if (!_extendPending) return;
+  var idx = _extendPending.idx; var months = _extendPending.months;
+  var u = _usersCache[idx]; var user = u.user;
+  var newUntil = _calcExtendDate(idx, months);
+  _closeExtendModal();
+  var confirmBtn = document.getElementById('ecm-confirm-btn');
+  if (confirmBtn) { confirmBtn.disabled = true; confirmBtn.innerHTML = '<i class="ph ph-spinner"></i> Saving...'; }
+  var pl = { action:'updateuser', user_id:user.user_id,
+    full_name:user.full_name, mobile:user.mobile, password:u.password||'',
+    city:user.city||'', state:user.state||'', valid_from:user.valid_from||'',
+    valid_until:newUntil, role:user.role||'', course_access:user.course_access||'' };
+  try {
+    var res = await apiCall(pl);
+    if (res.success) {
+      _usersCache[idx].user.valid_until = newUntil;
+      _usersCache[idx].expired = false;
+      showToast((user.full_name||user.mobile) + ' extended to ' + newUntil, 'success');
+      _buildUsersCards();
+    } else { showToast('Extend failed: ' + (res.message||'Unknown error'), 'error'); }
+  } catch(e) { showToast('Connection error. Please try again.', 'error'); }
+  if (confirmBtn) { confirmBtn.disabled = false; confirmBtn.innerHTML = '<i class="ph ph-check"></i> Yes, Extend'; }
+}
+
+function _quickExtend(idx, evt) { _openExtendConfirm(idx, 1); }
+
+// ── Tab switching (FIXED: separate search inputs, proper show/hide) ────────
+function switchAdminTab(tab) {
+  _adminCurrentTab = tab;
+  var rBtn  = document.getElementById('admin-tab-records');
+  var uBtn  = document.getElementById('admin-tab-users');
+  var panel = document.getElementById('admin-users-panel');
+  var iCard = document.getElementById('admin-input-card');
+  // Records search elements
+  var recSearchLabel = document.getElementById('admin-records-search-label');
+  var recSearchWrap  = recSearchLabel ? recSearchLabel.parentElement : null;
+  var aRes  = document.getElementById('all-results-wrapper');
+
+  if (tab === 'records') {
+    rBtn.classList.add('active');    uBtn.classList.remove('active');
+    if (panel) panel.style.display = 'none';
+    if (recSearchWrap) recSearchWrap.style.display = '';
+    if (iCard) iCard.style.display = '';
+    // FIX: only restore results if a report was actually generated this session
+    if (aRes) {
+      if (_reportGenerated) aRes.classList.remove('hidden');
+      else aRes.classList.add('hidden');
+    }
+  } else {
+    uBtn.classList.add('active');    rBtn.classList.remove('active');
+    if (panel) panel.style.display = 'block';
+    if (recSearchWrap) recSearchWrap.style.display = 'none'; // hide records search row
+    if (iCard) iCard.style.display = 'none';
+    if (aRes) aRes.classList.add('hidden');
+    // Focus users own search input
+    setTimeout(function() {
+      var ui = document.getElementById('u-search-input');
+      if (ui) ui.focus();
+    }, 50);
+    if (!_usersRendered) { _buildUsersCards(); _usersRendered = true; }
+  }
+}
+
+// ── Quick-pick duration for Edit User modal ───────────────────────────────
+function setQuickDuration(months, evt) {
+  var t = new Date();
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  var fv = t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());
+  var u2 = new Date(t); u2.setMonth(u2.getMonth()+months);
+  var uv = u2.getFullYear()+'-'+pad(u2.getMonth()+1)+'-'+pad(u2.getDate());
+  document.getElementById('eu-valid-from').value  = fv;
+  document.getElementById('eu-valid-until').value = uv;
+  document.getElementById('eu-valid-from-display').textContent  = '→ Will save as: '+_pickerToGS(fv);
+  document.getElementById('eu-valid-until-display').textContent = '→ Will save as: '+_pickerToGS(uv);
+  document.querySelectorAll('.eu-qp-btn').forEach(function(b){ b.classList.remove('active-qp'); });
+  if (evt && evt.target) evt.target.classList.add('active-qp');
+}
+
+// ── Edit User Modal ───────────────────────────────────────────────────────
+function openEditUserModal(idx) {
+  var u=_usersCache[idx]; var user=u.user; euCurrentUserId=user.user_id;
+  document.getElementById('eu-header-sub').textContent  = user.full_name+' · '+user.mobile;
+  document.getElementById('eu-display-id').textContent  = user.user_id;
+  document.getElementById('eu-display-reg').textContent = user.registered_on||'—';
+  document.getElementById('eu-fullname').value = user.full_name||'';
+  document.getElementById('eu-mobile').value   = user.mobile   ||'';
+  document.getElementById('eu-password').value = u.password    ||'';
+  document.getElementById('eu-city').value     = user.city     ||'';
+  document.getElementById('eu-state').value    = user.state    ||'';
+  var fp=_gsToP(user.valid_from||''), up=_gsToP(user.valid_until||'');
+  document.getElementById('eu-valid-from').value  = fp;
+  document.getElementById('eu-valid-until').value = up;
+  document.getElementById('eu-valid-from-display').textContent  = fp?'→ Stored as: '+(user.valid_from ||''):'';
+  document.getElementById('eu-valid-until-display').textContent = up?'→ Stored as: '+(user.valid_until||''):'';
+  document.querySelectorAll('.eu-qp-btn').forEach(function(b){ b.classList.remove('active-qp'); });
+  setEuRole(user.role||''); setEuCourse(user.course_access||'');
+  var msg=document.getElementById('eu-msg'); msg.className='eu-msg'; msg.textContent='';
+  document.getElementById('edit-user-backdrop').classList.remove('hidden');
+}
+function closeEditUserModal() {
+  document.getElementById('edit-user-backdrop').classList.add('hidden'); euCurrentUserId=null;
+}
+function setEuRole(val) {
+  document.getElementById('eu-role-val').value=val;
+  document.getElementById('eu-role-regular').classList.toggle('active',   val!=='admin');
+  document.getElementById('eu-role-admin').classList.toggle('active',     val==='admin');
+  document.getElementById('eu-role-admin').classList.toggle('admin-role', val==='admin');
+}
+function setEuCourse(val) {
+  document.getElementById('eu-course-val').value=val;
+  document.getElementById('eu-course-no').classList.toggle('active',  val!=='yes');
+  document.getElementById('eu-course-yes').classList.toggle('active', val==='yes');
+}
+async function saveEditUser() {
+  var msgEl=document.getElementById('eu-msg'), sb=document.getElementById('eu-save-btn');
+  msgEl.className='eu-msg'; msgEl.textContent='';
+  var mob=document.getElementById('eu-mobile').value.trim();
+  if (mob && !/^\d{10}$/.test(mob)) {
+    msgEl.className='eu-msg error'; msgEl.textContent='Mobile must be exactly 10 digits.'; return;
+  }
+  var pl={
+    action:'updateuser', user_id:euCurrentUserId,
+    full_name:    document.getElementById('eu-fullname').value.trim(),
+    mobile:       mob,
+    password:     document.getElementById('eu-password').value.trim(),
+    city:         document.getElementById('eu-city').value.trim(),
+    state:        document.getElementById('eu-state').value.trim(),
+    valid_from:   _pickerToGS(document.getElementById('eu-valid-from').value),
+    valid_until:  _pickerToGS(document.getElementById('eu-valid-until').value),
+    role:         document.getElementById('eu-role-val').value,
+    course_access:document.getElementById('eu-course-val').value
+  };
+  sb.disabled=true; sb.innerHTML='<i class="ph ph-spinner"></i> Saving...';
+  try {
+    var res=await apiCall(pl);
+    if (res.success) {
+      var ci=_usersCache.findIndex(function(u){return u.user.user_id.toString()===euCurrentUserId.toString();});
+      if (ci!==-1) {
+        _usersCache[ci].user.full_name    =pl.full_name;    _usersCache[ci].user.mobile       =pl.mobile;
+        _usersCache[ci].password          =pl.password;     _usersCache[ci].user.city         =pl.city;
+        _usersCache[ci].user.state        =pl.state;        _usersCache[ci].user.valid_from   =pl.valid_from;
+        _usersCache[ci].user.valid_until  =pl.valid_until;  _usersCache[ci].user.role         =pl.role;
+        _usersCache[ci].user.course_access=pl.course_access;
+        // Recalculate expired flag
+        var newDays = _daysUntil(pl.valid_until);
+        _usersCache[ci].expired = newDays < 0;
+      }
+      showToast('User updated successfully!','success');
+      closeEditUserModal();
+      // Refresh users panel with current users search query
+      var uq = document.getElementById('u-search-input') ? document.getElementById('u-search-input').value : '';
+      _buildUsersCards(uq);
+    } else { msgEl.className='eu-msg error'; msgEl.textContent=res.message||'Update failed.'; }
+  } catch(e) { msgEl.className='eu-msg error'; msgEl.textContent='Connection error. Please try again.'; }
+  sb.disabled=false; sb.innerHTML='<i class="ph ph-floppy-disk"></i> Save Changes';
+}
+document.addEventListener('DOMContentLoaded', function() {
+  var _eub = document.getElementById('edit-user-backdrop');
+  if (_eub) _eub.addEventListener('click', function(e) { if(e.target===this) closeEditUserModal(); });
+  var _ecm = document.getElementById('extend-confirm-modal');
+  if (_ecm) _ecm.addEventListener('click', function(e) { if(e.target===this) _closeExtendModal(); });
+});
+
+</script>
+
+<div id="edit-user-backdrop" class="hidden">
+  <div class="eu-card">
+    <div class="eu-header">
+      <div class="eu-header-left">
+        <div class="eu-header-icon"><i class="ph ph-user-gear"></i></div>
+        <div>
+          <div class="eu-header-title">Edit User</div>
+          <div class="eu-header-sub" id="eu-header-sub">—</div>
+          <div class="eu-info-chip"><i class="ph ph-fingerprint"></i> ID: <span id="eu-display-id">—</span> &nbsp;·&nbsp; Registered: <span id="eu-display-reg">—</span></div>
+        </div>
+      </div>
+      <button class="eu-close-btn" onclick="closeEditUserModal()"><i class="ph ph-x"></i></button>
+    </div>
+    <div class="eu-body">
+      <div class="eu-msg" id="eu-msg"></div>
+      <div class="eu-field">
+        <label class="eu-label"><i class="ph ph-user" style="margin-right:4px"></i>Full Name</label>
+        <input type="text" id="eu-fullname" class="eu-input" placeholder="Enter full name" autocomplete="off">
+      </div>
+      <div class="eu-grid-2">
+        <div class="eu-field">
+          <label class="eu-label"><i class="ph ph-phone" style="margin-right:4px"></i>Mobile</label>
+          <input type="tel" id="eu-mobile" class="eu-input" placeholder="10-digit number" maxlength="10" autocomplete="off">
+        </div>
+        <div class="eu-field">
+          <label class="eu-label"><i class="ph ph-lock-key" style="margin-right:4px"></i>Password</label>
+          <input type="text" id="eu-password" class="eu-input" placeholder="Enter password" autocomplete="off">
+        </div>
+      </div>
+      <div class="eu-grid-2">
+        <div class="eu-field">
+          <label class="eu-label"><i class="ph ph-buildings" style="margin-right:4px"></i>City</label>
+          <input type="text" id="eu-city" class="eu-input" placeholder="City" autocomplete="off">
+        </div>
+        <div class="eu-field">
+          <label class="eu-label"><i class="ph ph-map-pin" style="margin-right:4px"></i>State</label>
+          <input type="text" id="eu-state" class="eu-input" placeholder="State" autocomplete="off">
+        </div>
+      </div>
+      <div class="eu-field">
+        <label class="eu-label"><i class="ph ph-calendar-blank" style="margin-right:4px"></i>Valid From</label>
+        <input type="date" id="eu-valid-from" class="eu-date-picker">
+        <div class="eu-date-display" id="eu-valid-from-display"></div>
+      </div>
+      <div class="eu-field">
+        <label class="eu-label"><i class="ph ph-calendar-check" style="margin-right:4px"></i>Valid Until</label>
+        <input type="date" id="eu-valid-until" class="eu-date-picker">
+        <div class="eu-date-display" id="eu-valid-until-display"></div>
+        <div class="eu-quick-pick" style="margin-top:8px;">
+          <button type="button" class="eu-qp-btn" onclick="setQuickDuration(1,event)">+1 Month</button>
+          <button type="button" class="eu-qp-btn" onclick="setQuickDuration(3,event)">+3 Months</button>
+          <button type="button" class="eu-qp-btn" onclick="setQuickDuration(6,event)">+6 Months</button>
+          <button type="button" class="eu-qp-btn" onclick="setQuickDuration(12,event)">+1 Year</button>
+          <button type="button" class="eu-qp-btn" onclick="setQuickDuration(24,event)">+2 Years</button>
+          <button type="button" class="eu-qp-btn" onclick="setQuickDuration(120,event)">+10 Years</button>
+        </div>
+        <div style="font-family:Montserrat,sans-serif;font-size:0.63em;color:#94a3b8;margin-top:5px;">
+          <i class="ph ph-info"></i> Quick buttons set Valid From = today &amp; Valid Until = today + duration
+        </div>
+      </div>
+      <div class="eu-field">
+        <label class="eu-label"><i class="ph ph-shield-star" style="margin-right:4px"></i>Role</label>
+        <div class="eu-toggle-group">
+          <button type="button" class="eu-toggle-btn active" id="eu-role-regular" onclick="setEuRole('')"><i class="ph ph-user"></i> Regular User</button>
+          <button type="button" class="eu-toggle-btn" id="eu-role-admin" onclick="setEuRole('admin')"><i class="ph ph-crown"></i> Admin</button>
+        </div>
+        <input type="hidden" id="eu-role-val" value="">
+      </div>
+      <div class="eu-field">
+        <label class="eu-label"><i class="ph ph-book-open" style="margin-right:4px"></i>Course Access</label>
+        <div class="eu-toggle-group">
+          <button type="button" class="eu-toggle-btn active" id="eu-course-no" onclick="setEuCourse('')"><i class="ph ph-x-circle"></i> No</button>
+          <button type="button" class="eu-toggle-btn course-yes" id="eu-course-yes" onclick="setEuCourse('yes')"><i class="ph ph-check-circle"></i> Yes</button>
+        </div>
+        <input type="hidden" id="eu-course-val" value="">
+      </div>
+      <div class="eu-footer">
+        <button class="eu-cancel-btn" onclick="closeEditUserModal()">Cancel</button>
+        <button class="eu-save-btn" id="eu-save-btn" onclick="saveEditUser()"><i class="ph ph-floppy-disk"></i> Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
 </body>
-</html>
