@@ -44,6 +44,11 @@
             background-color: var(--bg-color);
             margin: 0;
             padding-top: calc(var(--nav-height) + 20px);
+            /* Disable text selection */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
         }
 
         h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; color: var(--primary); }
@@ -594,7 +599,7 @@
                                         <div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-hammer"></i> The Creator: Giving Thoughts a Home</h5><p class="mb-2">The Creator says: “Enough thinking. Let’s build something.” It turns pain into projects and ideas into reality.</p><p class="mb-2">This looks like writing insights, building a product, designing a routine, or making something physical.</p><p class="mt-3 text-xs font-bold text-orange-800 italic">The Creator doesn’t ask, “What if?” The Creator says, “What can I make with what I have right now?”</p></div>
                                     </div>
                                     <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500"><h5 class="font-bold text-slate-900 mb-2">Example Story: The Silent Observer</h5><p class="italic text-slate-600 mb-4">Imagine Arjun. He spends nights replaying arguments, feeling like a CCTV camera—recording everything but doing nothing. He is the Seeker.</p><p>One day, instead of overthinking, he opens a notebook. He writes down lessons from his failed relationships. Over weeks, these notes turn into a "Red Flag Checklist" he shares with friends. By turning his pain into a tangible tool, he stops overthinking and starts building.</p><p class="font-bold text-indigo-700 mt-2">This is how overthinking becomes a tool instead of torture.</p></div>
-                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Seeker to Creator</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Collect Your “Raw Data”</strong><p>Write down major painful events, repeat patterns, and recurring thoughts from the last 2-5 years. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> Feeling overwhelmed. <strong class="text-emerald-600">Solution:</strong> Start with just one situation.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Extract Lessons</strong><p>Ask: What did this teach me about myself and others? Focus on "Next time, I will..." rather than "I should have...".</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Decide What to Create</strong><p>Build something from these lessons: A journal template, a checklist, a blog, a routine. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> “Who will care?” <strong class="text-emerald-600">Solution:</strong> You are building for clarity, not fame.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Use Creation as Your Anchor</strong><p>Whenever your mind becomes noisy, return to your project. Add one page, one idea. Let your hands move instead of your thoughts running wild.</p></div></div></div></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Seeker to Creator</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Collect Your “Raw Data”</strong><p>Write down major painful events, repeat patterns, and recurring thoughts from the last 2-5 years. <span class="block text-xs mt-1 text-slate-500"><strong class=\"text-rose-500\">Obstacle:</strong> Feeling overwhelmed. <strong class=\"text-emerald-600\">Solution:</strong> Start with just one situation.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Extract Lessons</strong><p>Ask: What did this teach me about myself and others? Focus on "Next time, I will..." rather than "I should have...".</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Decide What to Create</strong><p>Build something from these lessons: A journal template, a checklist, a blog, a routine. <span class="block text-xs mt-1 text-slate-500"><strong class=\"text-rose-500\">Obstacle:</strong> “Who will care?” <strong class=\"text-emerald-600\">Solution:</strong> You are building for clarity, not fame.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Use Creation as Your Anchor</strong><p>Whenever your mind becomes noisy, return to your project. Add one page, one idea. Let your hands move instead of your thoughts running wild.</p></div></div></div></div>
                                 </div>
                             </div>
                             <!-- SECTION 2 -->
@@ -605,7 +610,7 @@
                                 <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
                                     <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Some people heal best when they focus on others. Inside you are two aspects:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Companion (Nurturer):</strong> Wants to comfort, listen, and be there for others.</li><li><strong>The Seller (Charmer):</strong> Naturally influences, inspires, and uplifts people through words and presence.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer when you try to be invisible or shut down your ability to connect.</p></div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-heart"></i> The Companion</h5><p class="mb-2">Listens without judgment and feels others' pain. You are the one friends call when hurting. But if you stop here, you may feel drained and unseen, like an "Invisible Healer."</p></div><div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> The Seller (Leader)</h5><p class="mb-2">This is not commercial sales. It means you "sell" hope, comfort, and clarity. Your tools are your voice, presence, and intentional dressing. You transform complex feelings into soothing communication.</p></div></div>
-                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100"><h5 class="font-bold text-indigo-900 mb-2">The King of Hearts: Leading with Love</h5><p>When Companion and Seller merge, people trust you deeply. You become a natural leader not by force, but by heart. This shows up as a mentor, community builder, or trusted guide.</p><p class="mt-2 font-bold text-rose-700"><i class="ph ph-warning"></i> Responsibility: Never manipulate. Use your influence only for honesty and well-being.</p></div>
+                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100"><h5 class="font-bold text-indigo-900 mb-2">The King of Hearts: Leading with Love</h5><p>When Companion and Seller merge, people trust you deeply. You become a natural leader not by force, but by heart. This shows up as a mentor, community builder, or trusted guide.</p><p class=\"mt-2 font-bold text-rose-700\"><i class=\"ph ph-warning\"></i> Responsibility: Never manipulate. Use your influence only for honesty and well-being.</p></div>
                                     <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: From Nurturer to Leader</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Acknowledge Your Power</strong><p>Notice who comes to you for help and how they feel better around you. Don't dismiss this; it is a strength.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Set Emotional Boundaries</strong><p>Learn to say, "I care, but I need rest." A burned-out Companion helps no one.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Use Appearance Intentionally</strong><p>Dress to communicate safety and trust. You are dressing to support your role as a calm, reliable presence.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Start Sharing Perspective</strong><p>Don't just listen; share gentle insights. "Maybe you need rest, not effort." Speaking up increases your positive impact.</p></div></div></div></div>
                                 </div>
                             </div>
@@ -760,11 +765,50 @@
                                 </div>
                             </div>
                             <!-- FINAL SUMMARY -->
-                            <div class="bg-indigo-900 text-white rounded-2xl p-8 text-center shadow-lg"><h4 class="text-2xl font-bold font-serif-title mb-4">Putting It All Together</h4><p class="text-indigo-200 text-sm max-w-2xl mx-auto mb-6">You do not need to force yourself into only one role. Think of them as tools in your inner toolbox. You are a Seeker learning, a Creator building, a Companion healing, and a Strategist designing your path.</p><div class="inline-block bg-white/10 border border-white/20 rounded-xl p-4 text-sm font-medium"><p class="mb-2">Your next move is simple:</p><ol class="list-decimal list-inside text-left space-y-1 text-indigo-100"><li>Pick one area of life that feels stuck.</li><li>Identify which inner role needs to step forward.</li><li>Take one small, concrete action today.</li></ol></div><p class="mt-6 text-xs text-indigo-300 uppercase tracking-widest font-bold">Clarity comes when thought, emotion, and action move together.</p></div>
+                            <div class="bg-indigo-900 text-white rounded-2xl p-8 text-center shadow-lg"><h4 class="text-2xl font-bold font-serif-title mb-4">Putting It All Together</h4><p class="text-indigo-200 text-sm max-w-2xl mx-auto mb-6">You do not need to force yourself into only one role. Think of them as tools in your inner toolbox. You are a Seeker learning, a Creator building, a Companion healing, and a Strategist designing your path.</p><div class=\"inline-block bg-white/10 border border-white/20 rounded-xl p-4 text-sm font-medium\"><p class=\"mb-2\">Your next move is simple:</p><ol class=\"list-decimal list-inside text-left space-y-1 text-indigo-100\"><li>Pick one area of life that feels stuck.</li><li>Identify which inner role needs to step forward.</li><li>Take one small, concrete action today.</li></ol></div><p class=\"mt-6 text-xs text-indigo-300 uppercase tracking-widest font-bold\">Clarity comes when thought, emotion, and action move together.</p></div>
                         
                     
         </div>
     </div>
+
+    <script>
+        // Disable right click
+        document.addEventListener('contextmenu', function(e) {
+            e.preventDefault();
+        }, false);
+
+        // Disable keyboard shortcuts for inspecting code
+        document.onkeydown = function(e) {
+            // Disable F12
+            if (e.keyCode == 123) {
+                return false;
+            }
+            // Disable Ctrl+Shift+I (Inspector)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+Shift+C (Element Selector)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+Shift+J (Console)
+            if (e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+                return false;
+            }
+            // Disable Ctrl+U (View Source)
+            if (e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+                return false;
+            }
+        };
+
+        function goBack() {
+            if (document.referrer && document.referrer !== '') {
+                window.history.back();
+            } else {
+                window.location.href = "analysis.html";
+            }
+        }
+    </script>
 
 </body>
 </html>
