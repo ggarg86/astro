@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Archetype Mastery Guide — GeoAstro</title>
+
+    <!-- PWA Meta -->
+    <meta name="theme-color" content="#2980b9">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GeoAstro Guide">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Icons & Tailwind -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #2980b9;
+            --bg-color: #f4f6f8;
+            --text-main: #333333;
+            --text-light: #555555;
+            --nav-height: 70px;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Merriweather', serif;
+            line-height: 1.8;
+            color: var(--text-main);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding-top: calc(var(--nav-height) + 20px);
+        }
+
+        h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; color: var(--primary); }
+
+        /* ── NAVBAR ── */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 1000;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 30px;
+        }
+        .nav-brand {
+            font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.2em;
+            color: var(--primary); display: flex; align-items: center; gap: 10px;
+            text-transform: uppercase; letter-spacing: 1px; text-decoration: none;
+        }
+        .nav-right { display: flex; align-items: center; gap: 10px; }
+        .back-btn {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 8px 18px; border-radius: 20px;
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85em;
+            color: var(--primary); background: #f0f4f8; border: 1.5px solid #e2e8f0;
+            cursor: pointer; text-decoration: none; transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .back-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+        @media (max-width: 768px) {
+            .navbar { padding: 0 15px; }
+            .nav-brand span { display: none; }
+            .nav-brand i { font-size: 1.5em; }
+            .back-btn { padding: 7px 14px; font-size: 0.78em; }
+        }
+
+        /* ── HERO ── */
+        .guide-hero {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%);
+            padding: 40px 30px 36px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        .guide-hero-icon {
+            width: 60px; height: 60px; border-radius: 16px;
+            background: rgba(255,255,255,0.15); border: 1.5px solid rgba(255,255,255,0.25);
+            display: inline-flex; align-items: center; justify-content: center;
+            margin-bottom: 16px; font-size: 1.8em; color: #fbbf24;
+        }
+        .guide-hero h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: clamp(1.5rem, 4vw, 2.4rem);
+            color: #fff; margin: 0 0 8px 0; font-weight: 700;
+        }
+        .guide-hero p {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.82em; font-weight: 700; letter-spacing: 0.12em;
+            text-transform: uppercase; color: #a5b4fc; margin: 0;
+        }
+        .hero-divider {
+            width: 60px; height: 3px; background: #fbbf24;
+            border-radius: 2px; margin: 14px auto 0;
+        }
+
+        /* ── CONTENT WRAPPER ── */
+        .guide-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 60px;
+        }
+
+        /* ── UTILITY ── */
+        .font-serif-title { font-family: 'Playfair Display', serif; }
+
+        @media print {
+            .navbar { display: none !important; }
+            body { padding-top: 0 !important; }
+            .guide-hero { -webkit-print-color-adjust: exact; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ── NAVBAR ── -->
+    <nav class="navbar">
+        <a class="nav-brand" href="javascript:void(0)" onclick="goBack()">
+            <i class="ph ph-star-four" style="color:#2980b9;font-size:1.5em;"></i>
+            <span>GeoAstro</span>
+        </a>
+        <div class="nav-right">
+            <a class="back-btn" href="javascript:void(0)" onclick="goBack()">
+                <i class="ph ph-arrow-left"></i> Back to Tool
+            </a>
+        </div>
+    </nav>
+
+    <!-- ── HERO ── -->
+    <div class="guide-hero">
+        <div class="guide-hero-icon"><i class="ph ph-book-open-text"></i></div>
+        <h1>Archetype Mastery Guide</h1>
+        <p>Deep Dive into Emotional Energy</p>
+        <div class="hero-divider"></div>
+    </div>
+
+    <!-- ── GUIDE CONTENT ── -->
+    <div class="guide-content">
+        <div class="space-y-12">
+<!-- NEW SECTION: RAJAS & TAMAS -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title">
+                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-wind"></i> TAMAS (INHALE)</span>
+                                        <i class="ph ph-arrows-left-right text-slate-300 rotate-90 md:rotate-0"></i>
+                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-fire"></i> RAJAS (EXHALE)</span>
+                                    </h4>
+                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Rhythm of Your Soul: Understanding the Breath of Action and Rest</p>
+                                </div>
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <!-- Intro -->
+                                    <div>
+                                        <p class="mb-4">Life is not a straight line; it is a heartbeat. Just as your lungs must empty to fill again, your spirit moves between two profound states of being: <strong>Tamas</strong> (the inhale) and <strong>Rajas</strong> (the exhale). Understanding this rhythm is the key to quieting the mental clutter.</p>
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                                            <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                                                <h5 class="font-bold text-emerald-800 mb-2 flex items-center gap-2"><i class="ph ph-house-line"></i> Tamas: The Inward Breath</h5>
+                                                <p class="text-xs md:text-sm">Your internal sanctuary. It is the phase where you observe, feel, learn, and process. It is the engine room where emotions are created and your internal batteries are charged.</p>
+                                            </div>
+                                            <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
+                                                <h5 class="font-bold text-orange-800 mb-2 flex items-center gap-2"><i class="ph ph-paper-plane-tilt"></i> Rajas: The Outward Breath</h5>
+                                                <p class="text-xs md:text-sm">Your external power. It is the phase where you move, create, achieve, and release. It is where you spend the energy you have gathered to impact the world around you.</p>
+                                            </div>
+                                        </div>
+                                        <p class="mt-4 italic text-slate-500">We often suffer not because we are broken, but because this delicate cycle of charging and releasing has fallen out of sync.</p>
+                                    </div>
+
+                                    <!-- Overdrawn Circuit -->
+                                    <div class="border-l-4 border-orange-400 pl-6 py-2">
+                                        <h5 class="text-lg font-bold text-orange-700 mb-1">The Overdrawn Circuit</h5>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4">Pattern: Action outpaces recharge -- fast demand, slow supply</p>
+                                        
+                                        <p class="mb-3"><strong class="text-slate-900">The Struggle:</strong> You feel like you are running a marathon with no finish line. You are constantly doing -- solving problems, working hard, forcing outcomes -- but you feel hollow inside. You are breathing out but have forgotten to breathe in. Your actions speak loudly. The cost is that what is happening inside speaks quietly and is rarely heard.</p>
+                                        
+                                        <p class="mb-3"><strong class="text-slate-900">The Psychology:</strong> In this scenario, your Utilization Rate (Rajas) is faster than your Production Rate (Tamas). You are demanding heavy outputs from a battery that hasn't had time to charge.</p>
+                                        
+                                        <div class="bg-orange-50/50 p-4 rounded-lg border border-orange-100 my-4 space-y-2">
+                                            <p><strong class="text-orange-800">The Symptoms:</strong> Chronic lethargy, "brain fog," or a sense of failure despite best efforts. Pushing the gas pedal, but the tank is empty.</p>
+                                            <p><strong class="text-orange-800">The Consequence:</strong> Operating on fumes leads to burnout. The failure here isn't a lack of skill; it is a lack of fuel.</p>
+                                        </div>
+
+                                        <p class="mb-4"><strong class="text-slate-900">The Healing Insight:</strong> You cannot pour from an empty cup. If you feel drained, it is a signal that your "action" phase has lasted too long. You do not need to work harder; you need to stop. You must retreat into the Tamas state for introspection. Allow yourself to be passive so you can become powerful again.</p>
+                                        
+                                        <div class="bg-slate-800 text-white p-4 rounded-xl shadow-sm text-center">
+                                            <i class="ph ph-quotes text-orange-400 text-2xl mb-2 block"></i>
+                                            <p class="font-serif-title italic text-lg">"I give myself permission to pause. Rest is not the opposite of work; it is the fuel for it."</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Nourished Circuit -->
+                                    <div class="border-l-4 border-emerald-400 pl-6 py-2">
+                                        <h5 class="text-lg font-bold text-emerald-700 mb-1">The Nourished Circuit</h5>
+                                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wide mb-4">Pattern: Recharge outpaces action -- fast supply, slow demand</p>
+                                        
+                                        <p class="mb-3"><strong class="text-slate-900">The Struggle:</strong> You feel intense pressure inside your chest or mind. You are filled with ideas, heavy emotions, or nervous energy, but you feel stuck. You absorb and feel everything deeply, but you cannot find a fast enough outlet. You are breathing in but cannot breathe out. Your words and emotions are rich -- finding the right channel for them is the work.</p>
+                                        
+                                        <p class="mb-3"><strong class="text-slate-900">The Psychology:</strong> Your Production Rate (Tamas) is faster than your Utilization Rate (Rajas). You are generating massive amounts of emotional and mental energy, but you lack a healthy outlet to release it.</p>
+                                        
+                                        <div class="bg-emerald-50/50 p-4 rounded-lg border border-emerald-100 my-4 space-y-2">
+                                            <p><strong class="text-emerald-800">The Symptoms:</strong> Anxiety, overthinking, or impulsive behavior. Because energy must go somewhere, if you don't release it voluntarily, it will force its way out.</p>
+                                            <p><strong class="text-emerald-800">The Consequence:</strong> When the battery is overcharged and the Rajas connection is weak, you may find yourself acting against your own will just to relieve pressure. It is a flood rather than a flow.</p>
+                                        </div>
+
+                                        <p class="mb-4"><strong class="text-slate-900">The Healing Insight:</strong> You are not lazy; you are congested. You possess a surplus of power that needs a channel. Your recovery lies in movement. You must find small, manageable ways to "discharge" this energy—be it through writing, physical exercise, or a difficult conversation. You must open the gates before the dam breaks.</p>
+                                        
+                                        <div class="bg-slate-800 text-white p-4 rounded-xl shadow-sm text-center">
+                                            <i class="ph ph-quotes text-emerald-400 text-2xl mb-2 block"></i>
+                                            <p class="font-serif-title italic text-lg">"I release what I hold. My emotions are energy, and I choose to direct them into positive action."</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- The Balance -->
+                                    <div class="bg-indigo-50 border border-indigo-100 rounded-xl p-6 text-center">
+                                        <h5 class="text-indigo-900 font-bold mb-2">The Balance</h5>
+                                        <p class="text-indigo-800">Your mental peace relies on honoring both sides of this cycle. When you are full of emotion, let Rajas motivate you to act and release it. When you are empty and tired, let Tamas invite you to rest and recharge. Do not fight the rhythm. Just breathe.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- SECTION 1 -->
+                            
+                                <!-- Rhythm of Your Soul in Archetype Guide -->
+                                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6">
+                                    <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                        <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title">
+                                            <span class="flex items-center gap-2 text-cyan-700"><i class="ph ph-wave-sine"></i> RHYTHM OF YOUR SOUL</span>
+                                        </h4>
+                                        <p class="text-slate-500 text-sm mt-2">Your Charge-Release Circuit — How your inner battery breathes</p>
+                                    </div>
+                                    <div id="archetype-rhythm-container"><div class="p-6 md:p-8 space-y-10 text-slate-700 text-sm leading-relaxed">
+
+    <!-- INTRO -->
+    <div>
+        <h5 class="text-base font-bold text-slate-900 mb-2">What Is the Rhythm of Your Soul?</h5>
+        <p class="mb-3">Your Ketu and Rahu — the two lunar nodes — are always placed in <strong>exactly opposite houses</strong>, forming a charge-release tunnel. Ketu is where your inner battery <strong>charges</strong> (Tamas: absorb, receive, fill). Rahu is where your energy <strong>releases</strong> (Rajas: act, give, express). This axis determines how your inner battery breathes.</p>
+        <p class="mb-3">There are <strong>four charge-release tunnels</strong> based on the four Tamas–Rajas house pairs. Each creates a distinct soul rhythm — a signature way your energy moves between rest and action.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+            <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-3 text-center">
+                <p class="text-xs font-bold text-cyan-700 uppercase tracking-wide mb-1">Tunnel 1</p>
+                <p class="font-bold text-slate-800 text-xs">Strategist ↔ Death/Failure</p>
+                <p class="text-xs text-slate-400 mt-1">House 2 ↔ House 8</p>
+            </div>
+            <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-3 text-center">
+                <p class="text-xs font-bold text-cyan-700 uppercase tracking-wide mb-1">Tunnel 2</p>
+                <p class="font-bold text-slate-800 text-xs">Creator ↔ Seeker of Truth</p>
+                <p class="text-xs text-slate-400 mt-1">House 9 ↔ House 3</p>
+            </div>
+            <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-3 text-center">
+                <p class="text-xs font-bold text-cyan-700 uppercase tracking-wide mb-1">Tunnel 3</p>
+                <p class="font-bold text-slate-800 text-xs">Seller ↔ Companion</p>
+                <p class="text-xs text-slate-400 mt-1">House 11 ↔ House 5</p>
+            </div>
+            <div class="bg-cyan-50 border border-cyan-200 rounded-xl p-3 text-center">
+                <p class="text-xs font-bold text-cyan-700 uppercase tracking-wide mb-1">Tunnel 4</p>
+                <p class="font-bold text-slate-800 text-xs">Warrior ↔ Challenger</p>
+                <p class="text-xs text-slate-400 mt-1">House 12 ↔ House 6</p>
+            </div>
+        </div>
+        <div class="mt-5 bg-indigo-50 border border-indigo-200 rounded-xl p-4">
+            <p class="text-xs font-bold text-indigo-700 uppercase tracking-wide mb-2"><i class="ph ph-info mr-1"></i>Two Circuits Per Tunnel</p>
+            <p><strong>The Overdrawn Circuit:</strong> Ketu is on the action side and Rahu is on the recharge side. Your engine fires faster than the fuel line refills. Output exceeds input. Action comes before the charge is complete. You tend to be more logical and decisive -- your actions speak louder than your words.</p>
+            <p class="mt-2"><strong>The Nourished Circuit:</strong> Ketu is on the recharge side and Rahu is on the action side. Your reservoir fills faster than you consume it. Input exceeds output. Expression is natural, unhurried, and warm. You tend to be more verbal and emotionally expressive -- your words carry more than your actions.</p>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- TUNNEL 1: Strategist ↔ Thoughts of Death (2 ↔ 8) -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-slate-800 to-slate-700 p-5">
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="bg-white/10 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20">Tunnel 1 · House 2 ↔ House 8</span>
+            </div>
+            <h4 class="text-lg md:text-xl font-bold text-white mt-3 font-serif-title">
+                <i class="ph ph-strategy text-slate-300 mr-2"></i>STRATEGIST ↔ THOUGHTS OF DEATH/FAILURE
+            </h4>
+            <p class="text-slate-300 text-xs mt-1 uppercase tracking-wider">The Architect's Charge-Release Circuit</p>
+        </div>
+        <div class="p-6 space-y-6">
+            <p>This is the tunnel of <strong>survival intelligence</strong>. One side maps out failure, risk, and worst-case scenarios (House 8 — Thoughts of Death). The other side converts that fear into structured, strategic plans for survival and safety (House 2 — Strategist). Together, they form a circuit of <em>fear-into-blueprint</em>.</p>
+
+            <!-- Overdrawn Circuit -->
+            <div class="bg-orange-50 border border-orange-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-orange-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Overdrawn Circuit</span>
+                    <span class="text-xs font-bold text-orange-700">Ketu in House 2 · Rahu in House 8</span>
+                </div>
+                <h5 class="font-bold text-orange-800 text-base mb-2">The Sleepless Architect</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Strategy, Slow Fear Processing</p>
+                <p class="mb-3">You build, plan, and strategise faster than your mind can process the underlying fears. The Strategist in you activates constantly — making decisions, mapping paths, solving problems — while the deeper layer of fear and mortality contemplation (House 8) has not yet had time to complete its cycle.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You plan obsessively but never feel safe. You build and rebuild the same escape routes. The anxiety never fully quiets even when the plan is perfect — because the fear beneath the plan has not been acknowledged.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">Your actions speak before your words do. You deliver and produce -- and the people around you see the output long before they hear your reasoning.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">Stop planning the escape until you have sat with the fear. Let House 8 complete its cycle — acknowledge what you are truly afraid of losing. Only then will your Strategist have a real target.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You are decisive and protective, but your partner may feel managed rather than loved. You plan for safety but forget to feel. Show vulnerability before showing the blueprint.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">For women in this circuit: your body was designed for the nourished pattern. The cost of sustained forced action accumulates quietly -- protect your restoration time with the same intelligence you give everything else.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-orange-700 italic border-l-2 border-orange-300 pl-3">"I cannot build a safe house on a foundation I have never inspected. I must face the fear before I can design the exit."</p>
+            </div>
+
+            <!-- Nourished Circuit -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-emerald-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Nourished Circuit</span>
+                    <span class="text-xs font-bold text-emerald-700">Ketu in House 8 · Rahu in House 2</span>
+                </div>
+                <h5 class="font-bold text-emerald-800 text-base mb-2">The Unshakeable Planner</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Fear Processing, Slow Strategy Release</p>
+                <p class="mb-3">Your fear-processing engine runs fast — you deeply contemplate endings, risks, and worst-case scenarios with unusual clarity. But your output as a Strategist is slow and deliberate. You know exactly what could go wrong before you build. This makes your plans rare, precise, and almost failure-proof.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You see failure before others do. You sit comfortably with dark thoughts that terrify others. But people may see your slowness to act as hesitation or fear — when actually you are completing your internal due diligence.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">You express through words and presence more than through action. You are naturally more verbal -- when you finally speak or move, the depth behind it is felt immediately.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">Trust your slow output. The world will rush past you and make costly mistakes. Your strategy, when it arrives, will be the one that survives. Stop apologising for your pace — it is your precision.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You are the calm in the storm. Partners feel safe with you because you have already anticipated the disaster and have a plan. Your challenge: let others into your inner world of contemplation — do not carry the fear alone.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">For men in this circuit: you absorb emotional input faster than your system was built to protect itself. Others lean on your steadiness without noticing what it costs. Build the boundary before the well runs dry.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-emerald-700 italic border-l-2 border-emerald-300 pl-3">"I have already walked through every possible failure in my mind. When I move, I move with certainty."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- TUNNEL 2: Creator ↔ Seeker of Truth (9 ↔ 3) -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-indigo-800 to-indigo-700 p-5">
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="bg-white/10 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20">Tunnel 2 · House 9 ↔ House 3</span>
+            </div>
+            <h4 class="text-lg md:text-xl font-bold text-white mt-3 font-serif-title">
+                <i class="ph ph-paint-brush-broad text-indigo-300 mr-2"></i>CREATOR ↔ SEEKER OF TRUTH
+            </h4>
+            <p class="text-indigo-300 text-xs mt-1 uppercase tracking-wider">The Thinker-Builder Charge-Release Circuit</p>
+        </div>
+        <div class="p-6 space-y-6">
+            <p>This is the tunnel of <strong>thought-into-creation</strong>. One side absorbs truth from the environment — observing, questioning, and gathering emotional intelligence (House 3 — Seeker of Truth). The other side transmutes that gathered truth into tangible reality — building, making, and manifesting (House 9 — Creator). Together, they form a circuit of <em>data-into-substance</em>.</p>
+
+            <!-- Overdrawn Circuit -->
+            <div class="bg-orange-50 border border-orange-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-orange-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Overdrawn Circuit</span>
+                    <span class="text-xs font-bold text-orange-700">Ketu in House 9 · Rahu in House 3</span>
+                </div>
+                <h5 class="font-bold text-orange-800 text-base mb-2">The Premature Builder</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Creation, Slow Truth-Gathering</p>
+                <p class="mb-3">You build and create faster than you gather the data and emotional intelligence to justify it. The Creator in you fires first — starting projects, making things, generating output — while the Seeker has not yet completed its cycle of observation and understanding.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You produce constantly but feel like something is missing from your work. You build quickly, abandon projects, and start again — because the Seeker never got to finish informing the Creator.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">You show what you mean more than you say it. Output and action come naturally -- verbal expression of your inner process is slower and rarer.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">Pause the making. Let the Seeker complete a full cycle of observation before the Creator picks up the tools. The next thing you build will have depth that your previous work lacked.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You are exciting and generative — always building something new. But you may not truly listen before you respond. Practice the Seeker in conversations: observe and absorb fully before you create your reply.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">For women in this circuit: your natural depth lives in observation and expression, not output speed. In relationships, protect the time to simply absorb before responding -- this is where your real intelligence lives.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-orange-700 italic border-l-2 border-orange-300 pl-3">"When my mind feels like a storm of unorganised thoughts, I am not lost — I am gathering raw materials. I must gather before I build."</p>
+            </div>
+
+            <!-- Nourished Circuit -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-emerald-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Nourished Circuit</span>
+                    <span class="text-xs font-bold text-emerald-700">Ketu in House 3 · Rahu in House 9</span>
+                </div>
+                <h5 class="font-bold text-emerald-800 text-base mb-2">The Informed Architect</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Truth-Gathering, Slow Creation</p>
+                <p class="mb-3">Your inner Seeker is always active — constantly absorbing truth, data, observation, and emotional intelligence at high speed. The Creator releases this gathered material slowly and deliberately. Your creations are rare, but when they arrive, they are deeply informed and enduring.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You absorb everything — conversations, patterns, emotions, knowledge — and carry it inside for a long time before anything comes out. Others may see you as quiet or slow. But inside, you are always full.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">You are naturally more verbal and expressive than your pace suggests. When you speak or create, the words carry uncommon depth -- they were built from genuine observation, not improvised.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">Stop dissipating your gathered energy through endless words. Channel it into your hands. Write it down, build it, make it real. You are the manufacturer of your own peace — the material is already inside you.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You are deeply observant and genuinely understanding. Partners feel truly seen by you. Your challenge: share what you have observed. Do not keep all that insight locked inside — your perspective is a gift.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">For men in this circuit: you feel and process emotions more quickly than most men around you. This is your strength, not a liability. Let your partner see the depth you are carrying -- they are likely waiting for you to share it.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-emerald-700 italic border-l-2 border-emerald-300 pl-3">"I have been gathering for a long time. Everything I need to create something real already lives inside me."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- TUNNEL 3: Seller ↔ Companion (11 ↔ 5) -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-violet-800 to-violet-700 p-5">
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="bg-white/10 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20">Tunnel 3 · House 11 ↔ House 5</span>
+            </div>
+            <h4 class="text-lg md:text-xl font-bold text-white mt-3 font-serif-title">
+                <i class="ph ph-storefront text-violet-300 mr-2"></i>SELLER ↔ COMPANION
+            </h4>
+            <p class="text-violet-300 text-xs mt-1 uppercase tracking-wider">The Love-Connection Charge-Release Circuit</p>
+        </div>
+        <div class="p-6 space-y-6">
+            <p>This is the tunnel of <strong>love-in-motion</strong>. One side receives support, nurturing, and emotional connection (House 5 — Companion). The other side broadcasts that love outward — selling warmth, hope, and healing to the world (House 11 — Seller). Together, they form a circuit of <em>receive-love, give-love</em>.</p>
+
+            <!-- Overdrawn Circuit -->
+            <div class="bg-orange-50 border border-orange-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-orange-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Overdrawn Circuit</span>
+                    <span class="text-xs font-bold text-orange-700">Ketu in House 11 · Rahu in House 5</span>
+                </div>
+                <h5 class="font-bold text-orange-800 text-base mb-2">The Overcrowded Healer</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Giving, Slow Receiving</p>
+                <p class="mb-3">You give love, support and connection faster than your emotional reserves can be filled. Your Seller energy pushes you to reach out and heal others while your inner Companion — your need to receive support — is still waiting to be filled. You pour from a cup that empties faster than it fills.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You become a permanent giver in every room. You sell warmth to the world but forget to buy any for yourself. The crowd loves you, but you go home empty. You may feel used, unseen, or quietly resentful despite appearing socially magnetic.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">Your warmth is communicated through action and presence -- you show up and deliver. The words come later, if at all. People feel your care through what you do, not what you say.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">You cannot pour endlessly. Schedule a moment to receive before you give. Let someone else be the healer for one conversation. Receiving is not weakness — it is how the circuit stays alive.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You are the person everyone calls first. But you may attract emotionally unavailable partners who take without giving. Consciously choose relationships where the flow of support is reciprocal.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">For women in this circuit: your body was built to receive before it gives. This circuit reverses that. Actively schedule time to be held before you give -- not after you are empty. You are allowed to need before you are asked.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-orange-700 italic border-l-2 border-orange-300 pl-3">"I cannot sell what I have not yet bought for myself. I must receive love before I can truly give it."</p>
+            </div>
+
+            <!-- Nourished Circuit -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-emerald-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Nourished Circuit</span>
+                    <span class="text-xs font-bold text-emerald-700">Ketu in House 5 · Rahu in House 11</span>
+                </div>
+                <h5 class="font-bold text-emerald-800 text-base mb-2">The Nourished Connector</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Receiving, Slow Giving</p>
+                <p class="mb-3">Your emotional reservoir fills quickly — you receive support, connection and belonging with ease. The release into active giving and selling happens slowly and deliberately, meaning your generosity is deep and considered rather than scattered. You give when you are truly full, not out of obligation.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You can feel full of love with nowhere to put it. The warmth builds up inside without enough outlets, sometimes creating a restless ache to be needed or to connect. You may withdraw before giving, which confuses people who sense your warmth.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">You are naturally expressive and verbal -- warmth flows through words, conversation, and presence. Connection is your native language. When you speak from fullness, people feel the difference immediately.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">Your power is in choosing where to direct this fullness. One intentional act of connection per day is enough to keep the circuit flowing. You do not need to give everything at once — discernment is your superpower.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You are a renewable source of emotional nourishment when you choose your relationships wisely. Your challenge: do not hoard the love. The people in your inner circle are waiting for you to let them feel it.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">For men in this circuit: you generate warmth faster than you can protect yourself. Others unconsciously draw on your surplus. The boundary is not about caring less -- it is about ensuring the people closest to you receive your best, not your remainder.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-emerald-700 italic border-l-2 border-emerald-300 pl-3">"I do not need to give everything at once. My love is not diminished by being patient with where it goes."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════ -->
+    <!-- TUNNEL 4: Warrior ↔ Challenger (12 ↔ 6) -->
+    <!-- ══════════════════════════════════════════════════════ -->
+    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="bg-gradient-to-r from-rose-800 to-rose-700 p-5">
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="bg-white/10 text-white text-xs font-bold px-3 py-1 rounded-full border border-white/20">Tunnel 4 · House 12 ↔ House 6</span>
+            </div>
+            <h4 class="text-lg md:text-xl font-bold text-white mt-3 font-serif-title">
+                <i class="ph ph-sword text-rose-300 mr-2"></i>WARRIOR ↔ CHALLENGER
+            </h4>
+            <p class="text-rose-300 text-xs mt-1 uppercase tracking-wider">The Transformation-Fire Charge-Release Circuit</p>
+        </div>
+        <div class="p-6 space-y-6">
+            <p>This is the tunnel of <strong>fire-and-forge</strong>. One side generates friction, resistance, and the heat of challenge — the necessary tension that tests readiness (House 6 — Challenger). The other side executes transformation with red-hot discipline — breaking walls, correcting injustice, and forcing change (House 12 — Warrior). Together they form a circuit of <em>friction-into-force</em>.</p>
+
+            <!-- Overdrawn Circuit -->
+            <div class="bg-orange-50 border border-orange-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-orange-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Overdrawn Circuit</span>
+                    <span class="text-xs font-bold text-orange-700">Ketu in House 12 · Rahu in House 6</span>
+                </div>
+                <h5 class="font-bold text-orange-800 text-base mb-2">The Restless Combatant</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Force, Slow Friction</p>
+                <p class="mb-3">Your Warrior energy executes change faster than your inner Challenger can generate the friction and tension needed to justify it. You fight before the war is fully understood — taking bold, intense action before emotional clarity about the real target has arrived.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You feel always in battle mode — pushing, correcting, confronting — but without a clear target. The urgency is real but the direction keeps shifting. You exhaust yourself fighting battles that did not need to be fought yet.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">You act first, explain later. Your decisive force speaks louder than your words. In a crisis, your output and movement arrive before your reasoning is fully articulated.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">Pause before the strike. Let the friction build long enough to reveal the real target. The Warrior is most powerful when the Challenger has already identified the wall. Urgency without direction is just noise.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-orange-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You are fierce and protective, but you may fight with your closest people before identifying whether they are the source of the tension. Learn to ask: is this person the wall, or are they just standing near it?</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-orange-300 pl-2">For women in this circuit: every Warrior activation carries a recovery cost your body was not designed to sustain at this pace. Distinguish between situations that require force and situations that only require a firm, immovable standard.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-orange-700 italic border-l-2 border-orange-300 pl-3">"I do not swing before I see the target. I let the tension build until it shows me exactly where the wall is."</p>
+            </div>
+
+            <!-- Nourished Circuit -->
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="bg-emerald-600 text-white text-10px font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">The Nourished Circuit</span>
+                    <span class="text-xs font-bold text-emerald-700">Ketu in House 6 · Rahu in House 12</span>
+                </div>
+                <h5 class="font-bold text-emerald-800 text-base mb-2">The Tempered Warrior</h5>
+                <p class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-3">Fast Friction, Slow Force</p>
+                <p class="mb-3">Your inner Challenger generates tension, friction, and clarity rapidly — faster than your Warrior can act on it. You see the injustice, feel the heat, and understand the battle completely — but the execution arrives slowly and deliberately. You are the warrior who knows how the fight ends before it begins.</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-heartbeat mr-1"></i>The Experience</p>
+                        <p class="text-xs text-slate-700">You feel the pressure of unacted energy building inside. You see exactly what needs to change but feel blocked or slow in executing the transformation. The knowing outpaces the doing, and this gap creates internal pressure.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">You express through calm, precise words. When you finally speak or act, the certainty behind it is absolute -- because everything has already been fully processed internally.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-lightbulb mr-1 text-yellow-500"></i>Healing Insight</p>
+                        <p class="text-xs text-slate-700">Your deliberateness is not weakness — it is precision. The warrior who waits for the right moment wins the war that others lose by rushing. Stop apologising for your pace. It is your advantage.</p>
+                    </div>
+                    <div class="bg-white rounded-lg p-4 border border-emerald-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase mb-2"><i class="ph ph-users mr-1"></i>In Relationships</p>
+                        <p class="text-xs text-slate-700">You see relationship problems clearly and early. Your challenge: speak what you see before the tension becomes a crisis. Your slow execution in conflict can allow damage to accumulate unnecessarily. Name it early.</p><p class="text-xs text-slate-600 mt-2 italic border-l-2 border-emerald-300 pl-2">For men in this circuit: your emotional intelligence and verbal depth are genuine gifts in relationships. Do not suppress them to appear harder. The people who deserve your presence will value exactly this quality -- and they will stay.</p>
+                    </div>
+                </div>
+                <p class="mt-4 text-sm font-semibold text-emerald-700 italic border-l-2 border-emerald-300 pl-3">"I have already seen how this ends. I move when the moment is ready — not a second before, not a second after."</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLOSING NOTE -->
+    <div class="bg-slate-800 text-white rounded-2xl p-6 md:p-8 text-center shadow-lg">
+        <h4 class="text-xl font-bold font-serif-title mb-3">Working With Your Soul's Rhythm</h4>
+        <p class="text-slate-300 text-sm max-w-2xl mx-auto mb-5">Your Ketu-Rahu tunnel is not a life sentence -- it is a map. Once you know whether you are running the Overdrawn or Nourished circuit, you can consciously work with it rather than against it. The rhythm is always trying to complete itself. Your only job is to stop resisting the half you keep skipping.</p>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs mt-4">
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <p class="font-bold text-cyan-300 mb-1">Overdrawn Circuit</p>
+                <p class="text-slate-300">Your actions already speak. Now give the recharge side time to complete its cycle before the next move.</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <p class="font-bold text-cyan-300 mb-1">Nourished Circuit</p>
+                <p class="text-slate-300">Release. Trust your pace. Your output is precision, not procrastination.</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <p class="font-bold text-cyan-300 mb-1">Signs of Balance</p>
+                <p class="text-slate-300">Action feels natural. Rest feels guilt-free. You move with the current, not against it.</p>
+            </div>
+            <div class="bg-white/10 rounded-xl p-3 border border-white/10">
+                <p class="font-bold text-cyan-300 mb-1">Signs of Imbalance</p>
+                <p class="text-slate-300">Chronic fatigue or restlessness. Feeling stuck or scattered. One side is being skipped.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+                                    </div>
+                                </div>
+                                    
+                                
+
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-binoculars"></i> SEEKER OF TRUTH</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-paint-brush-broad"></i> CREATOR</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">From Chaos to Creation: Turning Overthinking into Something Real</p>
+                                </div>
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>When your mind is full of thoughts, "what ifs," worries, and ideas, it often feels like a storm. You are not lazy or broken – you are overloaded.</p><p class="mt-2">Inside you, there are two important parts:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Seeker:</strong> The part of you that observes, feels deeply, and tries to understand life.</li><li><strong>The Creator:</strong> The part of you that turns ideas and emotions into real, physical things.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer most when the Seeker is active, but the Creator is silent.</p></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-eye"></i> The Seeker: The Inner Student</h5><p class="mb-2">The Seeker notices small details, thinks deeply about why things happen, replays conversations, and feels emotions intensely. You may ask:</p><ul class="list-disc pl-5 italic text-emerald-700/80"><li>“Why do I always end up in this situation?”</li><li>“Why do people behave like this?”</li><li>“Why do I feel this way?”</li></ul><p class="mt-3 text-xs font-bold text-emerald-800">This is the Seeker at work.</p></div>
+                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-hammer"></i> The Creator: Giving Thoughts a Home</h5><p class="mb-2">The Creator says: “Enough thinking. Let’s build something.” It turns pain into projects and ideas into reality.</p><p class="mb-2">This looks like writing insights, building a product, designing a routine, or making something physical.</p><p class="mt-3 text-xs font-bold text-orange-800 italic">The Creator doesn’t ask, “What if?” The Creator says, “What can I make with what I have right now?”</p></div>
+                                    </div>
+                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500"><h5 class="font-bold text-slate-900 mb-2">Example Story: The Silent Observer</h5><p class="italic text-slate-600 mb-4">Imagine Arjun. He spends nights replaying arguments, feeling like a CCTV camera—recording everything but doing nothing. He is the Seeker.</p><p>One day, instead of overthinking, he opens a notebook. He writes down lessons from his failed relationships. Over weeks, these notes turn into a "Red Flag Checklist" he shares with friends. By turning his pain into a tangible tool, he stops overthinking and starts building.</p><p class="font-bold text-indigo-700 mt-2">This is how overthinking becomes a tool instead of torture.</p></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Seeker to Creator</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Collect Your “Raw Data”</strong><p>Write down major painful events, repeat patterns, and recurring thoughts from the last 2-5 years. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> Feeling overwhelmed. <strong class="text-emerald-600">Solution:</strong> Start with just one situation.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Extract Lessons</strong><p>Ask: What did this teach me about myself and others? Focus on "Next time, I will..." rather than "I should have...".</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Decide What to Create</strong><p>Build something from these lessons: A journal template, a checklist, a blog, a routine. <span class="block text-xs mt-1 text-slate-500"><strong class="text-rose-500">Obstacle:</strong> “Who will care?” <strong class="text-emerald-600">Solution:</strong> You are building for clarity, not fame.</span></p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Use Creation as Your Anchor</strong><p>Whenever your mind becomes noisy, return to your project. Add one page, one idea. Let your hands move instead of your thoughts running wild.</p></div></div></div></div>
+                                </div>
+                            </div>
+                            <!-- SECTION 2 -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-hand-heart"></i> COMPANION</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-storefront"></i> SELLER</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Art of Connection: Healing Yourself by Supporting Others</p>
+                                </div>
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Some people heal best when they focus on others. Inside you are two aspects:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Companion (Nurturer):</strong> Wants to comfort, listen, and be there for others.</li><li><strong>The Seller (Charmer):</strong> Naturally influences, inspires, and uplifts people through words and presence.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer when you try to be invisible or shut down your ability to connect.</p></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-heart"></i> The Companion</h5><p class="mb-2">Listens without judgment and feels others' pain. You are the one friends call when hurting. But if you stop here, you may feel drained and unseen, like an "Invisible Healer."</p></div><div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-microphone-stage"></i> The Seller (Leader)</h5><p class="mb-2">This is not commercial sales. It means you "sell" hope, comfort, and clarity. Your tools are your voice, presence, and intentional dressing. You transform complex feelings into soothing communication.</p></div></div>
+                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100"><h5 class="font-bold text-indigo-900 mb-2">The King of Hearts: Leading with Love</h5><p>When Companion and Seller merge, people trust you deeply. You become a natural leader not by force, but by heart. This shows up as a mentor, community builder, or trusted guide.</p><p class="mt-2 font-bold text-rose-700"><i class="ph ph-warning"></i> Responsibility: Never manipulate. Use your influence only for honesty and well-being.</p></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: From Nurturer to Leader</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Acknowledge Your Power</strong><p>Notice who comes to you for help and how they feel better around you. Don't dismiss this; it is a strength.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Set Emotional Boundaries</strong><p>Learn to say, "I care, but I need rest." A burned-out Companion helps no one.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Use Appearance Intentionally</strong><p>Dress to communicate safety and trust. You are dressing to support your role as a calm, reliable presence.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Start Sharing Perspective</strong><p>Don't just listen; share gentle insights. "Maybe you need rest, not effort." Speaking up increases your positive impact.</p></div></div></div></div>
+                                </div>
+                            </div>
+                            <!-- SECTION 3 -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title"><span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-fist"></i> CHALLENGER</span><i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i><span class="flex items-center gap-2 text-orange-600"><i class="ph ph-sword"></i> WARRIOR</span></h4><p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">The Fire of Transformation: From Victim to Victor</p>
+                                </div>
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5><p>Some people cannot stay calm when things are wrong. Inside you are two forces:</p><ul class="list-disc pl-5 mt-2 space-y-1"><li><strong>The Challenger (Catalyst):</strong> Points out what is wrong and refuses to tolerate injustice.</li><li><strong>The Warrior (Protector):</strong> Takes strong action to fix or defend.</li></ul><p class="mt-2 font-medium text-indigo-700">You suffer when you see what is wrong but do nothing, turning that fire inward into frustration.</p></div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6"><div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100"><h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-warning-circle"></i> The Challenger</h5><p class="mb-2">Notices unfairness, lies, and inefficiency. You aren't "negative"; you are sensitive to standards. But without action, you become the "Silent Volcano"—always irritated but powerless.</p></div><div class="bg-orange-50 p-5 rounded-xl border border-orange-100"><h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-shield-check"></i> The Warrior</h5><p class="mb-2">Moves when others freeze. Protects people and principles. Driven by "Do or Die" energy. You are here to be brave when others are scared, taking bold decisions.</p></div></div>
+                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-rose-500"><h5 class="font-bold text-slate-900 mb-2">The Synergy: Turning Fire into Purpose</h5><p>When you feel angry or restless, it means your inner Challenger sees a problem, but your Warrior is locked up. The cure is not to suppress anger but to direct it.</p><p class="font-bold text-slate-800 mt-2">Ask: "What exactly is wrong? And what is within my power to fix?"</p></div>
+                                    <div><h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Step-by-Step Plan: Constructive Power</h5><div class="space-y-4"><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div><div><strong class="block text-slate-800">Name Your Anger</strong><p>Write down what irritates you. See anger as a signal of your values, not a sin.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div><div><strong class="block text-slate-800">Control What You Can</strong><p>Separate what you can change from what you cannot. Focus on your own boundaries and standards.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div><div><strong class="block text-slate-800">Choose a Battle Worth Fighting</strong><p>Don't waste energy on petty arguments. Direct it toward protecting the vulnerable or fixing a broken system.</p></div></div><div class="flex gap-3"><div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div><div><strong class="block text-slate-800">Train Discipline</strong><p>Physical training channels aggression. The Warrior is about controlled power, not exploding rage.</p></div></div></div></div>
+                                </div>
+                            </div>
+                            <!-- SECTION 4: DEATH -> STRATEGIST -->
+                            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                                <div class="bg-slate-50 border-b border-slate-100 p-6">
+                                    <h4 class="text-xl md:text-2xl font-bold text-slate-800 flex flex-col md:flex-row items-start md:items-center gap-2 md:gap-3 font-serif-title">
+                                        <span class="flex items-center gap-2 text-emerald-700"><i class="ph ph-recycle"></i> THOUGHTS OF DEATH</span>
+                                        <i class="ph ph-arrow-right text-slate-300 rotate-90 md:rotate-0"></i>
+                                        <span class="flex items-center gap-2 text-orange-600"><i class="ph ph-strategy"></i> STRATEGIST</span>
+                                    </h4>
+                                    <p class="text-sm text-slate-500 font-bold uppercase tracking-wider mt-2">From Fear of Loss to Strategic Survival: Turning Anxiety into a Plan</p>
+                                </div>
+                                
+                                <div class="p-6 md:p-8 space-y-8 text-slate-700 text-sm leading-relaxed">
+                                    
+                                    <!-- What This Really Means -->
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-2">What This Really Means</h5>
+                                        <p>When your mind is constantly predicting failure, imagining how things will die, or obsessing over safety, it feels like torture. You are not pessimistic or “negative” – you are scanning for survival.</p>
+                                        <p class="mt-2">Inside you, there are two important parts:</p>
+                                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                                            <li><strong>The Sentry (Thoughts of Death):</strong> The part of you that investigates threats, fears losing happiness, and obsessively researches how things could go wrong.</li>
+                                            <li><strong>The Strategist:</strong> The part of you that takes that fear and designs a way to survive, recover, and rise from the ashes.</li>
+                                        </ul>
+                                        <p class="mt-2 font-medium text-indigo-700">You suffer most when the Sentry is screaming about danger, but the Strategist has not been given a clear mission to solve it.</p>
+                                    </div>
+
+                                    <!-- Grid: Sentry vs Strategist -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div class="bg-emerald-50 p-5 rounded-xl border border-emerald-100">
+                                            <h5 class="font-bold text-emerald-800 mb-3 flex items-center gap-2"><i class="ph ph-shield-warning"></i> The Sentry: Guardian of "What Could Go Wrong"</h5>
+                                            <p class="mb-2">The Sentry is the version of you who:</p>
+                                            <ul class="list-disc pl-5 italic text-emerald-700/80 space-y-1">
+                                                <li>Scans the environment deep below the surface to find weak spots.</li>
+                                                <li>Feels terror when happiness arrives, asking "When will I lose this?"</li>
+                                                <li>Refuses to invest time or money until safety is guaranteed.</li>
+                                                <li>Investigates dark secrets to ensure nothing surprises you.</li>
+                                            </ul>
+                                            <p class="mt-3 text-xs font-bold text-emerald-800">It isn't trying to hurt you; it is trying to keep you safe by predicting death before it happens.</p>
+                                        </div>
+                                        <div class="bg-orange-50 p-5 rounded-xl border border-orange-100">
+                                            <h5 class="font-bold text-orange-800 mb-3 flex items-center gap-2"><i class="ph ph-compass"></i> The Strategist: Architect of Survival</h5>
+                                            <p class="mb-2">The Strategist says:</p>
+                                            <ul class="list-disc pl-5 italic text-orange-700/80 space-y-1">
+                                                <li>“I see the risk. Now, let’s build a bridge over it.”</li>
+                                                <li>“If this fails, here is exactly how we will recover.”</li>
+                                                <li>“Let’s find the loophole to survive this chaos.”</li>
+                                            </ul>
+                                            <p class="mt-3 text-xs font-bold text-orange-800">The Strategist says: “I know how things die, so here is the design to make sure I survive.”</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Example Story -->
+                                    <div class="bg-slate-50 p-6 rounded-xl border-l-4 border-indigo-500">
+                                        <h5 class="font-bold text-slate-900 mb-2">Example Story: The Paralyzed Investigator</h5>
+                                        <p class="italic text-slate-600 mb-4">Priya has a stable job but is terrified of poverty. She reads about economic collapses and worries one mistake will ruin her life. She has all the information about "how things die," but no plan on how to live. She is the Sentry without the Strategist.</p>
+                                        <h5 class="font-bold text-indigo-700 mb-2 text-xs uppercase tracking-wide">Turning Panic into a Plan</h5>
+                                        <p>Priya activates her inner Strategist. She says: "Okay, the fear is real. Total financial loss is the 'Death' I fear."</p>
+                                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                                            <li>She diversifies savings (Risk Management).</li>
+                                            <li>She learns a secondary skill (Survival Tactic).</li>
+                                            <li>She creates a strict budget (The Path).</li>
+                                        </ul>
+                                        <p class="mt-2 font-bold text-indigo-800">The fear is still there, but it is no longer paralyzing. It has become fuel for strategy.</p>
+                                    </div>
+
+                                    <!-- The Method -->
+                                    <div class="bg-indigo-50/50 p-6 rounded-xl border border-indigo-100">
+                                        <h5 class="font-bold text-indigo-900 mb-2">The Method: Fear + Coordinates = Strategy</h5>
+                                        <p>Fear without a plan is anxiety. Fear with a plan is strategy. To heal:</p>
+                                        <ul class="list-disc pl-5 mt-2 space-y-1">
+                                            <li><strong>Acknowledge the Fear (Sentry):</strong> Let your mind show you the worst-case scenario.</li>
+                                            <li><strong>Define the Path (Strategist):</strong> Connect your current reality to a specific outcome of safety.</li>
+                                        </ul>
+                                        <p class="mt-3 font-bold text-center text-lg text-indigo-900 font-serif-title">“Do not just stare at the fire – build the exit.”</p>
+                                    </div>
+
+                                    <!-- Steps -->
+                                    <div>
+                                        <h5 class="text-base font-bold text-slate-900 mb-4 border-b border-slate-100 pb-2">Practical Step-by-Step Plan: From Sentry to Strategist</h5>
+                                        <div class="space-y-6">
+                                            <!-- Step 1 -->
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">1</div>
+                                                <div class="w-full">
+                                                    <strong class="block text-slate-800">Let the Sentry Speak (Define the Death)</strong>
+                                                    <p>Write down the exact "Death" or "Failure" you are afraid of (Losing job? Breakup? Failure?). Let your mind list every way it could go wrong.</p>
+                                                    <div class="mt-2 text-xs bg-rose-50 border border-rose-100 p-2 rounded text-rose-800">
+                                                        <strong>Obstacle:</strong> Overwhelmed by negativity. <br>
+                                                        <strong>Solution:</strong> Remind yourself: "I am gathering data for the Strategist. I need to know the risks to defeat them."
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Step 2 -->
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">2</div>
+                                                <div class="w-full">
+                                                    <strong class="block text-slate-800">Define Your Physical Coordinates</strong>
+                                                    <p>The Strategist needs a map. Define two points clearly:</p>
+                                                    <ul class="list-disc pl-5 mt-1 text-slate-600">
+                                                        <li><strong>START:</strong> Where are you right now? (e.g., "$500 in bank", "Just fired")</li>
+                                                        <li><strong>END:</strong> What does survival look like? (e.g., "Survive 6 months", "Find new job")</li>
+                                                    </ul>
+                                                    <div class="mt-2 text-xs bg-slate-100 border border-slate-200 p-2 rounded text-slate-600">
+                                                        <strong>Obstacle:</strong> Vague goals like "I want to be happy." <br>
+                                                        <strong>Solution:</strong> Make it physical and tangible.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Step 3 -->
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">3</div>
+                                                <div class="w-full">
+                                                    <strong class="block text-slate-800">Find the Loophole or the Path</strong>
+                                                    <p>Ask: "Given these constraints, what is the most efficient way to get from START to END?" Look for the "hack" or simple way out (cutting losses, asking for help, changing the goal).</p>
+                                                </div>
+                                            </div>
+                                            <!-- Step 4 -->
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">4</div>
+                                                <div class="w-full">
+                                                    <strong class="block text-slate-800">Execute to Survive</strong>
+                                                    <p>Pick one action that increases safety immediately. Make the call. Sell the asset. Sign the paper.</p>
+                                                    <div class="mt-2 text-xs bg-emerald-50 border border-emerald-100 p-2 rounded text-emerald-800">
+                                                        <strong>Solution:</strong> Don't wait for "perfectly safe." Aim for "Safe Enough to Move."
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Step 5 -->
+                                            <div class="flex gap-3">
+                                                <div class="flex-shrink-0 w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center font-bold text-xs">5</div>
+                                                <div class="w-full">
+                                                    <strong class="block text-slate-800">Use Fear as Fuel</strong>
+                                                    <p>When "Thoughts of Death" return, ask: "What new risk have you found?" Then ask the Strategist: "How do we mitigate this?" You become a Grandmaster playing a game you know how to win.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- FINAL SUMMARY -->
+                            <div class="bg-indigo-900 text-white rounded-2xl p-8 text-center shadow-lg"><h4 class="text-2xl font-bold font-serif-title mb-4">Putting It All Together</h4><p class="text-indigo-200 text-sm max-w-2xl mx-auto mb-6">You do not need to force yourself into only one role. Think of them as tools in your inner toolbox. You are a Seeker learning, a Creator building, a Companion healing, and a Strategist designing your path.</p><div class="inline-block bg-white/10 border border-white/20 rounded-xl p-4 text-sm font-medium"><p class="mb-2">Your next move is simple:</p><ol class="list-decimal list-inside text-left space-y-1 text-indigo-100"><li>Pick one area of life that feels stuck.</li><li>Identify which inner role needs to step forward.</li><li>Take one small, concrete action today.</li></ol></div><p class="mt-6 text-xs text-indigo-300 uppercase tracking-widest font-bold">Clarity comes when thought, emotion, and action move together.</p></div>
+                        
+                    
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            if (document.referrer && document.referrer !== '') {
+                window.history.back();
+            } else {
+                // Fallback: try to detect which version to go to
+                window.location.href = 'analysis.html';
+            }
+        }
+    </script>
+
+</body>
+</html>

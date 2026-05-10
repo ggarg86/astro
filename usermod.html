@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>User Management — GeoAstro</title>
+    <meta name="theme-color" content="#2980b9">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <style>
+        :root { --primary:#2c3e50; --accent:#0d9488; --bg:#f4f6f8; --nav-h:70px; }
+        * { box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+        body { font-family:'Merriweather',serif; background:var(--bg); color:#333; margin:0; padding-top:calc(var(--nav-h) + 16px); overflow-x: hidden; }
+        h1,h2,h3 { font-family:'Montserrat',sans-serif; color:var(--primary); }
+
+        /* NAVBAR */
+        .navbar { position:fixed;top:0;left:0;width:100%;height:var(--nav-h);background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.08);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 24px; }
+        .nav-brand { font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1em;color:var(--primary);display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:0.5px;text-decoration:none; }
+        .back-btn { display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:var(--primary);background:#f0f4f8;border:1.5px solid #e2e8f0;cursor:pointer;text-decoration:none;transition:all 0.2s; }
+        .back-btn:hover { background:var(--accent);color:#fff;border-color:var(--accent); }
+        
+        @media(max-width:640px){ 
+            .navbar{padding:0 12px;} 
+            .nav-brand span{display:none;} 
+            .nav-brand i{font-size:1.6em;}
+            .back-btn { padding: 8px 12px; }
+        }
+
+        /* PAGE WRAP */
+        .page-wrap { max-width:860px;margin:0 auto;padding:0 12px 60px; }
+
+        /* HERO */
+        .hero { background:linear-gradient(135deg,#134e4a 0%,#0f766e 60%,#0d9488 100%);border-radius:20px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:16px; }
+        .hero-icon { width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,0.15);border:1.5px solid rgba(255,255,255,0.25);display:flex;align-items:center;justify-content:center;font-size:1.4em;color:#99f6e4;flex-shrink:0; }
+        .hero h1 { font-family:'Montserrat',sans-serif;font-weight:800;font-size:clamp(1rem, 4vw, 1.35rem);color:#fff;margin:0 0 2px; line-height: 1.2; }
+        .hero p { font-family:'Montserrat',sans-serif;font-size:0.68em;font-weight:600;color:#99f6e4;margin:0;text-transform:uppercase;letter-spacing:0.08em; }
+
+        /* SECTIONS */
+        .card-section { background:#fff; border:1.5px solid #c7d2fe; border-radius:16px; padding:16px 20px; margin-bottom:16px; box-shadow:0 2px 10px rgba(99,102,241,0.06); }
+        .section-label { font-family:'Montserrat',sans-serif;font-size:0.68em;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between; gap:5px; }
+
+        /* SEARCH BOX */
+        .search-input-wrap { position:relative; }
+        .search-icon { position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#6366f1;font-size:1.05em;pointer-events:none; }
+        #user-search { width:100%;padding:12px 16px 12px 42px;border:2px solid #a5b4fc;border-radius:10px;font-family:'Merriweather',serif;font-size:0.9em;color:#1e1b4b;background:#fff;outline:none;transition:all 0.2s; box-shadow:0 1px 3px rgba(99,102,241,0.08); }
+        #user-search:focus { border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.12); }
+
+        /* DROPDOWN & LIST ITEMS */
+        #user-search-dropdown { position:absolute;top:calc(100% + 6px);left:0;right:0;background:white;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.15);z-index:900;max-height:320px;overflow-y:auto;display:none; scrollbar-width: thin; }
+        #user-search-dropdown.show { display:block; }
+        
+        /* ITEM STYLING (Used in Search and Directory) */
+        .user-item { padding:14px 16px; cursor:pointer; transition:background 0.1s; border-bottom:1px solid #f1f5f9; background: #fff; }
+        .user-item:last-child { border-bottom:none; }
+        .user-item:hover { background:#f0fdf4; }
+        .user-name { font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.88em;color:#1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .user-meta { display:flex;flex-wrap:wrap;gap:6px; align-items: center; }
+        
+        .tag { display:inline-flex;align-items:center;gap:4px;font-size:0.68em;font-family:'Montserrat',sans-serif;font-weight:600;padding:3px 9px;border-radius:20px; white-space: nowrap; }
+        .tag.active  { background:#f0fdf4;color:#166534; }
+        .tag.expired { background:#fef2f2;color:#991b1b; }
+        .tag.admin   { background:#ede9fe;color:#5b21b6; }
+        .tag.course  { background:#fff7ed;color:#c2410c; }
+        .tag.city    { background:#f0f9ff;color:#0369a1; }
+
+        /* DIRECTORY CONTAINER */
+        .user-list-container { max-height: 500px; overflow-y: auto; border-radius: 12px; border: 1.5px solid #e2e8f0; background: #fafafa; }
+
+        /* SORT CONTROLS */
+        .sort-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+        .sort-select { padding: 7px 14px; border-radius: 20px; border: 1.5px solid #cbd5e1; background: #fff; font-family: 'Montserrat', sans-serif; font-size: 0.72em; font-weight: 700; color: #475569; outline: none; cursor: pointer; transition: all 0.2s; }
+
+        /* EDIT CARD */
+        #edit-card { background:#fff;border-radius:16px;border:1.5px solid #c7d2fe;overflow:hidden;box-shadow:0 12px 30px rgba(99,102,241,0.15);display:none; margin-bottom: 24px; position: relative; z-index: 850; }
+        #edit-card.show { display:block; animation: slideUp 0.3s ease-out; }
+        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        
+        .edit-header { background:linear-gradient(135deg,#1e1b4b,#3730a3);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px; }
+        .edit-title { font-family:'Montserrat',sans-serif;font-weight:800;font-size:0.85em;color:#fff;display:flex;align-items:center;gap:8px; }
+        .status-badge { display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.68em; }
+        .edit-body { padding:22px 18px; }
+
+        /* FORM */
+        .field-group { margin-bottom:16px; }
+        .grid-2 { display:grid;grid-template-columns: 1fr; gap:16px; margin-bottom:16px; }
+        @media(min-width:600px){ .grid-2{grid-template-columns: 1fr 1fr;} }
+        .field-label { font-family:'Montserrat',sans-serif;font-size:0.65em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;display:flex;align-items:center;gap:4px; }
+        .field-input { width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Merriweather',serif;font-size:0.88em;color:#1e293b;background:#fff;outline:none;transition:border-color 0.2s; }
+        
+        /* TOGGLES - VIBRANT */
+        .toggle-group { display:flex;background:#e2e8f0;border-radius:12px;padding:4px; }
+        .tgl-btn { flex:1;padding:10px 6px;border:none;background:none;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.75em;color:#475569;border-radius:9px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px; }
+        .tgl-btn.active { font-weight:800; color:#fff !important; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
+        .tgl-btn.active.clr-admin { background:#7c3aed; } 
+        .tgl-btn.active.clr-user  { background:#0d9488; } 
+        .tgl-btn.active.clr-yes   { background:#16a34a; } 
+        .tgl-btn.active.clr-no    { background:#ef4444; }
+
+        .form-actions { display:flex;gap:12px;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid #e2e8f0; }
+        .btn-cancel { flex:1; max-width:140px; padding:11px 16px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:#64748b; cursor:pointer; }
+        .btn-save { flex:2; max-width:240px; padding:11px 16px;border-radius:10px;border:none;background:#0d9488;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:#fff; cursor:pointer; }
+
+        #toast { position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:#fff;border-radius:12px;padding:14px 20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;box-shadow:0 8px 30px rgba(0,0,0,0.2);z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none; display:flex; align-items:center; gap:8px; }
+        #toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+        .spinner { display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a class="nav-brand" href="index.html">
+            <i class="ph ph-star-four" style="color:#0d9488; font-size: 1.4em;"></i>
+            <span>GeoAstro</span>
+        </a>
+        <button class="back-btn" onclick="goToAnalysis()">
+            <i class="ph ph-arrow-left"></i> <span>Back to Tool</span>
+        </button>
+    </nav>
+
+    <div class="page-wrap">
+
+        <div class="hero">
+            <div class="hero-icon"><i class="ph ph-users-three"></i></div>
+            <div>
+                <h1>User Management</h1>
+                <p>Admin Panel &bull; GeoAstro</p>
+            </div>
+        </div>
+
+        <!-- ACCESS DENIED SECTION -->
+        <div id="access-denied" style="display:none; text-align:center; background:#fff; padding:40px; border-radius:16px; border:1.5px solid #fecaca; margin-bottom: 20px;">
+            <i class="ph ph-lock-key" style="font-size:3em; color:#dc2626; margin-bottom:12px; display:block;"></i>
+            <h2 style="color:#dc2626; font-family: Montserrat; font-weight: 800;">Access Denied</h2>
+            <p style="color:#64748b; font-family: Montserrat; font-size: 0.85em; margin-top: 8px;">You do not have administrative permissions to view this page. Please log in as an administrator to proceed.</p>
+            <button onclick="goToAnalysis()" style="margin-top: 20px; padding: 10px 24px; background: var(--accent); color: #fff; border: none; border-radius: 20px; font-family: Montserrat; font-weight: 700; font-size: 0.8em; cursor: pointer;">Return to Home</button>
+        </div>
+
+        <div id="main-content" style="display:none;">
+            
+            <!-- SEARCH BOX SECTION -->
+            <div class="card-section">
+                <div class="section-label"><i class="ph ph-magnifying-glass"></i> Search User</div>
+                <div class="search-input-wrap">
+                    <i class="ph ph-magnifying-glass search-icon"></i>
+                    <input type="text" id="user-search" placeholder="Type name or 10-digit mobile..." oninput="onSearchInput(this.value)" autocomplete="off">
+                    <div id="user-search-dropdown"></div>
+                </div>
+            </div>
+
+            <!-- EDIT CARD SECTION -->
+            <div id="edit-card">
+                <div class="edit-header">
+                    <div class="edit-title"><i class="ph ph-pencil-simple"></i><span id="edit-title-name">Edit User</span></div>
+                    <div id="edit-title-status"></div>
+                </div>
+                <div class="edit-body" id="edit-body"></div>
+            </div>
+
+            <!-- DIRECTORY SECTION -->
+            <div class="card-section">
+                <div class="section-label">
+                    <span><i class="ph ph-users-four"></i> User Directory</span>
+                    <span id="user-count" style="color:#64748b; font-size:0.85em; font-weight:700;">Loading...</span>
+                </div>
+                
+                <div class="sort-bar">
+                    <span style="font-size:0.68em; font-weight:800; color:#94a3b8; text-transform:uppercase; letter-spacing: 0.05em;">Sort by:</span>
+                    <select class="sort-select" id="sort-users" onchange="renderUserList()">
+                        <option value="name">Name (A-Z)</option>
+                        <option value="expiry">Expiry (Soonest)</option>
+                        <option value="role">Role (Admins First)</option>
+                        <option value="course">Course (Access First)</option>
+                    </select>
+                </div>
+
+                <div class="user-list-container" id="user-list">
+                    <div style="padding:50px 20px; text-align:center; color:#94a3b8;">
+                        <span class="spinner" style="border-top-color:#0d9488; width:22px; height:22px;"></span>
+                        <div style="margin-top:12px; font-size:0.85em; font-family:'Montserrat'; font-weight:600;">Fetching Database...</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbhTLnx-Ihgbo8Jynznu8BT7asn_blWgZr6c80cUx4ag6XpDDg6dSdp4uu4sNiF282HQ/exec';
+
+        var _usersCache  = null;
+        var _searchTimer = null;
+        var _activeEntry = null;
+
+        async function apiCall(payload){
+            const url = APPS_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+            try {
+                const res = await fetch(url);
+                const json = await res.json();
+                return json;
+            } catch(e) { return { success: false, message: "Connection Error" }; }
+        }
+
+        // --- HELPERS ---
+        function getSession(){
+            try { 
+                const session = localStorage.getItem('gtc_user');
+                return session ? JSON.parse(session) : null; 
+            } catch(e) { return null; }
+        }
+
+        const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        const MMAP   = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+
+        function isExpired(str){
+            if(!str) return false;
+            var parts = str.trim().split(' ');
+            if(parts.length !== 3) return false;
+            var expiry = new Date(parseInt(parts[2]), MMAP[parts[1]], parseInt(parts[0]), 23, 59, 59);
+            return new Date() > expiry;
+        }
+
+        function toPickerVal(str){
+            if(!str) return '';
+            var p = str.trim().split(' ');
+            if(p.length!==3 || MMAP[p[1]]===undefined) return '';
+            return p[2]+'-'+String(MMAP[p[1]]+1).padStart(2,'0')+'-'+String(p[0]).padStart(2,'0');
+        }
+
+        function toSheetDate(val){
+            if(!val) return '';
+            var p = val.split('-');
+            if(p.length!==3) return '';
+            return parseInt(p[2])+' '+MONTHS[parseInt(p[1])-1]+' '+p[0];
+        }
+
+        function getExpiryDate(str){
+            if(!str) return new Date(2099,0,1);
+            var parts = str.trim().split(' ');
+            if(parts.length !== 3) return new Date(2099,0,1);
+            return new Date(parseInt(parts[2]), MMAP[parts[1]], parseInt(parts[0]));
+        }
+
+        function todayPlusMonths(n){
+            var d = new Date(); d.setMonth(d.getMonth()+n);
+            return d.getDate()+' '+MONTHS[d.getMonth()]+' '+d.getFullYear();
+        }
+
+        function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+        function showToast(msg, type){
+            var t = document.getElementById('toast');
+            t.className = 'show ' + (type === 'error' ? 'success error' : 'success');
+            t.innerHTML = '<i class="ph '+(type==='error'?'ph-warning':'ph-check-circle')+'"></i> ' + msg;
+            clearTimeout(t._timer);
+            t._timer = setTimeout(() => { t.className = ''; }, 3200);
+        }
+
+        // --- RENDERERS ---
+        function buildItemHTML(entry) {
+            var u = entry.user;
+            var expired = isExpired(u.valid_until);
+
+            var statusTag = expired
+                ? '<span class="tag expired"><i class="ph ph-warning-circle"></i> Expired</span>'
+                : '<span class="tag active"><i class="ph ph-check-circle"></i> Active</span>';
+            var adminTag = (u.role||'')==='admin' ? '<span class="tag admin"><i class="ph ph-crown-simple"></i> Admin</span>' : '';
+            
+            const caRaw = (u.course_access || '').toString().toLowerCase();
+            const hasCourse = caRaw === 'yes' || caRaw === 'true';
+            var courseTag = hasCourse ? '<span class="tag course"><i class="ph ph-book-open"></i> Course</span>' : '';
+            
+            var location = (u.city||'') + (u.state ? ', '+u.state : '');
+            var cityTag = location ? '<span class="tag city"><i class="ph ph-map-pin"></i> '+esc(location)+'</span>' : '';
+
+            return `
+                <div class="user-name"><i class="ph ph-user-circle" style="color:var(--accent); font-size:1.1em;"></i> ${esc(u.full_name)}</div>
+                <div class="user-meta">
+                    <span class="tag city"><i class="ph ph-phone"></i> ${esc(u.mobile)}</span>
+                    ${cityTag}
+                    <span class="tag city"><i class="ph ph-calendar-check"></i> Until: ${esc(u.valid_until)}</span>
+                    ${statusTag} ${adminTag} ${courseTag}
+                </div>`;
+        }
+
+        // --- DIRECTORY LIST ---
+        function renderUserList(){
+            const container = document.getElementById('user-list');
+            const countLabel = document.getElementById('user-count');
+            if(!_usersCache) return;
+
+            countLabel.textContent = `${_usersCache.length} Total Users`;
+            
+            const sortVal = document.getElementById('sort-users').value;
+            let list = [..._usersCache];
+
+            // Sorting Logic
+            list.sort((a, b) => {
+                if(sortVal === 'name') {
+                    return (a.user.full_name || '').localeCompare(b.user.full_name || '');
+                } else if(sortVal === 'expiry') {
+                    return getExpiryDate(a.user.valid_until) - getExpiryDate(b.user.valid_until);
+                } else if(sortVal === 'role') {
+                    const ra = (a.user.role||'').toLowerCase() === 'admin' ? 0 : 1;
+                    const rb = (b.user.role||'').toLowerCase() === 'admin' ? 0 : 1;
+                    return ra - rb;
+                } else if(sortVal === 'course') {
+                    const ca = (a.user.course_access||'').toLowerCase() === 'yes' ? 0 : 1;
+                    const cb = (b.user.course_access||'').toLowerCase() === 'yes' ? 0 : 1;
+                    return ca - cb;
+                }
+                return 0;
+            });
+
+            container.innerHTML = list.map(e => `
+                <div class="user-item" onclick="selectUser('${e.user.user_id}')">
+                    ${buildItemHTML(e)}
+                </div>
+            `).join('');
+        }
+
+        // --- SEARCH LOGIC ---
+        function onSearchInput(val){
+            clearTimeout(_searchTimer);
+            var dd = document.getElementById('user-search-dropdown');
+            if(!val.trim()){ dd.classList.remove('show'); return; }
+            _searchTimer = setTimeout(() => {
+                if(_usersCache) searchFromCache(val.trim());
+            }, 50);
+        }
+
+        function searchFromCache(query){
+            const dd = document.getElementById('user-search-dropdown');
+            const q = query.toLowerCase();
+            const results = _usersCache.filter(e => {
+                const name = (e.user.full_name||'').toLowerCase();
+                const mob = (e.mobile||'').toString();
+                return name.includes(q) || mob.includes(q);
+            });
+
+            if(results.length > 0){
+                dd.innerHTML = results.map(e => `
+                    <div class="user-item" onclick="selectUser('${e.user.user_id}')">
+                        ${buildItemHTML(e)}
+                    </div>
+                `).join('');
+                dd.classList.add('show');
+            } else {
+                dd.innerHTML = '<div style="padding:20px; text-align:center; color:#94a3b8; font-family:Montserrat; font-size:0.85em;">No matches found for "'+esc(query)+'"</div>';
+                dd.classList.add('show');
+            }
+        }
+
+        function selectUser(uid){
+            document.getElementById('user-search-dropdown').classList.remove('show');
+            _activeEntry = _usersCache.find(e => String(e.user.user_id) === String(uid));
+            if(_activeEntry) {
+                document.getElementById('user-search').value = _activeEntry.user.full_name;
+                renderEditForm(_activeEntry);
+            }
+        }
+
+        // --- EDIT FORM ---
+        function renderEditForm(entry){
+            const u = entry.user;
+            const isAdmin = (u.role||'').toLowerCase() === 'admin';
+            const hasCourse = (u.course_access||'').toLowerCase() === 'yes';
+            const expired = isExpired(u.valid_until);
+
+            document.getElementById('edit-title-name').textContent = 'Edit: ' + u.full_name;
+            document.getElementById('edit-title-status').innerHTML = expired
+                ? '<span class="status-badge" style="background:#fef2f2; color:#991b1b; border:1px solid #fecaca;"><i class="ph ph-warning-circle"></i> Expired</span>'
+                : '<span class="status-badge" style="background:#f0fdf4; color:#166534; border:1px solid #bbf7d0;"><i class="ph ph-check-circle"></i> Active</span>';
+
+            const html = `
+                <div class="field-group">
+                    <div class="field-label"><i class="ph ph-user"></i> Full Name</div>
+                    <input class="field-input" id="ef-name" value="${esc(u.full_name)}">
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <div class="field-label"><i class="ph ph-phone"></i> Mobile</div>
+                        <input class="field-input" id="ef-mob" maxlength="10" value="${esc(u.mobile)}">
+                    </div>
+                    <div>
+                        <div class="field-label"><i class="ph ph-lock-key"></i> Password</div>
+                        <input class="field-input" id="ef-pw" value="${esc(entry.password || u.mobile)}">
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <div class="field-label"><i class="ph ph-buildings"></i> City</div>
+                        <input class="field-input" id="ef-city" value="${esc(u.city||'')}">
+                    </div>
+                    <div>
+                        <div class="field-label"><i class="ph ph-map-pin"></i> State</div>
+                        <input class="field-input" id="ef-state" value="${esc(u.state||'')}">
+                    </div>
+                </div>
+                <div class="field-group">
+                    <div class="field-label"><i class="ph ph-calendar-check"></i> Valid Until</div>
+                    <input class="field-input" id="ef-until" type="date" value="${toPickerVal(u.valid_until)}" oninput="updatePreview()">
+                    <div class="stored-preview" id="ef-preview"><i class="ph ph-arrow-right"></i> Stored as: <b>${u.valid_until || '—'}</b></div>
+                    <div class="quick-btns" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+                        <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5px solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(1)">+1M</button>
+                        <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5 solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(6)">+6M</button>
+                        <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5px solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(12)">+1Y</button>
+                        <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5px solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(120)">+10Y</button>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <div class="field-label"><i class="ph ph-shield-check"></i> Role</div>
+                        <div class="toggle-group" id="tg-role">
+                            <button class="tgl-btn ${!isAdmin?'active clr-user':''}" data-val="regular" onclick="setToggle('tg-role',this)"><i class="ph ph-user"></i> User</button>
+                            <button class="tgl-btn ${isAdmin?'active clr-admin':''}" data-val="admin" onclick="setToggle('tg-role',this)"><i class="ph ph-crown-simple"></i> Admin</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="field-label"><i class="ph ph-book-open"></i> Course Access</div>
+                        <div class="toggle-group" id="tg-course">
+                            <button class="tgl-btn ${!hasCourse?'active clr-no':''}" data-val="no" onclick="setToggle('tg-course',this)"><i class="ph ph-x-circle"></i> No</button>
+                            <button class="tgl-btn ${hasCourse?'active clr-yes':''}" data-val="yes" onclick="setToggle('tg-course',this)"><i class="ph ph-check-circle"></i> Yes</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-cancel" onclick="closeEdit()"><i class="ph ph-x"></i> Cancel</button>
+                    <button class="btn-save" id="btn-save" onclick="saveUser()"><i class="ph ph-floppy-disk"></i> Save Changes</button>
+                </div>
+            `;
+            document.getElementById('edit-body').innerHTML = html;
+            document.getElementById('edit-card').classList.add('show');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // --- INIT & GUARD LOGIC ---
+        window.addEventListener('DOMContentLoaded', () => {
+            const user = getSession();
+            
+            // Check if user exists and has the 'admin' role
+            if (user && (user.role === 'admin' || user.role === 'Admin')) {
+                document.getElementById('main-content').style.display = 'block';
+                document.getElementById('access-denied').style.display = 'none';
+                loadUsersCache();
+            } else {
+                document.getElementById('main-content').style.display = 'none';
+                document.getElementById('access-denied').style.display = 'block';
+            }
+        });
+
+        async function loadUsersCache(){
+            try {
+                const res = await apiCall({action: 'getusers'});
+                if(res.success) {
+                    _usersCache = res.users;
+                    renderUserList();
+                }
+            } catch(e) { console.error("Cache load error", e); }
+        }
+
+        function setToggle(groupId, btn){
+            const group = document.getElementById(groupId);
+            group.querySelectorAll('.tgl-btn').forEach(b => b.classList.remove('active','clr-admin','clr-user','clr-yes','clr-no'));
+            btn.classList.add('active');
+            const v = btn.dataset.val;
+            if(v==='admin') btn.classList.add('clr-admin');
+            if(v==='regular') btn.classList.add('clr-user');
+            if(v==='yes') btn.classList.add('clr-yes');
+            if(v==='no') btn.classList.add('clr-no');
+        }
+
+        function getToggleVal(groupId){
+            const btn = document.getElementById(groupId).querySelector('.tgl-btn.active');
+            return btn ? btn.dataset.val : '';
+        }
+
+        function updatePreview(){
+            var inp = document.getElementById('ef-until');
+            var prev = document.getElementById('ef-preview');
+            if(inp && prev) prev.querySelector('b').textContent = toSheetDate(inp.value) || '—';
+        }
+
+        function quickValidity(months){
+            var sheetDate = todayPlusMonths(months);
+            var inp = document.getElementById('ef-until');
+            if(inp) {
+                inp.value = toPickerVal(sheetDate);
+                updatePreview();
+            }
+        }
+
+        async function saveUser(){
+            const btn = document.getElementById('btn-save');
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Saving...';
+
+            const payload = {
+                action: 'updateuser',
+                user_id: String(_activeEntry.user.user_id),
+                full_name: document.getElementById('ef-name').value.trim(),
+                mobile: document.getElementById('ef-mob').value.trim(),
+                password: document.getElementById('ef-pw').value.trim(),
+                city: document.getElementById('ef-city').value.trim(),
+                state: document.getElementById('ef-state').value.trim(),
+                valid_until: toSheetDate(document.getElementById('ef-until').value),
+                role: getToggleVal('tg-role') === 'admin' ? 'admin' : '',
+                course_access: getToggleVal('tg-course') === 'yes' ? 'yes' : 'no'
+            };
+
+            try {
+                const res = await apiCall(payload);
+                if(res.success){
+                    showToast("User updated successfully!", "success");
+                    loadUsersCache(); 
+                    setTimeout(closeEdit, 500);
+                } else { showToast(res.message || "Update Failed", "error"); }
+            } catch(e) { showToast("Connection error", "error"); }
+            
+            btn.disabled = false;
+            btn.innerHTML = '<i class="ph ph-floppy-disk"></i> Save Changes';
+        }
+
+        function closeEdit(){
+            document.getElementById('edit-card').classList.remove('show');
+            document.getElementById('user-search').value = '';
+            _activeEntry = null;
+        }
+
+        /**
+         * Navigates directly to the analysis tool.
+         */
+        function goToAnalysis(){ 
+            window.location.assign('analysis.html');
+        }
+    </script>
+</body>
+</html>
