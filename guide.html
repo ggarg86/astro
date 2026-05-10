@@ -127,12 +127,12 @@
 
     <!-- ── NAVBAR ── -->
     <nav class="navbar">
-        <a class="nav-brand" href="javascript:void(0)" onclick="goBack()">
+        <a class="nav-brand" href="index.html">
             <i class="ph ph-star-four" style="color:#2980b9;font-size:1.5em;"></i>
             <span>GeoAstro</span>
         </a>
         <div class="nav-right">
-            <a class="back-btn" href="javascript:void(0)" onclick="goBack()">
+            <a class="back-btn" href="analysis.html">
                 <i class="ph ph-arrow-left"></i> Back to Tool
             </a>
         </div>
@@ -765,17 +765,6 @@
                     
         </div>
     </div>
-
-    <script>
-        function goBack() {
-            if (document.referrer && document.referrer !== '') {
-                window.history.back();
-            } else {
-                // Fallback: try to detect which version to go to
-                window.location.href = "analysis.html";
-            }
-        }
-    </script>
 
 </body>
 </html>
