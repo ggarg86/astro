@@ -680,8 +680,8 @@
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                         <div id="validity-badge"><i class="ph ph-calendar-check"></i> <span id="validity-text">Valid until —</span></div>
                         <button id="course-access-btn" onclick="window.open('https://sites.google.com/view/geotimezonecourse/home','_blank')"><i class="ph ph-book-open"></i> My Course</button>
-                <a href="guide.html" target="_blank" id="guide-link-btn" style="padding:6px 16px;border:1.5px solid #4338ca;border-radius:20px;background:#4f46e5;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:white;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;"><i class="ph ph-book-open-text"></i> Archetype Guide</a>
-                <button id="manage-users-btn" onclick="window.open('usermod.html','_blank')"><i class="ph ph-users-three"></i> Manage Users</button>
+                <a href="guide.html" target="_blank" id="guide-link-btn" style="padding:6px 16px;border:1.5px solid #b45309;border-radius:20px;background:#f59e0b;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:#1c1400;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;"><i class="ph ph-book-open-text"></i> Archetype Guide</a>
+                <button id="manage-users-btn" onclick="openUserMod()"><i class="ph ph-users-three"></i> Manage Users</button>
                     <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
                     </div>
                 </div>
@@ -3259,6 +3259,14 @@ function getDSTInfo(tzName, date) {
             const inp=document.getElementById('record-search-input');
             if(dd&&!dd.contains(e.target)&&e.target!==inp){dd.classList.remove('show');}
         });
+
+        function openUserMod(){
+            var user = getSession();
+            if(!user) return;
+            var payload = user.user_id + '|' + user.mobile + '|' + Date.now();
+            var token = btoa(payload);
+            window.open('usermod.html?t=' + encodeURIComponent(token), '_blank');
+        }
     </script>
 
 

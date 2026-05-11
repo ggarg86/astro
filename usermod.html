@@ -43,7 +43,7 @@
 
         /* SECTIONS */
         .card-section { background:#fff; border:1.5px solid #c7d2fe; border-radius:16px; padding:16px 20px; margin-bottom:16px; box-shadow:0 2px 10px rgba(99,102,241,0.06); }
-        .section-label { font-family:'Montserrat',sans-serif;font-size:0.68em;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between; gap:5px; }
+        .section-label { font-family:'Montserrat',sans-serif;font-size:0.7em;font-weight:800;color:#4338ca;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:5px; }
 
         /* SEARCH BOX */
         .search-input-wrap { position:relative; }
@@ -59,7 +59,7 @@
         .user-item { padding:14px 16px; cursor:pointer; transition:background 0.1s; border-bottom:1px solid #f1f5f9; background: #fff; }
         .user-item:last-child { border-bottom:none; }
         .user-item:hover { background:#f0fdf4; }
-        .user-name { font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.88em;color:#1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+        .user-name { font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.9em;color:#1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
         .user-meta { display:flex;flex-wrap:wrap;gap:6px; align-items: center; }
         
         .tag { display:inline-flex;align-items:center;gap:4px;font-size:0.68em;font-family:'Montserrat',sans-serif;font-weight:600;padding:3px 9px;border-radius:20px; white-space: nowrap; }
@@ -71,6 +71,8 @@
 
         /* DIRECTORY CONTAINER */
         .user-list-container { max-height: 500px; overflow-y: auto; border-radius: 12px; border: 1.5px solid #e2e8f0; background: #fafafa; }
+        .user-list-container::-webkit-scrollbar { width: 6px; }
+        .user-list-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
         /* SORT CONTROLS */
         .sort-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
@@ -106,8 +108,11 @@
         .btn-cancel { flex:1; max-width:140px; padding:11px 16px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:#64748b; cursor:pointer; }
         .btn-save { flex:2; max-width:240px; padding:11px 16px;border-radius:10px;border:none;background:#0d9488;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:#fff; cursor:pointer; }
 
-        #toast { position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:#fff;border-radius:12px;padding:14px 20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;box-shadow:0 8px 30px rgba(0,0,0,0.2);z-index:9999;opacity:0;transition:all 0.3s;pointer-events:none; display:flex; align-items:center; gap:8px; }
+        #toast { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:12px 24px;border-radius:30px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.82em;z-index:99999;opacity:0;transition:all 0.35s ease;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center; }
         #toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
+        #toast.toast-success { background:#166534; }
+        #toast.toast-warning { background:#92400e; }
+        #toast.toast-error   { background:#991b1b; }
         .spinner { display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite; }
     </style>
 </head>
@@ -166,7 +171,7 @@
             <div class="card-section">
                 <div class="section-label">
                     <span><i class="ph ph-users-four"></i> User Directory</span>
-                    <span id="user-count" style="color:#64748b; font-size:0.85em; font-weight:700;">Loading...</span>
+                    <span style="display:flex;align-items:center;gap:10px;"><span id="user-count" style="color:#64748b;font-size:0.85em;font-weight:700;">Loading...</span><button onclick="loadUsersCache(true)" title="Refresh from server" style="background:none;border:1.5px solid #c7d2fe;border-radius:20px;padding:3px 10px;font-family:Montserrat;font-size:0.7em;font-weight:700;color:#4338ca;cursor:pointer;display:flex;align-items:center;gap:4px;"><i class="ph ph-arrows-clockwise"></i> Refresh</button></span>
                 </div>
                 
                 <div class="sort-bar">
@@ -194,18 +199,48 @@
 
     <script>
         const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbhTLnx-Ihgbo8Jynznu8BT7asn_blWgZr6c80cUx4ag6XpDDg6dSdp4uu4sNiF282HQ/exec';
+        const CACHE_KEY     = 'gtc_users_cache';
+        const CACHE_TTL_MS  = 5 * 60 * 1000; // 5 minutes
 
         var _usersCache  = null;
         var _searchTimer = null;
         var _activeEntry = null;
 
-        async function apiCall(payload){
-            const url = APPS_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+        // Read-only calls use GET (faster, browser-cacheable); mutations use POST
+        async function apiCall(payload, isMutation = false){
             try {
-                const res = await fetch(url);
-                const json = await res.json();
-                return json;
+                let res;
+                if (isMutation) {
+                    res = await fetch(APPS_SCRIPT_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain' },
+                        body: JSON.stringify(payload)
+                    });
+                } else {
+                    const url = APPS_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+                    res = await fetch(url);
+                }
+                return await res.json();
             } catch(e) { return { success: false, message: "Connection Error" }; }
+        }
+
+        // LocalStorage helpers with TTL
+        function saveToLocalCache(users) {
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), users }));
+            } catch(e) {}
+        }
+        function loadFromLocalCache() {
+            try {
+                const raw = localStorage.getItem(CACHE_KEY);
+                if (!raw) return null;
+                const { ts, users } = JSON.parse(raw);
+                if (Date.now() - ts > CACHE_TTL_MS) { localStorage.removeItem(CACHE_KEY); return null; }
+                return users;
+            } catch(e) { return null; }
+        }
+        function invalidateLocalCache() {
+            try { localStorage.removeItem(CACHE_KEY); } catch(e) {}
         }
 
         // --- HELPERS ---
@@ -257,10 +292,10 @@
 
         function showToast(msg, type){
             var t = document.getElementById('toast');
-            t.className = 'show ' + (type === 'error' ? 'success error' : 'success');
-            t.innerHTML = '<i class="ph '+(type==='error'?'ph-warning':'ph-check-circle')+'"></i> ' + msg;
-            clearTimeout(t._timer);
-            t._timer = setTimeout(() => { t.className = ''; }, 3200);
+            t.textContent = msg;
+            t.className = 'show toast-' + (type || 'success');
+            clearTimeout(window._tt);
+            window._tt = setTimeout(() => { t.className = ''; }, 3200);
         }
 
         // --- RENDERERS ---
@@ -442,28 +477,102 @@
         }
 
         // --- INIT & GUARD LOGIC ---
-        window.addEventListener('DOMContentLoaded', () => {
+        window.addEventListener('DOMContentLoaded', async () => {
             const user = getSession();
-            
-            // Check if user exists and has the 'admin' role
-            if (user && (user.role === 'admin' || user.role === 'Admin')) {
-                document.getElementById('main-content').style.display = 'block';
-                document.getElementById('access-denied').style.display = 'none';
-                loadUsersCache();
-            } else {
-                document.getElementById('main-content').style.display = 'none';
+
+            // Step 1: Local role check — instant
+            if (!user || (user.role !== 'admin' && user.role !== 'Admin')) {
                 document.getElementById('access-denied').style.display = 'block';
+                return;
+            }
+
+            // Step 2: Verify token passed from analysis page (prevents direct URL access)
+            var urlToken = new URLSearchParams(window.location.search).get('t');
+            if (urlToken) {
+                try {
+                    var decoded  = atob(decodeURIComponent(urlToken));
+                    var parts    = decoded.split('|');
+                    var tokenUid = parts[0];
+                    var tokenTs  = parseInt(parts[2] || '0');
+                    var age = Date.now() - tokenTs;
+                    if (age > 30000 || tokenUid !== user.user_id.toString()) {
+                        document.getElementById('access-denied').style.display = 'block';
+                        document.getElementById('access-denied').querySelector('p').textContent =
+                            'Access token expired or invalid. Please use the Manage Users button from the tool.';
+                        return;
+                    }
+                } catch(e) {
+                    document.getElementById('access-denied').style.display = 'block';
+                    return;
+                }
+            }
+
+            // Step 3: Show UI immediately while server verifies silently
+            document.getElementById('main-content').style.display = 'block';
+            loadUsersCache();
+
+            // Step 4: Silent server-side verify with Google Sheets
+            try {
+                var res = await apiCall({ action: 'verify', user_id: user.user_id, mobile: user.mobile });
+                if (!res.success || res.expired) {
+                    document.getElementById('main-content').style.display = 'none';
+                    document.getElementById('access-denied').style.display = 'block';
+                    document.getElementById('access-denied').querySelector('p').textContent =
+                        res.message || 'Session expired. Please log in again from the main tool.';
+                }
+            } catch(e) {
+                // Network error — local check passed, allow access gracefully
+                console.warn('Server verify unavailable — running on local session');
             }
         });
 
-        async function loadUsersCache(){
+        async function loadUsersCache(forceRefresh = false){
+            // 1. Serve from localStorage instantly if valid
+            if (!forceRefresh) {
+                const local = loadFromLocalCache();
+                if (local) {
+                    _usersCache = local;
+                    renderUserList();
+                    refreshUsersInBackground();
+                    return;
+                }
+            }
+
+            // 2. Show spinner (cold load OR manual refresh)
+            invalidateLocalCache();
+            document.getElementById('user-list').innerHTML = '<div style="padding:50px 20px;text-align:center;color:#94a3b8;"><span class="spinner" style="border-top-color:#0d9488;width:22px;height:22px;"></span><div style="margin-top:12px;font-size:0.85em;font-family:\'Montserrat\';font-weight:600;">Fetching Database...</div></div>';
+            document.getElementById('user-count').textContent = 'Loading...';
+
             try {
                 const res = await apiCall({action: 'getusers'});
                 if(res.success) {
                     _usersCache = res.users;
+                    saveToLocalCache(_usersCache);
+                    renderUserList();
+                    if(forceRefresh) showToast('User list refreshed', 'success');
+                } else {
+                    document.getElementById('user-list').innerHTML =
+                        '<div style="padding:30px;text-align:center;color:#ef4444;font-family:Montserrat;font-size:0.85em;">Failed to load users. Please try again.</div>';
+                    document.getElementById('user-count').textContent = '';
+                }
+            } catch(e) {
+                console.error("Cache load error", e);
+                document.getElementById('user-list').innerHTML =
+                    '<div style="padding:30px;text-align:center;color:#ef4444;font-family:Montserrat;font-size:0.85em;">Connection error. Please try again.</div>';
+                document.getElementById('user-count').textContent = '';
+            }
+        }
+
+        // Background refresh without blocking UI
+        async function refreshUsersInBackground(){
+            try {
+                const res = await apiCall({action: 'getusers'});
+                if(res.success) {
+                    _usersCache = res.users;
+                    saveToLocalCache(_usersCache);
                     renderUserList();
                 }
-            } catch(e) { console.error("Cache load error", e); }
+            } catch(e) { /* network issue — cached data is fine */ }
         }
 
         function setToggle(groupId, btn){
@@ -516,11 +625,27 @@
             };
 
             try {
-                const res = await apiCall(payload);
+                const res = await apiCall(payload, true); // POST mutation
                 if(res.success){
                     showToast("User updated successfully!", "success");
-                    loadUsersCache(); 
+                    // Optimistic update: patch local cache instead of re-fetching
+                    if (_usersCache) {
+                        const idx = _usersCache.findIndex(e => String(e.user.user_id) === String(payload.user_id));
+                        if (idx !== -1) {
+                            _usersCache[idx].user.full_name     = payload.full_name;
+                            _usersCache[idx].user.mobile        = payload.mobile;
+                            _usersCache[idx].user.city          = payload.city;
+                            _usersCache[idx].user.state         = payload.state;
+                            _usersCache[idx].user.valid_until   = payload.valid_until;
+                            _usersCache[idx].user.role          = payload.role;
+                            _usersCache[idx].user.course_access = payload.course_access;
+                            _usersCache[idx].password           = payload.password;
+                        }
+                        saveToLocalCache(_usersCache);
+                        renderUserList();
+                    }
                     setTimeout(closeEdit, 500);
+                    refreshUsersInBackground(); // silent background truth-sync
                 } else { showToast(res.message || "Update Failed", "error"); }
             } catch(e) { showToast("Connection error", "error"); }
             
@@ -537,8 +662,9 @@
         /**
          * Navigates directly to the analysis tool.
          */
-        function goToAnalysis(){ 
-            window.location.assign('analysis.html');
+        function goToAnalysis(){
+            if(document.referrer) window.history.back();
+            else window.location.assign('analysis.html');
         }
     </script>
 </body>
