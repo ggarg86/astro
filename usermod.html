@@ -7,6 +7,8 @@
     <meta name="theme-color" content="#2980b9">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="GeoAstro">
     <link rel="icon" type="image/png" sizes="192x192" href="/icons/icon-192.png">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -16,24 +18,51 @@
     <style>
         :root { --primary:#2c3e50; --accent:#0d9488; --bg:#f4f6f8; --nav-h:70px; }
         * { box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family:'Merriweather',serif; background:var(--bg); color:#333; margin:0; padding-top:calc(var(--nav-h) + 16px); overflow-x: hidden; }
+
+        /* Safe-area: navbar height accounts for notch/Dynamic Island on iOS */
+        body {
+            font-family:'Merriweather',serif;
+            background:var(--bg);
+            color:#333;
+            margin:0;
+            /* Push content below fixed navbar + safe-area-inset-top */
+            padding-top: calc(var(--nav-h) + env(safe-area-inset-top, 0px) + 16px);
+            overflow-x: hidden;
+        }
         h1,h2,h3 { font-family:'Montserrat',sans-serif; color:var(--primary); }
 
-        /* NAVBAR */
-        .navbar { position:fixed;top:0;left:0;width:100%;height:var(--nav-h);background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.08);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 24px; }
+        /* NAVBAR — sits behind status bar on notched iPhones */
+        .navbar {
+            position:fixed; top:0; left:0; width:100%;
+            /* Total height = nav bar + safe area on top */
+            height: calc(var(--nav-h) + env(safe-area-inset-top, 0px));
+            background:#fff;
+            box-shadow:0 4px 20px rgba(0,0,0,0.08);
+            z-index:1000;
+            display:flex; align-items:flex-end; justify-content:space-between;
+            /* Inner content sits below the safe area */
+            padding: 0 24px env(safe-area-inset-bottom, 0px);
+            padding-bottom: 0;
+        }
+        /* Align nav items to bottom of navbar (below notch) */
+        .navbar-inner {
+            width:100%; display:flex; align-items:center;
+            justify-content:space-between;
+            height: var(--nav-h);
+        }
         .nav-brand { font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.1em;color:var(--primary);display:flex;align-items:center;gap:8px;text-transform:uppercase;letter-spacing:0.5px;text-decoration:none; }
-        .back-btn { display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:var(--primary);background:#f0f4f8;border:1.5px solid #e2e8f0;cursor:pointer;text-decoration:none;transition:all 0.2s; }
-        .back-btn:hover { background:var(--accent);color:#fff;border-color:var(--accent); }
+        .back-btn { display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:var(--primary);background:#f0f4f8;border:1.5px solid #e2e8f0;cursor:pointer;text-decoration:none;transition:all 0.2s; -webkit-tap-highlight-color:transparent; }
+        .back-btn:hover, .back-btn:active { background:var(--accent);color:#fff;border-color:var(--accent); }
         
         @media(max-width:640px){ 
-            .navbar{padding:0 12px;} 
+            .navbar { padding: 0 12px; }
             .nav-brand span{display:none;} 
             .nav-brand i{font-size:1.6em;}
             .back-btn { padding: 8px 12px; }
         }
 
-        /* PAGE WRAP */
-        .page-wrap { max-width:860px;margin:0 auto;padding:0 12px 60px; }
+        /* PAGE WRAP — bottom padding accounts for iOS home bar */
+        .page-wrap { max-width:860px;margin:0 auto;padding:0 12px calc(60px + env(safe-area-inset-bottom, 0px)); }
 
         /* HERO */
         .hero { background:linear-gradient(135deg,#134e4a 0%,#0f766e 60%,#0d9488 100%);border-radius:20px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;gap:16px; }
@@ -48,17 +77,34 @@
         /* SEARCH BOX */
         .search-input-wrap { position:relative; }
         .search-icon { position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#6366f1;font-size:1.05em;pointer-events:none; }
-        #user-search { width:100%;padding:12px 16px 12px 42px;border:2px solid #a5b4fc;border-radius:10px;font-family:'Merriweather',serif;font-size:0.9em;color:#1e1b4b;background:#fff;outline:none;transition:all 0.2s; box-shadow:0 1px 3px rgba(99,102,241,0.08); }
+        /* font-size:16px prevents iOS Safari auto-zoom on input focus */
+        #user-search {
+            width:100%; padding:12px 16px 12px 42px;
+            border:2px solid #a5b4fc; border-radius:10px;
+            font-family:'Merriweather',serif;
+            font-size: 16px; /* iOS zoom fix — must be >= 16px */
+            color:#1e1b4b; background:#fff; outline:none; transition:all 0.2s;
+            box-shadow:0 1px 3px rgba(99,102,241,0.08);
+            -webkit-appearance: none; appearance: none; /* remove iOS default styling */
+            text-align: left; /* consistent alignment iOS & Android */
+        }
         #user-search:focus { border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,0.12); }
 
         /* DROPDOWN & LIST ITEMS */
-        #user-search-dropdown { position:absolute;top:calc(100% + 6px);left:0;right:0;background:white;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.15);z-index:900;max-height:320px;overflow-y:auto;display:none; scrollbar-width: thin; }
+        #user-search-dropdown {
+            position:absolute; top:calc(100% + 6px); left:0; right:0;
+            background:white; border:1px solid #e2e8f0; border-radius:12px;
+            box-shadow:0 10px 30px rgba(0,0,0,0.15); z-index:900;
+            max-height:320px; overflow-y:auto; display:none;
+            scrollbar-width: thin;
+            -webkit-overflow-scrolling: touch; /* smooth momentum scroll on iOS */
+        }
         #user-search-dropdown.show { display:block; }
         
-        /* ITEM STYLING (Used in Search and Directory) */
+        /* ITEM STYLING */
         .user-item { padding:14px 16px; cursor:pointer; transition:background 0.1s; border-bottom:1px solid #f1f5f9; background: #fff; }
         .user-item:last-child { border-bottom:none; }
-        .user-item:hover { background:#f0fdf4; }
+        .user-item:hover, .user-item:active { background:#f0fdf4; }
         .user-name { font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.9em;color:#1e293b; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
         .user-meta { display:flex;flex-wrap:wrap;gap:6px; align-items: center; }
         
@@ -70,13 +116,24 @@
         .tag.city    { background:#f0f9ff;color:#0369a1; }
 
         /* DIRECTORY CONTAINER */
-        .user-list-container { max-height: 500px; overflow-y: auto; border-radius: 12px; border: 1.5px solid #e2e8f0; background: #fafafa; }
+        .user-list-container {
+            max-height: 500px; overflow-y: auto;
+            border-radius: 12px; border: 1.5px solid #e2e8f0; background: #fafafa;
+            -webkit-overflow-scrolling: touch; /* momentum scroll on iOS */
+        }
         .user-list-container::-webkit-scrollbar { width: 6px; }
         .user-list-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
         /* SORT CONTROLS */
         .sort-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
-        .sort-select { padding: 7px 14px; border-radius: 20px; border: 1.5px solid #cbd5e1; background: #fff; font-family: 'Montserrat', sans-serif; font-size: 0.72em; font-weight: 700; color: #475569; outline: none; cursor: pointer; transition: all 0.2s; }
+        /* -webkit-appearance:none removes iOS default select arrow/bubble styling */
+        .sort-select {
+            padding: 7px 14px; border-radius: 20px; border: 1.5px solid #cbd5e1;
+            background: #fff; font-family: 'Montserrat', sans-serif;
+            font-size: 0.72em; font-weight: 700; color: #475569;
+            outline: none; cursor: pointer; transition: all 0.2s;
+            -webkit-appearance: none; appearance: none;
+        }
 
         /* EDIT CARD */
         #edit-card { background:#fff;border-radius:16px;border:1.5px solid #c7d2fe;overflow:hidden;box-shadow:0 12px 30px rgba(99,102,241,0.15);display:none; margin-bottom: 24px; position: relative; z-index: 850; }
@@ -88,16 +145,52 @@
         .status-badge { display:inline-flex;align-items:center;gap:5px;padding:4px 12px;border-radius:20px;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.68em; }
         .edit-body { padding:22px 18px; }
 
-        /* FORM */
+        /* FORM FIELDS — font-size 16px prevents iOS auto-zoom; text-align left is consistent cross-platform */
         .field-group { margin-bottom:16px; }
         .grid-2 { display:grid;grid-template-columns: 1fr; gap:16px; margin-bottom:16px; }
         @media(min-width:600px){ .grid-2{grid-template-columns: 1fr 1fr;} }
         .field-label { font-family:'Montserrat',sans-serif;font-size:0.65em;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;display:flex;align-items:center;gap:4px; }
-        .field-input { width:100%;padding:11px 13px;border:1.5px solid #e2e8f0;border-radius:10px;font-family:'Merriweather',serif;font-size:0.88em;color:#1e293b;background:#fff;outline:none;transition:border-color 0.2s; }
+        .field-input {
+            width:100%; padding:11px 13px;
+            border:1.5px solid #e2e8f0; border-radius:10px;
+            font-family:'Merriweather',serif;
+            font-size: 16px; /* iOS zoom fix — must be >= 16px */
+            color:#1e293b; background:#fff; outline:none; transition:border-color 0.2s;
+            -webkit-appearance: none; appearance: none; /* remove iOS default inner shadow */
+            text-align: left; /* consistent alignment on iOS & Android */
+        }
+        .field-input:focus { border-color: var(--accent); }
+
+        /* DATE FIELD — iOS renders type=date as native spinner; keep font-size 16px */
+        input[type="date"].field-input {
+            font-size: 16px;
+            -webkit-appearance: none; appearance: none;
+            min-height: 44px; /* iOS minimum touch target */
+        }
+
+        /* DATE PREVIEW — was missing CSS entirely */
+        .stored-preview {
+            margin-top: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.72em;
+            font-weight: 600;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .stored-preview b { color: #0d9488; font-weight: 800; }
         
-        /* TOGGLES - VIBRANT */
+        /* TOGGLES */
         .toggle-group { display:flex;background:#e2e8f0;border-radius:12px;padding:4px; }
-        .tgl-btn { flex:1;padding:10px 6px;border:none;background:none;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.75em;color:#475569;border-radius:9px;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;justify-content:center;gap:6px; }
+        .tgl-btn {
+            flex:1; padding:10px 6px; border:none; background:none;
+            font-family:'Montserrat',sans-serif; font-weight:600; font-size:0.75em;
+            color:#475569; border-radius:9px; cursor:pointer; transition:all 0.2s;
+            display:flex; align-items:center; justify-content:center; gap:6px;
+            -webkit-appearance: none; appearance: none; /* consistent button rendering */
+            min-height: 44px; /* iOS minimum touch target */
+        }
         .tgl-btn.active { font-weight:800; color:#fff !important; box-shadow:0 4px 12px rgba(0,0,0,0.15); }
         .tgl-btn.active.clr-admin { background:#7c3aed; } 
         .tgl-btn.active.clr-user  { background:#0d9488; } 
@@ -105,20 +198,40 @@
         .tgl-btn.active.clr-no    { background:#ef4444; }
 
         .form-actions { display:flex;gap:12px;justify-content:flex-end;margin-top:22px;padding-top:18px;border-top:1px solid #e2e8f0; }
-        .btn-cancel { flex:1; max-width:140px; padding:11px 16px;border-radius:10px;border:1.5px solid #e2e8f0;background:#fff;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:#64748b; cursor:pointer; }
-        .btn-save { flex:2; max-width:240px; padding:11px 16px;border-radius:10px;border:none;background:#0d9488;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.8em;color:#fff; cursor:pointer; }
+        .btn-cancel {
+            flex:1; max-width:140px; padding:11px 16px; border-radius:10px;
+            border:1.5px solid #e2e8f0; background:#fff;
+            font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.8em;
+            color:#64748b; cursor:pointer;
+            -webkit-appearance: none; appearance: none;
+            min-height: 44px;
+        }
+        .btn-save {
+            flex:2; max-width:240px; padding:11px 16px; border-radius:10px;
+            border:none; background:#0d9488;
+            font-family:'Montserrat',sans-serif; font-weight:700; font-size:0.8em;
+            color:#fff; cursor:pointer;
+            -webkit-appearance: none; appearance: none;
+            min-height: 44px;
+        }
 
-        #toast { position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:12px 24px;border-radius:30px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.82em;z-index:99999;opacity:0;transition:all 0.35s ease;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center; }
+        /* TOAST */
+        #toast { position:fixed;bottom:calc(28px + env(safe-area-inset-bottom, 0px));left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;color:white;padding:12px 24px;border-radius:30px;font-family:'Montserrat',sans-serif;font-weight:600;font-size:0.82em;z-index:99999;opacity:0;transition:all 0.35s ease;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center; }
         #toast.show { opacity:1;transform:translateX(-50%) translateY(0); }
         #toast.toast-success { background:#166534; }
         #toast.toast-warning { background:#92400e; }
         #toast.toast-error   { background:#991b1b; }
-        .spinner { display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite; }
+
+        /* SPINNER — @keyframes spin was missing, added here */
+        .spinner { display:inline-block;width:14px;height:14px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 0.8s linear infinite; vertical-align:middle; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes slideUp { from { transform: translateY(15px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
     <nav class="navbar">
+        <div class="navbar-inner">
         <a class="nav-brand" href="index.html">
             <i class="ph ph-star-four" style="color:#0d9488; font-size: 1.4em;"></i>
             <span>GeoAstro</span>
@@ -126,6 +239,7 @@
         <button class="back-btn" onclick="goToAnalysis()">
             <i class="ph ph-arrow-left"></i> <span>Back to Tool</span>
         </button>
+        </div>
     </nav>
 
     <div class="page-wrap">
@@ -445,7 +559,7 @@
                     <div class="stored-preview" id="ef-preview"><i class="ph ph-arrow-right"></i> Stored as: <b>${u.valid_until || '—'}</b></div>
                     <div class="quick-btns" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
                         <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5px solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(1)">+1M</button>
-                        <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5 solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(6)">+6M</button>
+                        <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5px solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(6)">+6M</button>
                         <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5px solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(12)">+1Y</button>
                         <button class="qbtn" style="padding:6px 14px; border-radius:20px; border:1.5px solid #c7d2fe; font-family:Montserrat; font-weight:700; font-size:0.7em; color:#4338ca; background:#fff;" onclick="quickValidity(120)">+10Y</button>
                     </div>
@@ -663,8 +777,7 @@
          * Navigates directly to the analysis tool.
          */
         function goToAnalysis(){
-            if(document.referrer) window.history.back();
-            else window.location.assign('analysis.html');
+            window.location.assign('analysis.html');
         }
     </script>
 </body>

@@ -35,7 +35,7 @@
             --nav-height: 70px;
         }
 
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
             font-family: 'Merriweather', serif;
@@ -43,8 +43,8 @@
             color: var(--text-main);
             background-color: var(--bg-color);
             margin: 0;
-            padding-top: calc(var(--nav-height) + 20px);
-            /* Disable text selection */
+            /* Safe-area accounts for notch/Dynamic Island on iOS */
+            padding-top: calc(var(--nav-height) + env(safe-area-inset-top, 0px) + 20px);
             -webkit-user-select: none;
             -moz-user-select: none;
             -ms-user-select: none;
@@ -53,12 +53,19 @@
 
         h1, h2, h3, h4 { font-family: 'Montserrat', sans-serif; color: var(--primary); }
 
-        /* ── NAVBAR ── */
+        /* ── NAVBAR — expands into safe area on notched iPhones ── */
         .navbar {
-            position: fixed; top: 0; left: 0; width: 100%; height: var(--nav-height);
+            position: fixed; top: 0; left: 0; width: 100%;
+            height: calc(var(--nav-height) + env(safe-area-inset-top, 0px));
             background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.08); z-index: 1000;
-            display: flex; align-items: center; justify-content: space-between;
+            display: flex; align-items: flex-end; justify-content: space-between;
             padding: 0 30px;
+        }
+        /* Inner row sits below the safe area at fixed nav-height */
+        .navbar-inner {
+            width: 100%; display: flex; align-items: center;
+            justify-content: space-between;
+            height: var(--nav-height);
         }
         .nav-brand {
             font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.2em;
@@ -72,9 +79,9 @@
             font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 0.85em;
             color: var(--primary); background: #f0f4f8; border: 1.5px solid #e2e8f0;
             cursor: pointer; text-decoration: none; transition: all 0.2s;
-            white-space: nowrap;
+            white-space: nowrap; -webkit-tap-highlight-color: transparent;
         }
-        .back-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .back-btn:hover, .back-btn:active { background: var(--accent); color: #fff; border-color: var(--accent); }
 
         @media (max-width: 768px) {
             .navbar { padding: 0 15px; }
@@ -132,6 +139,7 @@
 
     <!-- ── NAVBAR ── -->
     <nav class="navbar">
+        <div class="navbar-inner">
         <a class="nav-brand" href="index.html">
             <i class="ph ph-star-four" style="color:#2980b9;font-size:1.5em;"></i>
             <span>GeoAstro</span>
@@ -140,6 +148,7 @@
             <a class="back-btn" href="analysis.html">
                 <i class="ph ph-arrow-left"></i> Back to Tool
             </a>
+        </div>
         </div>
     </nav>
 
@@ -802,11 +811,7 @@
         };
 
         function goBack() {
-            if (document.referrer && document.referrer !== '') {
-                window.history.back();
-            } else {
-                window.location.href = "analysis.html";
-            }
+            window.location.assign('analysis.html');
         }
     </script>
 
