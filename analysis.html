@@ -2415,10 +2415,22 @@ function getDSTInfo(tzName, date) {
             clearTimeout(window._tt);window._tt=setTimeout(()=>{t.className='';},3200);
         }
 
-        async function apiCall(payload){
+        async function apiCall(payload, _retry){
             const url=APPS_SCRIPT_URL+'?data='+encodeURIComponent(JSON.stringify(payload));
-            const res=await fetch(url,{method:'GET'});
-            return await res.json();
+            const controller=new AbortController();
+            const timer=setTimeout(()=>controller.abort(),10000); // 10s timeout
+            try{
+                const res=await fetch(url,{method:'GET',signal:controller.signal});
+                clearTimeout(timer);
+                return await res.json();
+            }catch(e){
+                clearTimeout(timer);
+                if(!_retry){ // one silent retry after 2s
+                    await new Promise(r=>setTimeout(r,2000));
+                    return apiCall(payload,true);
+                }
+                throw e;
+            }
         }
 
         function switchAuthTab(tab){
@@ -2437,6 +2449,9 @@ function getDSTInfo(tzName, date) {
             const password=document.getElementById('login-password').value.trim();
             if(!mobile||!password){setAuthMsg('login-msg','Please enter mobile and password.','error');return;}
             const btn=document.getElementById('login-btn');btn.disabled=true;btn.textContent='Logging in…';
+
+            // If cache is still loading, wait for it — avoids duplicate server request
+            if(!_usersCache && _cachePromise) await _cachePromise;
 
             // Try instant login from cache first
             if(_usersCache){
@@ -2539,7 +2554,7 @@ function getDSTInfo(tzName, date) {
             document.getElementById('login-password').value='';
             document.getElementById('login-msg').className='auth-msg';
             var muBtn=document.getElementById('manage-users-btn'); if(muBtn) muBtn.style.display='none';
-            document.getElementById('record-search-input').value='';_recordsCache=null;_loadedRecordId=null;_loadedRecordName='';_isAdmin=false;_isExpired=false;_usersCache=null;
+            document.getElementById('record-search-input').value='';_recordsCache=null;_loadedRecordId=null;_loadedRecordName='';_isAdmin=false;_isExpired=false;_usersCache=null;_cachePromise=null;
             document.getElementById('search-results-dropdown').innerHTML='';
             document.getElementById('search-results-dropdown').classList.remove('show');
             switchAuthTab('login');
@@ -2610,6 +2625,7 @@ function getDSTInfo(tzName, date) {
         let _isAdmin         = false;  // true if logged in user has admin role
         let _isExpired       = false;  // true if logged in user's validity has expired
         let _usersCache   = null;   // in-memory cache of users for instant login
+        let _cachePromise = null;   // tracks in-flight cache load so login can await it
         let _searchTimer  = null;
 
         // Recompute expiry locally — single source of truth, never trust cached flag
@@ -2628,11 +2644,15 @@ function getDSTInfo(tzName, date) {
             }catch(e){ _recordsCache = null; }
         }
 
-        async function loadUsersCache(){
-            try{
-                const res = await apiCall({action:'getusers'});
-                if(res.success){ _usersCache = res.users; }
-            }catch(e){ _usersCache = null; }
+        function loadUsersCache(){
+            _cachePromise = (async()=>{
+                try{
+                    const res = await apiCall({action:'getusers'});
+                    if(res.success){ _usersCache = res.users; }
+                }catch(e){ _usersCache = null; }
+                _cachePromise = null;
+            })();
+            return _cachePromise;
         }
 
         function invalidateCache(){ _recordsCache = null; } // call after save/edit/delete
