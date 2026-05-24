@@ -1120,6 +1120,8 @@
         const displayAmPm = document.getElementById('ampm-value').value;
         const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'rhythm-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden');
             document.getElementById('all-results-wrapper').classList.remove('hidden'); try{renderAnalysis(rP,tP);}catch(e){console.error('renderAnalysis',e);}
+            // Expired users: hide accordion sections only — map + table + save/load/delete remain accessible
+            if(_isExpired){ document.getElementById('results-container').classList.add('hidden'); }
             try{renderRhythmSection(pMap);}catch(e){console.error('renderRhythmSection',e);}
             try{renderArchetypeRhythm(pMap);}catch(e){console.error('renderArchetypeRhythm',e);}
             try{renderEnergyFlow(pMap);}catch(e){console.error('renderEnergyFlow',e);}
@@ -2440,11 +2442,8 @@ function getDSTInfo(tzName, date) {
             if(_usersCache){
                 const found = _usersCache.find(u => u.mobile === mobile && u.password === password);
                 if(found){
-                    if(found.expired){
-                        setAuthMsg('login-msg', found.message || 'Your login has expired. Contact Admin Team at 8360362525.','error');
-                        btn.disabled=false; btn.innerHTML='<i class="ph ph-sign-in"></i> Login'; return;
-                    }
-                    saveSession(found.user); activateApp(found.user);
+                    const expired = isExpiredLocal(found.user.valid_until);
+                    saveSession(found.user); activateApp(found.user, expired);
                     btn.disabled=false; btn.innerHTML='<i class="ph ph-sign-in"></i> Login'; return;
                 }
                 // Not found in cache — fall through to server call
@@ -2454,7 +2453,7 @@ function getDSTInfo(tzName, date) {
             try{
                 const res=await apiCall({action:'login',mobile,password});
                 if(res.success){saveSession(res.user);activateApp(res.user);}
-                else if(res.expired){setAuthMsg('login-msg',res.message,'error');}
+                else if(res.expired){saveSession(res.user);activateApp(res.user,true);}
                 else{setAuthMsg('login-msg',res.message,'error');}
             }catch(e){setAuthMsg('login-msg','Connection error. Please try again.','error');}
             btn.disabled=false;btn.innerHTML='<i class="ph ph-sign-in"></i> Login';
@@ -2476,8 +2475,9 @@ function getDSTInfo(tzName, date) {
             btn.disabled=false;btn.innerHTML='<i class="ph ph-user-plus"></i> Create Account';
         }
 
-        function activateApp(user){
-            _isAdmin = (user.role === 'admin');
+        function activateApp(user, expired){
+            _isAdmin   = (user.role === 'admin');
+            _isExpired = !!expired && !_isAdmin; // admins always get full access
             var muBtn=document.getElementById('manage-users-btn'); if(muBtn) muBtn.style.display=_isAdmin?'flex':'none';
             var courseBtn=document.getElementById('course-access-btn');
             if(courseBtn) courseBtn.style.display=(user.course_access==='yes')?'flex':'none';
@@ -2489,19 +2489,32 @@ function getDSTInfo(tzName, date) {
                 _isAdmin ? 'Admin Dashboard — ' + user.full_name : user.full_name;
             var badge=document.getElementById('validity-badge');
             var badgeTxt=document.getElementById('validity-text');
-            var vUntil=user.valid_until||'';
-            if(vUntil){
-                var parts=vUntil.split(' ');
-                if(parts.length===3){
-                    var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
-                    var expiry=new Date(parseInt(parts[2]),mMap[parts[1]],parseInt(parts[0]),23,59,59);
-                    var diff=(expiry-new Date())/(1000*60*60*24);
-                    if(diff<=7){badge.className='warning';badgeTxt.textContent='Expires soon: '+vUntil;}
-                    else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
-                }else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
-            }else{badge.className='valid';badgeTxt.textContent='Active';}
+            if(_isExpired){
+                badge.className='expired'; badgeTxt.textContent='Validity expired — Limited access';
+            } else {
+                var vUntil=user.valid_until||'';
+                if(vUntil){
+                    var parts=vUntil.split(' ');
+                    if(parts.length===3){
+                        var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+                        var expiry=new Date(parseInt(parts[2]),mMap[parts[1]],parseInt(parts[0]),23,59,59);
+                        var diff=(expiry-new Date())/(1000*60*60*24);
+                        if(diff<=7){badge.className='warning';badgeTxt.textContent='Expires soon: '+vUntil;}
+                        else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
+                    }else{badge.className='valid';badgeTxt.textContent='Valid until: '+vUntil;}
+                }else{badge.className='valid';badgeTxt.textContent='Active';}
+            }
             // Load records + refresh users cache in parallel for speed
             Promise.all([loadRecordsCache(), loadUsersCache()]);
+        }
+
+        // Apply expired restrictions without logging out
+        function applyExpiredRestrictions(){
+            if(_isExpired) return; // already restricted
+            _isExpired = true;
+            var badge=document.getElementById('validity-badge'), badgeTxt=document.getElementById('validity-text');
+            if(badge){ badge.className='expired'; badgeTxt.textContent='Validity expired — Limited access'; }
+            var rc=document.getElementById('results-container'); if(rc) rc.classList.add('hidden');
         }
 
         function doLogout(){
@@ -2515,12 +2528,18 @@ function getDSTInfo(tzName, date) {
             if(saveBtn){ saveBtn.classList.add('hidden'); }
             var manageBtn=document.getElementById('manage-users-btn');
             if(manageBtn) manageBtn.style.display='none';
+            // ── FULL RESULTS RESET — clean slate for next user ──
+            var arw=document.getElementById('all-results-wrapper'); if(arw) arw.classList.add('hidden');
+            var rc=document.getElementById('results-container'); if(rc) rc.classList.remove('hidden');
+            var cc=document.getElementById('octal-chart-container'); if(cc) cc.innerHTML='<span class="text-slate-400 text-sm">Click "Generate Report" to view chart</span>';
+            var tb=document.querySelector('#results-table tbody'); if(tb) tb.innerHTML='<tr><td colspan="5" class="p-8 text-center text-slate-400 italic">Waiting for input...</td></tr>';
+            var gb=document.getElementById('generate-btn'); if(gb){gb.classList.remove('btn-fresh-green');gb.classList.add('btn-stale');gb.innerHTML='<i class="ph ph-chart-polar"></i> Generate Report';}
 
             document.getElementById('login-mobile').value='';
             document.getElementById('login-password').value='';
             document.getElementById('login-msg').className='auth-msg';
             var muBtn=document.getElementById('manage-users-btn'); if(muBtn) muBtn.style.display='none';
-            document.getElementById('record-search-input').value='';_recordsCache=null;_loadedRecordId=null;_loadedRecordName='';_isAdmin=false;
+            document.getElementById('record-search-input').value='';_recordsCache=null;_loadedRecordId=null;_loadedRecordName='';_isAdmin=false;_isExpired=false;_usersCache=null;
             document.getElementById('search-results-dropdown').innerHTML='';
             document.getElementById('search-results-dropdown').classList.remove('show');
             switchAuthTab('login');
@@ -2536,17 +2555,7 @@ function getDSTInfo(tzName, date) {
             if(parts.length !== 3) return;
             var mMap = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
             var expiry = new Date(parseInt(parts[2]), mMap[parts[1]], parseInt(parts[0]), 23, 59, 59);
-            if(new Date() > expiry){
-                clearSession();
-                // Reset UI to login screen
-                document.getElementById('auth-overlay').classList.remove('hidden');
-                document.getElementById('search-section').classList.add('hidden');
-                var badge = document.getElementById('validity-badge');
-                if(badge){ badge.className=''; }
-                // Show expired message on login form
-                switchAuthTab('login');
-                setAuthMsg('login-msg','Your session has expired. Contact Admin Team at 8360362525.','error');
-            }
+            if(new Date() > expiry) applyExpiredRestrictions();
         }
 
         // Re-verify from Google Sheets every 60 seconds
@@ -2558,15 +2567,13 @@ function getDSTInfo(tzName, date) {
                 const vTimeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 5000));
                 const res = await Promise.race([vPromise, vTimeout]);
                 if(res.expired || !res.success){
-                    clearSession();
-                    document.getElementById('auth-overlay').classList.remove('hidden');
-                    document.getElementById('search-section').classList.add('hidden');
-                    var badge = document.getElementById('validity-badge');
-                    if(badge){ badge.className=''; }
-                    switchAuthTab('login');
-                    setAuthMsg('login-msg', res.message || 'Your session has expired. Contact Admin Team at 8360362525.', 'error');
+                    user.expired = true; saveSession(user);
+                    applyExpiredRestrictions();
                 } else {
                     // Update local session with latest valid_until AND courseaccess
+                    user.expired = false;  // server confirmed valid — clear any stale expired flag
+                    _isExpired = false;
+                    var rc=document.getElementById('results-container'); if(rc) rc.classList.remove('hidden');
                     user.valid_until = res.valid_until;
                     if(res.courseaccess !== undefined)  { user.courseaccess = res.courseaccess;  user.course_access = res.courseaccess;  }
                     if(res.course_access !== undefined) { user.course_access = res.course_access; user.courseaccess = res.course_access; }
@@ -2601,8 +2608,17 @@ function getDSTInfo(tzName, date) {
         let _loadedRecordId  = null;   // record_id of currently loaded record (null = new entry)
         let _loadedRecordName = '';    // name of loaded record for change detection
         let _isAdmin         = false;  // true if logged in user has admin role
+        let _isExpired       = false;  // true if logged in user's validity has expired
         let _usersCache   = null;   // in-memory cache of users for instant login
         let _searchTimer  = null;
+
+        // Recompute expiry locally — single source of truth, never trust cached flag
+        function isExpiredLocal(valid_until){
+            if(!valid_until) return false;
+            var p=valid_until.trim().split(' '); if(p.length!==3) return false;
+            var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+            return new Date() > new Date(parseInt(p[2]),mMap[p[1]],parseInt(p[0]),23,59,59);
+        }
 
         async function loadRecordsCache(){
             const user = getSession(); if(!user) return;
@@ -3187,7 +3203,7 @@ function getDSTInfo(tzName, date) {
 
             // ── INSTANT RESTORE: show app immediately from local session ──
             // Do NOT wait for network — user sees no flash at all
-            activateApp(user);
+            activateApp(user, user.expired);
 
             // ── SILENT BACKGROUND VERIFY: check with Google Sheets quietly ──
             // If expired or invalid — log out smoothly without any flash
@@ -3197,17 +3213,15 @@ function getDSTInfo(tzName, date) {
                 const res = await Promise.race([verifyPromise, timeoutPromise]);
 
                 if(res.expired || !res.success){
-                    // Session is invalid — log out silently
-                    clearSession();
-                    document.getElementById('search-section').classList.add('hidden');
-                    document.getElementById('auth-overlay').classList.remove('hidden');
-                    var badge = document.getElementById('validity-badge');
-                    if(badge){ badge.className=''; }
-                    switchAuthTab('login');
-                    setAuthMsg('login-msg', res.message || 'Your session has expired. Contact Admin Team at 8360362525.', 'error');
+                    // Persist expired state so next refresh restores correctly with no flash
+                    user.expired = true; saveSession(user);
+                    applyExpiredRestrictions();
                     return;
                 }
                 // Update local session with latest valid_until from sheet
+                user.expired = false;  // server confirmed valid — clear any stale expired flag
+                _isExpired = false;
+                var rc=document.getElementById('results-container'); if(rc) rc.classList.remove('hidden');
                 user.valid_until = res.valid_until;
                 saveSession(user);
                 if(res.course_access !== undefined || res.courseaccess !== undefined){
@@ -3240,15 +3254,7 @@ function getDSTInfo(tzName, date) {
                     if(parts.length===3){
                         var mMap={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
                         var expiry=new Date(parseInt(parts[2]),mMap[parts[1]],parseInt(parts[0]),23,59,59);
-                        if(new Date()>expiry){
-                            clearSession();
-                            document.getElementById('search-section').classList.add('hidden');
-                            document.getElementById('auth-overlay').classList.remove('hidden');
-                            var badge=document.getElementById('validity-badge');
-                            if(badge){badge.className='';}
-                            switchAuthTab('login');
-                            setAuthMsg('login-msg','Your session has expired. Contact Admin Team at 8360362525.','error');
-                        }
+                        if(new Date()>expiry){ applyExpiredRestrictions(); }
                     }
                 }
             }
