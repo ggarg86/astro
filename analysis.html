@@ -679,7 +679,7 @@
                     </div>
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                         <div id="validity-badge"><i class="ph ph-calendar-check"></i> <span id="validity-text">Valid until —</span></div>
-                        <button id="course-access-btn" onclick="window.open('https://sites.google.com/view/geotimezonecourse/home','_blank')"><i class="ph ph-book-open"></i> My Course</button>
+                        <button id="course-access-btn" onclick="window.location.href='course.html'"><i class="ph ph-book-open"></i> My Course</button>
                 <a href="guide.html" id="guide-link-btn" style="padding:6px 16px;border:1.5px solid #b45309;border-radius:20px;background:#f59e0b;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:#1c1400;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;"><i class="ph ph-book-open-text"></i> Archetype Guide</a>
                 <button id="manage-users-btn" onclick="openUserMod()"><i class="ph ph-users-three"></i> Manage Users</button>
                     <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
@@ -2403,7 +2403,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyOLjT1hajLTOSWtxiYFqj4C43U-Vavmrz14KgquTJc3QwNeSVDVb-_WcaZjjDiv9mwQ/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbhTLnx-Ihgbo8Jynznu8BT7asn_blWgZr6c80cUx4ag6XpDDg6dSdp4uu4sNiF282HQ/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}

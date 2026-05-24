@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geo Time Map Course</title>
+  <!-- SESSION GUARD — runs before any render, blocks unauthorised direct access -->
+  <script>
+    (function(){
+      try{
+        var raw = localStorage.getItem('gtc_user');
+        if(!raw) throw 'no session';
+        var u = JSON.parse(raw);
+        if(!u || (u.course_access !== 'yes' && u.courseaccess !== 'yes')) throw 'no access';
+      } catch(e){
+        document.documentElement.style.display = 'none';
+        window.addEventListener('DOMContentLoaded', function(){
+          document.documentElement.style.display = '';
+          document.body.innerHTML = [
+            '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;',
+            'font-family:Montserrat,sans-serif;background:#f4f6f8;padding:24px;text-align:center;">',
+            '<div style="background:white;border-radius:20px;padding:40px 32px;max-width:380px;width:100%;',
+            'box-shadow:0 8px 32px rgba(0,0,0,0.1);">',
+            '<div style="font-size:3em;margin-bottom:16px;">🔒</div>',
+            '<h2 style="color:#2c3e50;font-size:1.2em;margin-bottom:10px;">Access Restricted</h2>',
+            '<p style="color:#64748b;font-size:0.88em;line-height:1.6;margin-bottom:24px;">',
+            'You need to be logged in with course access to view this page.</p>',
+            '<a href="analysis.html" style="display:inline-flex;align-items:center;gap:8px;background:#2563eb;',
+            'color:white;padding:12px 24px;border-radius:50px;font-weight:700;font-size:0.85em;',
+            'text-decoration:none;">&#8592; Back to Tool</a>',
+            '</div></div>'
+          ].join('');
+        });
+        return;
+      }
+    })();
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    :root {
+      --primary:#2c3e50; --accent:#2980b9; --accent-hover:#1d6fa5;
+      --bg-color:#f4f6f8; --surface:#ffffff; --surface-2:#f8fafc;
+      --text-main:#333333; --text-light:#555555; --text-muted:#64748b;
+      --text-faint:#94a3b8; --border:#e2e8f0;
+      --nav-height:70px; --gold:#f5c400; --gold-dark:#d4a800;
+      --success:#16a34a; --success-bg:#f0fdf4; --success-border:#bbf7d0;
+      --locked-bg:#f1f5f9; --locked-border:#cbd5e1; --locked-text:#94a3b8;
+      --radius-sm:8px; --radius-md:12px; --radius-lg:16px; --radius-xl:20px; --radius-pill:9999px;
+      --shadow-sm:0 2px 8px rgba(0,0,0,0.06); --shadow-md:0 4px 20px rgba(0,0,0,0.08);
+      --transition:all 0.25s cubic-bezier(0.16,1,0.3,1);
+      --text-xs:clamp(0.75rem,0.7rem + 0.25vw,0.875rem);
+      --text-sm:clamp(0.8rem,0.75rem + 0.3vw,0.9rem);
+      --text-base:clamp(0.9rem,0.85rem + 0.25vw,1rem);
+      --text-lg:clamp(1rem,0.9rem + 0.5vw,1.25rem);
+      --text-hero:clamp(2.2rem,1rem + 5vw,4.5rem);
+      --space-1:.25rem; --space-2:.5rem; --space-3:.75rem; --space-4:1rem;
+      --space-5:1.25rem; --space-6:1.5rem; --space-8:2rem; --space-12:3rem;
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;scroll-padding-top:calc(var(--nav-height) + 16px);-webkit-font-smoothing:antialiased;}
+    body{font-family:Merriweather,serif;font-size:var(--text-base);color:var(--text-main);background-color:var(--bg-color);min-height:100vh;padding-top:var(--nav-height);line-height:1.8;}
+    button{cursor:pointer;font-family:Montserrat,sans-serif;}
+    a{text-decoration:none;color:inherit;}
+    h1,h2,h3,h4{font-family:Montserrat,sans-serif;color:var(--primary);line-height:1.25;}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important;}}
+
+    /* NAVBAR */
+    .navbar{position:fixed;top:0;left:0;width:100%;height:var(--nav-height);background:#fff;box-shadow:0 4px 20px rgba(0,0,0,0.08);z-index:1000;display:flex;align-items:center;justify-content:space-between;padding:0 30px;}
+    .nav-brand{font-family:Montserrat,sans-serif;font-weight:800;font-size:1.05em;color:var(--primary);display:flex;align-items:center;gap:10px;text-transform:uppercase;letter-spacing:1px;text-decoration:none;}
+    .nav-brand i{font-size:1.3em;color:var(--accent);}
+    .nav-brand .brand-sub{font-size:.6em;font-weight:500;color:var(--text-faint);text-transform:none;letter-spacing:0;display:block;line-height:1.2;margin-top:1px;}
+    .nav-container{display:flex;gap:10px;align-items:center;}
+    .nav-btn{background:none;border:none;padding:8px 16px;font-family:Montserrat,sans-serif;font-weight:600;font-size:.82em;cursor:pointer;border-radius:var(--radius-pill);transition:var(--transition);color:var(--text-light);display:flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none;}
+    .nav-btn:hover{background-color:#f0f0f0;color:var(--primary);}
+    .nav-btn.accent{background-color:var(--accent);color:#fff;box-shadow:0 4px 6px rgba(41,128,185,0.25);}
+    .nav-btn.accent:hover{background-color:var(--accent-hover);}
+    .help-dropdown-wrapper{position:relative;}
+    .help-dropdown{position:absolute;top:calc(100% + 14px);right:0;width:min(320px,92vw);background:white;border-radius:var(--radius-lg);box-shadow:0 10px 40px -10px rgba(0,0,0,0.2);border:1px solid rgba(0,0,0,0.05);padding:18px;display:none;flex-direction:column;gap:10px;z-index:2000;animation:dropdownIn .2s cubic-bezier(.16,1,.3,1);}
+    .help-dropdown::before{content:"";position:absolute;top:-6px;right:20px;width:12px;height:12px;background:white;transform:rotate(45deg);border-top:1px solid rgba(0,0,0,0.05);border-left:1px solid rgba(0,0,0,0.05);}
+    .help-dropdown.show{display:flex;}
+    @keyframes dropdownIn{from{opacity:0;transform:translateY(-8px) scale(.96);}to{opacity:1;transform:none;}}
+    .help-header{font-family:Montserrat,sans-serif;font-size:.68em;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);padding:0 4px 4px;border-bottom:1px solid var(--border);margin-bottom:4px;}
+    .help-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:var(--radius-md);background:var(--surface-2);border:1px solid transparent;cursor:pointer;transition:var(--transition);text-decoration:none;color:var(--text-main);}
+    .help-item:hover{background:#eff6ff;border-color:#bfdbfe;transform:translateY(-1px);}
+    .help-icon-box{width:36px;height:36px;border-radius:var(--radius-sm);background:white;display:flex;align-items:center;justify-content:center;color:var(--accent);box-shadow:0 2px 4px rgba(0,0,0,0.06);flex-shrink:0;}
+    .help-text-box{display:flex;flex-direction:column;}
+    .help-label{font-family:Montserrat,sans-serif;font-size:.65em;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.04em;}
+    .help-value{font-family:Montserrat,sans-serif;font-size:.82em;font-weight:600;color:var(--primary);}
+
+    /* HERO */
+    .hero{position:relative;width:100%;min-height:clamp(180px,28vw,340px);display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,rgba(10,18,40,.82) 0%,rgba(20,35,70,.75) 50%,rgba(10,18,40,.88) 100%),url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?w=1600&q=80') center/cover no-repeat;}
+    .hero-content{position:relative;z-index:2;text-align:center;padding:var(--space-8) var(--space-6);}
+    .hero-eyebrow{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.25em;color:var(--gold);margin-bottom:var(--space-3);opacity:.9;}
+    .hero-title{font-family:Montserrat,sans-serif;font-weight:800;font-size:var(--text-hero);color:#fff;text-transform:uppercase;letter-spacing:.06em;line-height:1.1;text-shadow:0 2px 20px rgba(0,0,0,.4);margin-bottom:var(--space-4);}
+    .hero-underline{width:clamp(200px,55%,560px);height:4px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold-dark),var(--gold),transparent);margin:0 auto var(--space-5);border-radius:2px;}
+    .hero-subtitle{font-family:Montserrat,sans-serif;font-size:var(--text-sm);font-weight:500;color:rgba(255,255,255,.75);letter-spacing:.04em;}
+
+    /* PROGRESS STRIP */
+    .progress-strip{background:var(--primary);padding:var(--space-3) var(--space-6);display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);flex-wrap:wrap;}
+    .progress-strip-stats{display:flex;align-items:center;gap:var(--space-6);}
+    .pstat{display:flex;flex-direction:column;align-items:center;}
+    .pstat-val{font-family:Montserrat,sans-serif;font-weight:800;font-size:var(--text-lg);color:#fff;line-height:1;}
+    .pstat-label{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:600;color:rgba(255,255,255,.55);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;}
+    .pstat-sep{width:1px;height:32px;background:rgba(255,255,255,.15);}
+    .progress-bar-wrap{flex:1;min-width:120px;max-width:340px;}
+    .progress-bar-label{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:600;color:rgba(255,255,255,.6);margin-bottom:5px;display:flex;justify-content:space-between;}
+    .progress-bar-track{height:7px;background:rgba(255,255,255,.15);border-radius:var(--radius-pill);overflow:hidden;}
+    .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),#fde68a);border-radius:var(--radius-pill);transition:width .4s ease;box-shadow:0 0 8px rgba(245,196,0,.4);}
+    .progress-strip-actions{display:flex;gap:var(--space-2);flex-wrap:wrap;}
+    .strip-btn{padding:6px 14px;font-family:Montserrat,sans-serif;font-weight:600;font-size:var(--text-xs);border-radius:var(--radius-pill);border:1.5px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:rgba(255,255,255,.85);cursor:pointer;transition:var(--transition);white-space:nowrap;display:flex;align-items:center;gap:5px;}
+    .strip-btn:hover{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35);color:white;}
+    .strip-btn.danger{border-color:rgba(220,38,38,.4);color:rgba(252,165,165,.9);}
+    .strip-btn.danger:hover{background:rgba(220,38,38,.18);border-color:rgba(220,38,38,.6);color:#fca5a5;}
+
+    /* MAIN */
+    .page-main{max-width:1100px;margin:0 auto;padding:var(--space-8) var(--space-6) var(--space-12);}
+
+    /* FILTER BAR */
+    .filter-bar{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-2);margin-bottom:var(--space-6);padding:var(--space-4) var(--space-5);background:var(--surface);border-radius:var(--radius-lg);border:1px solid var(--border);box-shadow:var(--shadow-sm);}
+    .filter-label{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--text-faint);margin-right:var(--space-2);white-space:nowrap;}
+    .filter-chip{padding:5px 14px;font-family:Montserrat,sans-serif;font-weight:600;font-size:var(--text-xs);border-radius:var(--radius-pill);border:1.5px solid var(--border);background:var(--surface-2);color:var(--text-muted);cursor:pointer;transition:var(--transition);white-space:nowrap;}
+    .filter-chip:hover{border-color:var(--accent);color:var(--accent);background:#eff6ff;}
+    .filter-chip.active{background:var(--accent);color:white;border-color:var(--accent);box-shadow:0 4px 6px rgba(41,128,185,0.25);}
+
+    /* HOW IT WORKS STRIP */
+    .how-it-works{
+      background:linear-gradient(135deg,#e8f4f8 0%,#d6edf5 60%,#cce7f0 100%);
+      border:2px solid #5b9eb5;
+      border-radius:var(--radius-lg);
+      padding:var(--space-4) var(--space-6);
+      margin-bottom:var(--space-5);
+      position:relative;
+      overflow:hidden;
+      box-shadow:0 2px 16px rgba(30,80,110,.1);
+    }
+    .how-it-works::before{
+      content:"";
+      position:absolute;inset:0;
+      background:repeating-linear-gradient(45deg,rgba(91,158,181,.06) 0px,rgba(91,158,181,.06) 1px,transparent 1px,transparent 12px);
+      pointer-events:none;
+    }
+    .how-it-works::after{
+      content:"";
+      position:absolute;top:-50px;right:-50px;
+      width:200px;height:200px;
+      background:radial-gradient(circle,rgba(91,158,181,.12) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .how-it-works-label{
+      font-family:Montserrat,sans-serif;
+      font-size:var(--text-xs);
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:.18em;
+      color:#1e3a4a;
+      margin-bottom:var(--space-3);
+      display:flex;align-items:center;gap:8px;
+    }
+    .how-it-works-label::after{
+      content:"";flex:1;height:1px;background:rgba(91,158,181,.4);
+    }
+    .how-steps{
+      display:flex;align-items:center;gap:0;
+      flex-wrap:wrap;
+    }
+    .how-step{
+      display:flex;align-items:center;gap:var(--space-3);
+      flex:1;min-width:160px;
+      padding:var(--space-3) var(--space-4);
+      background:rgba(255,255,255,.55);
+      border-radius:var(--radius-md);
+      border:1px solid rgba(91,158,181,.25);
+      position:relative;
+      backdrop-filter:blur(4px);
+    }
+    .how-step-icon{
+      width:40px;height:40px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+      font-size:1em;flex-shrink:0;
+      border:2px solid;
+    }
+    .how-step-icon.s1{background:rgba(41,128,185,.12);border-color:rgba(41,128,185,.5);color:#1d6fa5;}
+    .how-step-icon.s2{background:rgba(180,130,0,.1);border-color:rgba(180,130,0,.45);color:#92650a;}
+    .how-step-icon.s3{background:rgba(22,163,74,.1);border-color:rgba(22,163,74,.45);color:#15803d;}
+    .how-step-text{flex:1;min-width:0;}
+    .how-step-num{
+      font-family:Montserrat,sans-serif;font-size:.6em;font-weight:800;
+      text-transform:uppercase;letter-spacing:.1em;
+      color:#5b8fa0;margin-bottom:2px;
+    }
+    .how-step-main{
+      font-family:Montserrat,sans-serif;font-size:.82em;font-weight:800;
+      color:#0f2b38;line-height:1.3;
+    }
+    .how-step-sub{
+      font-family:Montserrat,sans-serif;font-size:.68em;font-weight:500;
+      color:#2d5a6e;margin-top:2px;line-height:1.4;
+    }
+    .how-step-sub strong{color:#1e3a4a;font-weight:700;}
+    .how-arrow{
+      font-size:1.1em;color:#5b9eb5;opacity:.8;
+      padding:0 var(--space-2);flex-shrink:0;
+      align-self:center;
+    }
+    @media(max-width:767px){
+      .how-it-works{padding:var(--space-3) var(--space-4);}
+      .how-steps{gap:var(--space-2);}
+      .how-arrow{display:none;}
+      .how-step{min-width:calc(50% - var(--space-2));flex:none;padding:var(--space-2) var(--space-3);}
+      .how-step:last-child{min-width:100%;}
+      .how-step-main{font-size:.78em;}
+      .how-step-sub{font-size:.65em;}
+    }
+
+    /* INLINE LOCKED REMINDER BADGE */
+    .locked-reminder{
+      display:flex;align-items:flex-start;gap:8px;
+      margin-top:var(--space-3);
+      padding:var(--space-2) var(--space-3);
+      background:rgba(245,196,0,.1);
+      border:1.5px solid rgba(245,196,0,.35);
+      border-radius:var(--radius-sm);
+      font-family:Montserrat,sans-serif;
+      font-size:.7em;
+      font-weight:700;
+      color:#d4a800;
+      line-height:1.4;
+      cursor:pointer;
+      transition:var(--transition);
+    }
+    .locked-reminder:hover{background:rgba(245,196,0,.18);border-color:rgba(245,196,0,.6);}
+    .locked-reminder i{margin-top:1px;flex-shrink:0;font-size:.9em;}
+
+    /* SECTIONS */
+    .sections-stack{display:flex;flex-direction:column;gap:var(--space-5);}
+    .course-section{background:var(--surface);border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow-sm);overflow:hidden;transition:box-shadow .2s ease;}
+    .course-section:hover{box-shadow:var(--shadow-md);}
+    @supports not (color:color-mix(in srgb,red 10%,blue)){
+      .section-header{background:linear-gradient(135deg,#1e293b 0%,#2c3e50 100%)!important;}
+    }
+    .section-header{width:100%;display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-5);cursor:pointer;background:linear-gradient(135deg,#1a2535 0%,color-mix(in srgb,var(--section-accent,#2980b9) 28%,#1e293b) 100%);border:none;text-align:left;border-bottom:3px solid var(--section-accent,#2980b9);transition:background .2s ease;gap:var(--space-4);}
+    .section-header:hover{background:linear-gradient(135deg,#1f2f40 0%,color-mix(in srgb,var(--section-accent,#2980b9) 38%,#1e293b) 100%);}
+    .section-header-left{display:flex;align-items:center;gap:var(--space-3);min-width:0;}
+    .section-icon{width:40px;height:40px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:1.1em;flex-shrink:0;}
+    .section-meta{min-width:0;}
+    .section-category-tag{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:2px;}
+    .section-title{font-family:Montserrat,sans-serif;font-weight:800;font-size:var(--text-lg);color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:400px;}
+    .section-desc{font-family:Montserrat,sans-serif;font-size:var(--text-xs);color:rgba(255,255,255,.6);margin-top:2px;}
+    .section-header-right{display:flex;align-items:center;gap:var(--space-4);flex-shrink:0;}
+    .section-progress-label{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:700;color:rgba(255,255,255,.65);white-space:nowrap;}
+    .section-progress-mini{width:60px;height:5px;background:rgba(255,255,255,.15);border-radius:var(--radius-pill);overflow:hidden;}
+    .section-progress-mini-fill{height:100%;border-radius:var(--radius-pill);transition:width .35s ease;}
+    .section-chevron{color:rgba(255,255,255,.5);font-size:.85em;transition:transform .25s ease;}
+    .section-chevron.rotated{transform:rotate(180deg);}
+    .section-body{display:grid;grid-template-rows:1fr;transition:grid-template-rows .28s ease;}
+    .section-body.collapsed{grid-template-rows:0fr;}
+    .section-body-inner{overflow:hidden;}
+    .section-progress-bar{height:3px;background:var(--border);}
+    .section-progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),#60a5fa);transition:width .35s ease;}
+
+    /* ═══════════════════════════════════════
+       VIDEO CARDS — UNLOCKED STATE
+    ═══════════════════════════════════════ */
+    .cards-grid{display:flex;flex-direction:column;gap:1px;background:var(--border);}
+    .video-card{display:flex;align-items:center;gap:var(--space-4);padding:var(--space-4) var(--space-5);background:var(--surface);transition:var(--transition);position:relative;}
+    .video-card:hover{background:var(--surface-2);}
+    .video-card.is-watched{background:#f0fdf4;}
+    .video-card.is-watched:hover{background:#dcfce7;}
+
+    /* ═══════════════════════════════════════
+       VIDEO CARDS — LOCKED STATE
+    ═══════════════════════════════════════ */
+    .video-card.is-locked{background:var(--locked-bg);cursor:not-allowed;}
+    .video-card.is-locked:hover{background:#e8edf2;}
+    .video-card.is-locked .card-title{color:var(--locked-text);}
+    .video-card.is-locked .card-sub{color:#b8c4ce;}
+    .video-card.is-locked .card-number{color:#c8d3dc;}
+
+    /* Lock icon button — replaces play button */
+    .card-lock-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1em;background:#dde4ec;color:#94a3b8;border:none;cursor:not-allowed;}
+
+    /* Lock info pill — replaces action buttons */
+    .card-lock-info{display:flex;align-items:center;gap:6px;padding:6px 14px;font-family:Montserrat,sans-serif;font-weight:600;font-size:var(--text-xs);border-radius:var(--radius-pill);border:1.5px solid #cbd5e1;background:#e8edf4;color:#94a3b8;white-space:nowrap;cursor:not-allowed;user-select:none;}
+
+    /* Next-up highlight — the single next video to watch */
+    .video-card.is-next{background:linear-gradient(to right,#fffbeb,#fff);border-left:3px solid var(--gold);}
+    .video-card.is-next:hover{background:linear-gradient(to right,#fef3c7,#fffbeb);}
+    .next-badge{display:inline-flex;align-items:center;gap:4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:.62em;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:var(--radius-pill);background:#fef9c3;border:1.5px solid #fcd34d;color:#92400e;}
+
+    .card-number{font-family:Montserrat,sans-serif;font-weight:800;font-size:var(--text-xs);color:var(--text-faint);width:28px;text-align:center;flex-shrink:0;}
+    .card-play-btn{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.9em;color:white;text-decoration:none;transition:var(--transition);}
+    .card-play-btn:hover{transform:scale(1.08);box-shadow:0 4px 12px rgba(0,0,0,.2);}
+    .card-content{flex:1;min-width:0;}
+    .card-badges{display:flex;align-items:center;flex-wrap:wrap;gap:var(--space-1);margin-bottom:3px;}
+    .badge{font-family:Montserrat,sans-serif;font-weight:700;font-size:.65em;text-transform:uppercase;letter-spacing:.08em;padding:2px 8px;border-radius:var(--radius-pill);border:1.5px solid;white-space:nowrap;}
+    .badge-part{background:var(--surface-2);border-color:var(--border);color:var(--text-muted);}
+    .badge-part-locked{background:#e8edf4;border-color:#cbd5e1;color:#b0bec5;}
+    .badge-type{color:var(--accent);background:#eff6ff;border-color:#bfdbfe;}
+    .badge-type-locked{color:#b0bec5;background:#f0f4f8;border-color:#d1dae3;}
+    .badge-watched{background:var(--success-bg);border-color:var(--success-border);color:var(--success);}
+    .card-title{font-family:Montserrat,sans-serif;font-weight:700;font-size:var(--text-base);color:var(--primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .is-watched .card-title{text-decoration:line-through;text-decoration-color:rgba(22,163,74,.5);color:var(--text-muted);}
+    .card-sub{font-family:Montserrat,sans-serif;font-size:var(--text-xs);color:var(--text-faint);margin-top:1px;}
+    .card-title-row{display:none;}
+    .card-actions{display:flex;align-items:center;gap:var(--space-2);flex-shrink:0;}
+    .card-watch-link{padding:6px 14px;font-family:Montserrat,sans-serif;font-weight:600;font-size:var(--text-xs);border-radius:var(--radius-pill);border:1.5px solid var(--border);background:var(--surface);color:var(--text-muted);cursor:pointer;transition:var(--transition);text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;}
+    .card-watch-link:hover{border-color:var(--accent);color:var(--accent);background:#eff6ff;}
+    .card-mark-btn{padding:6px 14px;font-family:Montserrat,sans-serif;font-weight:600;font-size:var(--text-xs);border-radius:var(--radius-pill);border:1.5px solid;cursor:pointer;transition:var(--transition);display:flex;align-items:center;gap:5px;white-space:nowrap;}
+    .card-mark-btn.unwatched{background:#fffbeb;border-color:#fcd34d;color:#92400e;}
+    .card-mark-btn.unwatched:hover{background:#f59e0b;border-color:#f59e0b;color:white;}
+    .card-mark-btn.watched{background:var(--success-bg);border-color:var(--success-border);color:var(--success);}
+    .card-mark-btn.watched:hover{background:#dcfce7;border-color:#86efac;}
+
+    /* INLINE CONFIRM ROW */
+    .confirm-row{
+      display:none;width:100%;
+      padding:var(--space-3) var(--space-4);
+      background:linear-gradient(135deg,#fffbeb,#fef3c7);
+      border-top:2px solid #fcd34d;
+      align-items:center;gap:var(--space-3);
+      flex-wrap:wrap;
+      animation:fadeUp .2s ease both;
+    }
+    .confirm-row.show{display:flex;}
+    .confirm-question{
+      flex:1;min-width:180px;
+      font-family:Montserrat,sans-serif;font-weight:700;font-size:.82em;
+      color:#78350f;
+      display:flex;align-items:center;gap:8px;
+    }
+    .confirm-question i{font-size:1.1em;color:#f59e0b;flex-shrink:0;}
+    .confirm-btns{display:flex;gap:var(--space-2);flex-shrink:0;}
+    .confirm-yes{
+      padding:7px 18px;font-family:Montserrat,sans-serif;font-weight:700;font-size:.78em;
+      border-radius:var(--radius-pill);border:none;
+      background:linear-gradient(135deg,#16a34a,#15803d);
+      color:white;cursor:pointer;transition:var(--transition);
+      display:flex;align-items:center;gap:5px;
+      box-shadow:0 2px 8px rgba(22,163,74,.3);
+    }
+    .confirm-yes:hover{background:linear-gradient(135deg,#15803d,#166534);transform:translateY(-1px);box-shadow:0 4px 12px rgba(22,163,74,.4);}
+    .confirm-no{
+      padding:7px 18px;font-family:Montserrat,sans-serif;font-weight:700;font-size:.78em;
+      border-radius:var(--radius-pill);border:1.5px solid #fca5a5;
+      background:#fff1f2;color:#b91c1c;cursor:pointer;transition:var(--transition);
+      display:flex;align-items:center;gap:5px;
+    }
+    .confirm-no:hover{background:#fee2e2;border-color:#f87171;}
+    @media(max-width:767px){
+      .confirm-question{font-size:.74em;}
+      .confirm-yes,.confirm-no{padding:6px 13px;font-size:.72em;}
+    }
+
+    /* FOOTER */
+    .page-footer{text-align:center;padding:var(--space-6) var(--space-4) var(--space-8);font-family:Montserrat,sans-serif;font-size:var(--text-xs);color:var(--text-faint);border-top:1px solid var(--border);}
+    .page-footer a{color:var(--accent);font-weight:600;}
+    .mobile-progress{display:none;}
+
+    @media(max-width:767px){
+      .navbar{padding:0 14px;}
+      .nav-brand .brand-text,.nav-brand .brand-sub{display:none;}
+      .nav-btn{padding:6px 10px;font-size:.72em;gap:5px;}
+      .nav-container{gap:5px;}
+      .page-main{padding:var(--space-5) var(--space-3) 100px;}
+      .filter-bar{padding:var(--space-3) var(--space-4);}
+      .section-title{max-width:160px;font-size:.95em;}
+      .section-desc,.section-progress-mini,.section-progress-label{display:none;}
+      .card-number,.card-sub{display:none;}
+      .card-title-desktop{display:none!important;}
+      .card-title-row{display:block!important;width:100%;padding-top:4px;}
+      .card-title{font-size:.88rem;white-space:normal;overflow:visible;text-overflow:unset;font-weight:700;line-height:1.4;}
+      .video-card{flex-wrap:wrap;gap:10px 12px;padding:12px 14px;}
+      .card-play-btn,.card-lock-icon{width:36px;height:36px;flex-shrink:0;}
+      .card-content{flex:1;min-width:0;order:1;}
+      .card-actions{order:2;flex-shrink:0;}
+      .card-title-row{order:3;}
+      .card-watch-link span{display:none;}
+      .card-watch-link{padding:7px 10px;}
+      .card-mark-btn{padding:6px 10px;font-size:.7rem;}
+      .card-lock-info span{display:none;}
+      .card-lock-info{padding:7px 10px;}
+      .progress-strip{padding:var(--space-3) var(--space-4);}
+      .progress-strip-stats{gap:var(--space-4);}
+      .progress-bar-wrap{display:none;}
+      .mobile-progress{display:block;position:fixed;bottom:0;left:0;right:0;z-index:900;background:var(--primary);padding:var(--space-3) var(--space-4);box-shadow:0 -4px 20px rgba(0,0,0,.15);}
+      .mobile-progress-top{display:flex;justify-content:space-between;margin-bottom:5px;}
+      .mobile-progress-text{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:700;color:rgba(255,255,255,.85);}
+      .mobile-progress-pct{font-family:Montserrat,sans-serif;font-size:var(--text-xs);font-weight:700;color:var(--gold);}
+    }
+
+    .fade-in{animation:fadeUp .4s ease both;}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:none;}}
+    @keyframes pulse-highlight{0%{box-shadow:0 0 0 0 rgba(41,128,185,.4);}70%{box-shadow:0 0 0 8px rgba(41,128,185,0);}100%{box-shadow:0 0 0 0 rgba(41,128,185,0);}}
+    .highlight-pulse{animation:pulse-highlight 1.2s ease 2;}
+    @keyframes shake{0%,100%{transform:translateX(0);}20%,60%{transform:translateX(-5px);}40%,80%{transform:translateX(5px);}}
+    .shake{animation:shake .35s ease;}
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar" role="navigation" aria-label="Course navigation">
+    <a href="analysis.html" class="nav-brand" aria-label="GeoAstro">
+      <i class="fa-solid fa-earth-asia" aria-hidden="true"></i>
+      <div>
+        <span class="brand-text">GeoAstro</span>
+        <span class="brand-sub">Geo Time Map Course</span>
+      </div>
+    </a>
+    <div class="nav-container">
+      <div class="help-dropdown-wrapper">
+        <button class="nav-btn" id="helpBtn" aria-expanded="false" aria-haspopup="true">
+          <i class="fa-regular fa-circle-question" aria-hidden="true"></i>
+          Need Help
+        </button>
+        <div class="help-dropdown" id="helpDropdown" role="menu">
+          <div class="help-header">Contact &amp; Support</div>
+          <a href="https://wa.me/918360362525" target="_blank" rel="noopener noreferrer" class="help-item" role="menuitem">
+            <div class="help-icon-box"><i class="fa-brands fa-whatsapp" style="color:#25D366;font-size:1.1em;"></i></div>
+            <div class="help-text-box">
+              <span class="help-label">WhatsApp</span>
+              <span class="help-value">Gaurav @ 8360362525</span>
+            </div>
+          </a>
+          <div class="help-item" role="menuitem" onclick="navigator.clipboard&&navigator.clipboard.writeText('gaurav@geoastro.in').then(()=>showToast('Email copied!'))">
+            <div class="help-icon-box"><i class="fa-regular fa-envelope"></i></div>
+            <div class="help-text-box">
+              <span class="help-label">Email Support</span>
+              <span class="help-value">gaurav@geoastro.in</span>
+            </div>
+          </div>
+          <div style="padding:4px;background:#f8fafc;border-radius:8px;font-family:Montserrat,sans-serif;font-size:.72em;color:#64748b;text-align:center;line-height:1.5;">
+            <i class="fa-solid fa-clock" style="margin-right:4px;color:#94a3b8;"></i>Support hours: 10 AM – 7 PM IST
+          </div>
+        </div>
+      </div>
+      <a href="analysis.html" class="nav-btn accent">
+        <i class="fa-solid fa-arrow-left"></i>
+        <span>Back to Tool</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero" aria-label="Course hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Complete Learning Series</p>
+      <h1 class="hero-title">Geo Time Map Course</h1>
+      <div class="hero-underline" aria-hidden="true"></div>
+      <p class="hero-subtitle">Geo Time Calculator &amp; Planetary Energy Flow Lessons</p>
+    </div>
+  </section>
+
+  <!-- PROGRESS STRIP -->
+  <div class="progress-strip" role="region" aria-label="Course progress">
+    <div class="progress-strip-stats">
+      <div class="pstat"><span class="pstat-val" id="statTotal">37</span><span class="pstat-label">Total</span></div>
+      <div class="pstat-sep"></div>
+      <div class="pstat"><span class="pstat-val" id="statWatched" style="color:#fde68a;">0</span><span class="pstat-label">Watched</span></div>
+      <div class="pstat-sep"></div>
+      <div class="pstat"><span class="pstat-val" id="statLeft">37</span><span class="pstat-label">Remaining</span></div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-label">
+        <span id="progressText">0 of 37 watched</span>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="progress-bar-track">
+        <div class="progress-bar-fill" id="progressBar" style="width:0%" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
+    </div>
+    <div class="progress-strip-actions">
+      <button class="strip-btn" id="continueBtn"><i class="fa-solid fa-play"></i> Continue</button>
+      <button class="strip-btn" id="expandAllBtn"><i class="fa-solid fa-chevron-down"></i> Expand All</button>
+      <button class="strip-btn danger" id="resetBtn"><i class="fa-solid fa-rotate-left"></i> Reset</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <main class="page-main" id="mainContent">
+    <div class="filter-bar" role="group" aria-label="Filter by category">
+      <span class="filter-label"><i class="fa-solid fa-filter" style="margin-right:4px;"></i>Filter:</span>
+      <button class="filter-chip active" data-filter="all">All</button>
+      <button class="filter-chip" data-filter="Intro">Intro</button>
+      <button class="filter-chip" data-filter="Core">Core</button>
+      <button class="filter-chip" data-filter="Roles">House Roles</button>
+      <button class="filter-chip" data-filter="Energy Flow">Energy Flow</button>
+      <button class="filter-chip" data-filter="Transitions">Transitions</button>
+      <button class="filter-chip" data-filter="Origins">Origins</button>
+    </div>
+    <!-- PERMANENT HOW IT WORKS STRIP -->
+    <div class="how-it-works" role="note" aria-label="How this course works">
+      <div class="how-it-works-label">
+        <i class="fa-solid fa-circle-info"></i>
+        How This Course Works — Read Before Starting
+      </div>
+      <div class="how-steps">
+        <div class="how-step">
+          <div class="how-step-icon s1"><i class="fa-solid fa-play"></i></div>
+          <div class="how-step-text">
+            <div class="how-step-num">Step 1</div>
+            <div class="how-step-main">Watch the Video</div>
+            <div class="how-step-sub">Click the play button or <strong style="color:#1e3a4a;">Watch</strong> to open in Google Drive</div>
+          </div>
+        </div>
+        <div class="how-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="how-step">
+          <div class="how-step-icon s2"><i class="fa-solid fa-circle-check"></i></div>
+          <div class="how-step-text">
+            <div class="how-step-num">Step 2</div>
+            <div class="how-step-main">Click "Unlock Next"</div>
+            <div class="how-step-sub">Come back here &amp; click the <strong style="color:#1e3a4a;">Unlock Next</strong> button on that video</div>
+          </div>
+        </div>
+        <div class="how-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+        <div class="how-step">
+          <div class="how-step-icon s3"><i class="fa-solid fa-lock-open"></i></div>
+          <div class="how-step-text">
+            <div class="how-step-num">Step 3</div>
+            <div class="how-step-main">Next Video Unlocks</div>
+            <div class="how-step-sub">The next video <strong style="color:#1e3a4a;">automatically unlocks</strong> — repeat for each lesson</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sections-stack" id="sectionsContainer"></div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="page-footer">
+    <p>&copy; 2026 GeoAstro &mdash; Geo Time Series Learning Portal</p>
+    <p style="margin-top:4px;">Videos open in Google Drive &bull; Progress saved in your browser &bull;
+      <a href="analysis.html">Back to GeoAstro Tool &rarr;</a>
+    </p>
+  </footer>
+
+  <!-- Mobile bottom progress -->
+  <div class="mobile-progress" id="mobileProgress" aria-hidden="true">
+    <div class="mobile-progress-top">
+      <span class="mobile-progress-text" id="mobileProgressText">0 of 37 watched</span>
+      <span class="mobile-progress-pct" id="mobileProgressPct">0%</span>
+    </div>
+    <div class="progress-bar-track" style="height:5px;">
+      <div class="progress-bar-fill" id="mobileProgressBar" style="width:0%;"></div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" role="status" aria-live="polite" style="position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(12px);background:#1e293b;color:white;padding:10px 22px;border-radius:30px;font-family:Montserrat,sans-serif;font-weight:600;font-size:.8em;z-index:9999;opacity:0;transition:all .3s ease;pointer-events:none;white-space:nowrap;max-width:90vw;text-align:center;"></div>
+
+  <script>
+    const STORAGE_KEY = "geotime_watched_v3";
+    const SECTION_KEY = "geotime_sections_v3";
+
+    const courseData = [
+      {
+        key:"foundations", title:"Foundations", category:"Intro",
+        icon:"fa-solid fa-compass", color:"#2980b9",
+        desc:"Introduction to the Geo Time framework and map reading.",
+        videos:[
+          { id:"p1a", part:"Part 1A", type:"Intro",   title:"Opening Geo Time Calculator",         url:"https://drive.google.com/file/d/1rIMBeR_GhbMvqG7G5ySwSqRjFmRe1DL_/view?usp=drive_link" },
+          { id:"p1b", part:"Part 1B", type:"Install", title:"How to Install App in Android",        url:"https://drive.google.com/file/d/1m3D_IzE9ZZ-gblhR_O7esTfKf4enwR-N/view?usp=drive_link" },
+          { id:"p1c", part:"Part 1C", type:"Install", title:"How to Install App in iPhone and Mac", url:"https://drive.google.com/file/d/14ltqCQ2weD3YfZmB2DJed-VBrwmoNEBX/view?usp=drive_link" },
+          { id:"p2",  part:"Part 2",  type:"Coding",  title:"Geo Time Zone MAP Coding",             url:"https://drive.google.com/file/d/1hq_QNuKMLQG9mMkV0Bz94IlhD2XIY9Mr/view" },
+          { id:"p3",  part:"Part 3",  type:"Tutorial",title:"Reading Geo Time Zone MAP",            url:"https://drive.google.com/file/d/1oJ-ugVzHvdLX9yQRrEQvMKjpSivoDljC/view" }
+        ]
+      },
+      {
+        key:"core", title:"Core Concepts", category:"Core",
+        icon:"fa-solid fa-yin-yang", color:"#7c3aed",
+        desc:"Theory and interpretive building blocks of the model.",
+        videos:[
+          { id:"p4", part:"Part 4", type:"Theory",   title:"TAMAS RAJAS BALANCE",                   url:"https://drive.google.com/file/d/1Jbe9RfAvvA21ptTERTE2613vsqrRIx1Q/view" },
+          { id:"p5", part:"Part 5", type:"Analysis", title:"Psycho Analysis Section Interpretation", url:"https://drive.google.com/file/d/1n0vIntelNE6ZWUbF57JdSsAJHUWhM4s8/view" }
+        ]
+      },
+      {
+        key:"roles", title:"House Roles", category:"Roles",
+        icon:"fa-solid fa-house-circle-check", color:"#be185d",
+        desc:"Role-based lessons covering house identities and behavioral patterns.",
+        videos:[
+          { id:"p6",  part:"Part 6",  type:"Role", title:"8th House SENTRY",     url:"https://drive.google.com/file/d/1wuDHlnfuY-Y6h3j_qr4CQ87TM34ThRlG/view" },
+          { id:"p7",  part:"Part 7",  type:"Role", title:"3rd House SEEKER",     url:"https://drive.google.com/file/d/1HQkc01mioU6WNaz_y7xJIpGumHsO7zyS/view" },
+          { id:"p8",  part:"Part 8",  type:"Role", title:"6th House CHALLENGER", url:"https://drive.google.com/file/d/1FAz_OWyq2F1duHPubYaBGlS5qVHnNGX_/view" },
+          { id:"p9",  part:"Part 9",  type:"Role", title:"5th House COMPANION",  url:"https://drive.google.com/file/d/1LRVmbEDg_ZSm8Fdy9oO4P0a6JUUTxzkc/view" },
+          { id:"p10", part:"Part 10", type:"Role", title:"2nd House STRATEGIST", url:"https://drive.google.com/file/d/17UvRtaMqNEuErshWi_o62GZ3RU7Cvqte/view" },
+          { id:"p11", part:"Part 11", type:"Role", title:"9th House CREATOR",    url:"https://drive.google.com/file/d/1pY6ayTCSlk6Bq_h6BhhNLlosw1dHdPl9/view" },
+          { id:"p12", part:"Part 12", type:"Role", title:"11th House SELLER",    url:"https://drive.google.com/file/d/1Z4A4GrE4F56Ptt3px9OtNBjwwz0Nc8Ls/view" },
+          { id:"p13", part:"Part 13", type:"Role", title:"12th House WARRIOR",   url:"https://drive.google.com/file/d/1pC3sV_d45C3FjwUA9wuTWSRN11SE0hAt/view" }
+        ]
+      },
+      {
+        key:"energy", title:"Energy Flow", category:"Energy Flow",
+        icon:"fa-solid fa-solar-panel", color:"#0891b2",
+        desc:"Planetary flow, narrative, speed, and case study interpretation.",
+        videos:[
+          { id:"p14", part:"Part 14", type:"Energy Flow", title:"Planetary Energy Flow – Part 1",     url:"https://drive.google.com/file/d/1eOYozZBvKbi-XjJg_1D__lD5qylnt_io/view" },
+          { id:"p15", part:"Part 15", type:"Narrative",   title:"Energy Flow Narrative – Part 2",     url:"https://drive.google.com/file/d/1pYA440vLtCPYtgpOP3Ebs9I4qu5OhmqP/view" },
+          { id:"p16", part:"Part 16", type:"Energy Flow", title:"Planetary Energy Flow – Part 3",     url:"https://drive.google.com/file/d/1oWg0TQCQZRl63IKH1yOfd2Qvu9oSMPF_/view" },
+          { id:"p17", part:"Part 17", type:"Energy Flow", title:"Planetary Energy Flow – Part 4",     url:"https://drive.google.com/file/d/1y3OqRWkrGk8poy1bYzzf3D2fTWfr-cs6/view" },
+          { id:"p18", part:"Part 18", type:"Case Study",  title:"Case Studies Planetary Energy Flow", url:"https://drive.google.com/file/d/18SDLUQEKFD71w5QrgzMuBSDtDpJ7WMFP/view" },
+          { id:"p19", part:"Part 19", type:"Concepts",    title:"Energy Speed (TAMAS to RAJAS)",      url:"https://drive.google.com/file/d/1jBDc9vU4nkiN0PX8dfNZ2PYdiJdwxn0V/view" }
+        ]
+      },
+      {
+        key:"transitions", title:"Transitions", category:"Transitions",
+        icon:"fa-solid fa-arrows-spin", color:"#d97706",
+        desc:"Transition pathways between roles and symbolic transformations.",
+        videos:[
+          { id:"p21", part:"Part 21", type:"Transition", title:"Death to Life (STRATEGIST)",  url:"https://drive.google.com/file/d/1lPtwigkRDeNNYX71yuI9S69_mgkMdjjw/view" },
+          { id:"p22", part:"Part 22", type:"Transition", title:"SEEKER to CREATOR",           url:"https://drive.google.com/file/d/175IDpBozc4PMm1jIwu7z0l-rwby-OkpK/view" },
+          { id:"p23", part:"Part 23", type:"Transition", title:"COMPANION to SELLER",         url:"https://drive.google.com/file/d/1UGFuZtSREik-eZL5OjrhojG_q5JnlbGv/view" },
+          { id:"p24", part:"Part 24", type:"Transition", title:"CHALLENGER to WARRIOR",       url:"https://drive.google.com/file/d/1Pchq8Ev3mkv4JRpO0Jj93n_r45Mx0Sv-/view" }
+        ]
+      },
+      {
+        key:"genesis", title:"The Genesis", category:"Origins",
+        icon:"fa-solid fa-seedling", color:"#059669",
+        desc:"The origin story — where the idea came from and the earliest thinking behind the tool.",
+        videos:[
+          { id:"p25", part:"Part 25", type:"Origins", title:"Decoding Death & God",    url:"https://drive.google.com/file/d/1YpYomwmuFFBsH54nLqtJbb2HJckiVFpR/view?usp=sharing" },
+          { id:"p26", part:"Part 26", type:"Origins", title:"Decoding Emotions",       url:"https://drive.google.com/file/d/16wXDfc3UdIIDkgqFEea8yF-jDW4o2GQ5/view?usp=sharing" },
+          { id:"p27", part:"Part 27", type:"Origins", title:"Hot Emotion",             url:"https://drive.google.com/file/d/1BOD9kJ3v4U6EIDaPtdubAej85uC75dE9/view?usp=sharing" },
+          { id:"p28", part:"Part 28", type:"Origins", title:"Cold Emotions",           url:"https://drive.google.com/file/d/1BHWN8t6F4i0Uol7qv0il7ZL68vUuWoWq/view?usp=sharing" }
+        ]
+      },
+      {
+        key:"framework", title:"Building the Framework", category:"Origins",
+        icon:"fa-solid fa-hammer", color:"#7c3aed",
+        desc:"How the concepts were structured and the tool began taking its definitive shape.",
+        videos:[
+          { id:"p29", part:"Part 29", type:"Framework", title:"Health Remedies",       url:"https://drive.google.com/file/d/1h80g1ENjI96YZdsgh6XJkfsn30PkYC5A/view?usp=sharing" },
+          { id:"p30", part:"Part 30", type:"Framework", title:"Geo Time Chart",        url:"https://drive.google.com/file/d/1J5EhlyO7dNlaKFQxqxBJMjEGgEGztQ8C/view?usp=sharing" },
+          { id:"p31", part:"Part 31", type:"Framework", title:"Moksha",                url:"https://drive.google.com/file/d/1nmH1HPafvfkZ8EzDZ1t6btn-PlB4S5HU/view?usp=sharing" }
+        ]
+      },
+      {
+        key:"tooltoday", title:"The Tool Today", category:"Origins",
+        icon:"fa-solid fa-star", color:"#0891b2",
+        desc:"How everything came together — the tool in its current, complete form.",
+        videos:[
+          { id:"p32", part:"Part 32", type:"Deep Dive", title:"Red & Green Zone",      url:"https://drive.google.com/file/d/1holQM1b_XwZntmLHICLJgJ8ZJyXNHvqT/view?usp=sharing" },
+          { id:"p33", part:"Part 33", type:"Deep Dive", title:"Violet Zone",           url:"https://drive.google.com/file/d/1jRIJnDqYI5N61fqP5sJkKmy9EUJ-hOFa/view?usp=sharing" },
+          { id:"p34", part:"Part 34", type:"Deep Dive", title:"Black Zone",            url:"https://drive.google.com/file/d/1DvpZkRR-sWv4soyUHDliz36aZH4r6vB8/view?usp=sharing" },
+          { id:"p35", part:"Part 35", type:"Deep Dive", title:"Conclusion",            url:"https://drive.google.com/file/d/1y8oqF_oCuQXFyy_qAmCaQJNsNU8b8dj_/view?usp=sharing" }
+        ]
+      },
+      {
+        key:"casestudies", title:"Real-World Case Studies", category:"Origins",
+        icon:"fa-solid fa-briefcase", color:"#d97706",
+        desc:"Applying the tool in real life — practical case studies showing the system in action.",
+        videos:[
+          { id:"p36", part:"Part 36", type:"Case Study", title:"Case Studies 1",       url:"https://drive.google.com/file/d/1h5hkFVcRZ6EHgveyFeUvyDKc549tXCAy/view?usp=sharing" },
+          { id:"p37", part:"Part 37", type:"Case Study", title:"Case Studies 2",       url:"https://drive.google.com/file/d/1XIaUhLNQUoGE-uPs4d5nHQ1-24DmDNNh/view?usp=sharing" }
+        ]
+      }
+    ];
+
+    let watched = {}, sectionState = {}, activeFilter = "all";
+
+    function loadState() {
+      try { watched = JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { watched = {}; }
+      // Clean up any stale `false` values left by the old bug — delete them so the unlock chain works correctly
+      Object.keys(watched).forEach(k => { if (watched[k] !== true) delete watched[k]; });
+      try { sectionState = JSON.parse(localStorage.getItem(SECTION_KEY)) || {}; } catch { sectionState = {}; }
+      if (!Object.keys(sectionState).length) { courseData.forEach((s, i) => { sectionState[s.key] = i <= 1; }); }
+    }
+    function saveWatched() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(watched)); } catch {} }
+    function saveSections() { try { localStorage.setItem(SECTION_KEY, JSON.stringify(sectionState)); } catch {} }
+
+    // ── CORE: flat ordered list of ALL videos globally ──
+    function allVideos() { return courseData.flatMap(s => s.videos.map(v => ({ ...v, skey: s.key }))); }
+    function totalCount() { return allVideos().length; }
+    function watchedCount() { return allVideos().filter(v => watched[v.id] === true).length; }
+
+    // A video is UNLOCKED if it is the first video, OR the previous video (globally) is already watched
+    function isUnlocked(globalIndex) {
+      if (globalIndex === 0) return true;
+      const prev = allVideos()[globalIndex - 1];
+      return watched[prev.id] === true;
+    }
+
+    // Find global index of a video by id
+    function globalIndex(vid) { return allVideos().findIndex(v => v.id === vid); }
+
+    function sectionStats(sec) {
+      const total = sec.videos.length;
+      const done  = sec.videos.filter(v => watched[v.id]).length;
+      return { total, done, pct: total ? Math.round((done / total) * 100) : 0 };
+    }
+
+    function showToast(msg, type) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.background = type === "success" ? "#166534" : type === "warn" ? "#92400e" : "#1e293b";
+      t.style.opacity = "1"; t.style.transform = "translateX(-50%) translateY(0)";
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(-50%) translateY(12px)"; }, 3000);
+    }
+
+    function render() {
+      const container = document.getElementById("sectionsContainer");
+      const all = allVideos();
+      // find the single "next up" video — first unwatched unlocked video
+      const nextUpId = all.find((v, i) => !watched[v.id] && isUnlocked(i))?.id;
+
+      const visible = courseData.filter(s => activeFilter === "all" || s.category === activeFilter);
+
+      container.innerHTML = visible.map((sec, si) => {
+        const { total, done, pct } = sectionStats(sec);
+        const open = sectionState[sec.key] !== false;
+
+        const cards = sec.videos.map((v, vi) => {
+          const gIdx      = globalIndex(v.id);
+          const isWatched = watched[v.id] === true;
+          const locked    = !isUnlocked(gIdx);
+          const isNext    = v.id === nextUpId;
+          // find which video is the blocker
+          const blockerPart = locked ? (all[gIdx - 1]?.part || "previous video") : "";
+
+          if (locked) {
+            const isFirstLocked = gIdx > 0 && isUnlocked(gIdx - 1) && !watched[all[gIdx-1].id] === false;
+            // Show reminder only on the very first locked card (the one immediately after the last unlocked)
+            const showReminder = all.slice(0, gIdx).every((v2, i2) => i2 < gIdx - 1 || isUnlocked(i2));
+            // ── LOCKED CARD ──
+            return `
+              <div id="card-${v.id}" class="video-card is-locked fade-in" style="animation-delay:${si*60+vi*35}ms"
+                   data-locked="${v.id}" data-blocker="${blockerPart}" role="listitem">
+                <span class="card-number">${String(vi+1).padStart(2,"0")}</span>
+                <div class="card-lock-icon" aria-label="Locked"><i class="fa-solid fa-lock"></i></div>
+                <div class="card-content">
+                  <div class="card-badges">
+                    <span class="badge badge-part-locked">${v.part}</span>
+                    <span class="badge badge-type-locked">${v.type}</span>
+                    <span class="badge" style="background:#f1f5f9;border-color:#cbd5e1;color:#94a3b8;">
+                      <i class="fa-solid fa-lock" style="font-size:.75em;margin-right:3px;"></i>Locked
+                    </span>
+                  </div>
+                  <div class="card-title card-title-desktop">${v.title}</div>
+                  <div class="card-sub">Complete <strong>${blockerPart}</strong> first to unlock</div>
+                  ${showReminder ? `
+                  <div class="locked-reminder" data-scroll-to="${all[gIdx-1]?.id}" title="Click to jump to ${blockerPart}">
+                    <i class="fa-solid fa-circle-up"></i>
+                    <span>💡 <strong>Watch ${blockerPart} above, then click "Unlock Next"</strong> — this video will unlock automatically</span>
+                  </div>` : ""}
+                </div>
+                <div class="card-actions">
+                  <div class="card-lock-info">
+                    <i class="fa-solid fa-lock"></i>
+                    <span>Complete ${blockerPart} first</span>
+                  </div>
+                </div>
+                <div class="card-title-row"><div class="card-title">${v.title}</div></div>
+              </div>`;
+          }
+
+          // ── UNLOCKED CARD ──
+          return `
+            <div id="card-${v.id}" class="video-card${isWatched?" is-watched":""}${isNext?" is-next":""} fade-in"
+                 style="animation-delay:${si*60+vi*35}ms" role="listitem">
+              <span class="card-number">${String(vi+1).padStart(2,"0")}</span>
+              <a href="${v.url}" target="_blank" rel="noopener noreferrer"
+                 class="card-play-btn" style="background:${sec.color};" aria-label="Watch ${v.title}">
+                <i class="fa-solid fa-play"></i>
+              </a>
+              <div class="card-content">
+                <div class="card-badges">
+                  <span class="badge badge-part">${v.part}</span>
+                  <span class="badge badge-type">${v.type}</span>
+                  ${isNext ? '<span class="next-badge"><i class="fa-solid fa-arrow-right" style="font-size:.8em;"></i> Up Next</span>' : ""}
+                  ${isWatched ? '<span class="badge badge-watched"><i class="fa-solid fa-check" style="font-size:.8em;margin-right:2px;"></i> Watched</span>' : ""}
+                </div>
+                <div class="card-title card-title-desktop">${v.title}</div>
+                <div class="card-sub">Opens in Google Drive &bull; New tab</div>
+              </div>
+              <div class="card-actions">
+                <a href="${v.url}" target="_blank" rel="noopener noreferrer" class="card-watch-link">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  <span>Watch</span>
+                </a>
+                <button class="card-mark-btn ${isWatched?"watched":"unwatched"}" data-vid="${v.id}"
+                        aria-label="${isWatched?"Mark as unwatched":"Unlock next video"}">
+                  ${isWatched
+                    ? '<i class="fa-solid fa-check"></i> Watched'
+                    : '<i class="fa-solid fa-lock-open"></i> Unlock Next'}
+                </button>
+              </div>
+              <div class="card-title-row"><div class="card-title">${v.title}</div></div>
+              <div class="confirm-row" id="confirm-${v.id}">
+                <div class="confirm-question">
+                  <i class="fa-solid fa-circle-question"></i>
+                  Have you watched <strong>&ldquo;${v.title}&rdquo;</strong> fully?
+                </div>
+                <div class="confirm-btns">
+                  <button class="confirm-yes" data-confirm-vid="${v.id}">
+                    <i class="fa-solid fa-check"></i> Yes, Unlock Next
+                  </button>
+                  <button class="confirm-no" data-dismiss-vid="${v.id}">
+                    <i class="fa-solid fa-xmark"></i> Not Yet
+                  </button>
+                </div>
+              </div>
+            </div>`;
+        }).join("");
+
+        return `
+          <section class="course-section fade-in" id="section-${sec.key}"
+                   style="animation-delay:${si*80}ms" data-category="${sec.category}">
+            <button class="section-header" data-toggle="${sec.key}"
+                    aria-expanded="${open}" aria-controls="body-${sec.key}"
+                    style="--section-accent:${sec.color};">
+              <div class="section-header-left">
+                <div class="section-icon" style="background:${sec.color};">
+                  <i class="${sec.icon}" style="color:white;"></i>
+                </div>
+                <div class="section-meta">
+                  <div class="section-category-tag" style="color:${sec.color};">${sec.category}</div>
+                  <div class="section-title">${sec.title}</div>
+                  <div class="section-desc">${sec.desc}</div>
+                </div>
+              </div>
+              <div class="section-header-right">
+                <span class="section-progress-label">${done}/${total}</span>
+                <div class="section-progress-mini">
+                  <div class="section-progress-mini-fill" style="width:${pct}%;background:${sec.color};"></div>
+                </div>
+                <i class="fa-solid fa-chevron-down section-chevron${open?"":" rotated"}"></i>
+              </div>
+            </button>
+            <div class="section-progress-bar">
+              <div class="section-progress-bar-fill" style="width:${pct}%;"></div>
+            </div>
+            <div class="section-body${open?"":" collapsed"}" id="body-${sec.key}" role="list">
+              <div class="section-body-inner">
+                <div class="cards-grid">${cards}</div>
+              </div>
+            </div>
+          </section>`;
+      }).join("");
+
+      bindEvents();
+      updateProgress();
+    }
+
+    function bindEvents() {
+      // Section accordion toggle
+      document.querySelectorAll("[data-toggle]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const key = btn.dataset.toggle;
+          const willOpen = !sectionState[key];
+          if (willOpen) { courseData.forEach(s => { sectionState[s.key] = false; }); }
+          sectionState[key] = willOpen;
+          saveSections(); render();
+          if (willOpen) {
+            setTimeout(() => {
+              const el = document.getElementById("section-" + key);
+              if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 60);
+          }
+        });
+      });
+
+      // "Unlock Next" button — show inline confirm row (unwatched state)
+      // "Watched" button — toggle back to unwatched immediately (already confirmed)
+      document.querySelectorAll("[data-vid]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.vid;
+          if (btn.classList.contains("watched")) {
+            // Already watched — clicking again unmarks it directly
+            delete watched[id];
+            saveWatched(); render();
+            showToast("Marked as not watched", "");
+          } else {
+            // Unwatched — show inline confirm row instead of acting immediately
+            // Close any other open confirm rows first
+            document.querySelectorAll(".confirm-row.show").forEach(r => {
+              if (r.id !== "confirm-" + id) r.classList.remove("show");
+            });
+            const row = document.getElementById("confirm-" + id);
+            if (row) row.classList.toggle("show");
+          }
+        });
+      });
+
+      // Confirm YES — actually mark as watched & unlock
+      document.querySelectorAll("[data-confirm-vid]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.confirmVid;
+          watched[id] = true;
+          saveWatched(); render();
+          showToast("🔓 Unlocked! Next video is now available.", "success");
+        });
+      });
+
+      // Confirm NO — just close the row
+      document.querySelectorAll("[data-dismiss-vid]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.dismissVid;
+          const row = document.getElementById("confirm-" + id);
+          if (row) row.classList.remove("show");
+          showToast("No problem — finish watching and come back!", "");
+        });
+      });
+
+      // Locked reminder badge — scroll to prerequisite card
+      document.querySelectorAll("[data-scroll-to]").forEach(badge => {
+        badge.addEventListener("click", e => {
+          e.stopPropagation();
+          const targetId = badge.dataset.scrollTo;
+          const el = document.getElementById("card-" + targetId);
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "center" });
+            el.classList.add("highlight-pulse");
+            setTimeout(() => el.classList.remove("highlight-pulse"), 2500);
+          }
+        });
+      });
+
+      // Locked card click — shake + toast
+      document.querySelectorAll("[data-locked]").forEach(card => {
+        card.addEventListener("click", e => {
+          if (e.target.closest("[data-scroll-to]")) return; // let reminder handle its own click
+          const blocker = card.dataset.blocker;
+          card.classList.remove("shake");
+          void card.offsetWidth;
+          card.classList.add("shake");
+          const t = document.getElementById("toast");
+          t.textContent = `🔒 Watch & mark "${blocker}" first — then this unlocks automatically`;
+          t.style.background = "#92400e";
+          t.style.opacity = "1"; t.style.transform = "translateX(-50%) translateY(0)";
+          clearTimeout(t._timer);
+          t._timer = setTimeout(() => { t.style.opacity = "0"; t.style.transform = "translateX(-50%) translateY(12px)"; }, 5000);
+          setTimeout(() => card.classList.remove("shake"), 400);
+        });
+      });
+    }
+
+    function updateProgress() {
+      const total = totalCount(), done = watchedCount(), left = total - done;
+      const pct = total ? Math.round((done / total) * 100) : 0;
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statWatched").textContent = done;
+      document.getElementById("statLeft").textContent = left;
+      document.getElementById("progressText").textContent = `${done} of ${total} watched`;
+      document.getElementById("progressPct").textContent = `${pct}%`;
+      document.getElementById("progressBar").style.width = `${pct}%`;
+      document.getElementById("progressBar").setAttribute("aria-valuenow", pct);
+      document.getElementById("mobileProgressText").textContent = `${done} of ${total} watched`;
+      document.getElementById("mobileProgressPct").textContent = `${pct}%`;
+      document.getElementById("mobileProgressBar").style.width = `${pct}%`;
+    }
+
+    function goToContinue() {
+      const all = allVideos();
+      const next = all.find((v, i) => !watched[v.id] && isUnlocked(i));
+      if (!next) { showToast("🎉 Course complete! All videos watched.", "success"); return; }
+      const sec = courseData.find(s => s.videos.some(v => v.id === next.id));
+      if (sec && !sectionState[sec.key]) {
+        courseData.forEach(s => { sectionState[s.key] = false; });
+        sectionState[sec.key] = true; saveSections(); render();
+      }
+      setTimeout(() => {
+        const el = document.getElementById("card-" + next.id);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+          el.classList.add("highlight-pulse");
+          setTimeout(() => el.classList.remove("highlight-pulse"), 2500);
+        }
+      }, 120);
+    }
+
+    function expandAll() {
+      const btn = document.getElementById("expandAllBtn");
+      const visible = courseData.filter(s => activeFilter === "all" || s.category === activeFilter);
+      const allOpen = visible.every(s => sectionState[s.key] !== false);
+      visible.forEach(s => { sectionState[s.key] = !allOpen; }); saveSections();
+      btn.innerHTML = allOpen
+        ? '<i class="fa-solid fa-chevron-down"></i> Expand All'
+        : '<i class="fa-solid fa-chevron-up"></i> Collapse All';
+      render();
+    }
+
+    document.querySelectorAll(".filter-chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+        activeFilter = chip.dataset.filter;
+        document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+        chip.classList.add("active"); render();
+      });
+    });
+
+    document.getElementById("continueBtn").addEventListener("click", goToContinue);
+    document.getElementById("expandAllBtn").addEventListener("click", expandAll);
+
+    // RESET — no confirm() as it is blocked on Google Sites iframe
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      watched = {}; saveWatched(); render();
+      showToast("✓ Progress reset — all videos marked as unwatched", "");
+    });
+
+    const helpBtn = document.getElementById("helpBtn");
+    const helpDropdown = document.getElementById("helpDropdown");
+    helpBtn.addEventListener("click", e => {
+      e.stopPropagation();
+      const isOpen = helpDropdown.classList.toggle("show");
+      helpBtn.setAttribute("aria-expanded", isOpen);
+    });
+    document.addEventListener("click", () => {
+      helpDropdown.classList.remove("show");
+      helpBtn.setAttribute("aria-expanded", "false");
+    });
+    helpDropdown.addEventListener("click", e => e.stopPropagation());
+
+    loadState(); render();
+    const done = watchedCount();
+    if (done > 0 && done < totalCount()) { setTimeout(goToContinue, 600); }
+  </script>
+</body>
+</html>
