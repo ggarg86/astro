@@ -193,13 +193,71 @@
         }
 
         /* --- PRINT STYLES --- */
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
         @media print {
-            .navbar { display: none !important; }
-            body { padding-top: 0 !important; }
-            #acc-psycho, #acc-energy, #acc-speed, #acc-ppf, #acc-sun, #acc-moon {
+            /* ── HIDE ALL UI CHROME ── */
+            .navbar,
+            #search-section,
+            #auth-overlay,
+            #save-record-btn,
+            #download-report-btn,
+            #generate-btn,
+            #clear-btn,
+            #manage-users-btn,
+            #course-access-btn,
+            #archetype-guide-btn,
+            #logout-btn,
+            #delete-modal-backdrop,
+            [id^="icon-acc-"],
+            button { display: none !important; }
+
+            body { padding-top: 0 !important; background: white !important; }
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+            color-adjust: exact;
+
+            /* ── FORCE ALL ACCORDION SECTIONS OPEN ── */
+            #acc-psycho, #acc-energy, #acc-speed,
+            #acc-ppf, #acc-sun, #acc-moon, #acc-rhythm {
                 display: block !important;
             }
-            [id^="icon-acc-"] { display: none !important; }
+
+            /* ── PAGE BREAK RULES ── */
+            /* Map + Table: keep together, never break inside */
+            #all-results-wrapper > div:first-child,
+            #all-results-wrapper > div:nth-child(2) {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            /* Each accordion section: start fresh if needed, never orphan header */
+            #results-container > div {
+                break-inside: avoid;
+                page-break-inside: avoid;
+                margin-bottom: 12px;
+            }
+            /* Accordion headers stay with their content */
+            #results-container > div > button,
+            #results-container > div > .bg-slate-800 {
+                break-after: avoid;
+                page-break-after: avoid;
+            }
+            /* Sub-items inside tall sections — keep each item intact */
+            .timeline-item,
+            .flow-node,
+            .narrative-chip,
+            .grid > div,
+            .space-y-4 > div,
+            .gap-6 > div {
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            /* Slightly reduce font for better fit */
+            body { font-size: 90% !important; }
+            /* Remove shadows for cleaner print */
+            * { box-shadow: none !important; }
         }
 
         /* --- EXISTING STYLES --- */
@@ -818,6 +876,7 @@
                     <div style="display:flex;flex-direction:column;gap:8px;">
                         <button onclick="calculatePositions()" id="generate-btn" class="inp-btn-generate btn-primary-new btn-stale"><i class="ph ph-chart-polar"></i> Generate Report</button>
                         <button id="save-record-btn" onclick="manualSaveRecord()" class="inp-btn-generate hidden" style="background:#16a34a;"><i class="ph ph-floppy-disk"></i> Save Record</button>
+                        <button id="download-report-btn" onclick="downloadReport()" class="inp-btn-generate hidden" style="background:#7c3aed;"><i class="ph ph-file-pdf"></i> Download Report</button>
                     </div>
                 </div>
             </div>
@@ -2101,6 +2160,77 @@ function getDSTInfo(tzName, date) {
             }
         }
 
+        // ── DOWNLOAD / PRINT REPORT ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        var _printAccState   = {};
+        var _printInProgress = false;
+        var _printSafetyTimer = null;
+
+        function _saveAccState(){
+            _printAccState = {};
+            ACC_IDS.forEach(function(id){
+                var el = document.getElementById(id);
+                if(el) _printAccState[id] = !el.classList.contains('hidden');
+            });
+        }
+
+        function _expandForPrint(){
+            var rc = document.getElementById('results-container');
+            if(!rc || rc.classList.contains('hidden')) return;
+            ACC_IDS.forEach(function(id){
+                var el = document.getElementById(id);
+                var ic = document.getElementById('icon-' + id);
+                if(el) el.classList.remove('hidden');
+                if(ic) ic.style.transform = 'rotate(180deg)';
+            });
+        }
+
+        function _restoreAccState(){
+            ACC_IDS.forEach(function(id){
+                var el = document.getElementById(id);
+                var ic = document.getElementById('icon-' + id);
+                if(!el) return;
+                var wasOpen = _printAccState[id];
+                if(wasOpen) el.classList.remove('hidden');
+                else el.classList.add('hidden');
+                if(ic) ic.style.transform = wasOpen ? 'rotate(180deg)' : 'rotate(0deg)';
+            });
+        }
+
+        function _resetDownloadBtn(){
+            var btn = document.getElementById('download-report-btn');
+            if(btn){ btn.disabled=false; btn.innerHTML='<i class="ph ph-file-pdf"></i> Download Report'; }
+        }
+
+        function downloadReport(){
+            _saveAccState();
+            _expandForPrint();
+            _printInProgress = true;
+            clearTimeout(_printSafetyTimer);
+            var btn = document.getElementById('download-report-btn');
+            if(btn){ btn.disabled=true; btn.innerHTML='<i class="ph ph-spinner"></i> Preparing...'; }
+            setTimeout(function(){ window.print(); }, 80);
+            _printSafetyTimer = setTimeout(function(){
+                _printInProgress = false;
+                _restoreAccState();
+                _resetDownloadBtn();
+            }, 8000);
+        }
+
+        window.addEventListener('beforeprint', function(){
+            if(!_printInProgress) _saveAccState();
+            _expandForPrint();
+        });
+
+        window.addEventListener('afterprint', function(){
+            clearTimeout(_printSafetyTimer);
+            _printInProgress = false;
+            _restoreAccState();
+            _resetDownloadBtn();
+        });
+        // ─────────────────────────────────────────────────────────────────────────────────────────
+
+        // ─────────────────────────────────────────────────────────────────────
+
         function markFresh(){
             _reportFresh = true;
             const btn = document.getElementById('generate-btn');
@@ -2538,9 +2668,11 @@ function getDSTInfo(tzName, date) {
             document.getElementById('search-section').classList.add('hidden');
             var badge = document.getElementById('validity-badge');
             if(badge){ badge.className=''; }
-            // Hide save button on logout
+            // Hide save + download buttons on logout
             var saveBtn = document.getElementById('save-record-btn');
             if(saveBtn){ saveBtn.classList.add('hidden'); }
+            var dlBtn = document.getElementById('download-report-btn');
+            if(dlBtn){ dlBtn.classList.add('hidden'); dlBtn.disabled=false; dlBtn.innerHTML='<i class="ph ph-file-pdf"></i> Download Report'; }
             var manageBtn=document.getElementById('manage-users-btn');
             if(manageBtn) manageBtn.style.display='none';
             // ── FULL RESULTS RESET — clean slate for next user ──
@@ -2550,6 +2682,28 @@ function getDSTInfo(tzName, date) {
             var tb=document.querySelector('#results-table tbody'); if(tb) tb.innerHTML='<tr><td colspan="5" class="p-8 text-center text-slate-400 italic">Waiting for input...</td></tr>';
             var gb=document.getElementById('generate-btn'); if(gb){gb.classList.remove('btn-fresh-green');gb.classList.add('btn-stale');gb.innerHTML='<i class="ph ph-chart-polar"></i> Generate Report';}
 
+            // ── FULL FORM RESET — restore exact first-login defaults ──
+            document.getElementById('name-input').value = 'FBR Institute';
+            document.getElementById('location-input').value = 'Faridkot, Punjab, India';
+            document.getElementById('latitude').value = '30.6769';
+            document.getElementById('longitude').value = '74.7583';
+            document.getElementById('lat-display').textContent = '30.6769';
+            document.getElementById('lng-display').textContent = '74.7583';
+            document.getElementById('day-input').value = '3';
+            document.getElementById('month-input').value = '6';
+            document.getElementById('year-input').value = '1986';
+            document.getElementById('hour-input').value = '3';
+            document.getElementById('minute-input').value = '50';
+            setAmPm('PM');
+            setGender('Male');
+            _dstOverride='auto';
+            ['auto','yes','no'].forEach(function(v){ var b=document.getElementById('dst-'+v); if(b) b.className='dst-btn'+(v==='auto'?' active':''); });
+            var cb=document.getElementById('clear-btn'); if(cb) cb.classList.add('hidden');
+            var sugg=document.getElementById('suggestions'); if(sugg) sugg.classList.add('hidden');
+            _currentTZ = findNearestTimezone(30.6769, 74.7583).tz;
+            populateTZDropdown(_currentTZ);
+            updateTZDisplay();
+
             document.getElementById('login-mobile').value='';
             document.getElementById('login-password').value='';
             document.getElementById('login-msg').className='auth-msg';
@@ -2558,6 +2712,8 @@ function getDSTInfo(tzName, date) {
             document.getElementById('search-results-dropdown').innerHTML='';
             document.getElementById('search-results-dropdown').classList.remove('show');
             switchAuthTab('login');
+            // Restart cache loading immediately so next login is instant
+            loadUsersCache();
         }
 
         // ── AUTO LOGOUT ON EXPIRY ────────────────────────────────
@@ -2726,7 +2882,7 @@ function getDSTInfo(tzName, date) {
             _loadedRecordName = (r.person_name || '').trim().toLowerCase();
             markStale(); // form is being filled — needs regeneration
 
-            // Reset save button — hide until Generate Report is clicked for this record
+            // Reset save + download buttons — hide until Generate Report is clicked for this record
             const saveBtn = document.getElementById('save-record-btn');
             if(saveBtn){
                 saveBtn.classList.add('hidden');
@@ -2734,6 +2890,8 @@ function getDSTInfo(tzName, date) {
                 saveBtn.classList.remove('btn-stale');
                 saveBtn.style.background = '';
             }
+            const dlBtn2 = document.getElementById('download-report-btn');
+            if(dlBtn2){ dlBtn2.classList.add('hidden'); dlBtn2.disabled=false; dlBtn2.innerHTML='<i class="ph ph-file-pdf"></i> Download Report'; }
 
             // Hide all results — clean slate for new person (chart + table + all sections)
             const allResultsWrapper = document.getElementById('all-results-wrapper');
@@ -2867,6 +3025,9 @@ function getDSTInfo(tzName, date) {
             const btn = document.getElementById('save-record-btn');
             if(!btn) return;
             btn.classList.remove('hidden');
+            // Show download button for all users (valid and expired)
+            var dlBtn = document.getElementById('download-report-btn');
+            if(dlBtn) dlBtn.classList.remove('hidden');
 
             // Smart detection: new record or update?
             const matchedRecord = detectLoadedRecord();
