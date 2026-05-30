@@ -647,7 +647,8 @@
             if (!_session.user_id || !_session.mobile) return;
             const ids = Object.keys(watched).filter(k => watched[k] === true).join(',');
             apiCall({ action:'saveprogress', user_id:_session.user_id, mobile:_session.mobile, watched_ids:ids });
-        }, 2000); // 2s debounce — avoids spamming API on rapid clicks
+            verifyServerAccess(); // piggybacks on user interaction — no extra polling needed
+        }, 2000);
     }
     // ─────────────────────────────────────────────────────────
 
