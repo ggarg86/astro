@@ -555,6 +555,101 @@
   <script>
     const STORAGE_KEY = "geotime_watched_v3";
     const SECTION_KEY = "geotime_sections_v3";
+    const OWNER_KEY   = "geotime_progress_owner";
+
+    // ── API (same endpoint as main tool) ──────────────────────
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTfjTso8CbWOFO1L3bvsJiOalfL5AuIc02MfYb25mWcoj7PtvrT0epRlG4qu2IW1ev8w/exec';
+    var _session = (function(){ try{ return JSON.parse(localStorage.getItem('gtc_user'))||{}; }catch(e){ return {}; } })();
+    var _syncTimer = null;
+
+    // ── OWNER CHECK — clear local progress if different user ──
+    (function(){
+        var storedOwner = localStorage.getItem(OWNER_KEY);
+        var currentOwner = _session.user_id ? _session.user_id.toString() : '';
+        if (currentOwner && storedOwner !== currentOwner) {
+            localStorage.removeItem(STORAGE_KEY);
+            localStorage.removeItem(SECTION_KEY);
+            localStorage.setItem(OWNER_KEY, currentOwner);
+        }
+    })();
+
+    async function apiCall(payload){
+        const url = APPS_SCRIPT_URL + '?data=' + encodeURIComponent(JSON.stringify(payload));
+        const ctrl = new AbortController();
+        const t = setTimeout(()=>ctrl.abort(), 10000);
+        try {
+            const res = await fetch(url, {method:'GET', signal:ctrl.signal});
+            clearTimeout(t);
+            return await res.json();
+        } catch(e) {
+            clearTimeout(t);
+            return { success: false, message: 'Connection error' };
+        }
+    }
+
+    async function loadProgressFromSheet() {
+        if (!_session.user_id || !_session.mobile) return;
+        try {
+            const res = await apiCall({ action:'loadprogress', user_id:_session.user_id, mobile:_session.mobile });
+            if (res.success && res.watched_ids) {
+                // Merge server progress with localStorage — union of both
+                res.watched_ids.split(',').forEach(function(id){
+                    id = id.trim();
+                    if (id) watched[id] = true;
+                });
+                saveWatched(); // persist merged result locally
+            }
+        } catch(e) {}
+    }
+
+    function showLockedScreen(msg){
+        document.body.innerHTML = [
+            '<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;',
+            'font-family:Montserrat,sans-serif;background:#f4f6f8;padding:24px;text-align:center;">',
+            '<div style="background:white;border-radius:20px;padding:40px 32px;max-width:380px;width:100%;',
+            'box-shadow:0 8px 32px rgba(0,0,0,0.1);">',
+            '<div style="font-size:3em;margin-bottom:16px;">🔒</div>',
+            '<h2 style="color:#2c3e50;font-size:1.2em;margin-bottom:10px;">Access Restricted</h2>',
+            '<p style="color:#64748b;font-size:0.88em;line-height:1.6;margin-bottom:24px;">'+(msg||'You need course access to view this page.')+'</p>',
+            '<a href="analysis.html" style="display:inline-flex;align-items:center;gap:8px;background:#2563eb;',
+            'color:white;padding:12px 24px;border-radius:50px;font-weight:700;font-size:0.85em;',
+            'text-decoration:none;">&#8592; Back to Tool</a>',
+            '</div></div>'
+        ].join('');
+    }
+
+    // Live server verify — confirms course_access is still active
+    // Runs silently after page renders; revokes access if admin has removed it
+    async function verifyServerAccess(){
+        if (!_session.user_id || !_session.mobile) return;
+        try{
+            const res = await apiCall({ action:'verify', user_id:_session.user_id, mobile:_session.mobile });
+            if(!res.success){
+                showLockedScreen('Your session has expired. Please log in again.');
+                return;
+            }
+            // Update local session with latest course_access from sheet
+            var caVal = res.course_access !== undefined ? res.course_access : res.courseaccess;
+            if(caVal !== undefined){
+                _session.course_access = caVal;
+                _session.courseaccess  = caVal;
+                try{ var s=JSON.parse(localStorage.getItem('gtc_user'))||{}; s.course_access=caVal; s.courseaccess=caVal; localStorage.setItem('gtc_user',JSON.stringify(s)); }catch(e){}
+            }
+            if(caVal !== 'yes'){
+                showLockedScreen('Your course access has been revoked. Contact Admin Team at 8360362525.');
+            }
+        }catch(e){} // silent fail — don't block user if network is slow
+    }
+
+    function scheduleProgressSync() {
+        clearTimeout(_syncTimer);
+        _syncTimer = setTimeout(function(){
+            if (!_session.user_id || !_session.mobile) return;
+            const ids = Object.keys(watched).filter(k => watched[k] === true).join(',');
+            apiCall({ action:'saveprogress', user_id:_session.user_id, mobile:_session.mobile, watched_ids:ids });
+        }, 2000); // 2s debounce — avoids spamming API on rapid clicks
+    }
+    // ─────────────────────────────────────────────────────────
 
     const courseData = [
       {
@@ -669,7 +764,11 @@
       try { sectionState = JSON.parse(localStorage.getItem(SECTION_KEY)) || {}; } catch { sectionState = {}; }
       if (!Object.keys(sectionState).length) { courseData.forEach((s, i) => { sectionState[s.key] = i <= 1; }); }
     }
-    function saveWatched() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(watched)); } catch {} }
+    function saveWatched() {
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(watched)); } catch {}
+        if (_session.user_id) localStorage.setItem(OWNER_KEY, _session.user_id.toString());
+        scheduleProgressSync();
+    }
     function saveSections() { try { localStorage.setItem(SECTION_KEY, JSON.stringify(sectionState)); } catch {} }
 
     // ── CORE: flat ordered list of ALL videos globally ──
@@ -999,6 +1098,11 @@
     document.getElementById("resetBtn").addEventListener("click", () => {
       watched = {}; saveWatched(); render();
       showToast("✓ Progress reset — all videos marked as unwatched", "");
+      // Also clear from sheet immediately (don't wait for debounce)
+      clearTimeout(_syncTimer);
+      if (_session.user_id && _session.mobile) {
+        apiCall({ action:'saveprogress', user_id:_session.user_id, mobile:_session.mobile, watched_ids:'' });
+      }
     });
 
     const helpBtn = document.getElementById("helpBtn");
@@ -1017,6 +1121,16 @@
     loadState(); render();
     const done = watchedCount();
     if (done > 0 && done < totalCount()) { setTimeout(goToContinue, 600); }
+    // Live server verify — runs in background, won't block rendering
+    verifyServerAccess();
+    // Load progress from sheet — merges with localStorage silently in background
+    loadProgressFromSheet().then(function(){
+        render();
+        const doneAfter = watchedCount();
+        if (doneAfter > 0 && doneAfter < totalCount() && done === 0) {
+            setTimeout(goToContinue, 600);
+        }
+    });
   </script>
 </body>
 </html>
