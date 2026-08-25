@@ -337,6 +337,8 @@
         #logout-btn:hover { background:#b91c1c;border-color:#b91c1c;color:white; }
         #course-access-btn { padding:6px 16px;border:1.5px solid #1d4ed8;border-radius:20px;background:#2563eb;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:white;cursor:pointer;display:none;align-items:center;gap:6px; }
         #course-access-btn:hover { background:#1d4ed8;color:white;border-color:#1d4ed8; }
+        #sessions-access-btn { padding:6px 16px;border:1.5px solid #0f6e56;border-radius:20px;background:#0f6e56;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:white;cursor:pointer;display:none;align-items:center;gap:6px; }
+        #sessions-access-btn:hover { background:#085041;color:white;border-color:#085041; }
         #validity-badge {
             font-family:'Montserrat',sans-serif; font-size:0.72em; font-weight:700;
             padding:5px 12px; border-radius:20px; white-space:nowrap;
@@ -683,13 +685,13 @@
                         <div class="contact-icon-box"><i class="fa-solid fa-phone-volume"></i></div>
                         <div class="contact-text-box">
                             <span class="contact-label">Call / WhatsApp</span>
-                            <span class="contact-value">+91-8360-362525</span>
+                            <span class="contact-value">+91-62834-62525</span>
                         </div>
                         <div class="item-actions">
-                            <button class="action-btn btn-copy" onclick="copyText(event, '+918360362525')">
+                            <button class="action-btn btn-copy" onclick="copyText(event, '+916283462525')">
                                 <i class="fa-regular fa-copy"></i> <span>Copy</span>
                             </button>
-                            <a href="https://wa.me/918360362525" target="_blank" class="action-btn btn-action-primary" onclick="event.stopPropagation()">
+                            <a href="https://wa.me/916283462525" target="_blank" class="action-btn btn-action-primary" onclick="event.stopPropagation()">
                                 <i class="fa-brands fa-whatsapp"></i> Text Me
                             </a>
                         </div>
@@ -738,6 +740,8 @@
                     <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                         <div id="validity-badge"><i class="ph ph-calendar-check"></i> <span id="validity-text">Valid until —</span></div>
                         <button id="course-access-btn" onclick="window.location.href='course.html'"><i class="ph ph-book-open"></i> My Course</button>
+                        <button id="sessions-access-btn" onclick="if(window.openSessionsPanel)openSessionsPanel()"><i class="ph ph-notebook"></i> Sessions</button>
+                        <div id="sessions-panel"></div>
                 <a href="guide.html" id="guide-link-btn" style="padding:6px 16px;border:1.5px solid #b45309;border-radius:20px;background:#f59e0b;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:#1c1400;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;"><i class="ph ph-book-open-text"></i> Archetype Guide</a>
                 <button id="manage-users-btn" onclick="openUserMod()"><i class="ph ph-users-three"></i> Manage Users</button>
                     <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
@@ -1177,7 +1181,7 @@
         const dp = `${pad(v[0])} ${['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][v[1]]} ${v[2]}`;
         const displayHour = v[3] === 0 ? 12 : (v[3] > 12 ? v[3] - 12 : v[3]);
         const displayAmPm = document.getElementById('ampm-value').value;
-        const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'rhythm-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); document.getElementById('results-container').classList.remove('hidden');
+        const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'rhythm-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); window.currentAscendant = asS; window.currentNatalMap = pMap; document.getElementById('results-container').classList.remove('hidden');
             document.getElementById('all-results-wrapper').classList.remove('hidden'); try{renderAnalysis(rP,tP);}catch(e){console.error('renderAnalysis',e);}
             // Expired users: hide accordion sections only — map + table + save/load/delete remain accessible
             if(_isExpired){ document.getElementById('results-container').classList.add('hidden'); }
@@ -2533,7 +2537,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbhTLnx-Ihgbo8Jynznu8BT7asn_blWgZr6c80cUx4ag6XpDDg6dSdp4uu4sNiF282HQ/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5mKeEFdkAfnnvRRT0l4ZXP7UnvAKgnVztBDmVbUndWdWE1RCcIm8pdVOhQYpUksGryg/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -2626,6 +2630,12 @@ function getDSTInfo(tzName, date) {
             var muBtn=document.getElementById('manage-users-btn'); if(muBtn) muBtn.style.display=_isAdmin?'flex':'none';
             var courseBtn=document.getElementById('course-access-btn');
             if(courseBtn) courseBtn.style.display=(user.course_access==='yes')?'flex':'none';
+            var sessionsBtn=document.getElementById('sessions-access-btn');
+            if(sessionsBtn) sessionsBtn.style.display=(user.session_access==='yes')?'flex':'none';
+            if(user.session_access==='yes' && !window.SessionsModuleLoaded){
+                window.SessionsModuleLoaded=true;
+                var s=document.createElement('script'); s.src='sessions.js'; document.body.appendChild(s);
+            }
             var manageBtn=document.getElementById('manage-users-btn');
             if(manageBtn) manageBtn.style.display=(_isAdmin?'flex':'none');
             document.getElementById('auth-overlay').classList.add('hidden');
@@ -2748,10 +2758,17 @@ function getDSTInfo(tzName, date) {
                     user.valid_until = res.valid_until;
                     if(res.courseaccess !== undefined)  { user.courseaccess = res.courseaccess;  user.course_access = res.courseaccess;  }
                     if(res.course_access !== undefined) { user.course_access = res.course_access; user.courseaccess = res.course_access; }
+                    if(res.session_access !== undefined) { user.session_access = res.session_access; }
                     saveSession(user);
                     // Refresh course access button immediately
                     var courseBtn = document.getElementById('course-access-btn');
                     if(courseBtn) { courseBtn.style.display = (user.courseaccess === 'yes') ? 'flex' : 'none'; }
+                    var sessionsBtn = document.getElementById('sessions-access-btn');
+                    if(sessionsBtn) { sessionsBtn.style.display = (user.session_access === 'yes') ? 'flex' : 'none'; }
+                    if(user.session_access==='yes' && !window.SessionsModuleLoaded){
+                        window.SessionsModuleLoaded=true;
+                        var sTag=document.createElement('script'); sTag.src='sessions.js'; document.body.appendChild(sTag);
+                    }
                     // Refresh badge
                     var badge = document.getElementById('validity-badge');
                     var badgeTxt = document.getElementById('validity-text');
@@ -3272,6 +3289,8 @@ function getDSTInfo(tzName, date) {
             if (!u) return;
             var cb = document.getElementById('course-access-btn');
             if (cb) cb.style.display = (u.course_access === 'yes' || u.courseaccess === 'yes') ? 'flex' : 'none';
+            var sb = document.getElementById('sessions-access-btn');
+            if (sb) sb.style.display = (u.session_access === 'yes') ? 'flex' : 'none';
         }
 
         // pageshow fires on bfcache restore (persisted=true) — iOS returns to app
@@ -3412,6 +3431,16 @@ function getDSTInfo(tzName, date) {
                     saveSession(user);
                     var courseBtn=document.getElementById('course-access-btn');
                     if(courseBtn) courseBtn.style.display=(caVal==='yes')?'flex':'none';
+                }
+                if(res.session_access !== undefined){
+                    user.session_access = res.session_access;
+                    saveSession(user);
+                    var sessionsBtn=document.getElementById('sessions-access-btn');
+                    if(sessionsBtn) sessionsBtn.style.display=(res.session_access==='yes')?'flex':'none';
+                    if(res.session_access==='yes' && !window.SessionsModuleLoaded){
+                        window.SessionsModuleLoaded=true;
+                        var sTag2=document.createElement('script'); sTag2.src='sessions.js'; document.body.appendChild(sTag2);
+                    }
                 }
                 // Refresh validity badge with latest data
                 var badge    = document.getElementById('validity-badge');

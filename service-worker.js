@@ -1,7 +1,7 @@
 // Geo-Time Chart Calculator — Service Worker
 // Handles caching for PWA install and offline shell
 
-const CACHE_NAME = 'geotimechart-v3'; // bumped: forces iOS Safari to evict stale cache
+const CACHE_NAME = 'geotimechart-v4'; // bumped: sessions module added to analysis.html
 
 const SHELL_FILES = [
   '/analysis.html',
@@ -9,6 +9,10 @@ const SHELL_FILES = [
   '/icons/icon-192.png',
   '/icons/icon-512.png'
 ];
+
+// sessions.js is NOT in SHELL_FILES — it's only fetched (and cached
+// by the fetch handler below) for users with session_access, so
+// users without access never download it at all.
 
 // Install — cache the app shell
 self.addEventListener('install', function(event) {

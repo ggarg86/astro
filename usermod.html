@@ -312,7 +312,7 @@
     <div id="toast"></div>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxyOLjT1hajLTOSWtxiYFqj4C43U-Vavmrz14KgquTJc3QwNeSVDVb-_WcaZjjDiv9mwQ/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5mKeEFdkAfnnvRRT0l4ZXP7UnvAKgnVztBDmVbUndWdWE1RCcIm8pdVOhQYpUksGryg/exec';
         const CACHE_KEY     = 'gtc_users_cache';
         const CACHE_TTL_MS  = 5 * 60 * 1000; // 5 minutes
 
@@ -425,6 +425,10 @@
             const caRaw = (u.course_access || '').toString().toLowerCase();
             const hasCourse = caRaw === 'yes' || caRaw === 'true';
             var courseTag = hasCourse ? '<span class="tag course"><i class="ph ph-book-open"></i> Course</span>' : '';
+
+            const saRaw = (u.session_access || '').toString().toLowerCase();
+            const hasSessions = saRaw === 'yes' || saRaw === 'true';
+            var sessionsTag = hasSessions ? '<span class="tag course" style="border-color:#5DCAA5;color:#085041;background:#E1F5EE;"><i class="ph ph-notebook"></i> Sessions</span>' : '';
             
             var location = (u.city||'') + (u.state ? ', '+u.state : '');
             var cityTag = location ? '<span class="tag city"><i class="ph ph-map-pin"></i> '+esc(location)+'</span>' : '';
@@ -435,7 +439,7 @@
                     <span class="tag city"><i class="ph ph-phone"></i> ${esc(u.mobile)}</span>
                     ${cityTag}
                     <span class="tag city"><i class="ph ph-calendar-check"></i> Until: ${esc(u.valid_until)}</span>
-                    ${statusTag} ${adminTag} ${courseTag}
+                    ${statusTag} ${adminTag} ${courseTag} ${sessionsTag}
                 </div>`;
         }
 
@@ -521,6 +525,7 @@
             const u = entry.user;
             const isAdmin = (u.role||'').toLowerCase() === 'admin';
             const hasCourse = (u.course_access||'').toLowerCase() === 'yes';
+            const hasSessions = (u.session_access||'').toLowerCase() === 'yes';
             const expired = isExpired(u.valid_until);
 
             document.getElementById('edit-title-name').textContent = 'Edit: ' + u.full_name;
@@ -577,6 +582,15 @@
                         <div class="toggle-group" id="tg-course">
                             <button class="tgl-btn ${!hasCourse?'active clr-no':''}" data-val="no" onclick="setToggle('tg-course',this)"><i class="ph ph-x-circle"></i> No</button>
                             <button class="tgl-btn ${hasCourse?'active clr-yes':''}" data-val="yes" onclick="setToggle('tg-course',this)"><i class="ph ph-check-circle"></i> Yes</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="grid-2">
+                    <div>
+                        <div class="field-label"><i class="ph ph-notebook"></i> Sessions Access</div>
+                        <div class="toggle-group" id="tg-sessions">
+                            <button class="tgl-btn ${!hasSessions?'active clr-no':''}" data-val="no" onclick="setToggle('tg-sessions',this)"><i class="ph ph-x-circle"></i> No</button>
+                            <button class="tgl-btn ${hasSessions?'active clr-yes':''}" data-val="yes" onclick="setToggle('tg-sessions',this)"><i class="ph ph-check-circle"></i> Yes</button>
                         </div>
                     </div>
                 </div>
@@ -735,7 +749,8 @@
                 state: document.getElementById('ef-state').value.trim(),
                 valid_until: toSheetDate(document.getElementById('ef-until').value),
                 role: getToggleVal('tg-role') === 'admin' ? 'admin' : '',
-                course_access: getToggleVal('tg-course') === 'yes' ? 'yes' : 'no'
+                course_access: getToggleVal('tg-course') === 'yes' ? 'yes' : 'no',
+                session_access: getToggleVal('tg-sessions') === 'yes' ? 'yes' : 'no'
             };
 
             try {
@@ -753,6 +768,7 @@
                             _usersCache[idx].user.valid_until   = payload.valid_until;
                             _usersCache[idx].user.role          = payload.role;
                             _usersCache[idx].user.course_access = payload.course_access;
+                            _usersCache[idx].user.session_access = payload.session_access;
                             _usersCache[idx].password           = payload.password;
                         }
                         saveToLocalCache(_usersCache);

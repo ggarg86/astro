@@ -418,11 +418,11 @@
         </button>
         <div class="help-dropdown" id="helpDropdown" role="menu">
           <div class="help-header">Contact &amp; Support</div>
-          <a href="https://wa.me/918360362525" target="_blank" rel="noopener noreferrer" class="help-item" role="menuitem">
+          <a href="https://wa.me/916283462525" target="_blank" rel="noopener noreferrer" class="help-item" role="menuitem">
             <div class="help-icon-box"><i class="fa-brands fa-whatsapp" style="color:#25D366;font-size:1.1em;"></i></div>
             <div class="help-text-box">
               <span class="help-label">WhatsApp</span>
-              <span class="help-value">Gaurav @ (+91)-8360-3625-25</span>
+              <span class="help-value">Gaurav @ (+91)-62834-62525</span>
             </div>
           </a>
           <div class="help-item" role="menuitem" onclick="navigator.clipboard&&navigator.clipboard.writeText('brainmanual@gmail.com').then(()=>showToast('Email copied!'))">
@@ -558,7 +558,7 @@
     const OWNER_KEY   = "geotime_progress_owner";
 
     // ── API (same endpoint as main tool) ──────────────────────
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwTfjTso8CbWOFO1L3bvsJiOalfL5AuIc02MfYb25mWcoj7PtvrT0epRlG4qu2IW1ev8w/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5mKeEFdkAfnnvRRT0l4ZXP7UnvAKgnVztBDmVbUndWdWE1RCcIm8pdVOhQYpUksGryg/exec';
     var _session = (function(){ try{ return JSON.parse(localStorage.getItem('gtc_user'))||{}; }catch(e){ return {}; } })();
     var _syncTimer = null;
 
@@ -636,7 +636,7 @@
                 try{ var s=JSON.parse(localStorage.getItem('gtc_user'))||{}; s.course_access=caVal; s.courseaccess=caVal; localStorage.setItem('gtc_user',JSON.stringify(s)); }catch(e){}
             }
             if(caVal !== 'yes'){
-                showLockedScreen('Your course access has been revoked. Contact Admin Team at 8360362525.');
+                showLockedScreen('Your course access has been revoked. Contact Admin Team at 62834-62525.');
             }
         }catch(e){} // silent fail — don't block user if network is slow
     }
