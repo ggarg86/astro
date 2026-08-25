@@ -287,6 +287,25 @@ function planetTransitRows(planet){
   } catch(e) { return null; }
 }
 
+function planetaryEnergyFlowHTML(m){
+  if (!m) return '';
+  var sq = ['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury','Ketu'];
+  var items = sq.map(function(pn, ix){
+    var d = m[pn];
+    if (!d) return '';
+    var color = d.category === 'RAJAS' ? '#fb923c' : d.category === 'TAMAS' ? '#34d399' : '#cbd5e1';
+    var box = '<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,0.04);padding:5px 2px;">' +
+      '<span style="font-size:10px;font-weight:700;color:#1e293b;line-height:1.2;">' + esc(d.symbol) + '</span>' +
+      '<span style="font-size:13px;font-weight:700;color:#312e81;line-height:1.3;">' + esc(d.house) + '</span>' +
+      '<div style="width:100%;height:3px;border-radius:2px;margin-top:4px;background:' + color + ';"></div>' +
+    '</div>';
+    var arrow = ix < sq.length - 1 ? '<span style="flex-shrink:0;color:#94a3b8;font-size:14px;padding:0 3px;">&#8250;</span>' : '';
+    return box + arrow;
+  }).join('');
+  return '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Planetary energy flow</h3>' +
+    '<div style="display:flex;align-items:center;overflow-x:auto;gap:2px;padding-bottom:6px;">' + items + '</div></div>';
+}
+
 window.printSessionReport = function(s){
   // Silently (re)compute the chart + ascendant from the currently loaded
   // client's visible birth fields, so the report never depends on whether
@@ -356,6 +375,7 @@ window.printSessionReport = function(s){
       (s.expected_results ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #0f766e;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#0f766e;text-transform:uppercase;letter-spacing:0.03em;">Expected results</p><p style="margin:0;">' + esc(s.expected_results).replace(/\n/g,'<br>') + '</p></div>' : '') +
       (s.remedies_given ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #d97706;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#d97706;text-transform:uppercase;letter-spacing:0.03em;">Remedies given</p><p style="margin:0;">' + esc(s.remedies_given).replace(/\n/g,'<br>') + '</p></div>' : '') +
       (wheelHTML ? '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Birth chart wheel</h3><div style="max-width:400px;margin:0 auto;">' + wheelHTML + '</div></div>' : '') +
+      (window.currentNatalMap ? planetaryEnergyFlowHTML(window.currentNatalMap) : '') +
       '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Current transits</h3>' +
       (window.currentAscendant
         ? transitBlocks
@@ -373,7 +393,7 @@ window.printSessionReport = function(s){
   if (!document.getElementById('sess-print-style')) {
     var st = document.createElement('style');
     st.id = 'sess-print-style';
-    st.textContent = '@media print { body.sess-print-mode > *:not(#session-report-print) { display:none !important; } body.sess-print-mode #session-report-print { display:block !important; } }';
+    st.textContent = '@media print { body.sess-print-mode > *:not(#session-report-print) { display:none !important; } body.sess-print-mode #session-report-print { display:block !important; } body.sess-print-mode #session-report-print, body.sess-print-mode #session-report-print * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } }';
     document.head.appendChild(st);
   }
 
