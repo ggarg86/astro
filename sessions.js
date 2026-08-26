@@ -131,6 +131,7 @@ function currentRecordName(){
 }
 
 window.openSessionsPanel = function(){
+  if (typeof _isExpired !== 'undefined' && _isExpired) return;
   if (typeof _loadedRecordId === 'undefined' || !_loadedRecordId) {
     alert('Load or save a client record first, then open Sessions for that client.');
     return;
@@ -316,6 +317,24 @@ window.printSessionReport = function(s){
   var wheelSrc = document.getElementById('octal-chart-container');
   if (wheelSrc && wheelSrc.querySelector('svg')) wheelHTML = wheelSrc.innerHTML;
 
+  // Build the "Present" transit wheel by temporarily redrawing the same
+  // container with current planetary positions, capturing it, then
+  // restoring the natal chart so the live page is left unchanged.
+  var transitWheelHTML = '';
+  if (wheelSrc && window.currentNatalMap && window.currentAscendant && window.currentNatalLag) {
+    try {
+      var presentPDat = Object.keys(window.currentNatalMap).map(function(planetName){
+        var natal = window.currentNatalMap[planetName];
+        var result = getTransitData(planetName, new Date(), window.currentAscendant);
+        return { symbol: natal.symbol, deg: result.degree, distFromLagna: result.degree };
+      });
+      drawOctalChart(window.currentNatalLag, presentPDat);
+      transitWheelHTML = wheelSrc.innerHTML;
+    } catch(e) { /* transit wheel is best-effort */ }
+    // restore natal wheel
+    try { if (window.currentNatalPDat) drawOctalChart(window.currentNatalLag, window.currentNatalPDat); } catch(e) {}
+  }
+
   var PLANET_COLORS = { Sun:'#d97706', Moon:'#475569', Mars:'#dc2626', Jupiter:'#7c3aed', Saturn:'#0f766e' };
   var transitBlocks = ['Sun','Moon','Mars','Jupiter','Saturn'].map(function(p){
     var color = PLANET_COLORS[p] || '#334155';
@@ -374,9 +393,10 @@ window.printSessionReport = function(s){
       (s.description ? '<div style="margin-top:16px;padding:10px 14px;background:#f8fafc;border-left:3px solid #2980b9;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#2980b9;text-transform:uppercase;letter-spacing:0.03em;">Description & brief history</p><p style="margin:0;">' + esc(s.description).replace(/\n/g,'<br>') + '</p></div>' : '') +
       (s.expected_results ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #0f766e;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#0f766e;text-transform:uppercase;letter-spacing:0.03em;">Expected results</p><p style="margin:0;">' + esc(s.expected_results).replace(/\n/g,'<br>') + '</p></div>' : '') +
       (s.remedies_given ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #d97706;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#d97706;text-transform:uppercase;letter-spacing:0.03em;">Remedies given</p><p style="margin:0;">' + esc(s.remedies_given).replace(/\n/g,'<br>') + '</p></div>' : '') +
-      (wheelHTML ? '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Birth chart wheel</h3><div style="max-width:400px;margin:0 auto;">' + wheelHTML + '</div></div>' : '') +
+      (wheelHTML ? '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Geo-Time Zone Map @ Birth</h3><div style="max-width:400px;margin:0 auto;">' + wheelHTML + '</div></div>' : '') +
       (window.currentNatalMap ? planetaryEnergyFlowHTML(window.currentNatalMap) : '') +
       '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Current transits</h3>' +
+      (transitWheelHTML ? '<div class="sess-keep-together"><h4 style="font-family:Montserrat,sans-serif;font-size:0.92em;font-weight:700;margin:6px 0 10px;color:#475569;">Geo-Time Zone Map @ Current Transit</h4><div style="max-width:400px;margin:0 auto;">' + transitWheelHTML + '</div></div>' : '') +
       (window.currentAscendant
         ? transitBlocks
         : '<p style="color:#94a3b8;font-size:0.85em;">Could not compute transits — this client\'s birth date, time, and place must be complete on the record.</p>') +

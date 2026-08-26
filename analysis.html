@@ -339,6 +339,8 @@
         #course-access-btn:hover { background:#1d4ed8;color:white;border-color:#1d4ed8; }
         #sessions-access-btn { padding:6px 16px;border:1.5px solid #0f6e56;border-radius:20px;background:#0f6e56;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:white;cursor:pointer;display:none;align-items:center;gap:6px; }
         #sessions-access-btn:hover { background:#085041;color:white;border-color:#085041; }
+        #transits-access-btn { padding:6px 16px;border:1.5px solid #6d28d9;border-radius:20px;background:#7c3aed;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:white;cursor:pointer;display:none;align-items:center;gap:6px; }
+        #transits-access-btn:hover { background:#6d28d9;color:white;border-color:#5b21b6; }
         #validity-badge {
             font-family:'Montserrat',sans-serif; font-size:0.72em; font-weight:700;
             padding:5px 12px; border-radius:20px; white-space:nowrap;
@@ -742,6 +744,8 @@
                         <button id="course-access-btn" onclick="window.location.href='course.html'"><i class="ph ph-book-open"></i> My Course</button>
                         <button id="sessions-access-btn" onclick="if(window.openSessionsPanel)openSessionsPanel()"><i class="ph ph-notebook"></i> Sessions</button>
                         <div id="sessions-panel"></div>
+                        <button id="transits-access-btn" onclick="if(window.openTransitsPanel)openTransitsPanel()"><i class="ph ph-clock-counter-clockwise"></i> Transit Timeline</button>
+                        <div id="transits-panel"></div>
                 <a href="guide.html" id="guide-link-btn" style="padding:6px 16px;border:1.5px solid #b45309;border-radius:20px;background:#f59e0b;font-family:'Montserrat',sans-serif;font-weight:700;font-size:0.78em;color:#1c1400;cursor:pointer;display:inline-flex;align-items:center;gap:6px;text-decoration:none;"><i class="ph ph-book-open-text"></i> Archetype Guide</a>
                 <button id="manage-users-btn" onclick="openUserMod()"><i class="ph ph-users-three"></i> Manage Users</button>
                     <button id="logout-btn" onclick="doLogout()"><i class="ph ph-sign-out"></i> Logout</button>
@@ -1181,7 +1185,7 @@
         const dp = `${pad(v[0])} ${['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'][v[1]]} ${v[2]}`;
         const displayHour = v[3] === 0 ? 12 : (v[3] > 12 ? v[3] - 12 : v[3]);
         const displayAmPm = document.getElementById('ampm-value').value;
-        const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'rhythm-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); window.currentAscendant = asS; window.currentNatalMap = pMap; document.getElementById('results-container').classList.remove('hidden');
+        const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'rhythm-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); window.currentAscendant = asS; window.currentNatalMap = pMap; window.currentNatalPDat = pDat; window.currentNatalLag = lag; window.currentNatalBirthDate = bd; document.getElementById('results-container').classList.remove('hidden');
             document.getElementById('all-results-wrapper').classList.remove('hidden'); try{renderAnalysis(rP,tP);}catch(e){console.error('renderAnalysis',e);}
             // Expired users: hide accordion sections only — map + table + save/load/delete remain accessible
             if(_isExpired){ document.getElementById('results-container').classList.add('hidden'); }
@@ -1242,7 +1246,7 @@
         function renderEnergyFlow(m) { const sq = ['Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn', 'Mercury', 'Ketu']; let h = `<h3 class="text-sm font-bold text-slate-800 mb-3">Planetary Energy Flow Sequence</h3><div class="planet-flow-scroll flex items-center justify-between overflow-x-auto gap-1 pb-2">`; sq.forEach((pn, ix) => { const d = m[pn], c = d.category, b = c === "RAJAS" ? "bg-orange-400" : c === "TAMAS" ? "bg-emerald-400" : "bg-slate-300"; h += `<div class="flex-shrink-0 flex flex-col items-center justify-center w-[36px] md:w-[45px] bg-slate-50 border border-slate-200 rounded shadow-sm p-1"><span class="text-[10px] md:text-[11px] font-bold text-slate-800 leading-tight">${d.symbol}</span><span class="text-xs md:text-[13px] font-bold text-indigo-900 leading-tight">${d.house}</span><div class="w-full h-1 rounded-full mt-1 ${b}"></div></div>`; if (ix < sq.length - 1) h += `<div class="flex-shrink-0 text-slate-400 flex items-center justify-center -mx-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg></div>`; }); document.getElementById('energy-flow-container').innerHTML = h + `</div>`; }
         function renderEnergyNarrative(m) { const sq = ['Mercury', 'Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn'], cn = document.getElementById('energy-narrative-container'); cn.innerHTML = ''; sq.forEach((p, i) => { const nx = i === sq.length - 1 ? 'Mercury' : sq[i + 1], cd = m[p], nd = m[nx]; if (!cd?.houseInfo || !nd?.houseInfo) return; const th = THEMES[cd.houseInfo.category] || THEMES.TAMAS; cn.innerHTML += `<div class="narrative-chip inline-flex items-center gap-2 px-3 py-1.5 rounded-full border ${th.lightBg} ${th.divider} shadow-sm text-xs cursor-default"><span class="font-bold text-slate-700">${p}</span><i class="ph ph-arrow-right ${th.icon}"></i><span class="${th.highlight} font-semibold">${cd.houseInfo.sourceAction}</span><i class="ph ph-caret-right text-black font-bold"></i><span class="font-bold text-slate-700">${nx}</span></div>`; }); }
         function renderSupportSpeedAnalysis(l) { const c = document.getElementById('energy-support-container'), r = []; c.innerHTML = ''; ENERGY_PAIRS.forEach(pr => { const rp = (l[pr.rajas] || []).sort((a, b) => b.speed - a.speed), tp = (l[pr.tamas] || []).sort((a, b) => b.speed - a.speed); const ri = OCTAL_HOUSES.find(h => h.id === pr.rajas), ti = OCTAL_HOUSES.find(h => h.id === pr.tamas); const rs = rp.length ? rp[0].speed : 0, ts = tp.length ? tp[0].speed : 0; let sc = 0, sv = 0; if (tp.length && rp.length) { if (ts < rs) { sc = 1; sv = 4000 + (rs * 10) - ts; } else { sc = 3; sv = 2000 + (10 - ts); } } else if (tp.length) { sc = 2; sv = 3000 + (10 - ts); } else if (rp.length) { sc = 4; sv = 1000 + rs; } else return; r.push({ sc, sv, ri, ti, rp, tp }); }); if (!r.length) { c.innerHTML = `<div class="col-span-2 text-center text-slate-400 py-8 italic bg-slate-50 rounded-xl border border-slate-100">No planetary pairs found.</div>`; return; } r.sort((a, b) => b.sv - a.sv).forEach((d, i) => { const ar = ARCHETYPES[d.ri.id], cl = i === 0 ? 'emerald' : i === 1 ? 'orange' : i === 2 ? 'rose' : 'slate'; const mt = { 1: { t: "Fast Charging", i: "ph-battery-charging-vertical", d: "Internal battery charges rapidly, fueling actions with abundance. Rare stamina without burnout." }, 2: { t: "Forced Action", i: "ph-waves", d: "Energy building seeking release. Without direction, power finds way out through impulsive actions." }, 3: { t: "Slow Charging", i: "ph-battery-warning", d: "Spending energy faster than recovery. Draining battery quickly leading to fatigue." }, 4: { t: "Strained Action", i: "ph-fire", d: "Drive to act but unsupported by inner resources. Effort feels heavy, running on reserves." } }[d.sc]; const ft = p => (!p || !p.length) ? '<span class="text-slate-300 italic text-[10px]">Empty</span>' : p.map(x => `<span class="inline-flex items-center gap-1 font-bold text-slate-800 bg-slate-100/50 px-1.5 py-0.5 rounded border border-slate-200/50 text-xs"><i class="ph ${x.icon} text-slate-500"></i> ${x.name}</span>`).join(''); c.innerHTML += `<div class="rounded-xl border border-slate-300 border-l-[6px] border-l-${cl}-500 shadow-md bg-white overflow-hidden flex flex-col hover:shadow-lg transition-shadow"><div class="p-3 border-b border-slate-100 flex justify-between items-center bg-slate-50/50"><div class="flex items-center gap-3"><div class="p-1.5 rounded-lg bg-white shadow-sm border border-slate-200 text-${cl}-500"><i class="ph ${mt.i} text-lg"></i></div><div><h4 class="text-sm font-bold text-slate-800 leading-tight">${mt.t}</h4><div class="text-[10px] font-bold text-slate-400 uppercase tracking-wide">${d.ti.label} <i class="ph ph-arrow-right text-[8px]"></i> ${d.ri.label}</div></div></div><span class="bg-${cl}-500 text-white px-2 py-1 rounded text-[10px] font-bold uppercase tracking-wider shadow-sm">Rank ${i + 1}</span></div><div class="flex flex-col md:flex-row"><div class="md:w-5/12 p-4 flex flex-col gap-4 border-b md:border-b-0 md:border-r border-slate-100"><div class="flex items-center justify-between gap-2 text-xs bg-slate-50 p-2 rounded border border-slate-100"><div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-emerald-600 uppercase mb-1">Support</span><div class="flex flex-wrap justify-center gap-1">${ft(d.tp)}</div></div><i class="ph ph-arrow-right text-slate-300"></i><div class="flex flex-col items-center w-1/2"><span class="text-[9px] font-bold text-orange-600 uppercase mb-1">Action</span><div class="flex flex-wrap justify-center gap-1">${ft(d.rp)}</div></div></div><p class="text-xs text-slate-700 font-medium leading-relaxed italic">"${mt.d}"</p></div><div class="md:w-7/12 p-4 bg-slate-50/30 flex flex-col justify-center"><div class="flex items-center gap-2 mb-3"><i class="ph ${ar.icon} text-slate-400 text-lg"></i><span class="text-sm font-bold text-slate-600 uppercase tracking-wider">${ar.title} Insight</span></div><div class="space-y-3"><p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-slate-900">Definition:</span> ${ar.definition}</p><p class="text-sm text-slate-700 leading-relaxed"><span class="font-bold text-indigo-700">Method:</span> ${ar.method}</p></div></div></div></div>`; }); }
-        function getTransitData(n, d, a) { const T = (d - new Date('2000-01-01T12:00:00Z')) / 86400000 / 36525.0; let tr, sp; if (['Rahu', 'Ketu'].includes(n)) { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tr = n === 'Rahu' ? r : normalize(r + 180); sp = -0.05295; } else { const v = Astronomy.GeoVector(Astronomy.Body[n], Astronomy.MakeTime(d), true); tr = Astronomy.Ecliptic(v).elon; const pr = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[n], Astronomy.MakeTime(new Date(d.getTime() - 3600000)), true)).elon; sp = tr - pr; if (sp < -180) sp += 360; if (sp > 180) sp -= 360; } const dg = normalize(normalize(tr - (23.858832 + (1.396042 * T))) - a); return { house: OCTAL_HOUSES.find(h => dg >= h.range[0] && dg < h.range[1]) || OCTAL_HOUSES[0], isRetro: sp < 0 }; }
+        function getTransitData(n, d, a) { const T = (d - new Date('2000-01-01T12:00:00Z')) / 86400000 / 36525.0; let tr, sp; if (['Rahu', 'Ketu'].includes(n)) { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tr = n === 'Rahu' ? r : normalize(r + 180); sp = -0.05295; } else { const v = Astronomy.GeoVector(Astronomy.Body[n], Astronomy.MakeTime(d), true); tr = Astronomy.Ecliptic(v).elon; const pr = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[n], Astronomy.MakeTime(new Date(d.getTime() - 3600000)), true)).elon; sp = tr - pr; if (sp < -180) sp += 360; if (sp > 180) sp -= 360; } const dg = normalize(normalize(tr - (23.858832 + (1.396042 * T))) - a); return { house: OCTAL_HOUSES.find(h => dg >= h.range[0] && dg < h.range[1]) || OCTAL_HOUSES[0], isRetro: sp < 0, degree: dg }; }
         function findBoundary(n, s, a, d, st) { let c = new Date(s), hi = getTransitData(n, c, a).house.id, step = 0; while (step++ < 10000) { const nx = new Date(c.getTime() + (d * st * 3600000)); if (getTransitData(n, nx, a).house.id !== hi) { let l = d === 1 ? c : nx, u = d === 1 ? nx : c; if (l > u) [l, u] = [u, l]; let f = u, lh; for (let i = 0; i < 15; i++) { let m = new Date((l.getTime() + u.getTime()) / 2), dt = getTransitData(n, m, a); if (dt.house.id === hi) { if (d === 1) l = m; else u = m; } else { if (d === 1) u = m; else l = m; lh = dt.house; f = m; } } return { date: f, newHouse: lh }; } c = nx; } return null; }
         function calcSchedule(n, w, a, f, p) { let s = 24; if (n === 'Moon') s = 2; if (['Saturn', 'Jupiter', 'Rahu', 'Ketu'].includes(n)) s = 120; if (n === 'Mars') s = 48; const cd = getTransitData(n, w, a), ex = findBoundary(n, w, a, 1, s)?.date || new Date(w.getTime() + 2592000000), en = findBoundary(n, w, a, -1, s)?.date || new Date(w.getTime() - 2592000000); const sc = [{ house: { ...cd.house, label: cd.house.label + (cd.isRetro ? " (R)" : "") }, entry: en, exit: ex, type: 'Present' }]; let le = ex; for (let i = 0; i < f; i++) { const rs = findBoundary(n, new Date(le.getTime() + 60000), a, 1, s); if (rs) { const md = getTransitData(n, new Date((le.getTime() + rs.date.getTime()) / 2), a); sc.push({ house: { ...md.house, label: md.house.label + (md.isRetro ? " (R)" : "") }, entry: le, exit: rs.date, type: 'Future' }); le = rs.date; } } let le2 = en; for (let i = 0; i < p; i++) { const rs = findBoundary(n, new Date(le2.getTime() - 60000), a, -1, s); if (rs) { const md = getTransitData(n, new Date((le2.getTime() + rs.date.getTime()) / 2), a); sc.unshift({ house: { ...md.house, label: md.house.label + (md.isRetro ? " (R)" : "") }, entry: rs.date, exit: le2, type: 'Past' }); le2 = rs.date; } } return sc; }
         function getDesc(h, p) { const pr = `${p} is`; const m = { 3: "attracting environment to GUIDE", 5: "attracting environment to SUPPORT", 6: "attracting environment to CHALLENGE", 8: "triggering THOUGHTS of DEATH/FAILURE", 9: "triggering action as CREATOR", 11: "triggering action as SELLER", 12: "triggering action as WARRIOR", 2: "triggering action as STRATEGIST" }; return m[h] ? `${pr} ${m[h]}` : ""; }
@@ -2537,7 +2541,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5mKeEFdkAfnnvRRT0l4ZXP7UnvAKgnVztBDmVbUndWdWE1RCcIm8pdVOhQYpUksGryg/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmEAz4dv589p5AvVd6Sb7KrcEXYf3bkXqnsyiON9GOt31tMzKypEemA1U5a4_SwLLJ6Q/exec';
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
@@ -2631,10 +2635,16 @@ function getDSTInfo(tzName, date) {
             var courseBtn=document.getElementById('course-access-btn');
             if(courseBtn) courseBtn.style.display=(user.course_access==='yes')?'flex':'none';
             var sessionsBtn=document.getElementById('sessions-access-btn');
-            if(sessionsBtn) sessionsBtn.style.display=(user.session_access==='yes')?'flex':'none';
-            if(user.session_access==='yes' && !window.SessionsModuleLoaded){
+            if(sessionsBtn) sessionsBtn.style.display=(user.session_access==='yes' && !_isExpired)?'flex':'none';
+            if(user.session_access==='yes' && !_isExpired && !window.SessionsModuleLoaded){
                 window.SessionsModuleLoaded=true;
                 var s=document.createElement('script'); s.src='sessions.js'; document.body.appendChild(s);
+            }
+            var transitsBtn=document.getElementById('transits-access-btn');
+            if(transitsBtn) transitsBtn.style.display=(user.transit_access==='yes' && !_isExpired)?'flex':'none';
+            if(user.transit_access==='yes' && !_isExpired && !window.TransitsModuleLoaded){
+                window.TransitsModuleLoaded=true;
+                var tsc=document.createElement('script'); tsc.src='transits.js'; document.body.appendChild(tsc);
             }
             var manageBtn=document.getElementById('manage-users-btn');
             if(manageBtn) manageBtn.style.display=(_isAdmin?'flex':'none');
@@ -2670,6 +2680,10 @@ function getDSTInfo(tzName, date) {
             var badge=document.getElementById('validity-badge'), badgeTxt=document.getElementById('validity-text');
             if(badge){ badge.className='expired'; badgeTxt.textContent='Validity expired — Limited access'; }
             var rc=document.getElementById('results-container'); if(rc) rc.classList.add('hidden');
+            var sessionsBtn=document.getElementById('sessions-access-btn'); if(sessionsBtn) sessionsBtn.style.display='none';
+            var transitsBtn=document.getElementById('transits-access-btn'); if(transitsBtn) transitsBtn.style.display='none';
+            if(window.closeSessionsPanel) window.closeSessionsPanel();
+            if(window.closeTransitsPanel) window.closeTransitsPanel();
         }
 
         function doLogout(){
@@ -2759,16 +2773,25 @@ function getDSTInfo(tzName, date) {
                     if(res.courseaccess !== undefined)  { user.courseaccess = res.courseaccess;  user.course_access = res.courseaccess;  }
                     if(res.course_access !== undefined) { user.course_access = res.course_access; user.courseaccess = res.course_access; }
                     if(res.session_access !== undefined) { user.session_access = res.session_access; }
+                    if(res.transit_access !== undefined) { user.transit_access = res.transit_access; }
                     saveSession(user);
                     // Refresh course access button immediately
                     var courseBtn = document.getElementById('course-access-btn');
                     if(courseBtn) { courseBtn.style.display = (user.courseaccess === 'yes') ? 'flex' : 'none'; }
                     var sessionsBtn = document.getElementById('sessions-access-btn');
-                    if(sessionsBtn) { sessionsBtn.style.display = (user.session_access === 'yes') ? 'flex' : 'none'; }
-                    if(user.session_access==='yes' && !window.SessionsModuleLoaded){
+                    if(sessionsBtn) { sessionsBtn.style.display = (user.session_access === 'yes' && !_isExpired) ? 'flex' : 'none'; }
+                    if(user.session_access==='yes' && !_isExpired && !window.SessionsModuleLoaded){
                         window.SessionsModuleLoaded=true;
                         var sTag=document.createElement('script'); sTag.src='sessions.js'; document.body.appendChild(sTag);
                     }
+                    if(_isExpired && window.closeSessionsPanel) window.closeSessionsPanel();
+                    var transitsBtn2 = document.getElementById('transits-access-btn');
+                    if(transitsBtn2) { transitsBtn2.style.display = (user.transit_access === 'yes' && !_isExpired) ? 'flex' : 'none'; }
+                    if(user.transit_access==='yes' && !_isExpired && !window.TransitsModuleLoaded){
+                        window.TransitsModuleLoaded=true;
+                        var tTag=document.createElement('script'); tTag.src='transits.js'; document.body.appendChild(tTag);
+                    }
+                    if(_isExpired && window.closeTransitsPanel) window.closeTransitsPanel();
                     // Refresh badge
                     var badge = document.getElementById('validity-badge');
                     var badgeTxt = document.getElementById('validity-text');
@@ -3290,7 +3313,9 @@ function getDSTInfo(tzName, date) {
             var cb = document.getElementById('course-access-btn');
             if (cb) cb.style.display = (u.course_access === 'yes' || u.courseaccess === 'yes') ? 'flex' : 'none';
             var sb = document.getElementById('sessions-access-btn');
-            if (sb) sb.style.display = (u.session_access === 'yes') ? 'flex' : 'none';
+            if (sb) sb.style.display = (u.session_access === 'yes' && !_isExpired) ? 'flex' : 'none';
+            var tb = document.getElementById('transits-access-btn');
+            if (tb) tb.style.display = (u.transit_access === 'yes' && !_isExpired) ? 'flex' : 'none';
         }
 
         // pageshow fires on bfcache restore (persisted=true) — iOS returns to app
@@ -3436,11 +3461,23 @@ function getDSTInfo(tzName, date) {
                     user.session_access = res.session_access;
                     saveSession(user);
                     var sessionsBtn=document.getElementById('sessions-access-btn');
-                    if(sessionsBtn) sessionsBtn.style.display=(res.session_access==='yes')?'flex':'none';
-                    if(res.session_access==='yes' && !window.SessionsModuleLoaded){
+                    if(sessionsBtn) sessionsBtn.style.display=(res.session_access==='yes' && !_isExpired)?'flex':'none';
+                    if(res.session_access==='yes' && !_isExpired && !window.SessionsModuleLoaded){
                         window.SessionsModuleLoaded=true;
                         var sTag2=document.createElement('script'); sTag2.src='sessions.js'; document.body.appendChild(sTag2);
                     }
+                    if(_isExpired && window.closeSessionsPanel) window.closeSessionsPanel();
+                }
+                if(res.transit_access !== undefined){
+                    user.transit_access = res.transit_access;
+                    saveSession(user);
+                    var transitsBtn3=document.getElementById('transits-access-btn');
+                    if(transitsBtn3) transitsBtn3.style.display=(res.transit_access==='yes' && !_isExpired)?'flex':'none';
+                    if(res.transit_access==='yes' && !_isExpired && !window.TransitsModuleLoaded){
+                        window.TransitsModuleLoaded=true;
+                        var tTag2=document.createElement('script'); tTag2.src='transits.js'; document.body.appendChild(tTag2);
+                    }
+                    if(_isExpired && window.closeTransitsPanel) window.closeTransitsPanel();
                 }
                 // Refresh validity badge with latest data
                 var badge    = document.getElementById('validity-badge');

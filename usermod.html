@@ -312,7 +312,7 @@
     <div id="toast"></div>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5mKeEFdkAfnnvRRT0l4ZXP7UnvAKgnVztBDmVbUndWdWE1RCcIm8pdVOhQYpUksGryg/exec';
+        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmEAz4dv589p5AvVd6Sb7KrcEXYf3bkXqnsyiON9GOt31tMzKypEemA1U5a4_SwLLJ6Q/exec';
         const CACHE_KEY     = 'gtc_users_cache';
         const CACHE_TTL_MS  = 5 * 60 * 1000; // 5 minutes
 
@@ -429,6 +429,10 @@
             const saRaw = (u.session_access || '').toString().toLowerCase();
             const hasSessions = saRaw === 'yes' || saRaw === 'true';
             var sessionsTag = hasSessions ? '<span class="tag course" style="border-color:#5DCAA5;color:#085041;background:#E1F5EE;"><i class="ph ph-notebook"></i> Sessions</span>' : '';
+
+            const taRaw = (u.transit_access || '').toString().toLowerCase();
+            const hasTransits = taRaw === 'yes' || taRaw === 'true';
+            var transitsTag = hasTransits ? '<span class="tag course" style="border-color:#a78bfa;color:#5b21b6;background:#f3e8ff;"><i class="ph ph-clock-counter-clockwise"></i> Transits</span>' : '';
             
             var location = (u.city||'') + (u.state ? ', '+u.state : '');
             var cityTag = location ? '<span class="tag city"><i class="ph ph-map-pin"></i> '+esc(location)+'</span>' : '';
@@ -439,7 +443,7 @@
                     <span class="tag city"><i class="ph ph-phone"></i> ${esc(u.mobile)}</span>
                     ${cityTag}
                     <span class="tag city"><i class="ph ph-calendar-check"></i> Until: ${esc(u.valid_until)}</span>
-                    ${statusTag} ${adminTag} ${courseTag} ${sessionsTag}
+                    ${statusTag} ${adminTag} ${courseTag} ${sessionsTag} ${transitsTag}
                 </div>`;
         }
 
@@ -526,6 +530,7 @@
             const isAdmin = (u.role||'').toLowerCase() === 'admin';
             const hasCourse = (u.course_access||'').toLowerCase() === 'yes';
             const hasSessions = (u.session_access||'').toLowerCase() === 'yes';
+            const hasTransits = (u.transit_access||'').toLowerCase() === 'yes';
             const expired = isExpired(u.valid_until);
 
             document.getElementById('edit-title-name').textContent = 'Edit: ' + u.full_name;
@@ -591,6 +596,13 @@
                         <div class="toggle-group" id="tg-sessions">
                             <button class="tgl-btn ${!hasSessions?'active clr-no':''}" data-val="no" onclick="setToggle('tg-sessions',this)"><i class="ph ph-x-circle"></i> No</button>
                             <button class="tgl-btn ${hasSessions?'active clr-yes':''}" data-val="yes" onclick="setToggle('tg-sessions',this)"><i class="ph ph-check-circle"></i> Yes</button>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="field-label"><i class="ph ph-clock-counter-clockwise"></i> Transit Timeline Access</div>
+                        <div class="toggle-group" id="tg-transits">
+                            <button class="tgl-btn ${!hasTransits?'active clr-no':''}" data-val="no" onclick="setToggle('tg-transits',this)"><i class="ph ph-x-circle"></i> No</button>
+                            <button class="tgl-btn ${hasTransits?'active clr-yes':''}" data-val="yes" onclick="setToggle('tg-transits',this)"><i class="ph ph-check-circle"></i> Yes</button>
                         </div>
                     </div>
                 </div>
@@ -750,7 +762,8 @@
                 valid_until: toSheetDate(document.getElementById('ef-until').value),
                 role: getToggleVal('tg-role') === 'admin' ? 'admin' : '',
                 course_access: getToggleVal('tg-course') === 'yes' ? 'yes' : 'no',
-                session_access: getToggleVal('tg-sessions') === 'yes' ? 'yes' : 'no'
+                session_access: getToggleVal('tg-sessions') === 'yes' ? 'yes' : 'no',
+                transit_access: getToggleVal('tg-transits') === 'yes' ? 'yes' : 'no'
             };
 
             try {
@@ -769,6 +782,7 @@
                             _usersCache[idx].user.role          = payload.role;
                             _usersCache[idx].user.course_access = payload.course_access;
                             _usersCache[idx].user.session_access = payload.session_access;
+                            _usersCache[idx].user.transit_access = payload.transit_access;
                             _usersCache[idx].password           = payload.password;
                         }
                         saveToLocalCache(_usersCache);

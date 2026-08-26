@@ -558,7 +558,7 @@
     const OWNER_KEY   = "geotime_progress_owner";
 
     // ── API (same endpoint as main tool) ──────────────────────
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx5mKeEFdkAfnnvRRT0l4ZXP7UnvAKgnVztBDmVbUndWdWE1RCcIm8pdVOhQYpUksGryg/exec';
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmEAz4dv589p5AvVd6Sb7KrcEXYf3bkXqnsyiON9GOt31tMzKypEemA1U5a4_SwLLJ6Q/exec';
     var _session = (function(){ try{ return JSON.parse(localStorage.getItem('gtc_user'))||{}; }catch(e){ return {}; } })();
     var _syncTimer = null;
 
@@ -636,7 +636,7 @@
                 try{ var s=JSON.parse(localStorage.getItem('gtc_user'))||{}; s.course_access=caVal; s.courseaccess=caVal; localStorage.setItem('gtc_user',JSON.stringify(s)); }catch(e){}
             }
             if(caVal !== 'yes'){
-                showLockedScreen('Your course access has been revoked. Contact Admin Team at 62834-62525.');
+                showLockedScreen('Your course access has been revoked. Contact Admin Team at 6283462525.');
             }
         }catch(e){} // silent fail — don't block user if network is slow
     }
