@@ -45,7 +45,7 @@ function injectStyles(){
     + '.trs-backdrop{position:fixed;inset:0;background:rgba(15,23,42,0.55);z-index:9000;display:flex;align-items:flex-start;justify-content:center;overflow-y:auto;padding:24px 12px;}'
     + '.trs-card{background:#fff;border-radius:16px;max-width:640px;width:100%;box-shadow:0 20px 60px -10px rgba(0,0,0,0.3);font-family:Merriweather,serif;color:#334155;margin-bottom:24px;}'
     + '.trs-header{background:#7c3aed;color:#fff;padding:18px 22px;border-radius:16px 16px 0 0;display:flex;justify-content:space-between;align-items:center;gap:10px;}'
-    + '.trs-header h3{margin:0;font-family:Montserrat,sans-serif;font-size:1.05em;font-weight:700;}'
+    + '.trs-header h3{margin:0;font-family:Montserrat,sans-serif;font-size:1.05em;font-weight:700;color:#fff;}'
     + '.trs-close{background:none;border:none;color:#fff;font-size:1.3em;cursor:pointer;line-height:1;padding:4px;}'
     + '.trs-body{padding:20px 22px;}'
     + '.trs-controls{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-bottom:14px;}'
