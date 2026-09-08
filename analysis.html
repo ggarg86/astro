@@ -993,7 +993,6 @@
                     <div id="acc-moon" class="hidden border-t border-slate-100 p-6"><div id="moon-cycle-container" class="space-y-4"></div></div>
                 </div>
                 <!-- Archetype Mastery Guide moved to guide.html -->
-                </div>
             </div>
         </div>
     </div>
@@ -2854,8 +2853,6 @@ function getDSTInfo(tzName, date) {
             }catch(e){ dd.innerHTML = '<div class="search-no-results">Error fetching records.</div>'; }
         }
 
-        async function fetchSearchResults(query){ await fetchAndSearch(query); }
-
         function buildSearchResultHTML(r){
             const savedLabel=r.saved_on?r.saved_on.toString().split(',')[0]:'';
             const rJson=JSON.stringify(r).replace(/"/g,'&quot;');
@@ -2988,17 +2985,6 @@ function getDSTInfo(tzName, date) {
             const dob   = day+' '+mN[month]+' '+year;
             const tob   = hour+':'+min+' '+ampm;
             return name+'|'+place.toLowerCase()+'|'+dob.toLowerCase()+'|'+tob.toLowerCase();
-        }
-
-        function isAlreadySaved(){
-            if(!_recordsCache) return false;
-            const key = getCurrentFormKey();
-            return _recordsCache.some(r =>
-                (r.person_name||'').toLowerCase().trim()+'|'+
-                (r.place||'').toLowerCase().trim()+'|'+
-                (r.date_of_birth||'').toLowerCase().trim()+'|'+
-                (r.time_of_birth||'').toLowerCase().trim() === key
-            );
         }
 
         function detectLoadedRecord(){
@@ -3134,8 +3120,6 @@ function getDSTInfo(tzName, date) {
                 showToast('Save failed — check your connection.','error');
             }
         }
-
-        function saveCurrentRecord(){ /* replaced by manualSaveRecord */ }
 
         async function doUpdateRecord(user){
             const btn   = document.getElementById('save-record-btn');
