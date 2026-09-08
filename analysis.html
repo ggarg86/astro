@@ -1341,8 +1341,66 @@
             } else {
                 // RAJAS & TAMAS Balanced — The "Rhythm" Energy
                 summaryEl.className = "mt-6 text-sm text-slate-700 rounded-xl border border-indigo-100 border-l-[6px] border-l-indigo-400 bg-gradient-to-br from-indigo-50/70 to-white p-5 md:p-6 shadow-sm";
-                const i = { borderL: 'border-indigo-300', iconBorder: 'border-indigo-200', iconText: 'text-indigo-500' };
                 const iAction = { itemBorder: 'border-indigo-100', itemBg: 'bg-white/70', numBg: 'bg-indigo-500', numText: 'text-white' };
+
+                // Prominent synthesis box — the primary takeaway, shown above the two supporting house/action boxes
+                const insightBox = (label, text) => `
+                    <div class="rounded-lg bg-indigo-50 border border-indigo-200 p-3.5 mb-3">
+                        <div class="flex items-center gap-1.5 mb-1.5">
+                            <i class="ph ph-repeat text-indigo-500 text-sm"></i>
+                            <span class="text-[10px] font-bold text-indigo-700 uppercase tracking-wider">${label}</span>
+                        </div>
+                        <p class="text-sm text-indigo-900 leading-relaxed">${text}</p>
+                    </div>`;
+
+                // A merged house-pair card: the cycle synthesis leads, the two houses follow as supporting detail
+                const pairCard = (title, rId, rOrd, rIcon, rLabel, rDesc, tId, tOrd, tIcon, tLabel, tDesc, cycleNote) => `
+                    <div class="bg-white rounded-xl shadow-sm border border-indigo-100 p-4">
+                        <div class="flex items-center gap-2 mb-3 flex-wrap">
+                            <div class="w-7 h-7 rounded-full bg-orange-100 text-orange-700 flex items-center justify-center text-xs font-bold flex-shrink-0">${rId}</div>
+                            <i class="ph ph-arrows-left-right text-indigo-400 text-sm flex-shrink-0"></i>
+                            <div class="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold flex-shrink-0">${tId}</div>
+                            <span class="font-bold text-sm text-slate-800 ml-1">${title}</span>
+                        </div>
+                        ${insightBox('The Cycle', cycleNote)}
+                        <div class="grid sm:grid-cols-2 gap-3">
+                            <div class="rounded-lg bg-orange-50/60 border border-orange-100 p-3">
+                                <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                                    <span class="text-[10px] font-bold text-orange-700 uppercase tracking-wide flex items-center gap-1"><i class="ph ${rIcon}"></i> ${rOrd} House &middot; ${rLabel}</span>
+                                    <div class="flex flex-wrap gap-1 justify-end">${houseChips(rId, 'text-orange-700 bg-orange-50 border-orange-200')}</div>
+                                </div>
+                                <p class="text-xs text-slate-600 leading-relaxed">${rDesc}</p>
+                            </div>
+                            <div class="rounded-lg bg-emerald-50/60 border border-emerald-100 p-3">
+                                <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                                    <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wide flex items-center gap-1"><i class="ph ${tIcon}"></i> ${tOrd} House &middot; ${tLabel}</span>
+                                    <div class="flex flex-wrap gap-1 justify-end">${houseChips(tId, 'text-emerald-700 bg-emerald-50 border-emerald-200')}</div>
+                                </div>
+                                <p class="text-xs text-slate-600 leading-relaxed">${tDesc}</p>
+                            </div>
+                        </div>
+                    </div>`;
+
+                // A merged action-pair item: the two bullets as supporting detail, with a prominent "In Practice" synthesis below
+                const pairAction = (num, title, rLead, rDesc, tLead, tDesc, practiceNote) => `
+                    <div class="rounded-xl border border-indigo-100 bg-white shadow-sm p-4">
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-6 h-6 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-bold flex-shrink-0">${num}</div>
+                            <span class="font-bold text-sm text-slate-800">${title}</span>
+                        </div>
+                        <div class="grid sm:grid-cols-2 gap-3 mb-3">
+                            <div class="rounded-lg bg-orange-50/60 border border-orange-100 p-3">
+                                <span class="text-[10px] font-bold text-orange-700 uppercase tracking-wide">When You're Creating</span>
+                                <p class="text-xs text-slate-700 leading-relaxed mt-1"><strong class="text-slate-900">${rLead}</strong> ${rDesc}</p>
+                            </div>
+                            <div class="rounded-lg bg-emerald-50/60 border border-emerald-100 p-3">
+                                <span class="text-[10px] font-bold text-emerald-700 uppercase tracking-wide">When You Need Support</span>
+                                <p class="text-xs text-slate-700 leading-relaxed mt-1"><strong class="text-slate-900">${tLead}</strong> ${tDesc}</p>
+                            </div>
+                        </div>
+                        ${insightBox('In Practice', practiceNote)}
+                    </div>`;
+
                 summaryHTML = `
                 <div class="space-y-5">
                     <div class="flex items-center gap-3">
@@ -1355,24 +1413,73 @@
 
                     ${keyMessage('ph-quotes', 'Honor both the drive to act and the need to rest; alternate wisely between outward action and inward recharge.', 'bg-indigo-600')}
 
-                    <p class="text-slate-600 text-sm leading-relaxed">Your chart shows that RAJAS and TAMAS are balanced. You are neither purely a &ldquo;doer&rdquo; nor purely a &ldquo;receiver.&rdquo; Your growth depends on recognizing when it is time to move outward and when it is time to turn inward&mdash;and then respecting that rhythm instead of forcing one side all the time.</p>
+                    <p class="text-slate-600 text-sm leading-relaxed">Your chart shows that RAJAS and TAMAS are balanced. You are neither purely a &ldquo;doer&rdquo; nor purely a &ldquo;receiver.&rdquo; Your growth depends on recognizing when it is time to move outward and when it is time to turn inward&mdash;and the four pairs below show exactly where that switch happens, house by house.</p>
 
                     <div>
                         <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">How Your Mind Works in Balanced Mode</h5>
                         <div class="space-y-3">
-                            ${conceptCard('ph-arrows-clockwise', 'Natural Alternation', 'You move through phases where RAJAS is active (you feel energetic, decisive, driven) and phases where TAMAS is active (you feel reflective, cautious, sensitive). Both phases are part of your design.', i)}
-                            ${conceptCard('ph-battery-charging-vertical', 'Dual Battery System', 'In RAJAS phases, you expend physical energy&mdash;taking decisions, working hard, pushing projects. In TAMAS phases, you recharge mentally and emotionally&mdash;processing experiences, healing, and learning.', i)}
-                            ${conceptCard('ph-scales', 'Integrated Decision-Making', 'Big decisions in your life are best taken when both sides have had their say: RAJAS tells you what you want to create; TAMAS tells you what feels safe, sustainable, and emotionally true.', i)}
+                            ${pairCard(
+                                'Confidence &amp; Caution',
+                                2, '2nd', 'ph-sparkle', 'Create',
+                                'You feel &ldquo;I can do this&rdquo; before a detailed plan even exists. This optimism is your baseline battery charge&mdash;it gives you the courage to step into new situations even when the path is not fully clear.',
+                                8, '8th', 'ph-shield-check', 'Wait',
+                                'You carry deep doubts and fears about what can go wrong. This doesn&rsquo;t mean you are weak&mdash;it means your system is scanning for hidden risks, and realizes it cannot do everything alone; it needs a safe base, trustworthy people, and stable structures around it.',
+                                'This is the core rhythm of your chart: the courage to leap and the caution to check your footing are not opposites competing for control&mdash;they are two halves of one decision-making process. When you feel that spark of &ldquo;I can do this,&rdquo; let it move you into action, because premature hesitation kills more good ideas than premature action ever does. But once you are moving, let the same system that scans for risk step back in&mdash;not to stop you, but to make sure you are not walking into something you cannot recover from. The people who get stuck are the ones who trust only one half: they either leap without ever checking the ground, or they check the ground so long they never leap. Your task is to let both halves finish their job, in order, every time.'
+                            )}
+                            ${pairCard(
+                                'Planning &amp; Learning',
+                                9, '9th', 'ph-map-trifold', 'Create',
+                                'Your mind starts organizing raw ideas into a method, roadmap, or rulebook that you can follow and teach yourself&mdash;built from your own experience.',
+                                3, '3rd', 'ph-book-open-text', 'Wait',
+                                'You lean on others for information and expertise. You study, research, and ask questions, building confidence through understanding rather than blind experimentation.',
+                                'Your own blueprint and someone else&rsquo;s expertise are meant to sharpen each other, not replace each other. When an idea is fresh, write down your own version first&mdash;your instinct for structure is real, and putting it on paper before you consult anyone keeps the plan actually yours. Then hand that draft to a mentor, a book, or a body of research and let it get challenged. The mistake most people in this pattern make is picking one source permanently: either they only ever build from their own head and the plan quietly drifts from reality, or they only ever absorb other people&rsquo;s frameworks and never develop a voice of their own. Alternate deliberately&mdash;draft, then learn, then redraft&mdash;and the plan gets sharper each time it changes hands.'
+                            )}
+                            ${pairCard(
+                                'Solo Grind &amp; Guided Growth',
+                                12, '12th', 'ph-barbell', 'Create',
+                                'When you begin actual work, it feels heavy and uncomfortable. You are forcing new habits into existence, which means friction, resistance, and fatigue are normal in this phase&mdash;not a sign of failure.',
+                                6, '6th', 'ph-briefcase', 'Wait',
+                                'You look for practical environments&mdash;jobs, apprenticeships, internships&mdash;where responsibility and pressure are given to you. Under guided deadlines, you slowly develop discipline, skill, and resilience.',
+                                'Discipline in your chart is built two different ways, and you need both to actually make it stick. The 12th house teaches you to push through friction on your own effort&mdash;the unglamorous repetition that makes a habit real. The 6th house teaches you the opposite skill: letting someone else&rsquo;s deadline, expectations, or structure do part of the work for you. Relying only on solo grit eventually burns you out, because willpower is a limited resource; relying only on external pressure leaves you unable to function the moment no one is watching. The strongest version of you deliberately puts yourself in guided environments early&mdash;a job, a course, a mentor with real expectations&mdash;and then, once the structure is internalized, carries it forward on your own steam.'
+                            )}
+                            ${pairCard(
+                                'Leading &amp; Being Nurtured',
+                                11, '11th', 'ph-users-three', 'Create',
+                                'Once the work becomes familiar, your focus shifts from &ldquo;How do I do this?&rdquo; to &ldquo;How do we do this together?&rdquo; You start building networks, teams, and systems so results multiply through other people.',
+                                5, '5th', 'ph-heart', 'Wait',
+                                'Emotionally, you seek relationships where you feel loved, special, and nurtured. You heal and grow when someone gives you personal attention, encouragement, and gentle hand-holding.',
+                                'Leading others and needing to be cared for look like opposite states, but in your chart they run on the same battery. The 11th house is you spending outward&mdash;organizing people, carrying responsibility for a team, multiplying your effort through others. The 5th house is you refilling&mdash;letting someone else&rsquo;s attention, warmth, or encouragement recharge what leading spent. The common mistake is treating the need to be nurtured as something to be embarrassed about once you&rsquo;ve become &ldquo;the person in charge.&rdquo; It isn&rsquo;t a contradiction; it&rsquo;s maintenance. If you keep leading without ever letting yourself be looked after, the leadership itself eventually runs empty.'
+                            )}
                         </div>
                     </div>
 
                     <div>
                         <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Your Action Plan</h5>
-                        <div class="space-y-2.5">
-                            ${actionItem(1, 'Listen for inner timing.', 'Notice when your body and mind are asking for movement (RAJAS) and when they are asking for stillness and depth (TAMAS). Forcing constant action or constant withdrawal will create burnout or stagnation.', iAction)}
-                            ${actionItem(2, 'Plan in RAJAS, refine in TAMAS.', 'Use RAJAS periods to start projects, take decisions, and build momentum. Use TAMAS periods to review, correct, learn, and adjust the plan.', iAction)}
-                            ${actionItem(3, 'Protect your rest as seriously as your work.', 'In a balanced system, rest is not laziness&mdash;it is maintenance. Time spent in reflection, emotional recovery, or learning is just as important as visible productivity.', iAction)}
-                            ${actionItem(4, 'Choose goals that respect both energies.', 'Aim for work and relationships where you can both act (lead, create) and receive (learn, be supported). Extreme environments that demand only performance or only passivity will damage your natural balance.', iAction)}
+                        <div class="space-y-3">
+                            ${pairAction(
+                                1, 'Initiate &mdash; Then Invite Support',
+                                'Stop waiting for perfect conditions.', 'Your system can push first and refine later. If you wait too long for clarity, you become restless and frustrated&mdash;take the first step, then improve the plan as you move.',
+                                'Ask for help without shame.', 'You genuinely need support to function at your best too. Trying to &ldquo;do it all alone&rdquo; goes against half your design&mdash;acknowledge the dependency and clearly ask for what you need.',
+                                'In practice, this looks like moving fast on the first attempt, and then&mdash;the moment you hit real resistance or genuine confusion, not just normal friction&mdash;naming it out loud to someone instead of quietly grinding in silence. The failure mode isn&rsquo;t taking initiative; it&rsquo;s treating asking for help as a late-stage emergency measure instead of a normal part of the process. Build the habit of a quick check-in the moment you notice yourself stuck, not three weeks after.'
+                            )}
+                            ${pairAction(
+                                2, 'Plan &mdash; Then Learn',
+                                'Write the blueprint down.', 'Your ideas are strong, but capture them in writing: steps, timelines, rules, checklists. This turns natural excitement into a reliable, repeatable process.',
+                                'Gather knowledge before acting.', 'Invest time in mentors, teachers, and experts. Deep-dive into research and structured learning&mdash;the more you understand, the more fear converts into calm, informed confidence.',
+                                'In practice, write your first draft of the plan alone, even if it is rough&mdash;this protects your own thinking from being overwritten before it even exists. Then take that draft to someone more experienced and ask them to actually poke holes in it, not just approve it. The goal isn&rsquo;t to end up with their plan instead of yours; it&rsquo;s to end up with a version of your plan that has survived contact with someone else&rsquo;s knowledge.'
+                            )}
+                            ${pairAction(
+                                3, 'Push Through &mdash; Then Seek Guidance',
+                                'Expect and accept early friction.', 'New actions will feel heavy, confusing, or exhausting at first. Treat this as the &ldquo;muscle-building&rdquo; phase of your habits and stay consistent until it adapts.',
+                                'Embrace professional pressure as training.', 'Seek workplaces or structures where you can grow under guidance. Ask for responsibility, accept realistic pressure, and let experienced people shape your habits too.',
+                                'In practice, give yourself a real but limited window to work through friction on your own&mdash;long enough to actually try, short enough that you don&rsquo;t quietly stall for weeks. When that window closes and the friction hasn&rsquo;t eased, that is your signal to seek out structure: a mentor, a course, a job with real deadlines, anything that puts outside pressure and guidance on the same problem you were grinding through alone.'
+                            )}
+                            ${pairAction(
+                                4, 'Lead &mdash; Then Receive',
+                                'Move from solo worker to leader.', 'Once you are comfortable with the work, consciously shift into mentoring, delegating, and collaborating&mdash;get things done through others, not just your own effort.',
+                                'Allow yourself to be nurtured.', 'Make space for friendships and bonds that offer care, reassurance, and emotional safety. You are not weak for needing love and attention&mdash;this is how your inner battery charges too.',
+                                'In practice, notice when you are the one holding everything together for other people, and treat that as a cue to schedule the opposite&mdash;time with people who take care of you, not just people who need you. Don&rsquo;t wait until you are depleted to accept support; build it in on a rhythm, the same way you would build in the leadership responsibilities themselves.'
+                            )}
                         </div>
                     </div>
                 </div>`;
