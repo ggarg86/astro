@@ -1188,7 +1188,7 @@
         const displayHour = v[3] === 0 ? 12 : (v[3] > 12 ? v[3] - 12 : v[3]);
         const displayAmPm = document.getElementById('ampm-value').value;
         const tp = pad(displayHour) + ':' + pad(v[4]) + ' ' + displayAmPm; const dStr = `(${nm} @ ${dp} @ ${tp} @ ${lc})`; ['octal-map-details', 'psycho-details', 'rhythm-details', 'energy-details', 'speed-details', 'long-cycle-details', 'monthly-details', 'daily-details'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = dStr; }); const days = (bd - new Date('2000-01-01T12:00:00Z')) / 86400000; const T = days / 36525.0, lah = 23.858832 + (1.396042 * T); const obl = toRad(23.4392911 - (0.0130042 * T)), gmst = Astronomy.SiderealTime(bd); const lRad = toRad(normalize((gmst * 15) + lon)), laRad = toRad(lat); const asT = normalize(toDeg(Math.atan2(Math.cos(lRad), -((Math.sin(lRad) * Math.cos(obl)) + (Math.tan(laRad) * Math.sin(obl)))))); const asS = normalize(asT - lah); const lag = { deg: asS, rashi: Math.floor(asS / 30) + 1 }; document.querySelector('#results-table tbody').innerHTML = ''; renderRow("Ascendant", asS, "Ascendant", "ph-arrow-fat-up", "Lagna (Asc)", "-", RASHI_NAMES[lag.rashi - 1], asS % 30, NAKSHATRAS[Math.floor(asS / 13.333)], Math.floor((asS % 13.333) / (13.333 / 4)) + 1); const rP = [], tP = [], pMap = {}, hList = [], pDat = []; BODIES.forEach(b => { let tL; if (b.type === 'Node') { let r = normalize(125.04452 - (1934.136261 * T) + (0.0020708 * T * T) + ((T * T * T) / 450000)); tL = (b.name === 'Rahu') ? r : normalize(r + 180); } else { tL = Astronomy.Ecliptic(Astronomy.GeoVector(Astronomy.Body[b.name], Astronomy.MakeTime(bd), true)).elon + (0.013969 * (days / 365.25)); } const sL = normalize(tL - lah), d = normalize(sL - asS); const hI = OCTAL_HOUSES.find(h => d >= h.range[0] && d < h.range[1]); const hN = hI ? hI.id : "Gap"; if (hI) { const pO = { name: b.name, icon: b.icon, speed: PLANET_SPEEDS[b.name] }; (hI.category === "RAJAS" ? rP : tP).push(pO); if (!hList[hN]) hList[hN] = []; hList[hN].push(pO); } pMap[b.name] = { symbol: b.symbol, house: hN, category: hI?.category, houseInfo: hI, icon: b.icon }; pDat.push({ symbol: b.symbol, deg: sL, distFromLagna: d }); renderRow(b.name, sL, b.type, b.icon, hI?.label || "-", hN, RASHI_NAMES[Math.floor(sL / 30)], sL % 30, NAKSHATRAS[Math.floor(sL / 13.333)], Math.floor((sL % 13.333) / (13.333 / 4)) + 1); }); drawOctalChart(lag, pDat); window.currentAscendant = asS; window.currentNatalMap = pMap; window.currentNatalPDat = pDat; window.currentNatalLag = lag; window.currentNatalBirthDate = bd; document.getElementById('results-container').classList.remove('hidden');
-            document.getElementById('all-results-wrapper').classList.remove('hidden'); try{renderAnalysis(rP,tP);}catch(e){console.error('renderAnalysis',e);}
+            document.getElementById('all-results-wrapper').classList.remove('hidden'); try{renderAnalysis(rP,tP,hList);}catch(e){console.error('renderAnalysis',e);}
             // Expired users: hide accordion sections only — map + table + save/load/delete remain accessible
             if(_isExpired){ document.getElementById('results-container').classList.add('hidden'); }
             try{renderRhythmSection(pMap);}catch(e){console.error('renderRhythmSection',e);}
@@ -1201,47 +1201,184 @@
         function renderRow(n, s, t, i, hl, hn, r, dg, nk, pd) { const tr = document.createElement('tr'); tr.className = "hover:bg-slate-50 transition border-b border-slate-100 last:border-0" + (t === 'Node' ? ' node-row' : t === 'Ascendant' ? ' asc-row' : ''); tr.innerHTML = `<td class="flex items-center gap-2" style="padding: 6px 12px;"><div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-500"><i class="ph ${i || 'ph-planet'} text-sm"></i></div><span class="font-bold text-xs">${n}</span></td><td>${(hl !== "-" && hn !== "-") ? `<span class="font-bold text-slate-900">${hl}</span> <span class="text-slate-900 font-bold">(${hn})</span>` : "-"}</td><td class="text-slate-700 font-medium">${r}</td><td class="font-mono text-slate-600">${dm(dg)}</td><td><span class="font-medium text-slate-700">${nk}</span> <span class="text-[10px] text-slate-400 ml-1">P${pd}</span></td>`; document.querySelector('#results-table tbody').appendChild(tr); }
         
         // --- UPDATED ANALYSIS RENDER FUNCTION ---
-        function renderAnalysis(r, t) {
+        function renderAnalysis(r, t, hList) {
+            hList = hList || [];
             const rh = r.length ? r.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-orange-200 text-orange-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-orange-300 italic">No planets</span>`;
             const th = t.length ? t.map(p => `<span class="inline-flex items-center gap-1 bg-white border border-emerald-200 text-emerald-700 px-2 py-1 rounded text-xs font-bold shadow-sm"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('') : `<span class="text-xs text-emerald-300 italic">No planets</span>`;
-            
+
             document.getElementById('rajas-list').innerHTML = rh;
             document.getElementById('rajas-count').textContent = `${r.length} Planet${r.length !== 1 ? 's' : ''}`;
             document.getElementById('tamas-list').innerHTML = th;
             document.getElementById('tamas-count').textContent = `${t.length} Planet${t.length !== 1 ? 's' : ''}`;
-            
+
+            // Planet chips for a given house id, styled per theme; empty state is a dashed pill, not near-invisible text
+            const houseChips = (id, chipCls) => {
+                const list = hList[id] || [];
+                if (!list.length) return `<span class="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-400 border border-dashed border-slate-300 rounded-full px-2 py-0.5"><i class="ph ph-circle-dashed text-[10px]"></i> No planets here</span>`;
+                return list.map(p => `<span class="inline-flex items-center gap-1 font-bold ${chipCls} px-1.5 py-0.5 rounded border text-[10px]"><i class="ph ${p.icon}"></i> ${p.name}</span>`).join('');
+            };
+
+            // One "How Your Mind Works" house card: number badge + icon badge + title, planet chips, description
+            const houseCard = (id, ordinal, icon, title, desc, opts) => `
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 border-l-4 ${opts.borderL} p-4">
+                    <div class="flex items-start justify-between gap-3 flex-wrap mb-2">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-7 h-7 rounded-full ${opts.badgeBg} flex items-center justify-center text-xs font-bold ${opts.badgeText} flex-shrink-0">${id}</div>
+                            <div class="p-1.5 rounded-lg bg-white shadow-sm border ${opts.iconBorder} ${opts.iconText} flex-shrink-0"><i class="ph ${icon} text-base"></i></div>
+                            <span class="font-bold text-sm text-slate-800">${title} <span class="text-slate-400 font-normal text-xs">(${ordinal} House)</span></span>
+                        </div>
+                        <div class="flex flex-wrap gap-1 justify-end">${houseChips(id, opts.chipCls)}</div>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">${desc}</p>
+                </div>`;
+
+            // One "How Your Mind Works" card for the Balanced scenario (no house/planet data attached)
+            const conceptCard = (icon, title, desc, opts) => `
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 border-l-4 ${opts.borderL} p-4">
+                    <div class="flex items-center gap-2.5 mb-2">
+                        <div class="p-1.5 rounded-lg bg-white shadow-sm border ${opts.iconBorder} ${opts.iconText} flex-shrink-0"><i class="ph ${icon} text-base"></i></div>
+                        <span class="font-bold text-sm text-slate-800">${title}</span>
+                    </div>
+                    <p class="text-xs text-slate-600 leading-relaxed">${desc}</p>
+                </div>`;
+
+            // One Action Plan item: numbered circle + bold lead-in + description, as its own card rather than a plain checklist line
+            const actionItem = (num, lead, desc, opts) => `
+                <div class="flex items-start gap-3 rounded-lg border ${opts.itemBorder} ${opts.itemBg} p-3">
+                    <div class="w-6 h-6 rounded-full ${opts.numBg} ${opts.numText} flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5">${num}</div>
+                    <p class="text-sm text-slate-700 leading-relaxed"><strong class="text-slate-900">${lead}</strong> ${desc}</p>
+                </div>`;
+
+            // Dark pull-quote box for the Key Message, matching the sensory-channel accent box used in Career Guidance
+            const keyMessage = (icon, text, bgCls) => `
+                <div class="rounded-lg ${bgCls} px-4 py-3.5 flex items-start gap-3 shadow-sm">
+                    <i class="ph ${icon} text-lg text-white/70 mt-0.5 flex-shrink-0"></i>
+                    <p class="text-sm text-white leading-relaxed italic font-medium">${text}</p>
+                </div>`;
+
             let summaryHTML = "";
             const diff = Math.abs(r.length - t.length);
-            
+            const summaryEl = document.getElementById('analysis-summary');
+
             if (r.length > t.length && diff >= 2) {
-                // Active Phase (Depleted Warrior)
+                // RAJAS Dominant — The "Doer" Energy
+                summaryEl.className = "mt-6 text-sm text-slate-700 rounded-xl border border-orange-100 border-l-[6px] border-l-orange-400 bg-gradient-to-br from-orange-50/70 to-white p-5 md:p-6 shadow-sm";
+                const o = { borderL: 'border-orange-300', badgeBg: 'bg-orange-100', badgeText: 'text-orange-700', iconBorder: 'border-orange-200', iconText: 'text-orange-500', chipCls: 'text-orange-700 bg-orange-50 border-orange-200' };
+                const oAction = { itemBorder: 'border-orange-100', itemBg: 'bg-white/70', numBg: 'bg-orange-500', numText: 'text-white' };
                 summaryHTML = `
-                <div class="space-y-3">
-                    <h4 class="text-orange-700 font-bold text-base flex items-center gap-2"><i class="ph ph-fire"></i> The Depleted Warrior (Active Phase)</h4>
-                    <p class="text-slate-700 font-medium text-sm"><strong>State:</strong> Output > Input (Utilization Rate > Production Rate)</p>
-                    <p class="text-slate-600 text-justify">The Depleted Warrior represents a state where your output exceeds your input. Psychologically, you are stuck in a cycle of constant "exhaling"—action, work, and effort—without taking the time to "inhale" or recharge. In this dynamic, the Utilization Rate (Rajas) is significantly faster than the Production Rate (Tamas).</p>
-                    <p class="text-slate-600 text-justify">You are trying to draw power from an empty battery. Because the Tamas house (your emotional reservoir) is depleted, the Rajas house (your center of action) lacks the fuel to operate efficiently. This leads to chronic exhaustion, lethargy, and a feeling of "running on fumes." You may find yourself working harder but achieving less, increasing the likelihood of failure. <span class="text-indigo-700 font-bold">The core issue here is not a lack of motivation, but a lack of resources. To heal, you must stop forcing action and prioritize stillness to replenish your energy.</span></p>
+                <div class="space-y-5">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white p-2.5 rounded-lg text-orange-600 shadow-sm border border-orange-200 flex-shrink-0"><i class="ph ph-fire text-xl"></i></div>
+                        <div>
+                            <h4 class="text-orange-700 font-bold text-base leading-tight">RAJAS Dominates: The "Doer" Energy</h4>
+                            <p class="text-[11px] text-slate-500 uppercase tracking-wide font-semibold mt-0.5">Output &gt; Input &middot; Utilization Rate &gt; Production Rate</p>
+                        </div>
+                    </div>
+
+                    ${keyMessage('ph-quotes', 'Create the opportunity, design the plan, build the habit, then lead others.', 'bg-orange-500')}
+
+                    <p class="text-slate-600 text-sm leading-relaxed">When RAJAS is stronger in your chart, your natural setting is to move first and think later. You are wired to act, initiate, and push life forward rather than wait for instructions or guarantees. You feel alive when you are doing something, building something, or proving something through physical effort and visible results.</p>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">How Your Mind Works in RAJAS Mode</h5>
+                        <div class="space-y-3">
+                            ${houseCard(2, '2nd', 'ph-sparkle', 'Spark of Optimism', 'You feel &ldquo;I can do this&rdquo; before a detailed plan even exists. This optimism is your baseline battery charge&mdash;it gives you the courage to step into new situations even when the path is not fully clear.', o)}
+                            ${houseCard(9, '9th', 'ph-map-trifold', 'Structuring the Blueprint', 'After the initial spark, your mind starts organizing raw ideas. You turn scattered thoughts and experiences into a method, roadmap, or rulebook that you can follow and teach.', o)}
+                            ${houseCard(12, '12th', 'ph-barbell', 'Heavy Execution', 'When you begin actual work, it feels heavy and uncomfortable. You are forcing new habits into existence, which means friction, resistance, and fatigue are normal in this phase&mdash;not a sign of failure.', o)}
+                            ${houseCard(11, '11th', 'ph-users-three', 'Scaling Up', 'Once the work becomes familiar, your focus shifts from &ldquo;How do I do this?&rdquo; to &ldquo;How do we do this together?&rdquo; You start building networks, teams, and systems so that results multiply through other people rather than your effort alone.', o)}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Your Action Plan</h5>
+                        <div class="space-y-2.5">
+                            ${actionItem(1, 'Stop waiting for perfect conditions.', 'Your system is built to push first and refine later. If you wait too long for clarity, you become restless and frustrated. Take the first step, then improve the plan as you move.', oAction)}
+                            ${actionItem(2, 'Write the blueprint down.', 'Your ideas are strong, but they must be captured in writing: steps, timelines, rules, checklists. This turns your natural excitement into a reliable, repeatable process.', oAction)}
+                            ${actionItem(3, 'Expect and accept early friction.', 'New actions will feel heavy, confusing, or exhausting at the 12th-house stage. Treat this as the &ldquo;muscle-building&rdquo; phase of your habits. Stay consistent until the body and mind adapt.', oAction)}
+                            ${actionItem(4, 'Move from solo worker to leader.', 'Once you are comfortable with the work, consciously shift into mentoring, delegating, and collaborating. Get work done through others and use your enthusiasm to organize people, not just tasks.', oAction)}
+                        </div>
+                    </div>
                 </div>`;
             } else if (t.length > r.length && diff >= 2) {
-                // Recharge Phase (Overwhelmed Vessel)
+                // TAMAS Dominant — The "Receiver" Energy
+                summaryEl.className = "mt-6 text-sm text-slate-700 rounded-xl border border-emerald-100 border-l-[6px] border-l-emerald-400 bg-gradient-to-br from-emerald-50/70 to-white p-5 md:p-6 shadow-sm";
+                const e = { borderL: 'border-emerald-300', badgeBg: 'bg-emerald-100', badgeText: 'text-emerald-700', iconBorder: 'border-emerald-200', iconText: 'text-emerald-500', chipCls: 'text-emerald-700 bg-emerald-50 border-emerald-200' };
+                const eAction = { itemBorder: 'border-emerald-100', itemBg: 'bg-white/70', numBg: 'bg-emerald-500', numText: 'text-white' };
                 summaryHTML = `
-                <div class="space-y-3">
-                    <h4 class="text-emerald-700 font-bold text-base flex items-center gap-2"><i class="ph ph-waves"></i> The Overwhelmed Vessel (Recharge Phase)</h4>
-                    <p class="text-slate-700 font-medium text-sm"><strong>State:</strong> Input > Output (Production Rate > Utilization Rate)</p>
-                    <p class="text-slate-600 text-justify">The Overwhelmed Vessel represents a state of internal congestion. Psychologically, you are "inhaling" deeply—absorbing emotions, thoughts, and energy—but failing to "exhale" or release them through action. Here, the Production Rate (Tamas) is much faster than the Utilization Rate (Rajas).</p>
-                    <p class="text-slate-600 text-justify">Your internal battery is overcharged. While having abundant energy sounds positive, without a proper outlet (Rajas), this surplus turns into intense pressure. This often manifests as anxiety, overthinking, or feeling paralyzed. If this energy is not voluntarily channeled into work or expression, it will eventually force its way out, leading to impulsive behavior or actions taken against your better judgment. <span class="text-indigo-700 font-bold">You are not tired; you are stuck. The remedy is not rest, but movement—finding a healthy channel to discharge this buildup and restore flow.</span></p>
+                <div class="space-y-5">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white p-2.5 rounded-lg text-emerald-600 shadow-sm border border-emerald-200 flex-shrink-0"><i class="ph ph-waves text-xl"></i></div>
+                        <div>
+                            <h4 class="text-emerald-700 font-bold text-base leading-tight">TAMAS Dominates: The "Receiver" Energy</h4>
+                            <p class="text-[11px] text-slate-500 uppercase tracking-wide font-semibold mt-0.5">Input &gt; Output &middot; Production Rate &gt; Utilization Rate</p>
+                        </div>
+                    </div>
+
+                    ${keyMessage('ph-quotes', 'Accept your need for support, ask for help without shame, and allow others to anchor you.', 'bg-emerald-600')}
+
+                    <p class="text-slate-600 text-sm leading-relaxed">When TAMAS is stronger in your chart, your system is not designed to charge ahead blindly. Your mind needs security, information, and emotional grounding before it can act with confidence. You grow best by drawing resources, guidance, and care from your environment, then slowly converting that support into inner strength.</p>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">How Your Mind Works in TAMAS Mode</h5>
+                        <div class="space-y-3">
+                            ${houseCard(8, '8th', 'ph-shield-check', 'Search for Security', 'You carry deep doubts and fears about what can go wrong. This doesn&rsquo;t mean you are weak&mdash;it means your system is scanning for hidden risks. You realize early that you cannot do everything alone; you need a safe base, trustworthy people, and stable structures around you.', e)}
+                            ${houseCard(3, '3rd', 'ph-book-open-text', 'Intellectual Dependency', 'You lean on others for information and expertise. You study, research, and ask questions, building confidence through understanding rather than blind experimentation.', e)}
+                            ${houseCard(6, '6th', 'ph-briefcase', 'Professional Dependency', 'You look for practical environments&mdash;jobs, apprenticeships, internships&mdash;where responsibility and pressure are given to you. Under guided deadlines, you slowly develop discipline, skill, and resilience.', e)}
+                            ${houseCard(5, '5th', 'ph-heart', 'Personal Dependency', 'Emotionally, you seek relationships where you feel loved, special, and nurtured. You heal and grow when someone gives you personal attention, encouragement, and gentle hand-holding.', e)}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Your Action Plan</h5>
+                        <div class="space-y-2.5">
+                            ${actionItem(1, 'Ask for help without shame.', 'Your system genuinely needs support to function at its best. Trying to &ldquo;do it all alone&rdquo; goes against your design and creates anxiety. Acknowledge your dependencies and clearly ask for the help you need.', eAction)}
+                            ${actionItem(2, 'Gather knowledge before acting.', 'Invest time in mentors, teachers, and experts. Deep-dive into research and structured learning. The more you understand, the more your fear converts into calm, informed confidence.', eAction)}
+                            ${actionItem(3, 'Embrace professional pressure as training.', 'Seek workplaces where you can start fresh and grow under guidance. Ask for responsibility, accept realistic pressure, and let experienced people shape your work habits.', eAction)}
+                            ${actionItem(4, 'Allow yourself to be nurtured.', 'Make space for friendships and romantic bonds that offer care, reassurance, and emotional safety. You are not weak for needing love and attention&mdash;this is how your inner battery charges.', eAction)}
+                        </div>
+                    </div>
                 </div>`;
             } else {
-                // Balanced (Difference is 0 or 1)
+                // RAJAS & TAMAS Balanced — The "Rhythm" Energy
+                summaryEl.className = "mt-6 text-sm text-slate-700 rounded-xl border border-indigo-100 border-l-[6px] border-l-indigo-400 bg-gradient-to-br from-indigo-50/70 to-white p-5 md:p-6 shadow-sm";
+                const i = { borderL: 'border-indigo-300', iconBorder: 'border-indigo-200', iconText: 'text-indigo-500' };
+                const iAction = { itemBorder: 'border-indigo-100', itemBg: 'bg-white/70', numBg: 'bg-indigo-500', numText: 'text-white' };
                 summaryHTML = `
-                <div class="space-y-3">
-                    <h4 class="text-indigo-700 font-bold text-base flex items-center gap-2"><i class="ph ph-scales"></i> Balanced Energy (Equilibrium)</h4>
-                    <p class="text-slate-700 font-medium text-sm"><strong>State:</strong> Flow = Input ≈ Output (Balanced Cycle)</p>
-                    <p class="text-slate-600 text-justify">Balanced: Your mental peace relies on honouring both sides of this cycle. When you are full of emotion, let Rajas motivate you to act and release it. When you are empty and tired, let Tamas invite you to rest and recharge. <span class="text-indigo-700 font-bold">Do not fight the rhythm. Just breathe.</span></p>
+                <div class="space-y-5">
+                    <div class="flex items-center gap-3">
+                        <div class="bg-white p-2.5 rounded-lg text-indigo-600 shadow-sm border border-indigo-200 flex-shrink-0"><i class="ph ph-scales text-xl"></i></div>
+                        <div>
+                            <h4 class="text-indigo-700 font-bold text-base leading-tight">RAJAS &amp; TAMAS Balanced: The "Rhythm" Energy</h4>
+                            <p class="text-[11px] text-slate-500 uppercase tracking-wide font-semibold mt-0.5">Flow &middot; Input &asymp; Output</p>
+                        </div>
+                    </div>
+
+                    ${keyMessage('ph-quotes', 'Honor both the drive to act and the need to rest; alternate wisely between outward action and inward recharge.', 'bg-indigo-600')}
+
+                    <p class="text-slate-600 text-sm leading-relaxed">Your chart shows that RAJAS and TAMAS are balanced. You are neither purely a &ldquo;doer&rdquo; nor purely a &ldquo;receiver.&rdquo; Your growth depends on recognizing when it is time to move outward and when it is time to turn inward&mdash;and then respecting that rhythm instead of forcing one side all the time.</p>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">How Your Mind Works in Balanced Mode</h5>
+                        <div class="space-y-3">
+                            ${conceptCard('ph-arrows-clockwise', 'Natural Alternation', 'You move through phases where RAJAS is active (you feel energetic, decisive, driven) and phases where TAMAS is active (you feel reflective, cautious, sensitive). Both phases are part of your design.', i)}
+                            ${conceptCard('ph-battery-charging-vertical', 'Dual Battery System', 'In RAJAS phases, you expend physical energy&mdash;taking decisions, working hard, pushing projects. In TAMAS phases, you recharge mentally and emotionally&mdash;processing experiences, healing, and learning.', i)}
+                            ${conceptCard('ph-scales', 'Integrated Decision-Making', 'Big decisions in your life are best taken when both sides have had their say: RAJAS tells you what you want to create; TAMAS tells you what feels safe, sustainable, and emotionally true.', i)}
+                        </div>
+                    </div>
+
+                    <div>
+                        <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Your Action Plan</h5>
+                        <div class="space-y-2.5">
+                            ${actionItem(1, 'Listen for inner timing.', 'Notice when your body and mind are asking for movement (RAJAS) and when they are asking for stillness and depth (TAMAS). Forcing constant action or constant withdrawal will create burnout or stagnation.', iAction)}
+                            ${actionItem(2, 'Plan in RAJAS, refine in TAMAS.', 'Use RAJAS periods to start projects, take decisions, and build momentum. Use TAMAS periods to review, correct, learn, and adjust the plan.', iAction)}
+                            ${actionItem(3, 'Protect your rest as seriously as your work.', 'In a balanced system, rest is not laziness&mdash;it is maintenance. Time spent in reflection, emotional recovery, or learning is just as important as visible productivity.', iAction)}
+                            ${actionItem(4, 'Choose goals that respect both energies.', 'Aim for work and relationships where you can both act (lead, create) and receive (learn, be supported). Extreme environments that demand only performance or only passivity will damage your natural balance.', iAction)}
+                        </div>
+                    </div>
                 </div>`;
             }
-            
-            document.getElementById('analysis-summary').innerHTML = summaryHTML;
+
+            summaryEl.innerHTML = summaryHTML;
         }
 
         function renderEnergyFlow(m) { const sq = ['Ketu', 'Venus', 'Sun', 'Moon', 'Mars', 'Rahu', 'Jupiter', 'Saturn', 'Mercury', 'Ketu']; let h = `<h3 class="text-sm font-bold text-slate-800 mb-3">Planetary Energy Flow Sequence</h3><div class="planet-flow-scroll flex items-center justify-between overflow-x-auto gap-1 pb-2">`; sq.forEach((pn, ix) => { const d = m[pn], c = d.category, b = c === "RAJAS" ? "bg-orange-400" : c === "TAMAS" ? "bg-emerald-400" : "bg-slate-300"; h += `<div class="flex-shrink-0 flex flex-col items-center justify-center w-[36px] md:w-[45px] bg-slate-50 border border-slate-200 rounded shadow-sm p-1"><span class="text-[10px] md:text-[11px] font-bold text-slate-800 leading-tight">${d.symbol}</span><span class="text-xs md:text-[13px] font-bold text-indigo-900 leading-tight">${d.house}</span><div class="w-full h-1 rounded-full mt-1 ${b}"></div></div>`; if (ix < sq.length - 1) h += `<div class="flex-shrink-0 text-slate-400 flex items-center justify-center -mx-1"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256"><path d="M181.66,133.66l-80,80a8,8,0,0,1-11.32-11.32L164.69,128,90.34,53.66a8,8,0,0,1,11.32-11.32l80,80A8,8,0,0,1,181.66,133.66Z"></path></svg></div>`; }); document.getElementById('energy-flow-container').innerHTML = h + `</div>`; }
