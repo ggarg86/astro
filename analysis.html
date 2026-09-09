@@ -1236,7 +1236,7 @@
                     </div>
                 </div>`;
 
-            const pairCard = (pair, direction) => {
+            const pairCard = (pair, direction, displayKey) => {
                 const rBox = `
                     <div class="rounded-lg bg-orange-50/60 border border-orange-100 p-3">
                         <div class="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
@@ -1253,14 +1253,18 @@
                         </div>
                         <p class="text-xs text-slate-600 leading-relaxed">${pair.tDesc}</p>
                     </div>`;
-                const leadT = direction.key === 'reflect' || direction.key === 'gather';
+                const orderKey = displayKey || direction.key;
+                const leadT = orderKey === 'reflect' || orderKey === 'gather';
+                // Keep the pair title in the same direction as the badges and house boxes.
+                // This is essential for Quiet Domain pairs whose default title is Rajas-first.
+                const displayTitle = leadT ? pair.reflectTitle : pair.actTitle;
                 return `
                     <div class="bg-white rounded-xl shadow-sm border border-indigo-100 p-4">
                         <div class="flex items-center gap-2 mb-3 flex-wrap">
                             <div class="w-7 h-7 rounded-full ${leadT ? 'bg-emerald-100 text-emerald-700' : 'bg-orange-100 text-orange-700'} flex items-center justify-center text-xs font-bold flex-shrink-0">${leadT ? pair.tId : pair.rId}</div>
                             <i class="ph ph-arrows-left-right text-indigo-400 text-sm flex-shrink-0"></i>
                             <div class="w-7 h-7 rounded-full ${leadT ? 'bg-orange-100 text-orange-700' : 'bg-emerald-100 text-emerald-700'} flex items-center justify-center text-xs font-bold flex-shrink-0">${leadT ? pair.rId : pair.tId}</div>
-                            <span class="font-bold text-sm text-slate-800 ml-1">${direction.title}</span>
+                            <span class="font-bold text-sm text-slate-800 ml-1">${displayTitle}</span>
                         </div>
                         <div class="grid sm:grid-cols-2 gap-3">
                             ${leadT ? tBox : rBox}
@@ -1342,7 +1346,27 @@
                 return rSlowestRank <= tSlowestRank ? pair.states.act : pair.states.reflect;
             };
 
+            // Empty-pair display fallback: copy the next pair's established order;
+            // if the next pair is also empty, use the overall Rajas/Tamas working-style tilt.
+            const emptyPairOrder = (pairIndex, directions, rajasLeadsOverall) => {
+                const nextIndex = pairIndex + 1;
+                if (nextIndex < pairData.length) {
+                    const nextR = hList[pairData[nextIndex].rId] || [];
+                    const nextT = hList[pairData[nextIndex].tId] || [];
+                    if (nextR.length || nextT.length) return directions[nextIndex].key;
+                }
+                return rajasLeadsOverall ? 'act' : 'reflect';
+            };
+
             const directions = pairData.map(getDirection);
+            const rajasLeadsOverall = r.length > t.length;
+            const displayKeys = directions.map((direction, index) => {
+                const pair = pairData[index];
+                const rEmpty = !(hList[pair.rId] || []).length;
+                const tEmpty = !(hList[pair.tId] || []).length;
+                if (rEmpty && tEmpty) return emptyPairOrder(index, directions, rajasLeadsOverall);
+                return direction.key;
+            });
             const diff = Math.abs(r.length - t.length);
             const summaryEl = document.getElementById('analysis-summary');
             let summaryHTML = '';
@@ -1401,7 +1425,7 @@
                     </div>
                     <div>
                         <h5 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">Deep Dive: Your Four Core Rhythms</h5>
-                        <div class="space-y-3">${pairData.map((pair, index) => pairCard(pair, directions[index])).join('')}</div>
+                        <div class="space-y-3">${pairData.map((pair, index) => pairCard(pair, directions[index], displayKeys[index])).join('')}</div>
                     </div>
                 </div>`;
             summaryEl.innerHTML = summaryHTML;
