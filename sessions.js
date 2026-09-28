@@ -307,11 +307,66 @@ function planetaryEnergyFlowHTML(m){
     '<div style="display:flex;align-items:center;overflow-x:auto;gap:2px;padding-bottom:6px;">' + items + '</div></div>';
 }
 
+function buildCareerGuidanceHTML() {
+  var QUOTIENTS = {
+    9: { code: "IQ", name: "Creator" },
+    2: { code: "CQ", name: "Strategist" },
+    12: { code: "AQ", name: "Warrior" },
+    11: { code: "EQ", name: "Seller" }
+  };
+  var ENERGY_PAIRS = [{ rajas: 9, tamas: 3 }, { rajas: 11, tamas: 5 }, { rajas: 12, tamas: 6 }, { rajas: 2, tamas: 8 }];
+
+  var hList = {};
+  if (window.currentNatalMap && typeof PLANET_SPEEDS !== 'undefined') {
+    Object.keys(window.currentNatalMap).forEach(function(pName) {
+      var pd = window.currentNatalMap[pName];
+      if (pd && pd.house) {
+        if (!hList[pd.house]) hList[pd.house] = [];
+        hList[pd.house].push({ name: pName, speed: PLANET_SPEEDS[pName] });
+      }
+    });
+  }
+
+  var r = [];
+  ENERGY_PAIRS.forEach(function(pr) {
+    var rp = (hList[pr.rajas] || []).sort(function(a, b){ return b.speed - a.speed; });
+    var tp = (hList[pr.tamas] || []).sort(function(a, b){ return b.speed - a.speed; });
+    var rs = rp.length ? rp[0].speed : 0;
+    var ts = tp.length ? tp[0].speed : 0;
+    var sc = 0, sv = 0;
+
+    if (tp.length && rp.length) {
+      if (ts < rs) { sc = 1; sv = 4000 + (rs * 10) - ts; } else { sc = 3; sv = 2000 + (10 - ts); }
+    } else if (tp.length) { sc = 2; sv = 3000 + (10 - ts); } else if (rp.length) { sc = 4; sv = 1000 + rs; } else return;
+
+    r.push({ sc: sc, sv: sv, id: pr.rajas });
+  });
+
+  if (!r.length) return '';
+
+  var sorted = r.sort(function(a, b){ return b.sv - a.sv; });
+  var colors = ['#10b981', '#f59e0b', '#f43f5e', '#64748b'];
+
+  var html = '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Career Guidance</h3><div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; margin-top:8px;">';
+  sorted.forEach(function(d, i) {
+    var q = QUOTIENTS[d.id];
+    var color = colors[i] || colors[3];
+    html += '<div style="background:' + color + '10; border:1px solid ' + color + '40; border-left:4px solid ' + color + '; padding:8px 14px; border-radius:6px; color:#1e293b; font-family:Montserrat,sans-serif; font-size:0.88em; font-weight:600;">' +
+            '<span style="color:' + color + ';">Rank ' + (i + 1) + '</span> &mdash; ' + q.code + ' (' + q.name + ')' +
+            '</div>';
+  });
+  html += '</div><p style="font-size:0.85em; color:#64748b; font-style:italic; margin-top:8px;">For an in-depth read, refer to the <a href="https://geoastro.brainmanual.in/guide.html" style="color:#2980b9; text-decoration:underline;">Archetype Guide</a>.</p></div>';
+
+  return html;
+}
+
 window.printSessionReport = function(s){
   // Silently (re)compute the chart + ascendant from the currently loaded
   // client's visible birth fields, so the report never depends on whether
   // "Generate Report" happened to be clicked earlier in this session.
   try { calculatePositions(); } catch(e) { /* fields may be incomplete — fall back gracefully below */ }
+
+  var pad = function(n) { return n.toString().padStart(2, '0'); };
 
   var wheelHTML = '';
   var wheelSrc = document.getElementById('octal-chart-container');
@@ -366,28 +421,33 @@ window.printSessionReport = function(s){
       yearEl = document.getElementById('year-input'), hourEl = document.getElementById('hour-input'),
       minEl = document.getElementById('minute-input'), ampmEl = document.getElementById('ampm-value');
   var dobStr = (dayEl && monthEl && yearEl && dayEl.value && yearEl.value)
-    ? (dayEl.value + ' ' + (monthEl.options[monthEl.selectedIndex] ? monthEl.options[monthEl.selectedIndex].text : '') + ' ' + yearEl.value) : '';
+    ? (pad(dayEl.value) + ' ' + (monthEl.options[monthEl.selectedIndex] ? monthEl.options[monthEl.selectedIndex].text : '') + ' ' + yearEl.value) : '';
   var tobStr = (hourEl && minEl && hourEl.value)
-    ? (hourEl.value + ':' + minEl.value + ' ' + (ampmEl ? ampmEl.value : '')) : '';
+    ? (pad(hourEl.value) + ':' + pad(minEl.value) + ' ' + (ampmEl ? ampmEl.value : '')) : '';
   var pobStr = document.getElementById('location-input') ? document.getElementById('location-input').value : '';
 
   var brandHeader =
-    '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2980b9;padding-bottom:8px;margin-bottom:16px;">' +
-      '<span style="font-family:Montserrat,sans-serif;font-weight:700;color:#2980b9;">geoastro.brainmanual.in</span>' +
-      '<span style="font-size:0.8em;color:#64748b;">+91-62834-62525 &nbsp;|&nbsp; brainmanual@gmail.com</span>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2980b9;padding-bottom:10px;margin-bottom:20px;">' +
+      '<span style="font-family:Montserrat,sans-serif;font-weight:800;color:#2980b9;font-size:1.1em;">geoastro.brainmanual.in</span>' +
+      '<span style="font-size:0.85em;color:#64748b;font-weight:600;">+91-62834-62525 &nbsp;|&nbsp; brainmanual@gmail.com</span>' +
     '</div>';
+
+  var careerHTML = buildCareerGuidanceHTML();
 
   var reportHTML =
     '<div style="max-width:720px;margin:0 auto;font-family:Merriweather,serif;color:#1e293b;">' +
       brandHeader +
-      '<h2 style="font-family:Montserrat,sans-serif;font-weight:700;">Session report — ' + esc(currentRecordName()) + '</h2>' +
-      '<p style="color:#64748b;font-size:0.9em;">Session date: ' + esc(s.session_date) + '</p>' +
-      '<p style="color:#334155;font-size:0.85em;line-height:1.6;">' +
-        (dobStr ? '<b>Date of birth:</b> ' + esc(dobStr) + ' &nbsp;|&nbsp; ' : '') +
-        (tobStr ? '<b>Time of birth:</b> ' + esc(tobStr) + ' &nbsp;|&nbsp; ' : '') +
-        (pobStr ? '<b>Place of birth:</b> ' + esc(pobStr) : '') +
-      '</p>' +
-      '<p style="color:#64748b;font-size:0.85em;">Report generated by: ' + esc(analystName) + '</p>' +
+      '<h2 style="font-family:Montserrat,sans-serif;font-weight:800;text-align:center;font-size:1.4em;margin-bottom:24px;color:#1e293b;">Cosmos Neural Programming (CNP) Session Report</h2>' +
+      
+      '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:28px;">' +
+        '<table style="width:100%; font-size:0.85em; line-height:1.8;">' +
+          '<tr><td style="width:130px; font-weight:700; color:#64748b;">Customer Name:</td><td style="font-weight:700; color:#0f172a;">' + esc(currentRecordName()) + '</td></tr>' +
+          '<tr><td style="font-weight:700; color:#64748b;">Birth Details:</td><td>' + esc(dobStr) + ' &nbsp;|&nbsp; ' + esc(tobStr) + ' &nbsp;|&nbsp; ' + esc(pobStr) + '</td></tr>' +
+          '<tr><td style="font-weight:700; color:#64748b;">Session Date:</td><td>' + esc(s.session_date) + '</td></tr>' +
+          '<tr><td style="font-weight:700; color:#64748b;">Analyst Name:</td><td>' + esc(analystName) + '</td></tr>' +
+        '</table>' +
+      '</div>' +
+
       '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Problems discussed</h3>' +
       '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">' + renderTagsBadges(s.problem_tags) + '</div>' +
       (s.description ? '<div style="margin-top:16px;padding:10px 14px;background:#f8fafc;border-left:3px solid #2980b9;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#2980b9;text-transform:uppercase;letter-spacing:0.03em;">Description & brief history</p><p style="margin:0;">' + esc(s.description).replace(/\n/g,'<br>') + '</p></div>' : '') +
@@ -395,11 +455,18 @@ window.printSessionReport = function(s){
       (s.remedies_given ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #d97706;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#d97706;text-transform:uppercase;letter-spacing:0.03em;">Remedies given</p><p style="margin:0;">' + esc(s.remedies_given).replace(/\n/g,'<br>') + '</p></div>' : '') +
       (wheelHTML ? '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Geo-Time Zone Map @ Birth</h3><div style="max-width:400px;margin:0 auto;">' + wheelHTML + '</div></div>' : '') +
       (window.currentNatalMap ? planetaryEnergyFlowHTML(window.currentNatalMap) : '') +
+      careerHTML +
       '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Current transits</h3>' +
       (transitWheelHTML ? '<div class="sess-keep-together"><h4 style="font-family:Montserrat,sans-serif;font-size:0.92em;font-weight:700;margin:6px 0 10px;color:#475569;">Geo-Time Zone Map @ Current Transit</h4><div style="max-width:400px;margin:0 auto;">' + transitWheelHTML + '</div></div>' : '') +
       (window.currentAscendant
         ? transitBlocks
         : '<p style="color:#94a3b8;font-size:0.85em;">Could not compute transits — this client\'s birth date, time, and place must be complete on the record.</p>') +
+      
+      // Legal Disclaimer
+      '<div style="margin-top:40px; padding:16px; border-top:1px solid #cbd5e1; font-size:0.75em; color:#64748b; font-style:italic; line-height:1.6; text-align:justify;">' +
+      'This report is generated from the astronomical birth data you provided and records guidance given in a Cosmos Neural Programming (CNP) consultation. It is intended solely for lifestyle, self-reflection, and directional guidance. It does not constitute medical, psychological, legal, financial, or career advice, and should not replace diagnosis, treatment, therapy, or professional consultation from a qualified practitioner. Please consult an appropriately qualified professional before making any decisions based on this report. The accuracy of this analysis depends on the accuracy of the birth details provided.' +
+      '</div>' +
+      
     '</div>';
 
   var existing = document.getElementById('session-report-print');
@@ -413,7 +480,7 @@ window.printSessionReport = function(s){
   if (!document.getElementById('sess-print-style')) {
     var st = document.createElement('style');
     st.id = 'sess-print-style';
-    st.textContent = '@media print { body.sess-print-mode > *:not(#session-report-print) { display:none !important; } body.sess-print-mode #session-report-print { display:block !important; } body.sess-print-mode #session-report-print, body.sess-print-mode #session-report-print * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } }';
+    st.textContent = '@media print { body.sess-print-mode > *:not(#session-report-print) { display:none !important; } body.sess-print-mode #session-report-print { display:block !important; } body.sess-print-mode #session-report-print, body.sess-print-mode #session-report-print * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } .sess-keep-together { break-inside: avoid; page-break-inside: avoid; } }';
     document.head.appendChild(st);
   }
 

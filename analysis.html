@@ -2148,74 +2148,34 @@ function getDSTInfo(tzName, date) {
             }
         }
 
-        // ── DOWNLOAD / PRINT REPORT ───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-        var _printAccState   = {};
-        var _printInProgress = false;
-        var _printSafetyTimer = null;
+// ── LAZY LOAD / PRINT REPORT ─────────────────────────────
+        function downloadReport() {
+            if (window.generateCNPReport) {
+                window.generateCNPReport();
+            } else {
+                var btn = document.getElementById('download-report-btn');
+                if (btn) {
+                    var origHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="ph ph-spinner ph-spin"></i> Preparing...';
+                    btn.disabled = true;
 
-        function _saveAccState(){
-            _printAccState = {};
-            ACC_IDS.forEach(function(id){
-                var el = document.getElementById(id);
-                if(el) _printAccState[id] = !el.classList.contains('hidden');
-            });
+                    var script = document.createElement('script');
+                    script.src = 'report.js';
+                    script.onload = function() {
+                        btn.innerHTML = origHtml;
+                        btn.disabled = false;
+                        window.generateCNPReport();
+                    };
+                    script.onerror = function() {
+                        btn.innerHTML = origHtml;
+                        btn.disabled = false;
+                        alert("Failed to load report generator.");
+                    };
+                    document.body.appendChild(script);
+                }
+            }
         }
-
-        function _expandForPrint(){
-            var rc = document.getElementById('results-container');
-            if(!rc || rc.classList.contains('hidden')) return;
-            ACC_IDS.forEach(function(id){
-                var el = document.getElementById(id);
-                var ic = document.getElementById('icon-' + id);
-                if(el) el.classList.remove('hidden');
-                if(ic) ic.style.transform = 'rotate(180deg)';
-            });
-        }
-
-        function _restoreAccState(){
-            ACC_IDS.forEach(function(id){
-                var el = document.getElementById(id);
-                var ic = document.getElementById('icon-' + id);
-                if(!el) return;
-                var wasOpen = _printAccState[id];
-                if(wasOpen) el.classList.remove('hidden');
-                else el.classList.add('hidden');
-                if(ic) ic.style.transform = wasOpen ? 'rotate(180deg)' : 'rotate(0deg)';
-            });
-        }
-
-        function _resetDownloadBtn(){
-            var btn = document.getElementById('download-report-btn');
-            if(btn){ btn.disabled=false; btn.innerHTML='<i class="ph ph-file-pdf"></i> Download Report'; }
-        }
-
-        function downloadReport(){
-            _saveAccState();
-            _expandForPrint();
-            _printInProgress = true;
-            clearTimeout(_printSafetyTimer);
-            var btn = document.getElementById('download-report-btn');
-            if(btn){ btn.disabled=true; btn.innerHTML='<i class="ph ph-spinner"></i> Preparing...'; }
-            setTimeout(function(){ window.print(); }, 80);
-            _printSafetyTimer = setTimeout(function(){
-                _printInProgress = false;
-                _restoreAccState();
-                _resetDownloadBtn();
-            }, 8000);
-        }
-
-        window.addEventListener('beforeprint', function(){
-            if(!_printInProgress) _saveAccState();
-            _expandForPrint();
-        });
-
-        window.addEventListener('afterprint', function(){
-            clearTimeout(_printSafetyTimer);
-            _printInProgress = false;
-            _restoreAccState();
-            _resetDownloadBtn();
-        });
-        // ─────────────────────────────────────────────────────────────────────────────────────────
+        // ─────────────────────────────────────────────────────────
 
         // ─────────────────────────────────────────────────────────────────────
 
