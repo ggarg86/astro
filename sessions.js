@@ -1,10 +1,15 @@
 // ============================================================
-// GeoAstro — Session Tracking Module
-// Loaded lazily by analysis.html only when session_access==='yes'.
-// Relies on globals already defined in analysis.html: apiCall(),
-// getSession(), _loadedRecordId, drawOctalChart's output in
-// #octal-chart-container, calcSchedule(), OCTAL_HOUSES,
-// window.currentAscendant, window.currentNatalMap.
+// GeoAstro — Session Tracking Module (sessions.js)
+// Respects Premium Access Gate & Basic/Advanced Report Mode
+// Features:
+// 1. Subtitle: "BRAIN ARCHITECTURE & NEURAL OPERATING MANUAL"
+// 2. Clean 1-Page Groupings matching Main Report:
+//    - Sec 4A: Donuts + Takeaway + Working Style + Functional Pillars
+//    - Sec 4B: All 4 Stages of Core Rhythms Deep Dive on 1 Page
+//    - Sec 5A: Energy Flow + Learns Best By + Collaboration Mode on 1 Page
+//    - Sec 5B: Life Stability + Recommended Subjects & Hobbies on 1 Page
+//    - Sec 6A: Quotients + Multiple Intelligences + Corporate Depts on 1 Page
+//    - Sec 6B: 9 Career Fits + Executive Career Roadmap on 1 Page
 // ============================================================
 
 (function(){
@@ -272,8 +277,6 @@ window.deleteSessionEntry = async function(sessionId){
   }
 };
 
-// ── Report generation — reuses the existing chart wheel + transit engine ──
-
 function planetTransitRows(planet){
   if (!window.currentAscendant) return null;
   try {
@@ -288,6 +291,28 @@ function planetTransitRows(planet){
   } catch(e) { return null; }
 }
 
+function buildPlanetTransitCard(p, color) {
+  var rows = planetTransitRows(p);
+  var body;
+  if (!rows) {
+    body = '<div style="padding:6px 10px;color:#94a3b8;font-size:11px;">Could not compute</div>';
+  } else {
+    body = rows.map(function(r){
+      var isPresent = r.type === 'Present';
+      return '<div style="display:flex;justify-content:space-between;align-items:center;padding:' + (isPresent ? '5px 10px' : '4px 10px') + ';' +
+        (isPresent ? 'background:' + color + '18;border-left:3px solid ' + color + ';font-weight:700;' : 'border-left:3px solid transparent;') +
+        'font-size:' + (isPresent ? '11.5px' : '11px') + ';color:' + (isPresent ? '#1e293b' : '#64748b') + ';gap:6px;flex-wrap:wrap;">' +
+        '<span>' + (isPresent ? '<span style="color:' + color + ';">&#9679;</span> ' : '') + esc(r.type) + ': ' + esc(r.house) + '</span>' +
+        '<span style="font-size:11px;font-family:Montserrat,sans-serif;">' + esc(r.period) + '</span>' +
+      '</div>';
+    }).join('');
+  }
+  return '<div class="sess-keep-together" style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;background:#ffffff;">' +
+    '<div style="background:' + color + ';color:#fff;padding:5px 10px;font-family:Montserrat,sans-serif;font-weight:700;font-size:11.5px;">' + p + '</div>' +
+    body +
+  '</div>';
+}
+
 function planetaryEnergyFlowHTML(m){
   if (!m) return '';
   var sq = ['Ketu','Venus','Sun','Moon','Mars','Rahu','Jupiter','Saturn','Mercury','Ketu'];
@@ -295,19 +320,21 @@ function planetaryEnergyFlowHTML(m){
     var d = m[pn];
     if (!d) return '';
     var color = d.category === 'RAJAS' ? '#fb923c' : d.category === 'TAMAS' ? '#34d399' : '#cbd5e1';
-    var box = '<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,0.04);padding:5px 2px;">' +
+    var box = '<div style="flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;width:44px;background:#ffffff;border:1px solid #e2e8f0;border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,0.04);padding:4px 2px;">' +
       '<span style="font-size:10px;font-weight:700;color:#1e293b;line-height:1.2;">' + esc(d.symbol) + '</span>' +
-      '<span style="font-size:13px;font-weight:700;color:#312e81;line-height:1.3;">' + esc(d.house) + '</span>' +
-      '<div style="width:100%;height:3px;border-radius:2px;margin-top:4px;background:' + color + ';"></div>' +
+      '<span style="font-size:12.5px;font-weight:700;color:#312e81;line-height:1.2;">' + esc(d.house) + '</span>' +
+      '<div style="width:100%;height:3px;border-radius:2px;margin-top:3px;background:' + color + ';"></div>' +
     '</div>';
     var arrow = ix < sq.length - 1 ? '<span style="flex-shrink:0;color:#94a3b8;font-size:14px;padding:0 3px;">&#8250;</span>' : '';
     return box + arrow;
   }).join('');
-  return '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Planetary energy flow</h3>' +
-    '<div style="display:flex;align-items:center;overflow-x:auto;gap:2px;padding-bottom:6px;">' + items + '</div></div>';
+  return '<div class="sess-keep-together" style="background:#ffffff;padding:11px 14px;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:12px;">' +
+    '<div style="font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:800;color:#1e293b;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Planetary Energy Flow Sequence</div>' +
+    '<div style="display:flex;align-items:center;overflow-x:auto;gap:2px;">' + items + '</div>' +
+  '</div>';
 }
 
-function buildCareerGuidanceHTML() {
+function buildBasicCareerGuidanceHTML() {
   var QUOTIENTS = {
     9: { code: "IQ", name: "Creator" },
     2: { code: "CQ", name: "Strategist" },
@@ -356,25 +383,60 @@ function buildCareerGuidanceHTML() {
             '</div>';
   });
   html += '</div><p style="font-size:0.85em; color:#64748b; font-style:italic; margin-top:8px;">For an in-depth read, refer to the <a href="https://geoastro.brainmanual.in/guide.html" style="color:#2980b9; text-decoration:underline;">Archetype Guide</a>.</p></div>';
-
   return html;
 }
 
+function buildSessionChapterBanner(secNum, totalSecs, title, subtitle, clientName) {
+  return '<div style="margin-bottom:10px;border-bottom:2px solid #1e293b;padding-bottom:6px;break-after:avoid;page-break-after:avoid;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
+      '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:2.5px 8px;border-radius:4px;background:#1e293b;color:#ffffff;">Section 0' + secNum + ' of 0' + totalSecs + '</span>' +
+      '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">' + esc(clientName) + ' &bull; geoastro.brainmanual.in</span>' +
+    '</div>' +
+    '<h3 style="font-family:Montserrat,sans-serif;font-size:1.12em;font-weight:800;color:#0f172a;margin:0;letter-spacing:0.01em;">' + title + '</h3>' +
+    (subtitle ? '<p style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;color:#475569;margin:1.5px 0 0 0;">' + subtitle + '</p>' : '') +
+  '</div>';
+}
+
+function extractWorkingStyleHTML(quant) {
+  if (window.CNP && window.CNP.Views && quant) {
+    return window.CNP.Views.buildWorkingStyleBoxHTML(quant);
+  }
+  if (window.CNPQuantEngine && quant && typeof window.CNPQuantEngine.buildWorkingStyleBoxHTML === 'function') {
+    return window.CNPQuantEngine.buildWorkingStyleBoxHTML(quant);
+  }
+  return '';
+}
+
 window.printSessionReport = function(s){
-  // Silently (re)compute the chart + ascendant from the currently loaded
-  // client's visible birth fields, so the report never depends on whether
-  // "Generate Report" happened to be clicked earlier in this session.
-  try { calculatePositions(); } catch(e) { /* fields may be incomplete — fall back gracefully below */ }
+  try { calculatePositions(); } catch(e) {}
 
   var pad = function(n) { return n.toString().padStart(2, '0'); };
+  var canAdv = (typeof window.hasAdvancedCNPAccess === 'function') ? window.hasAdvancedCNPAccess() : true;
+  var isBasic = (!canAdv || window.cnpReportMode === 'basic');
+  var V = (window.CNP && window.CNP.Views) ? window.CNP.Views : window.CNPQuantEngine;
+  var M = (window.CNP && window.CNP.Math) ? window.CNP.Math : window.CNPQuantEngine;
+  var quant = (M && window.currentNatalMap) ? M.compute(window.currentNatalMap) : window.currentCNPQuant;
 
   var wheelHTML = '';
   var wheelSrc = document.getElementById('octal-chart-container');
   if (wheelSrc && wheelSrc.querySelector('svg')) wheelHTML = wheelSrc.innerHTML;
 
-  // Build the "Present" transit wheel by temporarily redrawing the same
-  // container with current planetary positions, capturing it, then
-  // restoring the natal chart so the live page is left unchanged.
+  var rhythmHTML = '';
+  var rhythmSrc = document.getElementById('rhythm-container');
+  if (rhythmSrc) rhythmHTML = rhythmSrc.innerHTML;
+
+  var workingStyleHTML = extractWorkingStyleHTML(quant);
+  var psychoDonutsHTML = (!isBasic && V && quant) ? V.buildPsychoDonutsAndTakeawayHTML(quant) : '';
+  var psychoPillarsHTML = (!isBasic && V && quant) ? V.buildPsychoPillarsBoardHTML(quant) : '';
+  var psychoTugHTML = (!isBasic && V && quant) ? V.buildPsychoTugOfWarHTML(quant) : '';
+
+  var energyFlowStripHTML = window.currentNatalMap ? planetaryEnergyFlowHTML(window.currentNatalMap) : '';
+  var lifePartA = (!isBasic && V && quant && V.buildLifeStoryPartAHTML) ? V.buildLifeStoryPartAHTML(quant) : '';
+  var lifePartB = (!isBasic && V && quant && V.buildLifeStoryPartBHTML) ? V.buildLifeStoryPartBHTML(quant) : '';
+
+  var careerPartA = (!isBasic && V && quant) ? V.buildCareerPartAHTML(quant) : '';
+  var careerPartB = (!isBasic && V && quant) ? V.buildCareerPartBHTML(quant) : '';
+
   var transitWheelHTML = '';
   if (wheelSrc && window.currentNatalMap && window.currentAscendant && window.currentNatalLag) {
     try {
@@ -385,37 +447,15 @@ window.printSessionReport = function(s){
       });
       drawOctalChart(window.currentNatalLag, presentPDat);
       transitWheelHTML = wheelSrc.innerHTML;
-    } catch(e) { /* transit wheel is best-effort */ }
-    // restore natal wheel
+    } catch(e) {}
     try { if (window.currentNatalPDat) drawOctalChart(window.currentNatalLag, window.currentNatalPDat); } catch(e) {}
   }
 
   var PLANET_COLORS = { Sun:'#d97706', Moon:'#475569', Mars:'#dc2626', Jupiter:'#7c3aed', Saturn:'#0f766e' };
-  var transitBlocks = ['Sun','Moon','Mars','Jupiter','Saturn'].map(function(p){
-    var color = PLANET_COLORS[p] || '#334155';
-    var rows = planetTransitRows(p);
-    var body;
-    if (!rows) {
-      body = '<div style="padding:8px 12px;color:#94a3b8;font-size:0.85em;">Could not compute — check the client\'s birth details are complete</div>';
-    } else {
-      body = rows.map(function(r){
-        var isPresent = r.type === 'Present';
-        return '<div style="display:flex;justify-content:space-between;align-items:center;padding:' + (isPresent ? '7px 12px' : '5px 12px') + ';' +
-          (isPresent ? 'background:' + color + '18;border-left:3px solid ' + color + ';font-weight:700;' : 'border-left:3px solid transparent;') +
-          'font-size:' + (isPresent ? '0.92em' : '0.82em') + ';color:' + (isPresent ? '#1e293b' : '#64748b') + ';">' +
-          '<span>' + (isPresent ? '<span style="color:' + color + ';">&#9679;</span> ' : '') + esc(r.type) + ': ' + esc(r.house) + '</span>' +
-          '<span style="font-size:0.9em;">' + esc(r.period) + '</span>' +
-        '</div>';
-      }).join('');
-    }
-    return '<div class="sess-keep-together" style="border:1px solid #e2e8f0;border-radius:10px;overflow:hidden;margin-bottom:12px;">' +
-      '<div style="background:' + color + ';color:#fff;padding:6px 12px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;">' + p + '</div>' +
-      body +
-    '</div>';
-  }).join('');
 
   var analyst = getSession();
   var analystName = analyst ? analyst.full_name : '';
+  var clientName = currentRecordName() || 'Client';
 
   var dayEl = document.getElementById('day-input'), monthEl = document.getElementById('month-input'),
       yearEl = document.getElementById('year-input'), hourEl = document.getElementById('hour-input'),
@@ -427,47 +467,166 @@ window.printSessionReport = function(s){
   var pobStr = document.getElementById('location-input') ? document.getElementById('location-input').value : '';
 
   var brandHeader =
-    '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2980b9;padding-bottom:10px;margin-bottom:20px;">' +
-      '<span style="font-family:Montserrat,sans-serif;font-weight:800;color:#2980b9;font-size:1.1em;">geoastro.brainmanual.in</span>' +
-      '<span style="font-size:0.85em;color:#64748b;font-weight:600;">+91-62834-62525 &nbsp;|&nbsp; brainmanual@gmail.com</span>' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2980b9;padding-bottom:6px;margin-bottom:10px;">' +
+      '<span style="font-family:Montserrat,sans-serif;font-weight:800;color:#2980b9;font-size:1.05em;">geoastro.brainmanual.in</span>' +
+      '<span style="font-size:0.82em;color:#64748b;font-weight:600;">+91-62834-62525 &nbsp;|&nbsp; brainmanual@gmail.com</span>' +
     '</div>';
 
-  var careerHTML = buildCareerGuidanceHTML();
-
-  var reportHTML =
-    '<div style="max-width:720px;margin:0 auto;font-family:Merriweather,serif;color:#1e293b;">' +
-      brandHeader +
-      '<h2 style="font-family:Montserrat,sans-serif;font-weight:800;text-align:center;font-size:1.4em;margin-bottom:24px;color:#1e293b;">Cosmos Neural Programming (CNP) Session Report</h2>' +
-      
-      '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:28px;">' +
-        '<table style="width:100%; font-size:0.85em; line-height:1.8;">' +
-          '<tr><td style="width:130px; font-weight:700; color:#64748b;">Customer Name:</td><td style="font-weight:700; color:#0f172a;">' + esc(currentRecordName()) + '</td></tr>' +
-          '<tr><td style="font-weight:700; color:#64748b;">Birth Details:</td><td>' + esc(dobStr) + ' &nbsp;|&nbsp; ' + esc(tobStr) + ' &nbsp;|&nbsp; ' + esc(pobStr) + '</td></tr>' +
-          '<tr><td style="font-weight:700; color:#64748b;">Session Date:</td><td>' + esc(s.session_date) + '</td></tr>' +
-          '<tr><td style="font-weight:700; color:#64748b;">Analyst Name:</td><td>' + esc(analystName) + '</td></tr>' +
-        '</table>' +
-      '</div>' +
-
-      '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Problems discussed</h3>' +
-      '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">' + renderTagsBadges(s.problem_tags) + '</div>' +
-      (s.description ? '<div style="margin-top:16px;padding:10px 14px;background:#f8fafc;border-left:3px solid #2980b9;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#2980b9;text-transform:uppercase;letter-spacing:0.03em;">Description & brief history</p><p style="margin:0;">' + esc(s.description).replace(/\n/g,'<br>') + '</p></div>' : '') +
-      (s.expected_results ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #0f766e;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#0f766e;text-transform:uppercase;letter-spacing:0.03em;">Expected results</p><p style="margin:0;">' + esc(s.expected_results).replace(/\n/g,'<br>') + '</p></div>' : '') +
-      (s.remedies_given ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #d97706;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#d97706;text-transform:uppercase;letter-spacing:0.03em;">Remedies given</p><p style="margin:0;">' + esc(s.remedies_given).replace(/\n/g,'<br>') + '</p></div>' : '') +
-      (wheelHTML ? '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Geo-Time Zone Map @ Birth</h3><div style="max-width:400px;margin:0 auto;">' + wheelHTML + '</div></div>' : '') +
-      (window.currentNatalMap ? planetaryEnergyFlowHTML(window.currentNatalMap) : '') +
-      careerHTML +
-      '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Current transits</h3>' +
-      (transitWheelHTML ? '<div class="sess-keep-together"><h4 style="font-family:Montserrat,sans-serif;font-size:0.92em;font-weight:700;margin:6px 0 10px;color:#475569;">Geo-Time Zone Map @ Current Transit</h4><div style="max-width:400px;margin:0 auto;">' + transitWheelHTML + '</div></div>' : '') +
-      (window.currentAscendant
-        ? transitBlocks
-        : '<p style="color:#94a3b8;font-size:0.85em;">Could not compute transits — this client\'s birth date, time, and place must be complete on the record.</p>') +
-      
-      // Legal Disclaimer
-      '<div style="margin-top:40px; padding:16px; border-top:1px solid #cbd5e1; font-size:0.75em; color:#64748b; font-style:italic; line-height:1.6; text-align:justify;">' +
-      'This report is generated from the astronomical birth data you provided and records guidance given in a Cosmos Neural Programming (CNP) consultation. It is intended solely for lifestyle, self-reflection, and directional guidance. It does not constitute medical, psychological, legal, financial, or career advice, and should not replace diagnosis, treatment, therapy, or professional consultation from a qualified practitioner. Please consult an appropriately qualified professional before making any decisions based on this report. The accuracy of this analysis depends on the accuracy of the birth details provided.' +
-      '</div>' +
-      
+  var disclaimerHTML =
+    '<div style="margin-top:14px; padding:11px 14px; border-top:1px solid #cbd5e1; background:#f8fafc; border-radius:8px; font-size:11px; color:#64748b; font-style:italic; line-height:1.5; text-align:justify;">' +
+    'This report is generated from the astronomical birth data you provided and records guidance given in a Cosmos Neural Programming (CNP) consultation. It is intended solely for lifestyle, self-reflection, and directional guidance. It does not constitute medical, psychological, legal, financial, or career advice, and should not replace diagnosis, treatment, therapy, or professional consultation from a qualified practitioner. Please consult an appropriately qualified professional before making any decisions based on this report. The accuracy of this analysis depends on the accuracy of the birth details provided.' +
     '</div>';
+
+  var reportHTML = '';
+
+  if (isBasic) {
+    var basicTransitBlocks = ['Sun','Moon','Mars','Jupiter','Saturn'].map(function(p){
+      return '<div style="margin-bottom:10px;">' + buildPlanetTransitCard(p, PLANET_COLORS[p]) + '</div>';
+    }).join('');
+
+    reportHTML =
+      '<div style="max-width:720px;margin:0 auto;font-family:Merriweather,serif;color:#1e293b;">' +
+        brandHeader +
+        '<h2 style="font-family:Montserrat,sans-serif;font-weight:800;text-align:center;font-size:1.4em;margin-bottom:24px;color:#1e293b;">Cosmos Neural Programming (CNP) Session Report</h2>' +
+        '<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:16px; margin-bottom:28px;">' +
+          '<table style="width:100%; font-size:0.85em; line-height:1.8;">' +
+            '<tr><td style="width:130px; font-weight:700; color:#64748b;">Customer Name:</td><td style="font-weight:700; color:#0f172a;">' + esc(clientName) + '</td></tr>' +
+            '<tr><td style="font-weight:700; color:#64748b;">Birth Details:</td><td>' + esc(dobStr) + ' &nbsp;|&nbsp; ' + esc(tobStr) + ' &nbsp;|&nbsp; ' + esc(pobStr) + '</td></tr>' +
+            '<tr><td style="font-weight:700; color:#64748b;">Session Date:</td><td>' + esc(s.session_date) + '</td></tr>' +
+            '<tr><td style="font-weight:700; color:#64748b;">Analyst Name:</td><td>' + esc(analystName) + '</td></tr>' +
+          '</table>' +
+        '</div>' +
+        '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Problems discussed</h3>' +
+        '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">' + renderTagsBadges(s.problem_tags) + '</div>' +
+        (s.description ? '<div style="margin-top:16px;padding:10px 14px;background:#f8fafc;border-left:3px solid #2980b9;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#2980b9;text-transform:uppercase;letter-spacing:0.03em;">Description & brief history</p><p style="margin:0;">' + esc(s.description).replace(/\n/g,'<br>') + '</p></div>' : '') +
+        (s.expected_results ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #0f766e;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#0f766e;text-transform:uppercase;letter-spacing:0.03em;">Expected results</p><p style="margin:0;">' + esc(s.expected_results).replace(/\n/g,'<br>') + '</p></div>' : '') +
+        (s.remedies_given ? '<div style="margin-top:14px;padding:10px 14px;background:#f8fafc;border-left:3px solid #d97706;border-radius:4px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:700;font-size:0.85em;color:#d97706;text-transform:uppercase;letter-spacing:0.03em;">Remedies given</p><p style="margin:0;">' + esc(s.remedies_given).replace(/\n/g,'<br>') + '</p></div>' : '') +
+        (wheelHTML ? '<div class="sess-keep-together"><h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Geo-Time Zone Map @ Birth</h3><div style="max-width:400px;margin:0 auto;">' + wheelHTML + '</div></div>' : '') +
+        energyFlowStripHTML +
+        buildBasicCareerGuidanceHTML() +
+        '<h3 style="font-family:Montserrat,sans-serif;font-size:1em;font-weight:700;margin-top:20px;">Current transits</h3>' +
+        (transitWheelHTML ? '<div class="sess-keep-together"><h4 style="font-family:Montserrat,sans-serif;font-size:0.92em;font-weight:700;margin:6px 0 10px;color:#475569;">Geo-Time Zone Map @ Current Transit</h4><div style="max-width:400px;margin:0 auto;">' + transitWheelHTML + '</div></div>' : '') +
+        (window.currentAscendant ? basicTransitBlocks : '<p style="color:#94a3b8;font-size:0.85em;">Could not compute transits.</p>') +
+        disclaimerHTML +
+      '</div>';
+  } else {
+    var mapAndDomSideBySide = (V && quant) ? V.buildPrintMapAndDominanceHTML(wheelHTML, quant) : '';
+
+    var compactTransitsGrid = window.currentAscendant
+      ? ('<div style="display:grid;grid-template-columns:275px 1fr;gap:14px;align-items:center;margin-bottom:12px;">' +
+          '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:8px;text-align:center;">' +
+            '<div style="max-width:262px;margin:0 auto;">' + (transitWheelHTML || '') + '</div>' +
+          '</div>' +
+          '<div style="display:flex;flex-direction:column;gap:10px;">' +
+            buildPlanetTransitCard('Sun', PLANET_COLORS.Sun) +
+            buildPlanetTransitCard('Moon', PLANET_COLORS.Moon) +
+          '</div>' +
+        '</div>' +
+        '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">' +
+          buildPlanetTransitCard('Mars', PLANET_COLORS.Mars) +
+          buildPlanetTransitCard('Jupiter', PLANET_COLORS.Jupiter) +
+          buildPlanetTransitCard('Saturn', PLANET_COLORS.Saturn) +
+        '</div>')
+      : '<p style="color:#94a3b8;font-size:0.85em;">Could not compute transits — this client\'s birth date, time, and place must be complete on the record.</p>';
+
+    reportHTML =
+      '<div style="max-width:740px;margin:0 auto;font-family:Merriweather,serif;color:#1e293b;">' +
+
+        // SECTION 01: Consultation Summary & Prescribed Remedies
+        '<div class="sess-report-page-first">' +
+          brandHeader +
+          '<div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#ffffff;border-radius:12px;padding:12px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">' +
+            '<div>' +
+              '<div style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;color:#38bdf8;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2px;">Brain Architecture &amp; Neural Operating Manual</div>' +
+              '<h2 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:1.25em;margin:0;color:#ffffff;">Cosmos Neural Programming (CNP) Session Report</h2>' +
+            '</div>' +
+            '<div style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:4px 10px;border-radius:8px;font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#e2e8f0;">' +
+              'Session: ' + esc(s.session_date) +
+            '</div>' +
+          '</div>' +
+          '<div style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:10px; padding:8px 14px; margin-bottom:12px;">' +
+            '<table style="width:100%; font-size:11.5px; line-height:1.5; font-family:Montserrat,sans-serif;">' +
+              '<tr>' +
+                '<td style="width:115px; font-weight:700; color:#64748b;">CLIENT NAME:</td><td style="font-weight:800; color:#0f172a;">' + esc(clientName) + '</td>' +
+                '<td style="width:110px; font-weight:700; color:#64748b;">ANALYST:</td><td style="font-weight:700; color:#0f172a;">' + esc(analystName) + '</td>' +
+              '</tr>' +
+              '<tr>' +
+                '<td style="font-weight:700; color:#64748b;">BIRTH DATA:</td><td colspan="3" style="font-weight:600; color:#334155;">' + esc(dobStr) + ' &nbsp;|&nbsp; ' + esc(tobStr) + ' &nbsp;|&nbsp; ' + esc(pobStr) + '</td>' +
+              '</tr>' +
+            '</table>' +
+          '</div>' +
+          buildSessionChapterBanner(1, 7, 'Consultation Summary & Prescribed Remedies', 'Key focus areas, case history, expected outcomes, and personalized remedies', clientName) +
+          '<div style="margin-bottom:10px;">' +
+            '<div style="font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:800;color:#1e293b;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:5px;">Problems Discussed</div>' +
+            '<div style="display:flex;flex-wrap:wrap;gap:6px;">' + renderTagsBadges(s.problem_tags) + '</div>' +
+          '</div>' +
+          (s.description ? '<div style="margin-bottom:10px;padding:12px 15px;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #2980b9;border-radius:10px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:800;font-size:11.5px;color:#2980b9;text-transform:uppercase;letter-spacing:0.04em;">Description &amp; Brief History</p><p style="margin:0;font-size:12px;color:#334155;line-height:1.52;">' + esc(s.description).replace(/\n/g,'<br>') + '</p></div>' : '') +
+          (s.expected_results ? '<div style="margin-bottom:10px;padding:12px 15px;background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid #0f766e;border-radius:10px;"><p style="margin:0 0 4px;font-family:Montserrat,sans-serif;font-weight:800;font-size:11.5px;color:#0f766e;text-transform:uppercase;letter-spacing:0.04em;">Expected Results</p><p style="margin:0;font-size:12px;color:#334155;line-height:1.52;">' + esc(s.expected_results).replace(/\n/g,'<br>') + '</p></div>' : '') +
+          (s.remedies_given ? '<div style="margin-bottom:10px;padding:12px 15px;background:#fffbeb;border:1px solid #fde68a;border-left:4px solid #d97706;border-radius:10px;"><p style="margin:0 0 5px;font-family:Montserrat,sans-serif;font-weight:800;font-size:11.5px;color:#b45309;text-transform:uppercase;letter-spacing:0.04em;">Remedies Given</p><p style="margin:0;font-size:12px;color:#334155;line-height:1.52;">' + esc(s.remedies_given).replace(/\n/g,'<br>') + '</p></div>' : '') +
+        '</div>' +
+
+        // SECTION 02: Geo-Time Zone Map & Octal House Dominance
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(2, 7, 'Geo-Time Zone Map & Octal House Dominance', 'Your natal octal house placements and primary energy distribution', clientName) +
+          mapAndDomSideBySide +
+        '</div>' +
+
+        // SECTION 03: Rhythm of Your Soul
+        (rhythmHTML ? '<div class="sess-report-page sess-section-rhythm">' +
+          buildSessionChapterBanner(3, 7, 'Rhythm of Your Soul', 'The push and pause underneath everything you build (Ketu–Rahu Charge-Release Circuit)', clientName) +
+          rhythmHTML +
+        '</div>' : '') +
+
+        // SECTION 04 PAGE A: Donuts + Combined Takeaway + Working Style Box + 3-Col Functional Strength Pillars
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(4, 7, 'Psycho-Analysis, Working Style & Strength Pillars', 'Action vs. Learn dynamics, Left vs. Right Brain dominance, working style, and functional strength zones', clientName) +
+          '<div style="display:flex;flex-direction:column;gap:11px;">' +
+            psychoDonutsHTML +
+            workingStyleHTML +
+            psychoPillarsHTML +
+          '</div>' +
+        '</div>' +
+
+        // SECTION 04 PAGE B: All 4 Stages of Four Core Rhythms Deep Dive Together on 1 Page
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(4, 7, 'Psycho-Analysis: Four Core Rhythms Deep Dive', 'Your 4-stage execution story from Mindset & Attitude to Market & Team Leadership', clientName) +
+          psychoTugHTML +
+        '</div>' +
+
+        // SECTION 05 PAGE A: Planetary Energy Flow + VARK Learning Channels + Collaboration Mode Together on 1 Page
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(5, 7, 'Life Path Story, Learning Style & Collaboration', 'Planetary relay sequence, VARK & Bird/Element working channels, and collaboration mode', clientName) +
+          energyFlowStripHTML +
+          lifePartA +
+        '</div>' +
+
+        // SECTION 05 PAGE B: Life Stability vs. Friction + Recommended Subjects & Hobbies Together on 1 Page
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(5, 7, 'Life Stability, Knowledge Streams & Hobbies', 'Circuit-modulated stability reserves, high-affinity study subjects, and neural-charging daily activities', clientName) +
+          lifePartB +
+        '</div>' +
+
+        // SECTION 06 PAGE A: Core Quotients + 9 Multiple Intelligences + Corporate Departments Together on 1 Page
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(6, 7, 'Career Guidance, Quotients, Intelligences & Departments', 'Core operating quotients, 9-dimension intelligence profile, and corporate department suitability', clientName) +
+          careerPartA +
+        '</div>' +
+
+        // SECTION 06 PAGE B: 9 Career Fits + Executive Career Roadmap Together on 1 Page
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(6, 7, 'Quantitative Career Fit & Executive Roadmap', 'Quantitative career alignment across 9 domains and actionable executive career strategy', clientName) +
+          careerPartB +
+        '</div>' +
+
+        // SECTION 07: Side-by-Side Current Transits + Legal Disclaimer on Same Page
+        '<div class="sess-report-page">' +
+          buildSessionChapterBanner(7, 7, 'Current Planetary Transits & Active Cycles', 'Real-time transit positions and Past–Present–Future windows for Sun, Moon, Mars, Jupiter, and Saturn', clientName) +
+          compactTransitsGrid +
+          disclaimerHTML +
+        '</div>' +
+
+      '</div>';
+  }
 
   var existing = document.getElementById('session-report-print');
   if (existing) existing.remove();
@@ -480,12 +639,57 @@ window.printSessionReport = function(s){
   if (!document.getElementById('sess-print-style')) {
     var st = document.createElement('style');
     st.id = 'sess-print-style';
-    st.textContent = '@media print { body.sess-print-mode > *:not(#session-report-print) { display:none !important; } body.sess-print-mode #session-report-print { display:block !important; } body.sess-print-mode #session-report-print, body.sess-print-mode #session-report-print * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; color-adjust: exact !important; } .sess-keep-together { break-inside: avoid; page-break-inside: avoid; } }';
+    st.textContent = `
+      @media print {
+        @page { margin: 9mm 11mm; }
+        body.sess-print-mode > *:not(#session-report-print) { display:none !important; }
+        body.sess-print-mode #session-report-print { display:block !important; }
+        body.sess-print-mode #session-report-print, body.sess-print-mode #session-report-print * {
+          -webkit-print-color-adjust: exact !important;
+          print-color-adjust: exact !important;
+          color-adjust: exact !important;
+        }
+        .sess-report-page {
+          page-break-before: always;
+          break-before: page;
+          padding-top: 2px;
+        }
+        .sess-keep-together { break-inside: avoid; page-break-inside: avoid; }
+        .sess-print-mode h3,
+        .sess-print-mode h4,
+        .sess-print-mode h5 {
+          break-after: avoid;
+          page-break-after: avoid;
+        }
+        /* Consistent 12px Typography & 2-Page Fit for Rhythm of Your Soul */
+        .sess-section-rhythm > div > div:first-child {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          break-after: avoid;
+          page-break-after: avoid;
+          padding: 12px 18px !important;
+        }
+        .sess-section-rhythm > div > div:last-child {
+          padding: 12px 16px !important;
+        }
+        .sess-section-rhythm > div > div:last-child > div {
+          break-inside: avoid;
+          page-break-inside: avoid;
+          padding: 10px 14px !important;
+          margin-top: 8px !important;
+          margin-bottom: 0 !important;
+        }
+        .sess-section-rhythm p {
+          line-height: 1.5 !important;
+          font-size: 12px !important;
+        }
+      }
+    `;
     document.head.appendChild(st);
   }
 
   var originalTitle = document.title;
-  document.title = 'geoastro.brainmanual.in';
+  document.title = clientName ? clientName + ' - CNP Session Report' : 'geoastro.brainmanual.in';
   document.body.classList.add('sess-print-mode');
   setTimeout(function(){
     window.print();
