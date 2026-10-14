@@ -3,7 +3,7 @@
 // Features:
 // 1. Premium Access Gate + Basic vs. Advanced Report Toggle
 // 2. Native Save-Record Wrapper (Waits for Cache & Syncs Initial Default Record)
-// 3. Reversible Astronomical Details Accordion (#8) with Card Spacing
+// 3. Reversible Astronomical Details Accordion (#8) with Mobile Touch Scroll Fix
 // 4. Bridges CNP.Math and CNP.Views to Live Page & window.CNPQuantEngine
 // ============================================================
 
@@ -218,7 +218,7 @@
         applyCNPReportModeDOM();
     };
 
-    // ── REVERSIBLE ASTRONOMICAL DETAILS TABLE PLACEMENT ──────
+    // ── REVERSIBLE ASTRONOMICAL DETAILS TABLE PLACEMENT (WITH MOBILE TOUCH SCROLL FIX) ──
     function syncAstronomicalTablePlacement() {
         var resultsContainer = document.getElementById('results-container');
         var tableEl = document.getElementById('results-table');
@@ -254,15 +254,16 @@
                     '</div>' +
                     '<i id="icon-acc-astro" class="ph ph-caret-down text-slate-400 group-hover:text-white transition-transform duration-300 text-lg"></i>' +
                 '</button>' +
-                '<div id="acc-astro" class="hidden border-t border-slate-100" style="padding:20px 24px;background:#f8fafc;">' +
-                    '<div class="overflow-x-auto" id="acc-astro-table-slot" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.03);"></div>' +
+                '<div id="acc-astro" class="hidden border-t border-slate-100 p-3 md:p-6" style="background:#f8fafc;">' +
+                    '<div class="overflow-x-auto" id="acc-astro-table-slot" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;box-shadow:0 1px 3px rgba(0,0,0,0.03);width:100%;"></div>' +
                 '</div>';
             resultsContainer.appendChild(accWrapper);
         } else {
             var accAstroBody = document.getElementById('acc-astro');
             var slotEl = document.getElementById('acc-astro-table-slot') || (accAstroBody && accAstroBody.firstElementChild);
             if (accAstroBody) {
-                accAstroBody.style.padding = '20px 24px';
+                accAstroBody.style.padding = '';
+                accAstroBody.className = accAstroBody.className.replace(/\bp-\d+\b/g, '') + ' p-3 md:p-6';
                 accAstroBody.style.background = '#f8fafc';
             }
             if (slotEl) {
@@ -270,10 +271,16 @@
                 slotEl.style.background = '#ffffff';
                 slotEl.style.border = '1px solid #e2e8f0';
                 slotEl.style.borderRadius = '12px';
-                slotEl.style.overflow = 'hidden';
+                slotEl.style.overflow = '';
+                slotEl.style.overflowX = 'auto';
+                slotEl.style.webkitOverflowScrolling = 'touch';
+                slotEl.style.width = '100%';
                 slotEl.style.boxShadow = '0 1px 3px rgba(0,0,0,0.03)';
             }
         }
+
+        // Ensure table itself maintains minimum width on mobile so columns never squish or clip
+        tableEl.style.minWidth = '540px';
 
         var astroDetails = document.getElementById('astro-details');
         if (astroDetails && mapDetails) {
