@@ -1,10 +1,11 @@
 // Geo-Time Chart Calculator — Service Worker
 // Handles caching for PWA install and offline shell
 
-const CACHE_NAME = 'geotimechart-v4'; // bumped: sessions module added to analysis.html
+const CACHE_NAME = 'geotimechart-v5'; // bumped: config.js (environment switch) added
 
 const SHELL_FILES = [
   '/analysis.html',
+  '/config.js',
   '/manifest.json',
   '/icons/icon-192.png',
   '/icons/icon-512.png'

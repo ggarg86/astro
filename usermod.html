@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>User Management — CNP</title>
@@ -312,7 +313,7 @@
     <div id="toast"></div>
 
     <script>
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmEAz4dv589p5AvVd6Sb7KrcEXYf3bkXqnsyiON9GOt31tMzKypEemA1U5a4_SwLLJ6Q/exec';
+        const APPS_SCRIPT_URL = window.CNP_CONFIG.apiUrl; // set per environment in config.js
         const CACHE_KEY     = 'gtc_users_cache';
         const CACHE_TTL_MS  = 5 * 60 * 1000; // 5 minutes
 

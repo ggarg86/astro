@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
+    <script src="config.js"></script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -561,7 +562,7 @@
     const OWNER_KEY   = "geotime_progress_owner";
 
     // ── API (same endpoint as main tool) ──────────────────────
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmEAz4dv589p5AvVd6Sb7KrcEXYf3bkXqnsyiON9GOt31tMzKypEemA1U5a4_SwLLJ6Q/exec';
+    const APPS_SCRIPT_URL = window.CNP_CONFIG.apiUrl; // set per environment in config.js
     var _session = (function(){ try{ return JSON.parse(localStorage.getItem('gtc_user'))||{}; }catch(e){ return {}; } })();
     var _syncTimer = null;
 

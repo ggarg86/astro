@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="config.js"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Cosmos Neural Programming</title>
@@ -2403,7 +2404,7 @@ function getDSTInfo(tzName, date) {
         // ============================================================
         // IMPORTANT: PASTE YOUR APPS SCRIPT URL BELOW
         // ============================================================
-        const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwmEAz4dv589p5AvVd6Sb7KrcEXYf3bkXqnsyiON9GOt31tMzKypEemA1U5a4_SwLLJ6Q/exec';
+        const APPS_SCRIPT_URL = window.CNP_CONFIG.apiUrl; // set per environment in config.js
 
         function saveSession(u){localStorage.setItem('gtc_user',JSON.stringify(u));}
         function getSession(){try{return JSON.parse(localStorage.getItem('gtc_user'));}catch(e){return null;}}
