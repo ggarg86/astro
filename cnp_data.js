@@ -3,8 +3,9 @@
 // [Math Module Part 1 of 2]
 // Purpose:
 // Holds all static planetary points, house metadata, 4-pair
-// Logic vs. Intuition narrative copy, intelligence/quotient/pillar/
-// subject/hobby/department/career weight matrices, and working style templates.
+// Start -> Settle Transition & Logic/Intuition rich narratives,
+// intelligence/quotient/pillar/subject/hobby/department/career
+// weight matrices, and full-length working style templates.
 // ============================================================
 
 (function () {
@@ -69,171 +70,182 @@
         }
     };
 
-    // Each active pair includes both Male & Female Logic (act) vs. Intuition (reflect) narratives
+    // Rich Start -> Settle Transition Narratives blending analysis_2.html copy with Intuition vs. Logic
     var PAIR_DEFINITIONS = [
         {
             key: '8-2', tId: 8, rId: 2,
-            stageBadge: 'Stage 1 · Mindset & Independence (Houses 8 & 2)',
-            stageSub: 'Observing surroundings and carrying shared responsibility (House 8) vs. generating your own ideas and working on your own terms (House 2).',
-            tLabel: 'Caution · Wait (8th)', rLabel: 'Confidence · Move (2nd)',
-            actTitle: 'Confidence (2nd) &amp; Caution (8th)',
-            reflectTitle: 'Caution (8th) &amp; Confidence (2nd)',
+            stageBadge: 'Stage 1 · Mindset & Attitude',
+            stageSub: 'How your mindset transitions between believing your idea will work (Confidence · 2nd) and scanning for what could go wrong (Caution · 8th).',
+            tLabel: 'Caution · 8th House', rLabel: 'Confidence · 2nd House',
+            tShort: 'Caution (8th)', rShort: 'Confidence (2nd)',
+            actTitle: 'Starts with Confidence (2nd) → Settles into Caution (8th)',
+            reflectTitle: 'Starts with Caution (8th) → Settles into Confidence (2nd)',
             archetypeTitle: 'Observer (8) → Strategist (2)',
+            rDesc: 'You feel &ldquo;I can do this&rdquo; before a detailed plan even exists. This optimism is your initial spark&mdash;giving you the courage to step into new situations on your own terms even when the path is not fully clear.',
+            tDesc: 'You carry a deep awareness of what can go wrong. This doesn&rsquo;t mean you are weak&mdash;it means your system scans for hidden risks and realizes that long-term success needs a safe base, trustworthy people, and stable structures.',
             states: {
                 act: {
-                    label: 'Logical & Objective-First',
-                    textMale: 'In this area, your mindset works through clear logic and real-world friction. You set your own independent direction first, and then use risk-scanning to logically solve whatever obstacles appear. This builds strong long-term strategic stability, though staying constantly locked onto future goals can make it hard to relax in the present.',
-                    actionMale: 'Trust your logical planning to hit your long-term goals, and consciously set aside quiet time to unplug from future targets and enjoy the present moment.',
-                    textFemale: 'In this area, you are operating through heavy, goal-driven logic—forcing yourself to calculate every risk and control outcomes from the start. While this helps you hit practical targets, staying in rigid logical control over the long term creates mental restlessness and anxiety instead of natural ease.',
-                    actionFemale: 'Soften the pressure to logically control every outcome up front; allow yourself to pause, breathe, and trust your natural intuition when making decisions.'
+                    label: 'Starts with Confidence → Settles into Caution (Logical Drive)',
+                    textMale: 'In this stage, your confidence moves quicker than your caution. At the start of a new situation (or earlier in life), the spark of &ldquo;I can do this&rdquo; fires first and pulls you into action before your risk-scanning system has finished its check. Over time and with experience, however, your energy naturally transitions and settles into your deeper anchor of caution&mdash;refining the plan, checking what can go wrong, and building stable structures around your initial leap. Because you initiate with a clear target first and then hit real-world caution and friction, this transition develops strong, dependable logic that fulfills your long-term objectives, though staying constantly focused on future risks and goals can make it hard to relax in the present.',
+                    actionMale: 'Keep moving on that first spark of confidence, but build in one deliberate checkpoint as you settle into the details—and remember to unplug from future targets so you can enjoy the present moment.',
+                    textFemale: 'In this stage, your confidence moves quicker than your caution. At the start of a situation, the spark of &ldquo;I can do this&rdquo; pulls you into action first, and over time your energy transitions and settles into heavy risk-scanning and caution&mdash;carrying the weight of what could go wrong and trying to logically control every outcome. While this logical focus helps you hit practical targets, settling into heavy caution and rigid goal-pressure over the long term can create mental restlessness and keep you from relaxing into the present moment.',
+                    actionFemale: 'Keep moving on your initial spark, but do not let the settling phase turn into heavy worry or over-calculation—share the responsibility with people you trust and allow yourself to breathe in the present.'
                 },
                 reflect: {
-                    label: 'Intuitive & Present-Focused',
-                    textMale: 'In this area, your mindset moves by quick intuition and present-moment feel. Ideas and risk-sensing come to you effortlessly without being able to quantify why—but relying on intuition alone makes your direction fluctuate over the long term and may or may not fulfill a specific objective.',
-                    actionMale: 'Do not rely on gut feel alone for long-term plans—write down a clear, logical objective and a concrete risk checklist on paper so your ideas stay anchored.',
-                    textFemale: 'In this area, your mindset moves through natural intuition and present-moment awareness. You effortlessly sense what is happening around you and turn those insights into creative ideas with ease, which is completely sustainable and energizing for you over the long term.',
-                    actionFemale: 'Continue trusting your natural intuitive read of situations, and pair it with one simple written milestone so your ideas land smoothly.'
+                    label: 'Starts with Caution → Settles into Confidence (Intuitive Flow)',
+                    textMale: 'In this stage, your caution moves quicker than your confidence. At the start of a new situation, your instinct to observe your surroundings and scan for what could go wrong fires first. Once that initial check has settled, your energy transitions over time into your larger reservoir of self-assured confidence&mdash;where your own ideas and belief that &ldquo;I can do this&rdquo; take the stage. Because this transition charges quickly from observation into action, it gives you effortless intuition and natural flair in the present moment, though relying on intuition alone without a quantified, logical checklist can make your long-term direction fluctuate.',
+                    actionMale: 'Trust that your initial risk-scan has done its job once it settles, and anchor your growing confidence with a written, logical objective on paper so your ideas stay on target long-term.',
+                    textFemale: 'In this stage, your caution moves quicker than your confidence. At the start, your instinct to observe the environment and check for safety fires lightly first, and once that check settles, your energy naturally transitions and settles into a deep, abundant reservoir of confidence and creative ideas. This transition works through effortless intuition in the present moment&mdash;your safety-checking isn&rsquo;t holding you back, it simply clears the ground so your confidence can shine sustainably over the long term.',
+                    actionFemale: 'Trust that your initial risk-scan has done its job once it settles—step forward into your natural confidence rather than letting the initial check run longer than needed.'
                 },
                 momentum: {
-                    label: 'Pure Momentum',
-                    text: 'Right now, this area runs almost entirely on self-generated ideas and independent confidence, with very little internal caution holding you back. You love moving fast on your own terms, though you can overlook shared responsibilities or hidden risks.',
-                    action: 'Borrow a second pair of eyes: ask one trusted person to point out potential blind spots before you lock in a major decision.'
+                    label: 'Anchored in Confidence (Needs Borrowed Caution)',
+                    text: 'Right now, this stage is anchored almost entirely in confidence and self-generated ideas, with no active planet on the caution side to trigger an automatic risk-check. The spark to act on your own terms is strong and largely unchecked here—a real asset for moving fast, provided you consciously build a pause before committing.',
+                    action: 'Borrow caution from outside yourself: ask one person you trust to poke holes in your plan before you commit fully, since your own system isn&rsquo;t automatically slowing you down.'
                 },
                 gather: {
-                    label: 'Still Gathering',
-                    text: 'Right now, this area focuses heavily on observing what others are doing, carrying shared responsibilities, and scanning for risks, with less internal pull to break out on your own.',
-                    action: 'Set a firm date to act on what you have already observed, even if conditions do not feel 100% certain yet.'
+                    label: 'Anchored in Caution (Needs Conscious Push to Act)',
+                    text: 'Right now, this stage is anchored almost entirely in caution and environmental observation, with no active planet on the confidence side to automatically pull you into independent action. Your instinct to check the ground and carry shared responsibility is strong here, but transitioning into your own independent ideas requires a conscious push.',
+                    action: 'Set a firm calendar date to act on what you&rsquo;ve already checked, even if it doesn&rsquo;t feel 100% ready, so you actively bridge from caution into confident action.'
                 },
                 quiet: {
-                    label: 'Quiet Domain',
-                    text: 'This area sits in a calm, neutral state right now—neither the urge to leap into new independent ideas nor heavy worry about risks is dominating your attention.',
-                    action: 'No urgent correction needed here; keep your focus on your primary active strengths.'
+                    label: 'Quiet Stage (Follows Overall Rhythm)',
+                    text: 'This particular stage is quiet in your chart right now—neither the sudden leap of confidence nor heavy risk-scanning is concentrated here. Your attention is naturally invested in the active stages below.',
+                    action: 'No urgent action needed here—let this area follow the natural rhythm of your active stages.'
                 }
             }
         },
         {
             key: '3-9', tId: 3, rId: 9,
-            stageBadge: 'Stage 2 · Depth, Structure & Long-Term Growth (Houses 3 & 9)',
-            stageSub: 'Understanding the deep root cause of what works and what goes wrong (House 3) vs. building growing structures, methods, and systems (House 9).',
-            tLabel: 'Learning · Wait (3rd)', rLabel: 'Planning · Move (9th)',
-            actTitle: 'Planning (9th) &amp; Learning (3rd)',
-            reflectTitle: 'Learning (3rd) &amp; Planning (9th)',
+            stageBadge: 'Stage 2 · Knowledge & System Building',
+            stageSub: 'How your mind transitions between studying & gathering deep knowledge (Learning · 3rd) and organizing your own method or system (Planning · 9th).',
+            tLabel: 'Learning · 3rd House', rLabel: 'Planning · 9th House',
+            tShort: 'Deep Learning (3rd)', rShort: 'System Creation (9th)',
+            actTitle: 'Starts with System Planning (9th) → Settles into Deep Learning (3rd)',
+            reflectTitle: 'Starts with Deep Learning (3rd) → Settles into System Planning (9th)',
             archetypeTitle: 'Seeker (3) → Creator (9)',
+            rDesc: 'Your mind starts organizing raw ideas into a structured method, roadmap, or product that you can follow and teach—built from your own hands-on experience.',
+            tDesc: 'You study, research, and ask deep questions to understand the root cause of why things work or fail, building mastery through thorough understanding.',
             states: {
                 act: {
-                    label: 'Logical & Objective-First',
-                    textMale: 'In this area, you build through clear logic: you first define the exact structure or product you want to create, and then dive into deep study to master what is needed to achieve it. This logical foundation gives you rock-solid career stability and core stamina over the long term, though you can get overly fixated on the next milestone.',
-                    actionMale: 'Use this strong logical system-building to scale your career, while taking regular breaks to appreciate what you have already built.',
-                    textFemale: 'In this area, you push yourself through heavy logical structure and relentless study to hit your goals. While this produces accurate work in the short term, forcing your mind and body into rigid, goal-obsessed structure over the long term drains your core stamina and blocks your natural creative flow.',
-                    actionFemale: 'Step back from rigid perfectionism and heavy mental pressure; give yourself quiet, unhurried space to let your ideas and creations flow naturally.'
+                    label: 'Starts with Planning → Settles into Deep Study (Logical Drive)',
+                    textMale: 'In this stage, your instinct to build and structure a plan moves quicker than your instinct to study. At the start, you begin sketching your own blueprint and defining the objective right away; then, as you move deeper into the work over time, your energy transitions and settles into thorough research, root-cause study, and mastering the deep details required to make that blueprint bulletproof. This logical, objective-first transition builds rock-solid career mastery over the long term, though staying constantly locked on the next problem to solve can keep you from enjoying the present.',
+                    actionMale: 'Draft your initial blueprint quickly, let your deep research refine it into a lasting system, and take deliberate breaks to appreciate what you have already built.',
+                    textFemale: 'In this stage, your instinct to structure a plan fires first, and over time your energy transitions and settles into heavy research, deep study, and analyzing every detail. While this logical discipline makes your knowledge thorough and accurate, staying locked in heavy mental analysis and rigid goal-pressure over the long term can feel exhausting and hold back your natural creative expression.',
+                    actionFemale: 'Set a clear boundary on how long you spend analyzing and researching—give yourself permission to release your ideas into the world with natural ease rather than waiting for 100% perfection.'
                 },
                 reflect: {
-                    label: 'Intuitive & Present-Focused',
-                    textMale: 'In this area, learning and creation come to you intuitively with natural ease in the moment. You can grasp concepts and build things by feel without quantifying why—but without slow, logical root-cause analysis, your long-term career structures and physical stamina can falter when deeper problems arise.',
-                    actionMale: 'Back up your natural creative ease with disciplined, logical documentation and deep root-cause study so the structures you build last over the long term.',
-                    textFemale: 'In this area, you absorb understanding and create through effortless intuition. You naturally sense how things fit together in the present moment and turn that insight into meaningful work without heavy strain, keeping your mind and body energized over the long term.',
-                    actionFemale: 'Trust your natural rhythm of absorbing and creating at ease, using simple deadlines to share your finished work with the world.'
+                    label: 'Starts with Deep Study → Settles into System Creation (Intuitive Flow)',
+                    textMale: 'In this stage, your instinct to learn and ask questions moves quicker than your instinct to build. At the start, you quickly absorb information and sense how things work; then, over time, your energy transitions and settles into your larger anchor of hands-on creation&mdash;organizing ideas into your own method, product, or roadmap. Because this transition charges quickly into creation, building and designing come to you with natural intuitive ease in the moment, though you must consciously verify the underlying logic so your long-term structures stand on solid ground.',
+                    actionMale: 'Enjoy your natural ease in creating and building systems, but always pair your creations with a disciplined, logical root-cause check so they hold up under long-term pressure.',
+                    textFemale: 'In this stage, your instinct to learn and observe moves lightly first, and over time your energy naturally transitions and settles into building your own structured methods, creations, and tools. You absorb insights quickly in the present moment and effortlessly turn them into tangible, meaningful creations without heavy mental strain—a rhythm that keeps you both creative and grounded over the long term.',
+                    actionFemale: 'Set a simple milestone to transition from initial learning into drafting your own creation—your natural intuition will guide the structure smoothly once your hands start building.'
                 },
                 momentum: {
-                    label: 'Pure Momentum',
-                    text: 'Right now, this area runs almost entirely on your drive to create, structure, and explain your own methods, with less patience for slow, traditional study.',
-                    action: 'Schedule regular time to review the deeper details and root causes of your work so your growing structures stay rock-solid.'
+                    label: 'Anchored in System Creation (Needs Outside Study Check)',
+                    text: 'Right now, this stage is anchored almost entirely in your own structuring and building instinct, with no active planet on the study side to automatically pull you into outside research. You build fast and mostly from your own experience here—great for speed, but worth pairing with deliberate outside input.',
+                    action: 'Deliberately schedule time with a mentor, book, or subject expert to pressure-test what you have built, since outside research isn&rsquo;t arriving automatically.'
                 },
                 gather: {
-                    label: 'Still Gathering',
-                    text: 'Right now, this area focuses strongly on absorbing knowledge and understanding how things work in depth, while turning that knowledge into a finished product or system needs a deliberate push.',
-                    action: 'Commit to turning one thing you have studied this week into a practical checklist, guide, or prototype that others can use.'
+                    label: 'Anchored in Deep Learning (Needs Push to Create)',
+                    text: 'Right now, this stage is anchored almost entirely in absorbing knowledge, studying root causes, and gathering expertise, with no active planet on the creation side to automatically push you into building your own system. You understand things deeply, and converting that wisdom into a finished product simply needs a conscious deadline.',
+                    action: 'Give yourself a firm calendar deadline to convert what you have learned into your own written guide, tool, or method—don&rsquo;t let gathering knowledge become a permanent state.'
                 },
                 quiet: {
-                    label: 'Quiet Domain',
-                    text: 'This area is relatively quiet right now—neither heavy academic research nor complex system-building is the main centre of your daily routine.',
-                    action: 'Keep your workflows simple and practical here without over-complicating them.'
+                    label: 'Quiet Stage (Follows Overall Rhythm)',
+                    text: 'This particular stage is quiet in your chart right now—neither heavy academic research nor complex system-building is the main centre of your energy.',
+                    action: 'No urgent action needed here—keep your learning and planning simple and practical.'
                 }
             }
         },
         {
             key: '6-12', tId: 6, rId: 12,
-            stageBadge: 'Stage 3 · Competitive Grit & Solo Execution (Houses 6 & 12)',
-            stageSub: 'Competing, practicing skills, and proving yourself (House 6) vs. single-handed physical effort and independent execution (House 12).',
-            tLabel: 'Acquiring Skills · Wait (6th)', rLabel: 'Applying Skills · Move (12th)',
-            actTitle: 'Applying Skills (12th) &amp; Acquiring Skills (6th)',
-            reflectTitle: 'Acquiring Skills (6th) &amp; Applying Skills (12th)',
+            stageBadge: 'Stage 3 · Solo Mastery & Execution',
+            stageSub: 'How your execution transitions between practicing skills in a safe/competitive setting (Acquiring Skills · 6th) and handling live real-world pressure single-handedly (Applying Skills · 12th).',
+            tLabel: 'Acquiring Skills · 6th House', rLabel: 'Applying Skills · 12th House',
+            tShort: 'Acquiring Skills (6th)', rShort: 'Applying Skills (12th)',
+            actTitle: 'Starts with Applying Skills (12th) → Settles into Skill Mastery (6th)',
+            reflectTitle: 'Starts with Acquiring Skills (6th) → Settles into Solo Execution (12th)',
             archetypeTitle: 'Challenger (6) → Warrior (12)',
+            rDesc: 'You feel most activated when there is a real problem that needs to be handled single-handedly. A live challenge, deadline, or practical responsibility gives your existing skills direction and turns knowledge into real-world competence.',
+            tDesc: 'You build capability by competing, practicing, and sharpening your skills through training, drills, and repeated refinement—spotting what capability is still missing and upgrading your toolkit.',
             states: {
                 act: {
-                    label: 'Logical & Objective-First',
-                    textMale: 'In this area, your execution works through logical, goal-driven grit. You step into real-world challenges first, hit live resistance, and systematically sharpen the exact skills needed to win. This friction-backed process builds powerful long-term physical stamina and solo mastery, though it keeps you in constant problem-solving mode.',
-                    actionMale: 'Keep using live challenges to sharpen your mastery, and consciously switch off your work drive in the evenings so your body can enjoy present-moment rest.',
-                    textFemale: 'In this area, you are pushing your body and work through heavy, goal-driven logical pressure—fighting to prove yourself and execute non-stop. While you get tough tasks done, operating in this rigid combat mode over the long term creates physical tension and exhaustion.',
-                    actionFemale: 'Replace harsh, goal-driven pushing with rhythmic pacing and scheduled rest; let your skills develop through natural flow rather than constant battle.'
+                    label: 'Starts with Solo Action → Settles into Skill Mastery (Logical Drive)',
+                    textMale: 'In this stage, your urge to apply skills to a live problem moves quicker than your urge to rehearse. At the start, when a real task appears, you step in immediately to handle it on your own terms; then, as you encounter real-world friction over time, your energy transitions and settles into disciplined skill-building, competitive refinement, and mastering the craft. This logical, objective-first transition builds tremendous long-term physical stamina and solo competence, though you should make sure you switch off your problem-solving drive when the work is done.',
+                    actionMale: 'Take on real responsibility when it appears, use the live friction to sharpen your skills, and consciously schedule present-moment rest after major work sprints.',
+                    textFemale: 'In this stage, your urge to jump into live problems fires first, and over time your energy settles into heavy competitive pressure, constant skill-upgrading, and fighting to prove yourself. While this logical grit makes you highly capable, staying locked in continuous rehearsal and competitive pressure over the long term can create physical fatigue and tension.',
+                    actionFemale: 'Pace your physical effort and let go of the need to constantly prove your capability through struggle—pair your skill-building with gentle, rhythmic recovery.'
                 },
                 reflect: {
-                    label: 'Intuitive & Present-Focused',
-                    textMale: 'In this area, hands-on skills come to you intuitively with natural ease in the present moment. You can jump in and perform tasks effortlessly by feel—but without logical, disciplined training and pacing, your physical stamina and consistency drop over the long term.',
-                    actionMale: 'Pair your natural hands-on talent with a structured, logical training routine and clear performance targets so your stamina holds up over the long term.',
-                    textFemale: 'In this area, your practical skills and physical execution work through natural intuition and present-moment flow. You handle challenges with effortless grace and recover quickly without carrying heavy physical or emotional strain.',
-                    actionFemale: 'Honor your natural rhythm of practicing and acting with ease, and set a clear target whenever you want to turn a skill into a concrete result.'
+                    label: 'Starts with Skill Practice → Settles into Solo Execution (Intuitive Flow)',
+                    textMale: 'In this stage, your urge to practice and test your skills fires lightly first, and over time your energy transitions and settles into heavy, single-handed field execution. Hands-on action comes to you with natural intuitive ease in the present moment, though jumping into massive solo physical effort without maintaining disciplined, logical training and recovery can strain your physical stamina over the long term.',
+                    actionMale: 'Pair your natural hands-on execution with a structured, logical training and recovery routine so your physical stamina stays strong over the long term.',
+                    textFemale: 'In this stage, your urge to learn and practice a skill fires lightly first, and once you feel prepared, your energy naturally transitions and settles into confident, independent execution. You absorb practical skills quickly and apply them with effortless intuitive flow in the present moment—handling real-world tasks smoothly without carrying heavy physical or emotional strain.',
+                    actionFemale: 'Choose one real-world task to apply your practiced skill as soon as the basics click—your natural flow shines brightest when you let it move into action.'
                 },
                 momentum: {
-                    label: 'Pure Momentum',
-                    text: 'Right now, this area runs almost entirely on single-handed effort and fearless execution. You take on tough work yourself without waiting for help, which makes you highly self-reliant but requires deliberate physical rest.',
-                    action: 'Pace your physical effort and schedule recovery between sprints so you do not burn through your stamina.'
+                    label: 'Anchored in Solo Execution (Needs Practice Loop)',
+                    text: 'Right now, this stage is anchored almost entirely in single-handed real-world application, with no active planet on the training side to automatically slow you down for rehearsal. You learn through live problems, immediate action, and carrying responsibility yourself—making you fiercely resourceful, provided you pace your physical energy.',
+                    action: 'After each live challenge, create a small practice and recovery loop so your next real-world sprint is even smoother and easier on your body.'
                 },
                 gather: {
-                    label: 'Still Gathering',
-                    text: 'Right now, this area is focused on competing, training, and upgrading your skills, while independent field execution needs a conscious push.',
-                    action: 'Put your practiced skills to work on a live project where you own the final result from start to finish.'
+                    label: 'Anchored in Skill Practice (Needs Live Application)',
+                    text: 'Right now, this stage is anchored almost entirely in acquiring, practicing, and sharpening skills, while the solo real-world application side has no active planet pulling you into live tests automatically. Your toolkit is strong, and putting it into live independent action is the conscious step that completes your confidence.',
+                    action: 'Turn one practiced skill into a live, independent result this week: take on a real client task, solve a live problem, or ship something where the outcome matters.'
                 },
                 quiet: {
-                    label: 'Quiet Domain',
-                    text: 'This area is calm right now—neither high-pressure solo sprints nor intense competitive battles are pulling at your daily energy.',
-                    action: 'Maintain a steady, comfortable physical routine and save your energy for your top priorities.'
+                    label: 'Quiet Stage (Follows Overall Rhythm)',
+                    text: 'This stage is relatively quiet in your chart right now—neither intense competitive training nor heavy solo physical hustle is the primary centre of your attention.',
+                    action: 'No need to force heavy solo battles here; keep your daily physical routine steady and balanced.'
                 }
             }
         },
         {
             key: '5-11', tId: 5, rId: 11,
-            stageBadge: 'Stage 4 · People Support & Team Leadership (Houses 5 & 11)',
-            stageSub: 'Building warm emotional bonds and mutual care (House 5) vs. guiding groups, delegating, and multiplying results through a team (House 11).',
-            tLabel: 'Being Nurtured · Wait (5th)', rLabel: 'Leading · Move (11th)',
-            actTitle: 'Leading (11th) &amp; Being Nurtured (5th)',
-            reflectTitle: 'Being Nurtured (5th) &amp; Leading (11th)',
+            stageBadge: 'Stage 4 · People Support & Team Leadership',
+            stageSub: 'How your social energy transitions between seeking warm emotional connection & bonding (Being Nurtured · 5th) and organizing, influencing & leading a team (Leading · 11th).',
+            tLabel: 'Being Nurtured · 5th House', rLabel: 'Leading · 11th House',
+            tShort: 'Emotional Bonding (5th)', rShort: 'Team Leadership (11th)',
+            actTitle: 'Starts with Team Leadership (11th) → Settles into Emotional Bonding (5th)',
+            reflectTitle: 'Starts with Emotional Bonding (5th) → Settles into Team Leadership (11th)',
             archetypeTitle: 'Companion (5) → Seller (11)',
+            rDesc: 'Your focus shifts from &ldquo;How do I do this myself?&rdquo; to &ldquo;How do we do this together?&rdquo; You use your voice and vision to build networks, guide teams, and multiply results through people.',
+            tDesc: 'Emotionally, you value relationships where there is genuine warmth, loyalty, and mutual care—thriving when you feel connected to your close circle, family, or team.',
             states: {
                 act: {
-                    label: 'Logical & Objective-First',
-                    textMale: 'In this area, you handle people, teams, and relationships through clear logic and structured leadership. You set the objective for the group first and build mutual trust through reliable action. This logical clarity keeps your relationships and team management stable over the long term, though you should remember to slow down and share simple, present-moment warmth.',
-                    actionMale: 'Continue leading your team and relationships with clear logical structure, while making time to simply be present with loved ones without an agenda.',
-                    textFemale: 'In this area, you are handling people and relationships through heavy logic, rules, and goal-oriented expectations rather than natural feel. While this helps you organize teams practically, relying on rigid logic in relationships over the long term creates emotional distance and relationship strain.',
-                    actionFemale: 'Let go of trying to manage relationships through strict logic or rules—allow your natural intuition, warmth, and present-moment empathy to guide how you connect.'
+                    label: 'Starts with Leading → Settles into Deep Bonding (Logical Drive)',
+                    textMale: 'In this stage, your instinct to lead and organize others moves quicker than your instinct to seek personal care. At the start, you step forward to guide the group, set the objective, and organize the team; then, over time, your energy naturally transitions and settles into building deep, loyal emotional bonds and lasting care with your people. This logical, objective-first approach to people and relationships creates steady, dependable long-term bonds, though you should remember to put aside goals at home and simply enjoy warm present-moment connection.',
+                    actionMale: 'Continue leading your team and family with clear, reliable structure, and schedule unhurried time with loved ones where there is no agenda or target to achieve.',
+                    textFemale: 'In this stage, your instinct to take charge and lead others fires first, and over time your energy transitions into carrying heavy emotional expectations and longing for deep personal care. While this logical leadership helps you organize groups effectively, trying to manage relationships through rigid rules or carrying everyone&rsquo;s responsibilities before feeling cared for yourself can create emotional strain over the long term.',
+                    actionFemale: 'Allow yourself to receive warmth and support up front rather than only after you are exhausted—let natural intuition and affection guide your close relationships.'
                 },
                 reflect: {
-                    label: 'Intuitive & Present-Focused',
-                    textMale: 'In this area, you deal with people and relationships intuitively in the present moment. While this gives you spontaneous charm and ease with people at first, relying on intuition alone without knowing how to logically structure expectations or boundaries causes emotional and relationship issues over the long term.',
-                    actionMale: 'Bring conscious logic to how you handle people: define clear roles, spoken agreements, and consistent boundaries so your relationships and teams stay stable long-term.',
-                    textFemale: 'In this area, you connect with people and lead teams through natural intuition and present-moment warmth. Reading people and nurturing relationships comes to you with effortless ease, and this intuitive flow is completely sustainable and fulfilling for you over the long term.',
-                    actionFemale: 'Trust your natural intuitive warmth with people, and pair it with clear, simple goals when guiding a team toward a target.'
+                    label: 'Starts with Bonding → Settles into Team Leadership (Intuitive Flow)',
+                    textMale: 'In this stage, your instinct to connect emotionally and enjoy warm company fires lightly first, and over time your energy transitions and settles into leading, influencing, and organizing larger groups and networks. Connecting with people comes to you with natural intuitive ease in the present moment, though relying on spontaneous emotion alone without clear logical boundaries and spoken agreements can create misunderstandings in relationships and teams over the long term.',
+                    actionMale: 'Bring conscious logic to your natural warmth with people: set clear expectations, spoken roles, and consistent commitments so your relationships and teams stay rock-solid long-term.',
+                    textFemale: 'In this stage, your instinct to connect warmly and feel emotionally supported fires lightly first, and once your emotional battery feels connected, your energy naturally transitions and settles into inspiring, guiding, and leading others. This intuitive, present-moment flow is completely natural and sustainable for you over the long term—allowing you to build both loving relationships and influential leadership with grace.',
+                    actionFemale: 'Once you feel connected to your circle, step forward confidently into leading and delegating—your natural warmth is your strongest leadership asset.'
                 },
                 momentum: {
-                    label: 'Pure Momentum',
-                    text: 'Right now, this area runs almost entirely on speaking, influencing, and directing groups, with less focus on quiet one-on-one emotional care.',
-                    action: 'Make time to listen and connect with the people closest to you without trying to manage or fix everything.'
+                    label: 'Anchored in Team Leadership (Needs Personal Refill)',
+                    text: 'Right now, this stage is anchored almost entirely in leading, speaking, and organizing others, with no active planet on the emotional-care side to automatically pull you into quiet personal bonding. You carry responsibility for groups well here, so making space to be personally cared for must be a conscious choice.',
+                    action: 'Make deliberate space for close relationships where you are simply cared for and listened to, rather than always being the leader in the room.'
                 },
                 gather: {
-                    label: 'Still Gathering',
-                    text: 'Right now, this area focuses strongly on close relationships, loyalty, and emotional warmth, while stepping up to lead or delegate to a larger team takes a conscious push.',
-                    action: 'Practice using your voice to organize a team effort or delegate tasks so your people skills also support your bigger goals.'
+                    label: 'Anchored in Emotional Bonding (Needs Push to Lead)',
+                    text: 'Right now, this stage is anchored almost entirely in close emotional connection, loyalty, and personal warmth, with no active planet on the leadership side to automatically push you into managing large teams. You bond deeply and loyally with your circle, and stepping into broader team leadership simply takes a deliberate push.',
+                    action: 'Take one conscious step into leading, delegating, or speaking to a group—use the trust you naturally build with people to guide a team effort.'
                 },
                 quiet: {
-                    label: 'Quiet Domain',
-                    text: 'This area is quiet right now—neither managing large teams nor navigating heavy emotional dynamics is dominating your day-to-day focus.',
-                    action: 'Keep your social and team circles simple, clear, and low-maintenance.'
+                    label: 'Quiet Stage (Follows Overall Rhythm)',
+                    text: 'This particular stage is quiet in your chart right now—neither managing large teams nor navigating heavy emotional dynamics is the main centre of your energy.',
+                    action: 'Keep your social and team commitments simple, authentic, and aligned with your main goals.'
                 }
             }
         }
     ];
 
-    // 4 Distinct Functional Pillars Matching the 4 Core CNP Mechanics
     var PILLAR_SPECS = [
         {
             title: 'Structural Depth & System Building (Houses 3, 9, 2)',
@@ -593,73 +605,74 @@
         }
     };
 
+    // Full-Length Working Style Narratives blending analysis_2.html copy with Start -> Settle Transition & Logic vs. Intuition
     var WORKING_STYLE_TEMPLATES = {
         tamas_gt_rajas_male: {
             category: 'tamas_gt_rajas_male',
-            title: 'Logical &amp; Objective-Focused: Built for Long-Term Results',
+            title: 'Starts with Action Spark → Settles into Deep Mastery (Logical Drive)',
             icon: 'ph-shield-check',
             iconColor: 'text-emerald-600',
             bgLight: 'bg-emerald-50/50',
             borderLight: 'border-emerald-100',
-            badgeHtml: '<span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-bold tracking-wide">SLOW CHARGING &middot; LOGICAL DRIVE</span><span class="px-2.5 py-1 bg-teal-100 text-teal-800 rounded text-xs font-bold tracking-wide">LONG-TERM SUSTAINABLE</span>',
-            printBadge1: 'SLOW CHARGING · LOGICAL DRIVE',
-            printBadge2: 'LONG-TERM SUSTAINABLE',
+            badgeHtml: '<span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-bold tracking-wide">ACTION SPARK &rarr; DEEP MASTERY</span><span class="px-2.5 py-1 bg-teal-100 text-teal-800 rounded text-xs font-bold tracking-wide">LOGICAL &amp; GOAL-FOCUSED</span>',
+            printBadge1: 'ACTION SPARK → DEEP MASTERY',
+            printBadge2: 'LOGICAL & GOAL-FOCUSED',
             accentHex: '#059669',
             bgHex: '#ecfdf5',
             borderHex: '#a7f3d0',
-            quote: 'Clear logic and real-world friction help you fulfill every objective you set—just remember to pause and live in the present moment along the way.',
-            text: 'Across every area of your life, your default setting is to work through clear logic and objective-first thinking. Rather than acting on impulse, you first want to understand the exact objective, step into the real-world challenge, and then gather whatever knowledge and skills are needed to achieve that target. This friction-backed, logical approach is your greatest long-term strength: it keeps your career, decisions, and relationships steady and reliably fulfills the goals you set. The only trade-off of this pattern is that because your mind stays so locked onto future goals and what needs to be solved next, it rarely lets you switch off and simply enjoy the present moment.'
+            quote: 'Start on your first spark of action, and let real-world depth and preparation turn that spark into unshakeable mastery.',
+            text: 'Across every area of your life, your energy follows a powerful two-step transition: you initiate quickly with an outward spark of action, and over time you settle into deep study, thorough skill-building, and careful risk-management. At the start of a new venture or earlier in life, a spark of &ldquo;I can do this&rdquo; pulls you into motion—testing your ideas and stepping into live responsibility first. As you mature into the work, however, your larger inward reservoir takes over: you naturally want to check the ground beneath you, research the root causes, practice the necessary skills in depth, and build steady, supportive relationships. Because you understand the objective first and then dive into deep learning and real-world friction to achieve it, this transition develops strong, dependable logic that reliably fulfills your long-term goals. The only trade-off of this goal-focused logic is that your mind rarely switches off from the next target—so remember to pause and enjoy the present moment.'
         },
 
         rajas_gt_tamas_male: {
             category: 'rajas_gt_tamas_male',
-            title: 'Intuitive &amp; Present-Focused: Pair Natural Ease with Clear Logic',
+            title: 'Starts with Quick Observation → Settles into High-Gear Action (Intuitive Flow)',
             icon: 'ph-fire',
             iconColor: 'text-orange-600',
             bgLight: 'bg-orange-50/50',
             borderLight: 'border-orange-100',
-            badgeHtml: '<span class="px-2.5 py-1 bg-orange-100 text-orange-800 rounded text-xs font-bold tracking-wide">FAST CHARGING &middot; INTUITIVE FLOW</span><span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded text-xs font-bold tracking-wide">NEEDS LOGICAL ANCHOR LONG-TERM</span>',
-            printBadge1: 'FAST CHARGING · INTUITIVE FLOW',
-            printBadge2: 'NEEDS LOGICAL ANCHOR LONG-TERM',
+            badgeHtml: '<span class="px-2.5 py-1 bg-orange-100 text-orange-800 rounded text-xs font-bold tracking-wide">OBSERVE SPARK &rarr; HIGH-GEAR ACTION</span><span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded text-xs font-bold tracking-wide">INTUITIVE &bull; NEEDS LOGICAL ANCHOR</span>',
+            printBadge1: 'OBSERVE SPARK → HIGH-GEAR ACTION',
+            printBadge2: 'INTUITIVE · NEEDS LOGICAL ANCHOR',
             accentHex: '#ea580c',
             bgHex: '#fff7ed',
             borderHex: '#fed7aa',
-            quote: 'Intuition gives you natural skills with effortless ease in the present—anchor it with clear logic and written goals so your effort holds up over the long term.',
-            text: 'Across every area of your life, your default setting is to move by intuition and natural feel. Your internal battery charges quickly, giving you natural skills at ease and allowing you to live fully in the present moment. You often jump into action, build things, and handle people or situations instinctively—doing things well in the moment without being able to explain or quantify why you did them that way. While this intuitive release feels effortless in the short term, relying on intuition alone creates friction over the long term—both in hitting specific career targets and in maintaining steady relationships—because you need clear logical structure to sustain what you start. To turn your natural ease into lasting success, pause to define the exact objective on paper and handle commitments with clear, logical boundaries.'
+            quote: 'Create the opportunity, design the plan, build the habit, and anchor your natural intuition with clear written goals.',
+            text: 'Across every area of your life, your energy transitions from a quick initial check of your surroundings into a massive reservoir of outward action, creation, and leadership. At the start of a situation, your lighter inward side briefly tunes into the environment, absorbs the basics, and senses the risks; then, over time, your energy settles into full-scale momentum—generating your own ideas, constructing your own roadmaps, testing yourself in live responsibilities, and building systems or teams that multiply your effort. Because your internal battery charges quickly from light observation into massive action, your release happens through natural intuition: skills come to you with effortless ease in the present moment, even when you cannot quantify why you are doing something a certain way. However, relying on intuition alone without enough slow, logical root-cause study can leave your long-term targets and relationships unsteady—so always pair your natural momentum with written objectives and deliberate checkpoints.'
         },
 
         rajas_gt_tamas_female: {
             category: 'rajas_gt_tamas_female',
-            title: 'Intuitive &amp; Present-Focused: Effortless Natural Flow',
+            title: 'Starts with Light Learning → Settles into Effortless Expression (Intuitive Flow)',
             icon: 'ph-sparkle',
             iconColor: 'text-emerald-600',
             bgLight: 'bg-emerald-50/50',
             borderLight: 'border-emerald-100',
-            badgeHtml: '<span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-bold tracking-wide">FAST CHARGING &middot; INTUITIVE FLOW</span><span class="px-2.5 py-1 bg-teal-100 text-teal-800 rounded text-xs font-bold tracking-wide">LONG-TERM SUSTAINABLE</span>',
-            printBadge1: 'FAST CHARGING · INTUITIVE FLOW',
-            printBadge2: 'LONG-TERM SUSTAINABLE',
+            badgeHtml: '<span class="px-2.5 py-1 bg-emerald-100 text-emerald-800 rounded text-xs font-bold tracking-wide">LIGHT LEARNING &rarr; NATURAL EXPRESSION</span><span class="px-2.5 py-1 bg-teal-100 text-teal-800 rounded text-xs font-bold tracking-wide">INTUITIVE &amp; PRESENT-FOCUSED</span>',
+            printBadge1: 'LIGHT LEARNING → NATURAL EXPRESSION',
+            printBadge2: 'INTUITIVE & PRESENT-FOCUSED',
             accentHex: '#059669',
             bgHex: '#ecfdf5',
             borderHex: '#a7f3d0',
-            quote: 'Your intuition gives you effortless grace and skill in the present moment—trust your natural flow and pair it with simple milestones.',
-            text: 'Across every area of your life, your default setting is to move through natural intuition, feeling, and present-moment awareness. Your energy charges quickly and lightly: you tune into your surroundings, sense what is needed, and let your creativity, ideas, and warmth flow outward with effortless ease. Even when you cannot quantify or explain the exact rule behind why you are doing something, your intuitive process works in harmony with your natural rhythm and keeps you energized over the long term. Just make sure you set simple, clear milestones for your biggest projects so your effortless flow also lands on concrete targets.'
+            quote: 'Honor your brief initial pause to tune in and learn—once it settles, your creativity, confidence, and leadership flow effortlessly.',
+            text: 'Across every area of your life, your energy follows a smooth, natural transition: you start by lightly tuning into your surroundings, observing, and absorbing what is needed, and over time your energy settles into an abundant reservoir of confident creation, planning, and leadership. At the beginning of any situation, your quicker inward side checks the ground, listens, and gathers the essential feel of the room; once that brief check settles, you naturally step forward to author your own plans, build tangible systems, and guide others. Because this transition charges quickly and flows outward, it operates through effortless intuition and present-moment awareness—giving you natural grace and skill at ease without heavy mental or physical strain. Simply pair your natural intuitive flow with clear, simple milestones so everything you create lands right on target.'
         },
 
         tamas_gt_rajas_female: {
             category: 'tamas_gt_rajas_female',
-            title: 'Logical &amp; Goal-Driven: Soften Rigid Pressure with Intuitive Ease',
+            title: 'Starts with Quick Action → Settles into Deep Preparation (Logical Drive)',
             icon: 'ph-shield-warning',
             iconColor: 'text-amber-600',
             bgLight: 'bg-amber-50/50',
             borderLight: 'border-amber-100',
-            badgeHtml: '<span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded text-xs font-bold tracking-wide">SLOW CHARGING &middot; LOGICAL DRIVE</span><span class="px-2.5 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold tracking-wide">PROTECT PRESENT PEACE &amp; FLOW</span>',
-            printBadge1: 'SLOW CHARGING · LOGICAL DRIVE',
-            printBadge2: 'PROTECT PRESENT PEACE & FLOW',
+            badgeHtml: '<span class="px-2.5 py-1 bg-amber-100 text-amber-800 rounded text-xs font-bold tracking-wide">ACTION SPARK &rarr; DEEP PREPARATION</span><span class="px-2.5 py-1 bg-rose-100 text-rose-800 rounded text-xs font-bold tracking-wide">LOGICAL &bull; PROTECT PRESENT EASE</span>',
+            printBadge1: 'ACTION SPARK → DEEP PREPARATION',
+            printBadge2: 'LOGICAL · PROTECT PRESENT EASE',
             accentHex: '#d97706',
             bgHex: '#fffbeb',
             borderHex: '#fde68a',
-            quote: 'Clear logic helps you fulfill every objective—just remember to step out of rigid goal-pressure and let your natural intuition and warmth breathe.',
-            text: 'Across every area of your life, your default setting right now is to operate through heavy logic, deep preparation, and objective-first thinking. You first want to understand the exact target, analyze what could go wrong, and gather all the skills required to achieve the goal. While this logical discipline makes you highly capable and reliably fulfills practical objectives, staying locked in rigid, goal-driven logic over the long term creates internal pressure, physical fatigue, and friction in close relationships—and keeps you from relaxing into the present moment. Your key to lasting health and happiness is to consciously soften the rules, stop over-calculating every outcome alone, and give yourself permission to handle life and relationships with natural intuition and ease.'
+            quote: 'Accept your need for support, ask for help without hesitation, and let yourself relax into the present moment.',
+            text: 'Across every area of your life, your energy transitions from a quick initial spark of outward action into a very deep reservoir of inward study, risk-scanning, skill-practice, and emotional care. While you may step into a commitment or idea quickly at the start, over time your energy settles heavily into checking the ground beneath you—researching every detail, practicing repeatedly to feel prepared, scanning for what could go wrong, and holding deep emotional responsibility for the people around you. Because this transition operates through heavy, goal-focused logic, you reliably fulfill tough objectives and build deep expertise, but carrying such a heavy inward load over the long term can create physical fatigue, relationship tension, and overthinking while keeping you from enjoying the present moment. Your key to lasting balance is to soften rigid self-expectations, share the load with supportive people, and release your work outward in small, gentle steps every day.'
         }
     };
 

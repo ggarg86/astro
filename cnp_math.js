@@ -4,9 +4,10 @@
 // Purpose:
 // Contains the calculation formulas, 6-tier gender & planet-speed
 // circuit multipliers (Intuition vs. Logic evaluated across ALL 4
-// pairs: 8-2, 3-9, 6-12, 5-11), composite normalization, 70/30
-// career & department blending, 6-path Work Style & Institutional
-// math, Physical vs. Mental Health matrix, and plain-English evaluators.
+// pairs: 8-2, 3-9, 6-12, 5-11), Start -> Settle Transition data
+// (% only for Section 3, including 100%/0% and 0%/0% Quiet cases),
+// composite normalization, 70/30 career & department blending,
+// 6-path Work Style & Institutional math, and Health matrix.
 // ============================================================
 
 (function () {
@@ -89,8 +90,10 @@
             var rw = houseWeights[rId] || 0;
             var total = tw + rw;
             var totalPct = pct(total, TOTAL_POINTS);
-            var tShare = total > 0 ? Math.round((tw / total) * 100) : 50;
-            var rShare = 100 - tShare;
+
+            // Clean % share: 0% / 0% when both houses are empty (Quiet Domain), 100% / 0% when one-sided
+            var tShare = total > 0 ? Math.round((tw / total) * 100) : 0;
+            var rShare = total > 0 ? (100 - tShare) : 0;
 
             var tSlow = houseHasSlow[tId];
             var rSlow = houseHasSlow[rId];
@@ -115,7 +118,7 @@
 
             if (tw > 0 && rw > 0) {
                 if (tw < rw) {
-                    // Clubbed Tamas < Rajas: Low Tamas constraint -> Fast Charging (Intuitive Process)
+                    // Clubbed Tamas < Rajas: Lighter Tamas fires first -> Settles into Rajas (Fast Charging / Intuitive)
                     state = 'Fast Charging';
                     origKey = 'reflect';
                     processMode = 'Intuitive Flow';
@@ -123,8 +126,6 @@
                     badgeBg = '#ecfdf5';
 
                     if (isMale) {
-                        // Rank 5 for Male: Intuitive release gives present-moment ease, but Male biology
-                        // cannot sustain unanchored intuition long-term without logical friction.
                         genderRank = 5;
                         genderAligned = false;
                         tierBaseScore = 46;
@@ -135,7 +136,6 @@
                         fricTMult = 1.40; fricRMult = 1.32;
                         sv = 20000 + (rw * 10) - tw;
                     } else {
-                        // Rank 1 for Female: Peak Feminine Alignment (Intuitive flow is completely sustainable long-term)
                         genderRank = 1;
                         genderAligned = true;
                         speedBonus = (tFastOnly && rSlow) ? 6 : 3;
@@ -148,7 +148,7 @@
                         sv = 60000 + (rw * 10) + (200 - tw);
                     }
                 } else {
-                    // Clubbed Tamas >= Rajas: Heavy Tamas constraint builds friction -> Slow Charging (Logical Process)
+                    // Clubbed Rajas <= Tamas: Lighter Rajas fires first -> Settles into Tamas (Slow Charging / Logical)
                     state = 'Slow Charging';
                     origKey = 'act';
                     processMode = 'Logical Structure';
@@ -156,7 +156,6 @@
                     badgeBg = '#fffbeb';
 
                     if (isMale) {
-                        // Rank 1 for Male: Peak Masculine Alignment (Rajas fires into heavy Tamas friction -> builds Logic)
                         genderRank = 1;
                         genderAligned = true;
                         speedBonus = (rFastOnly && tSlow) ? 6 : 3;
@@ -168,8 +167,6 @@
                         fricTMult = 0.48; fricRMult = 0.48;
                         sv = 60000 + (tw * 10) + (200 - rw);
                     } else {
-                        // Rank 4 for Female: Logical goal-focus hits targets short-term, but rigid logical
-                        // structure creates long-term strain on Female biological rhythm and relationships.
                         genderRank = 4;
                         genderAligned = false;
                         tierBaseScore = 48;
@@ -182,7 +179,7 @@
                     }
                 }
             } else if (tw === 0 && rw > 0) {
-                // Zero Tamas, Only Rajas Active (Strained Action)
+                // Zero Tamas, Only Rajas Active (Strained Action — 100% Rajas / 0% Tamas)
                 state = 'Strained Action';
                 origKey = 'momentum';
                 processMode = 'Direct Action';
@@ -237,7 +234,7 @@
                     }
                 }
             } else if (tw > 0 && rw === 0) {
-                // Zero Rajas, Only Tamas Active (Forced Action)
+                // Zero Rajas, Only Tamas Active (Forced Action — 100% Tamas / 0% Rajas)
                 state = 'Forced Action';
                 origKey = 'gather';
                 processMode = tFastOnly ? 'Intuitive Sensing' : 'Deep Preparation';
@@ -323,6 +320,9 @@
                 totalPct: totalPct,
                 tShare: tShare,
                 rShare: rShare,
+                isTwoSided: (tw > 0 && rw > 0),
+                isOneSided: ((tw > 0 && rw === 0) || (rw > 0 && tw === 0)),
+                isQuiet: (tw === 0 && rw === 0),
                 state: state,
                 processMode: processMode,
                 origKey: origKey,
@@ -347,6 +347,10 @@
             ev.stageSub = pd.stageSub;
             ev.tLabel = pd.tLabel;
             ev.rLabel = pd.rLabel;
+            ev.tShort = pd.tShort || pd.tLabel;
+            ev.rShort = pd.rShort || pd.rLabel;
+            ev.rDesc  = pd.rDesc || '';
+            ev.tDesc  = pd.tDesc || '';
             ev.actTitle = pd.actTitle;
             ev.reflectTitle = pd.reflectTitle;
             ev.archetypeTitle = pd.archetypeTitle;
@@ -379,7 +383,6 @@
         var effTotal = sumEff([2, 3, 5, 6, 8, 9, 11, 12]) || TOTAL_POINTS;
         var maxCapPts = round1(effTotal * 0.95);
 
-        // Strictly monotonic with sumWeightedEff(weightsList) so pts and % never invert rank
         function compositePct(weightsList) {
             var w = sumWeightedEff(weightsList);
             if (!w || !effTotal) return 0;
@@ -393,7 +396,7 @@
         var rajasPct    = pct(rajasWeight, effTotal);
         var tamasPct    = round1(100 - rajasPct);
 
-        // Whole-Chart Intuition vs. Logic & Long-Term Sustainability (Driven by Weighted Totals)
+        // Whole-Chart Start -> Settle Macro Transition & Intuition vs. Logic
         var isFastChargingChart = (rajasWeight > tamasWeight);
         var wholeChartAligned   = isMale ? !isFastChargingChart : isFastChargingChart;
         var bioAlignmentBadge   = '';
@@ -406,26 +409,46 @@
                 bioAlignmentBadge = 'Slow Charging · Logical & Goal-Focused (Long-Term Strong)';
                 bioAlignmentColor = '#047857';
                 bioAlignmentBg = '#ecfdf5';
-                bioAlignmentText = 'Your energy charges steadily and develops strong logic: you first understand the exact objective and then learn what is needed to achieve it. This logical structure reliably fulfills your goals and sustains your relationships over the long term—though its trade-off is that you stay so locked onto the next target that you can forget to relax and live in the present.';
+                bioAlignmentText = 'At the start of a situation, your lighter Action side (' + rajasPct + '%) sparks first on your own terms, and over time your energy transitions and settles into your deeper Learning & Mastery anchor (' + tamasPct + '%). This transition develops strong, dependable logic that fulfills your objectives and sustains your relationships over the long term—just remember to pause and relax in the present moment.';
             } else {
                 bioAlignmentBadge = 'Fast Charging · Intuitive Flow (Needs Logical Anchor)';
                 bioAlignmentColor = '#b45309';
                 bioAlignmentBg = '#fffbeb';
-                bioAlignmentText = 'Your energy charges quickly and works through natural intuition: skills come to you with ease and you live well in the present moment, often doing things effortlessly without being able to quantify why. However, relying on intuition alone creates instability over the long term in hitting specific career targets and maintaining steady relationships—pair your natural ease with clear written objectives and logical structure.';
+                bioAlignmentText = 'At the start of a situation, your lighter Learning side (' + tamasPct + '%) tunes in quickly first, and over time your energy transitions and settles into massive outward Action & Creation (' + rajasPct + '%). While this fast-charging transition gives you effortless intuition and natural skills in the present moment, relying on intuition alone creates instability over the long term—always anchor your momentum with written objectives and logical structure.';
             }
         } else {
             if (wholeChartAligned) {
                 bioAlignmentBadge = 'Fast Charging · Intuitive & Natural Flow (Long-Term Strong)';
                 bioAlignmentColor = '#047857';
                 bioAlignmentBg = '#ecfdf5';
-                bioAlignmentText = 'Your energy charges quickly and moves through natural intuition. Skills, creativity, and people-understanding come to you with effortless ease in the present moment, and this intuitive flow is completely sustainable for you over the long term—allowing you to nurture relationships and express your talents without heavy strain.';
+                bioAlignmentText = 'At the start of a situation, your lighter Learning side (' + tamasPct + '%) tunes in and connects quickly first, and over time your energy naturally transitions and settles into abundant outward Expression & Creation (' + rajasPct + '%). This intuitive, present-moment flow is completely sustainable for you over the long term—allowing you to nurture relationships and express your talents without heavy strain.';
             } else {
                 bioAlignmentBadge = 'Slow Charging · Logical & Goal-Driven (Needs Intuitive Ease)';
                 bioAlignmentColor = '#be123c';
                 bioAlignmentBg = '#fff1f2';
-                bioAlignmentText = 'Your energy is operating through heavy logic and constant goal-focus: you first analyze the objective and gather everything needed to achieve it. While this reliably fulfills practical targets, living in rigid logical structure over the long term creates internal pressure, physical fatigue, and relationship friction while keeping you from enjoying the present moment. Consciously soften the rules and let your natural intuition lead.';
+                bioAlignmentText = 'At the start of a situation, your lighter Action side (' + rajasPct + '%) sparks first, and over time your energy transitions and settles into a heavy inward load of Deep Study, Risk-Scanning & Responsibility (' + tamasPct + '%). While this logical discipline fulfills practical targets, carrying such heavy goal-pressure over the long term creates physical fatigue and relationship strain—consciously soften the rules and let your natural intuition breathe.';
             }
         }
+
+        // Macro Start -> Settle Transition Object for Section 3A Card 1 (% Only)
+        var macroStartsWithTamas = isFastChargingChart; // Tamas is smaller %, so Tamas fires first and settles into Rajas
+        var macroTransition = {
+            startsWithTamas: macroStartsWithTamas,
+            startTitle: macroStartsWithTamas ? 'TAMAS · Learn & Observe (Houses 3, 5, 6, 8)' : 'RAJAS · Apply & Act (Houses 2, 9, 11, 12)',
+            startShort: macroStartsWithTamas ? 'Learn & Observe' : 'Apply & Act',
+            startSub: macroStartsWithTamas ? 'Tunes in, observes & absorbs lightly first' : 'Sparks action, ideas & initiative first',
+            startPct: macroStartsWithTamas ? tamasPct : rajasPct,
+            startColor: macroStartsWithTamas ? '#059669' : '#ea580c',
+            startBg: macroStartsWithTamas ? '#ecfdf5' : '#fff7ed',
+            startBorder: macroStartsWithTamas ? '#a7f3d0' : '#fed7aa',
+            settleTitle: macroStartsWithTamas ? 'RAJAS · Apply & Create (Houses 2, 9, 11, 12)' : 'TAMAS · Deep Mastery & Support (Houses 3, 5, 6, 8)',
+            settleShort: macroStartsWithTamas ? 'Apply & Create' : 'Deep Mastery',
+            settleSub: macroStartsWithTamas ? 'Where your energy settles: outward creation & leadership' : 'Where your energy settles: deep study, skill & caution',
+            settlePct: macroStartsWithTamas ? rajasPct : tamasPct,
+            settleColor: macroStartsWithTamas ? '#ea580c' : '#059669',
+            settleBg: macroStartsWithTamas ? '#fff7ed' : '#ecfdf5',
+            settleBorder: macroStartsWithTamas ? '#fed7aa' : '#a7f3d0'
+        };
 
         // Physical/Structural Execution (3,6,9,12) vs. Mental/Advisory & People (2,8,5,11)
         var goalWeight    = sumEff([3, 6, 9, 12]);
@@ -433,21 +456,68 @@
         var goalPct       = pct(goalWeight, effTotal);
         var processPct    = round1(100 - goalPct);
 
-        var rajasLeadsOverall = (rajasWeight > tamasWeight);
-        pairsEvaluated.forEach(function (ev, idx) {
+        // Populate Start -> Settle Transition fields on each of the 4 Pairs (% Only)
+	var overallStartKey = (rajasWeight > tamasWeight) ? 'reflect' : 'act';
+	pairsEvaluated.forEach(function (ev, idx) {
             var orderKey = ev.origKey;
-            if (orderKey === 'quiet') {
-                if (idx + 1 < pairsEvaluated.length && pairsEvaluated[idx + 1].origKey !== 'quiet') {
-                    orderKey = pairsEvaluated[idx + 1].origKey;
+
+            // If this stage is Empty (0%/0%) OR One-Sided (100%/0%), it has no direction of its own.
+            // Check the immediately next stage (idx + 1):
+            // - If the next stage has BOTH houses filled (isTwoSided), copy its direction.
+            // - If the next stage is empty (0%/0%), one-sided (100%/0%), or doesn't exist (Stage 4),
+            //   fall back to the Overall Chart Rhythm (overallStartKey).
+            if (ev.isQuiet || ev.isOneSided) {
+                var nextStage = (idx + 1 < pairsEvaluated.length) ? pairsEvaluated[idx + 1] : null;
+                if (nextStage && nextStage.isTwoSided) {
+                    orderKey = nextStage.origKey;
                 } else {
-                    orderKey = rajasLeadsOverall ? 'act' : 'reflect';
+                    orderKey = overallStartKey;
                 }
             }
-            var leadT = (orderKey === 'reflect' || orderKey === 'gather');
+
+            var leadT = (orderKey === 'reflect');
             ev.leadT = leadT;
-            ev.title = leadT ? ev.reflectTitle : ev.actTitle;
             ev.effTotalPct = pct(ev.effPairTotal, effTotal);
+
+            // Left Box (Start) vs. Right Box (Settle) fields
+            ev.startLabel  = leadT ? ev.tLabel : ev.rLabel;
+            ev.startShort  = leadT ? ev.tShort : ev.rShort;
+            ev.startPct    = leadT ? ev.tShare : ev.rShare;
+            ev.startDesc   = leadT ? ev.tDesc  : ev.rDesc;
+            ev.startColor  = leadT ? '#059669' : '#ea580c';
+            ev.startBg     = leadT ? '#ecfdf5' : '#fff7ed';
+            ev.startBorder = leadT ? '#a7f3d0' : '#fed7aa';
+
+            ev.settleLabel  = leadT ? ev.rLabel : ev.tLabel;
+            ev.settleShort  = leadT ? ev.rShort : ev.tShort;
+            ev.settlePct    = leadT ? ev.rShare : ev.tShare;
+            ev.settleDesc   = leadT ? ev.rDesc  : ev.tDesc;
+            ev.settleColor  = leadT ? '#ea580c' : '#059669';
+            ev.settleBg     = leadT ? '#fff7ed' : '#ecfdf5';
+            ev.settleBorder = leadT ? '#fed7aa' : '#a7f3d0';
+
+            if (ev.isTwoSided) {
+                ev.title = leadT ? ev.reflectTitle : ev.actTitle;
+                ev.step1Badge = '⚡ 1. STARTS HERE (Initial Spark)';
+                ev.step2Badge = '⚓ 2. SETTLES HERE (Over Time)';
+                ev.arrowLabel = 'Transitions Over Time';
+            } else if (ev.isOneSided) {
+                ev.title = leadT ? ev.reflectTitle : ev.actTitle;
+                ev.step1Badge = (ev.startPct > 0)
+                    ? '⚓ 1. ACTIVE ANCHOR (100% Here)'
+                    : '🎯 1. NEEDS CONSCIOUS START (0% Here)';
+                ev.step2Badge = (ev.settlePct > 0)
+                    ? '⚓ 2. ACTIVE ANCHOR (100% Here)'
+                    : '🎯 2. NEEDS CONSCIOUS PUSH (0% Here)';
+                ev.arrowLabel = (nextStage && nextStage.isTwoSided) ? 'Follows Next Stage' : 'Follows Overall Rhythm';
+            } else {
+                ev.title = (leadT ? (ev.tShort + ' &amp; ' + ev.rShort) : (ev.rShort + ' &amp; ' + ev.tShort)) + ' (Quiet Stage)';
+                ev.step1Badge = '⏸ QUIET STAGE (0% — No Planets)';
+                ev.step2Badge = '⏸ QUIET STAGE (0% — No Planets)';
+                ev.arrowLabel = (nextStage && nextStage.isTwoSided) ? 'Follows Next Stage' : 'Follows Overall Rhythm';
+            }
         });
+
 
         var pairsRanked = pairsEvaluated.slice().sort(function (a, b) { return b.sv - a.sv; });
         pairsRanked.forEach(function (p, i) { p.rank = i + 1; });
@@ -574,7 +644,7 @@
         var p82  = pairsMap['8-2'];
         var p511 = pairsMap['5-11'];
 
-        // A. Career Focus & Structural Stability (Capped at maxCapPts so pts & % never clip at 100%)
+        // A. Career Focus & Structural Stability
         var unanchoredIdeaScatter = Math.max(0, round1((effWeights[2] || 0) - 0.85 * ((effWeights[3] || 0) + (effWeights[9] || 0))));
         var mwStability = sumStab([[3, 1.0], [9, 1.0], [6, 0.75], [12, 0.75], [2, 0.65], [11, 0.65]]);
         var mwIssues    = round1(sumFric([[8, 0.90], [2, 0.45], [3, 0.40], [9, 0.35], [6, 0.40], [12, 0.35]]) + unanchoredIdeaScatter * 0.55);
@@ -591,14 +661,13 @@
         mwStability = Math.min(maxCapPts, mwStability);
         mwIssues    = Math.min(maxCapPts, mwIssues);
 
-        // B. 6-Path Work Style & Institutional Matrix (75% House Composite + 25% Pair Readiness across both graphs)
+        // B. 6-Path Work Style & Institutional Matrix
         var w2 = houseWeights[2] || 0;
         var w8 = houseWeights[8] || 0;
         var hasJobResistance = (w2 > w8);
         var bizNo2Mod = (w2 === 0 && w8 > 0) ? 0.78 : 1.0;
 
         // Graph 1: Business & Independent Spectrum
-        // 1. Solo Self-Employed / Single-Handed Specialist (Houses 2, 6, 12)
         var soloBase = compositePct([[2, 1.0], [6, 1.0], [12, 1.0], [3, 0.45]]);
         var soloPairReady = ((p612 ? p612.readinessScore : 50) * 0.60 + (p82 ? p82.readinessScore : 50) * 0.40);
         var soloSelfEmployedPct = Math.min(95, Math.max(12, round1((soloBase * 0.75 + soloPairReady * 0.25) * bizNo2Mod)));
@@ -606,7 +675,6 @@
             soloSelfEmployedPct = Math.min(96, round1(soloSelfEmployedPct * 1.15 + 5));
         }
 
-        // 2. Team-Based Business / People Enterprise (Houses 2, 5, 11)
         var teamBizBase = compositePct([[2, 1.0], [5, 1.0], [11, 1.0], [9, 0.45]]);
         var teamPairReady = ((p511 ? p511.readinessScore : 50) * 0.65 + (p82 ? p82.readinessScore : 50) * 0.35);
         var teamBusinessPct = Math.min(95, Math.max(12, round1((teamBizBase * 0.75 + teamPairReady * 0.25) * bizNo2Mod)));
@@ -614,33 +682,28 @@
             teamBusinessPct = Math.min(96, round1(teamBusinessPct * 1.15 + 5));
         }
 
-        // 3. Large-Scale Organization & Growing Structures (Houses 8, 9, 3, 5, 11) — requires 8th house responsibility
         var orgMod = (w8 === 0) ? 0.62 : (hasJobResistance ? 0.78 : 1.12);
         var largeOrgBase = compositePct([[8, 1.0], [9, 1.0], [3, 0.85], [11, 0.80], [5, 0.70]]);
         var orgPairReady = ((p39 ? p39.readinessScore : 50) * 0.55 + (p82 ? p82.readinessScore : 50) * 0.45);
         var largeOrgScalePct = Math.min(95, Math.max(12, round1((largeOrgBase * 0.75 + orgPairReady * 0.25) * orgMod)));
 
-        // Graph 2: Institutional & Partnership Spectrum (Requires 8th house to take institutional/shared responsibility)
+        // Graph 2: Institutional & Partnership Spectrum
         var govtMod   = hasJobResistance ? 0.52 : (w8 > 0 ? 1.15 : 0.68);
         var privMod   = hasJobResistance ? 0.60 : (w8 > 0 ? 1.12 : 0.68);
         var legacyMod = hasJobResistance ? 0.78 : (w8 > 0 ? 1.16 : 0.72);
 
-        // 1. Government / Public Sector Institution (Houses 8, 3, 9)
         var govtBase = compositePct([[8, 1.0], [3, 0.95], [9, 0.95], [6, 0.55]]);
         var govtPairReady = ((p39 ? p39.readinessScore : 50) * 0.60 + (p82 ? p82.readinessScore : 50) * 0.40);
         var govtJobPct = Math.min(95, Math.max(10, round1((govtBase * 0.75 + govtPairReady * 0.25) * govtMod)));
 
-        // 2. Private / Corporate Institution (Houses 8, 6, 11, 12)
         var privBase = compositePct([[8, 1.0], [6, 0.95], [11, 0.85], [12, 0.80]]);
         var privPairReady = ((p612 ? p612.readinessScore : 50) * 0.50 + (p511 ? p511.readinessScore : 50) * 0.50);
         var privateJobPct = Math.min(95, Math.max(12, round1((privBase * 0.75 + privPairReady * 0.25) * privMod)));
 
-        // 3. Trusted Partnership / Association (Houses 8, 5, 3, 9)
         var legacyBase = compositePct([[8, 1.0], [5, 0.95], [3, 0.85], [9, 0.85]]);
         var legacyPairReady = ((p511 ? p511.readinessScore : 50) * 0.50 + (p39 ? p39.readinessScore : 50) * 0.50);
         var familyBizPct = Math.min(95, Math.max(12, round1((legacyBase * 0.75 + legacyPairReady * 0.25) * legacyMod)));
 
-        // Overall Business vs. Job Summary Fit
         var bizRaw = Math.max(soloSelfEmployedPct, teamBusinessPct);
         var jobRaw = Math.max(govtJobPct, privateJobPct);
         var workPathTotal = round1(bizRaw + jobRaw) || 100;
@@ -682,8 +745,7 @@
             guidance: workPathGuidance
         };
 
-        // C. Gender-Aware Physical & Mental Health Resilience Matrix (Checking ALL 4 Pairs: 3-9, 6-12, 8-2, 5-11)
-        // Physical Health Axis: 3-9 (Core Stamina / Structure) & 6-12 (Muscular Strength / Execution)
+        // C. Gender-Aware Physical & Mental Health Resilience Matrix
         var physSupport = sumStab([[3, 1.0], [9, 1.0], [6, 1.0], [12, 1.0]]);
         var physStrain  = sumFric([[3, 0.90], [9, 0.55], [6, 0.90], [12, 0.55]]);
         var physIssueTag = 'Strong Physical Stamina';
@@ -716,7 +778,6 @@
         var physSupportPct = pct(physSupport, effTotal);
         var physStrainPct  = pct(physStrain, effTotal);
 
-        // Mental & Relationship Axis: 8-2 (Mindset / Risk) & 5-11 (People Management / Relationships)
         var mentSupport = sumStab([[5, 1.0], [11, 1.0], [2, 0.9], [8, 0.8]]);
         var mentStrain  = sumFric([[8, 0.90], [2, 0.55], [5, 0.90], [11, 0.55]]);
         var mentIssueTag = 'Steady Mental & Relationship Flow';
@@ -792,7 +853,7 @@
             guidance: healthGuidance
         };
 
-        // 11. Six Corporate Departments (Strict 70% + 30% = 100% Blending)
+        // 11. Six Corporate Departments
         var departments = (Data.DEPT_SPECS || []).map(function (d) {
             var rawW = sumWeightedEff(d.weights);
             var rawP = compositePct(d.weights);
@@ -810,7 +871,7 @@
             };
         }).sort(function (a, b) { return b.score - a.score; });
 
-        // 12. 18 Exhaustive Careers in Backend -> Top 9 Sliced for Display (Strict 70% + 30% = 100%)
+        // 12. 18 Exhaustive Careers in Backend -> Top 9 Sliced for Display
         var allCareers = (Data.CAREER_SPECS || []).map(function (c) {
             var iBlend = c.intels.reduce(function (acc, item) {
                 var iObj = intelMap[item[0]];
@@ -837,7 +898,7 @@
 
         var careers = allCareers.slice(0, 9);
 
-        // 13. High-Impact Life Insights (100% Plain Human Language)
+        // 13. High-Impact Life Insights
         var tamasOrder = [3, 5, 6, 8].sort(function (a, b) { return (effWeights[b] || 0) - (effWeights[a] || 0); });
         var topTamas = tamasOrder[0];
         var stressReset = (Data.STRESS_MAP && Data.STRESS_MAP[topTamas]) || Data.STRESS_MAP[8];
@@ -862,7 +923,6 @@
         var topMoneyHouse = rajasMoneyOrder[0];
         var wealthArchetype = (Data.MONEY_ARCHETYPE_MAP && Data.MONEY_ARCHETYPE_MAP[topMoneyHouse]) || Data.MONEY_ARCHETYPE_MAP[2];
 
-        // Decision Clock aligned with Fast Charging (Intuitive) vs. Slow Charging (Logical)
         var decisionTitle = '';
         var decisionRule = '';
         if ((p82 && p82.state === 'Fast Charging') || (isFastChargingChart && (!p82 || p82.state !== 'Slow Charging'))) {
@@ -893,6 +953,7 @@
             bioAlignmentColor: bioAlignmentColor,
             bioAlignmentBg: bioAlignmentBg,
             bioAlignmentText: bioAlignmentText,
+            macroTransition: macroTransition,
             houseWeights: houseWeights,
             effWeights: effWeights,
             effTotal: effTotal,

@@ -2,17 +2,22 @@
 // GeoAstro — Part 3: CNP Controller & DOM Wiring (cnp_controller.js)
 // Features:
 // 1. Premium Access Gate + Basic vs. Advanced Report Toggle
-// 2. Native Save-Record Wrapper (Waits for Cache & Syncs Initial Default Record)
+// 2. Native Save-Record Wrapper (Works for Both Valid & Expired Users)
 // 3. Reversible Astronomical Details Accordion (#8) with Mobile Touch Scroll Fix
-// 4. Bridges CNP.Math (with Gender Sync) and CNP.Views to Live Page & Print
+// 4. Clean Expired-User Screen View (Only Geo-Time Zone Map + Planetary Table)
+// 5. Bridges CNP.Math (with Gender Sync) and CNP.Views to Live Page & Print
 // ============================================================
 
 (function () {
     window.CNP = window.CNP || {};
     window.cnpReportMode = 'advanced';
 
+    function isUserExpired() {
+        return (typeof _isExpired !== 'undefined' && !!_isExpired);
+    }
+
     function hasAdvancedAccess() {
-        if (typeof _isExpired !== 'undefined' && _isExpired) return false;
+        if (isUserExpired()) return false;
         if (typeof _isAdmin !== 'undefined' && _isAdmin) return true;
         if (typeof getSession === 'function') {
             var u = getSession();
@@ -30,7 +35,7 @@
         return 'Male';
     }
 
-    // ── NATIVE SAVE-BUTTON WRAPPER ────────────────────────────
+    // ── NATIVE SAVE-BUTTON WRAPPER (RUNS FOR BOTH VALID & EXPIRED USERS) ──
     var _userEditedForm = false;
 
     function watchUserFormEdits() {
@@ -114,8 +119,7 @@
         var _nativeShowSaveButton = window.showSaveButton;
 
         window.showSaveButton = function () {
-            if (typeof _isExpired !== 'undefined' && _isExpired) return;
-
+            // Do NOT block expired users — they must still see Save / Update / Already Saved & Download Report!
             if (typeof _recordsCache !== 'undefined' && _recordsCache === null && typeof window.loadRecordsCache === 'function') {
                 var btn = document.getElementById('save-record-btn');
                 var dlBtn = document.getElementById('download-report-btn');
@@ -143,12 +147,18 @@
 
     // ── INJECT BASIC / ADVANCED MODE TOGGLE ABOVE GENERATE BUTTON ──
     function injectReportModeToggle() {
+        var isExp  = isUserExpired();
         var canAdv = hasAdvancedAccess();
-        if (!canAdv) {
+        if (!canAdv || isExp) {
             window.cnpReportMode = 'basic';
         }
 
         var existingWrap = document.getElementById('cnp-mode-toggle-wrap');
+        if (isExp) {
+            if (existingWrap) existingWrap.style.display = 'none';
+            return;
+        }
+
         if (!existingWrap) {
             var genBtn = document.getElementById('generate-btn');
             if (!genBtn || !genBtn.parentElement) return;
@@ -171,17 +181,28 @@
                 '</div>';
 
             genBtn.parentElement.insertBefore(wrap, genBtn);
+        } else {
+            existingWrap.style.display = 'flex';
         }
 
         updateModeToggleUI();
     }
 
     function updateModeToggleUI() {
+        var isExp    = isUserExpired();
         var canAdv   = hasAdvancedAccess();
+        var wrapEl   = document.getElementById('cnp-mode-toggle-wrap');
         var btnBasic = document.getElementById('cnp-btn-mode-basic');
         var btnAdv   = document.getElementById('cnp-btn-mode-advanced');
         var tagEl    = document.getElementById('cnp-mode-status-tag');
         var advIcon  = document.getElementById('cnp-adv-mode-icon');
+
+        if (isExp) {
+            window.cnpReportMode = 'basic';
+            if (wrapEl) wrapEl.style.display = 'none';
+            return;
+        }
+        if (wrapEl) wrapEl.style.display = 'flex';
 
         if (!canAdv) {
             window.cnpReportMode = 'basic';
@@ -308,8 +329,11 @@
             astroDetails.textContent = mapDetails.textContent;
         }
 
-        var slot = document.getElementById('acc-astro-table-slot');
-        if (window.cnpReportMode === 'basic') {
+        var slot  = document.getElementById('acc-astro-table-slot');
+        var isExp = isUserExpired();
+
+        // If Basic Mode OR Expired User: always keep the Planetary Table in its original top card below the Map
+        if (window.cnpReportMode === 'basic' || isExp) {
             if (topTableCard) {
                 var innerOverflow = topTableCard.querySelector('.overflow-x-auto') || topTableCard;
                 if (tableEl.parentElement !== innerOverflow) {
@@ -328,14 +352,24 @@
     }
 
     function applyCNPReportModeDOM() {
-        if (!hasAdvancedAccess()) {
+        var isExp = isUserExpired();
+        if (!hasAdvancedAccess() || isExp) {
             window.cnpReportMode = 'basic';
         }
-        var isBasic = (window.cnpReportMode === 'basic');
+        var isBasic = (window.cnpReportMode === 'basic' || isExp);
 
+        // Hide Octal House Dominance for both Basic Mode AND Expired Users
         var domBox = document.getElementById('cnp-house-dominance-box');
-        var isExp = (typeof _isExpired !== 'undefined' && _isExpired);
-        if (domBox) domBox.style.display = (isBasic && !isExp) ? 'none' : '';
+        if (domBox) domBox.style.display = (isBasic || isExp) ? 'none' : '';
+
+        // Hide format toggle and accordion sections if user is Expired
+        var toggleWrap = document.getElementById('cnp-mode-toggle-wrap');
+        if (toggleWrap) toggleWrap.style.display = isExp ? 'none' : 'flex';
+
+        var resultsContainer = document.getElementById('results-container');
+        if (resultsContainer && isExp) {
+            resultsContainer.classList.add('hidden');
+        }
 
         syncAstronomicalTablePlacement();
 
@@ -393,7 +427,9 @@
         if (wheelContainer && wheelContainer.parentElement) {
             var existingBox = document.getElementById('cnp-house-dominance-box');
             if (existingBox) existingBox.remove();
-            wheelContainer.insertAdjacentHTML('afterend', window.CNP.Views.buildHouseDominanceHTML(q));
+            if (!isUserExpired()) {
+                wheelContainer.insertAdjacentHTML('afterend', window.CNP.Views.buildHouseDominanceHTML(q));
+            }
         }
 
         var summaryEl = document.getElementById('analysis-summary');

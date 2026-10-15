@@ -2,10 +2,11 @@
 // GeoAstro — CNP Core Visual Builders (cnp_views_core.js)
 // [Views Module Part 1 of 2]
 // Features:
-// 1. Shared Screen/Print CSS & Design Tokens (window.CNP.Views._helpers)
+// 1. Shared Screen/Print CSS & Design Tokens (Larger Web-View Typography)
 // 2. Section 01: Octal House Dominance (Screen & Print)
-// 3. Section 03A: Donuts + Intuition vs. Logic Takeaway + Stress Reset + Pillars
-// 4. Section 03B: Four Core Rhythms with 4-Badge Legend & Circuit Strength %
+// 3. Section 03A: Macro Start -> Settle Transition (% Only) + Brain Mode + Pillars
+// 4. Section 03B: Visual 2-Step Transition Cards (⚡ Starts Here -> ⚓ Settles Here)
+//    with % Only (Handles 2-Sided, 100%/0% One-Sided, and 0%/0% Quiet Stages)
 // 5. Reversible Basic/Advanced Webpage Working Style Sync
 // ============================================================
 
@@ -18,20 +19,35 @@
         var st = document.createElement('style');
         st.id = 'cnp-views-print-css';
         st.textContent = `
+            .cnp-trans-grid {
+                display: grid;
+                grid-template-columns: 1fr auto 1fr;
+                gap: 10px;
+                align-items: stretch;
+            }
+            @media (max-width: 640px) {
+                .cnp-trans-grid {
+                    grid-template-columns: 1fr;
+                }
+                .cnp-trans-arrow {
+                    transform: rotate(90deg);
+                    padding: 2px 0 !important;
+                }
+            }
             @media print {
                 #cnp-report-print .cnp-v-card,
                 #session-report-print .cnp-v-card {
-                    padding: 9.5px 13px !important;
+                    padding: 9px 13px !important;
                     border-radius: 10px !important;
                 }
                 #cnp-report-print .cnp-v-subcard,
                 #session-report-print .cnp-v-subcard {
-                    padding: 8px 11px !important;
+                    padding: 7.5px 11px !important;
                     border-radius: 9px !important;
                 }
                 #cnp-report-print .cnp-v-stack,
                 #session-report-print .cnp-v-stack {
-                    gap: 8.5px !important;
+                    gap: 8px !important;
                 }
                 #cnp-report-print .cnp-v-grid-2,
                 #session-report-print .cnp-v-grid-2 {
@@ -39,7 +55,7 @@
                 }
                 #cnp-report-print .cnp-v-subheader,
                 #session-report-print .cnp-v-subheader {
-                    margin-bottom: 5.5px !important;
+                    margin-bottom: 5px !important;
                 }
                 #cnp-report-print .cnp-v-sectitle,
                 #session-report-print .cnp-v-sectitle {
@@ -74,44 +90,49 @@
                 }
                 #cnp-report-print .cnp-v-donut,
                 #session-report-print .cnp-v-donut {
-                    width: 94px !important;
-                    height: 94px !important;
+                    width: 92px !important;
+                    height: 92px !important;
                 }
                 #cnp-report-print .cnp-v-body,
                 #session-report-print .cnp-v-body {
-                    font-size: 11.4px !important;
-                    line-height: 1.4 !important;
+                    font-size: 11.2px !important;
+                    line-height: 1.38 !important;
                 }
                 #cnp-report-print .cnp-v-takeaway-box,
                 #session-report-print .cnp-v-takeaway-box {
-                    padding: 8px 12px !important;
+                    padding: 7.5px 12px !important;
                 }
                 #cnp-report-print .cnp-v-pillar-card,
                 #session-report-print .cnp-v-pillar-card {
-                    padding: 7.5px 10px !important;
+                    padding: 7px 10px !important;
                 }
                 #cnp-report-print .cnp-v-legend-strip,
                 #session-report-print .cnp-v-legend-strip {
-                    grid-template-columns: repeat(4, 1fr) !important;
+                    grid-template-columns: repeat(2, 1fr) !important;
                     gap: 6px !important;
-                    padding: 6px 9px !important;
-                    margin-bottom: 6.5px !important;
-                    font-size: 9.8px !important;
-                    line-height: 1.28 !important;
+                    padding: 6px 10px !important;
+                    margin-bottom: 6px !important;
+                    font-size: 10px !important;
+                    line-height: 1.3 !important;
                 }
                 #cnp-report-print .cnp-v-tug-card,
                 #session-report-print .cnp-v-tug-card {
-                    padding: 8px 12px !important;
+                    padding: 7.5px 11px !important;
                     margin-bottom: 6px !important;
                 }
                 #cnp-report-print .cnp-v-tug-box,
                 #session-report-print .cnp-v-tug-box {
                     padding: 6px 10px !important;
                 }
-                #cnp-report-print .cnp-v-tug-bar,
-                #session-report-print .cnp-v-tug-bar {
-                    height: 6.5px !important;
-                    margin-bottom: 5.5px !important;
+                #cnp-report-print .cnp-trans-step-box,
+                #session-report-print .cnp-trans-step-box {
+                    padding: 6px 9px !important;
+                }
+                #cnp-report-print .cnp-trans-desc,
+                #session-report-print .cnp-trans-desc {
+                    font-size: 9.8px !important;
+                    line-height: 1.28 !important;
+                    margin-top: 3px !important;
                 }
                 #cnp-report-print .cnp-v-complement-grid,
                 #session-report-print .cnp-v-complement-grid {
@@ -142,17 +163,18 @@
         injectViewPrintStyles();
     }
 
+    // Restored larger, comfortable Web-View font sizes (while @media print keeps PDF compact)
     var S = {
-        card: 'background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:18px 20px;box-shadow:0 1px 4px rgba(0,0,0,0.03);break-inside:avoid;page-break-inside:avoid;',
-        subCard: 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:15px 18px;break-inside:avoid;page-break-inside:avoid;',
-        secTitle: 'font-family:Montserrat,sans-serif;font-size:13.5px;font-weight:800;color:#1e293b;margin:0;text-transform:uppercase;letter-spacing:0.04em;',
-        secSub: 'font-size:11.5px;color:#64748b;margin:3px 0 0 0;line-height:1.45;',
-        itemTitle: 'font-family:Montserrat,sans-serif;font-size:12px;font-weight:700;color:#1e293b;',
-        itemTitleBold: 'font-family:Montserrat,sans-serif;font-size:12px;font-weight:800;color:#0f172a;',
-        itemScore: 'font-family:Montserrat,sans-serif;font-size:12px;font-weight:800;',
-        itemDesc: 'font-size:11px;color:#64748b;margin:0 0 4px 0;line-height:1.45;',
+        card: 'background:#ffffff;border:1px solid #e2e8f0;border-radius:14px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,0,0,0.03);break-inside:avoid;page-break-inside:avoid;',
+        subCard: 'background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;break-inside:avoid;page-break-inside:avoid;',
+        secTitle: 'font-family:Montserrat,sans-serif;font-size:14px;font-weight:800;color:#1e293b;margin:0;text-transform:uppercase;letter-spacing:0.04em;',
+        secSub: 'font-size:12.5px;color:#64748b;margin:4px 0 0 0;line-height:1.5;',
+        itemTitle: 'font-family:Montserrat,sans-serif;font-size:12.5px;font-weight:700;color:#1e293b;',
+        itemTitleBold: 'font-family:Montserrat,sans-serif;font-size:13px;font-weight:800;color:#0f172a;',
+        itemScore: 'font-family:Montserrat,sans-serif;font-size:12.5px;font-weight:800;',
+        itemDesc: 'font-size:12px;color:#64748b;margin:0 0 5px 0;line-height:1.5;',
         barTrack: 'width:100%;height:9px;background:#f1f5f9;border-radius:999px;overflow:hidden;',
-        bodyText: 'font-size:12.5px;color:#334155;line-height:1.6;'
+        bodyText: 'font-size:13.5px;color:#334155;line-height:1.68;'
     };
 
     function buildSubHeader(titleHTML, subText) {
@@ -305,22 +327,22 @@
     function buildWorkingStyleBoxHTML(q) {
         var ws = window.CNP.Math.getWorkingStyleData(q);
         return '<div class="cnp-keep-together cnp-v-card" style="' + S.card + '">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:7px;border-bottom:1px solid #f1f5f9;margin-bottom:7px;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;padding-bottom:8px;border-bottom:1px solid #f1f5f9;margin-bottom:8px;">' +
                 '<div style="display:flex;align-items:center;gap:8px;">' +
-                    '<i class="ph ' + ws.icon + '" style="font-size:19px;color:' + ws.accentHex + ';"></i>' +
+                    '<i class="ph ' + ws.icon + '" style="font-size:20px;color:' + ws.accentHex + ';"></i>' +
                     '<h4 class="cnp-v-sectitle" style="' + S.secTitle + '">' + ws.title + '</h4>' +
                 '</div>' +
                 '<div style="display:flex;gap:6px;flex-wrap:wrap;">' +
-                    '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:6px;background:' + ws.bgHex + ';color:' + ws.accentHex + ';border:1px solid ' + ws.borderHex + ';">' + ws.printBadge1 + '</span>' +
-                    '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:6px;background:' + ws.bgHex + ';color:' + ws.accentHex + ';border:1px solid ' + ws.borderHex + ';">' + ws.printBadge2 + '</span>' +
+                    '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2.5px 8px;border-radius:6px;background:' + ws.bgHex + ';color:' + ws.accentHex + ';border:1px solid ' + ws.borderHex + ';">' + ws.printBadge1 + '</span>' +
+                    '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2.5px 8px;border-radius:6px;background:' + ws.bgHex + ';color:' + ws.accentHex + ';border:1px solid ' + ws.borderHex + ';">' + ws.printBadge2 + '</span>' +
                 '</div>' +
             '</div>' +
-            '<div style="background:' + ws.bgHex + ';border:1px solid ' + ws.borderHex + ';border-radius:8px;padding:7.5px 12px;margin-bottom:7px;display:flex;align-items:flex-start;gap:8px;">' +
-                '<i class="ph ph-quotes" style="font-size:16px;color:' + ws.accentHex + ';flex-shrink:0;margin-top:2px;"></i>' +
-                '<p style="font-size:11.8px;font-weight:700;color:#334155;font-style:italic;margin:0;line-height:1.42;">' + ws.quote + '</p>' +
+            '<div style="background:' + ws.bgHex + ';border:1px solid ' + ws.borderHex + ';border-radius:8px;padding:9px 14px;margin-bottom:9px;display:flex;align-items:flex-start;gap:8px;">' +
+                '<i class="ph ph-quotes" style="font-size:17px;color:' + ws.accentHex + ';flex-shrink:0;margin-top:2px;"></i>' +
+                '<p style="font-size:13px;font-weight:700;color:#334155;font-style:italic;margin:0;line-height:1.5;">' + ws.quote + '</p>' +
             '</div>' +
             '<div>' +
-                '<div style="font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin-bottom:2px;">Your Working Style</div>' +
+                '<div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;color:#64748b;margin-bottom:4px;">Your Working Style</div>' +
                 '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0;">' + ws.text + '</p>' +
             '</div>' +
         '</div>';
@@ -337,7 +359,6 @@
         var quoteDiv  = innerWrap.children[startIdx + 1];
         var styleDiv  = innerWrap.children[startIdx + 2];
 
-        // Snapshot original Basic Mode HTML & classes on first pass
         if (!summaryEl.dataset.basicClass) summaryEl.dataset.basicClass = summaryEl.className;
         if (headerDiv && !headerDiv.dataset.basicHtml) headerDiv.dataset.basicHtml = headerDiv.innerHTML;
         if (quoteDiv && !quoteDiv.dataset.basicHtml) {
@@ -383,7 +404,6 @@
     function updateWebpageWorkingStyleDOM(q) {
         applyWorkingStyleByMode(q, window.cnpReportMode === 'basic');
 
-        // Hook setCNPReportMode once so toggling Basic/Advanced on the webpage also swaps Working Style box
         if (!window._cnpWorkingStyleModeHooked && typeof window.setCNPReportMode === 'function') {
             window._cnpWorkingStyleModeHooked = true;
             var _origSetMode = window.setCNPReportMode;
@@ -395,16 +415,33 @@
         }
     }
 
+    // Section 3A: Macro Action Mode (Start -> Settle Transition in % Only) + Brain & Work Mode Donut
     function buildPsychoDonutsAndTakeawayHTML(q) {
         var applyLead = q.rajasWeight > q.tamasWeight;
         var leftLead  = q.goalWeight >= q.processWeight;
 
-        // Center of Donut 1 is driven by the pair-performing weighted totals (rajasWeight vs. tamasWeight)
-        var isFastCharging = applyLead;
+        var mt = q.macroTransition || {
+            startsWithTamas: applyLead,
+            startTitle: applyLead ? 'TAMAS · Learn & Observe (3,5,6,8)' : 'RAJAS · Apply & Act (2,9,11,12)',
+            startShort: applyLead ? 'Learn & Observe' : 'Apply & Act',
+            startSub: applyLead ? 'Tunes in, observes & absorbs lightly first' : 'Sparks action, ideas & initiative first',
+            startPct: applyLead ? q.tamasPct : q.rajasPct,
+            startColor: applyLead ? '#059669' : '#ea580c',
+            startBg: applyLead ? '#ecfdf5' : '#fff7ed',
+            startBorder: applyLead ? '#a7f3d0' : '#fed7aa',
+            settleTitle: applyLead ? 'RAJAS · Apply & Create (2,9,11,12)' : 'TAMAS · Deep Mastery & Support (3,5,6,8)',
+            settleShort: applyLead ? 'Apply & Create' : 'Deep Mastery',
+            settleSub: applyLead ? 'Where your energy settles: outward creation & leadership' : 'Where your energy settles: deep study, skill & caution',
+            settlePct: applyLead ? q.rajasPct : q.tamasPct,
+            settleColor: applyLead ? '#ea580c' : '#059669',
+            settleBg: applyLead ? '#fff7ed' : '#ecfdf5',
+            settleBorder: applyLead ? '#fed7aa' : '#a7f3d0'
+        };
+
         var donutRT = buildSVGDonut(
             q.rajasPct, '#f97316', '#10b981',
-            (applyLead ? q.rajasPct : q.tamasPct) + '%',
-            isFastCharging ? 'INTUITIVE' : 'LOGICAL'
+            mt.settlePct + '%',
+            applyLead ? 'INTUITIVE' : 'LOGICAL'
         );
 
         var donutGP = buildSVGDonut(
@@ -417,86 +454,94 @@
         var comboText = '';
         if (applyLead && leftLead) {
             comboTitle = 'Hands-On System & Structure Builder';
-            comboText = 'Your largest energy reserve sits in practical, hands-on execution and building tangible systems. Rather than staying in abstract theory, you prefer turning ideas into real products, workflows, and visible results.';
+            comboText = 'You start by tuning in quickly (' + mt.startPct + '%), and over time your energy settles into practical, hands-on execution and building tangible systems (' + mt.settlePct + '%).';
         } else if (applyLead && !leftLead) {
             comboTitle = 'Visionary People & Strategy Leader';
-            comboText = 'Your largest energy reserve sits in strategy, communication, and leading through people. You do your best work when setting independent direction, sharing ideas, and coordinating a team.';
+            comboText = 'You start by observing the room quickly (' + mt.startPct + '%), and over time your energy settles into strategy, communication, and leading through people (' + mt.settlePct + '%).';
         } else if (!applyLead && leftLead) {
             comboTitle = 'Deep Technical & Structural Specialist';
-            comboText = 'Your largest energy reserve sits in deep study, understanding root causes, and hands-on skill mastery. You build a rock-solid foundation of knowledge and practical capability to back up your actions.';
+            comboText = 'You start with a quick spark of action (' + mt.startPct + '%), and over time your energy settles into deep study, root-cause analysis, and hands-on skill mastery (' + mt.settlePct + '%).';
         } else {
             comboTitle = 'Observant Advisor & People Anchor';
-            comboText = 'Your largest energy reserve sits in keen observation, emotional connection, and thoughtful guidance. You naturally read situations and people deeply, helping groups stay safe and connected.';
+            comboText = 'You start with a quick spark of initiative (' + mt.startPct + '%), and over time your energy settles into keen observation, emotional connection, and thoughtful guidance (' + mt.settlePct + '%).';
         }
 
         var stressStripHTML = '';
         if (q.stressReset) {
-            stressStripHTML = '<div style="margin-top:7px;padding-top:7px;border-top:1px dashed #c7d2fe;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;">' +
-                '<div class="cnp-v-body" style="' + S.bodyText + '"><strong style="color:#be123c;font-family:Montserrat,sans-serif;font-size:10.5px;text-transform:uppercase;"><i class="ph ph-warning-circle"></i> #1 Energy Drain / Stress Trigger:</strong> ' + q.stressReset.trigger + '</div>' +
-                '<div class="cnp-v-body" style="' + S.bodyText + '"><strong style="color:#047857;font-family:Montserrat,sans-serif;font-size:10.5px;text-transform:uppercase;"><i class="ph ph-first-aid-kit"></i> Instant Reset Protocol:</strong> ' + q.stressReset.reset + '</div>' +
+            stressStripHTML = '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #c7d2fe;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px;">' +
+                '<div class="cnp-v-body" style="' + S.bodyText + '"><strong style="color:#be123c;font-family:Montserrat,sans-serif;font-size:11px;text-transform:uppercase;"><i class="ph ph-warning-circle"></i> #1 Energy Drain / Stress Trigger:</strong> ' + q.stressReset.trigger + '</div>' +
+                '<div class="cnp-v-body" style="' + S.bodyText + '"><strong style="color:#047857;font-family:Montserrat,sans-serif;font-size:11px;text-transform:uppercase;"><i class="ph ph-first-aid-kit"></i> Instant Reset Protocol:</strong> ' + q.stressReset.reset + '</div>' +
             '</div>';
         }
 
         return '<div class="cnp-v-stack" style="display:flex;flex-direction:column;gap:16px;">' +
-            '<div class="cnp-v-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;break-inside:avoid;page-break-inside:avoid;">' +
+            '<div class="cnp-v-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;break-inside:avoid;page-break-inside:avoid;">' +
+                // Card 1: Action Mode Transition (Starts With Smaller % -> Settles Into Larger % — Percentages Only!)
                 '<div class="cnp-v-card" style="' + S.card + '">' +
                     '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:10px;">' +
                         '<div style="flex:1;min-width:180px;">' +
-                            '<h4 class="cnp-v-sectitle" style="' + S.secTitle + '">1. Action Mode: Apply vs. Learn</h4>' +
-                            '<p class="cnp-v-secsub" style="' + S.secSub + '">Energy spent applying knowledge outward (Houses 2, 9, 11, 12) vs. absorbing it inward (Houses 3, 5, 6, 8)</p>' +
+                            '<h4 class="cnp-v-sectitle" style="' + S.secTitle + '">1. Action Mode Transition: Start &rarr; Settle</h4>' +
+                            '<p class="cnp-v-secsub" style="' + S.secSub + '">Smaller % sparks first at the start &rarr; Larger % is where you settle over time</p>' +
                         '</div>' +
                         (q.bioAlignmentBadge ? '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:2.5px 8px;border-radius:999px;background:' + q.bioAlignmentBg + ';color:' + q.bioAlignmentColor + ';border:1px solid ' + q.bioAlignmentColor + '30;text-transform:uppercase;white-space:nowrap;">' + q.bioAlignmentBadge + '</span>' : '') +
                     '</div>' +
-                    '<div style="display:flex;align-items:center;gap:16px;">' +
+                    '<div style="display:flex;align-items:center;gap:14px;">' +
                         donutRT +
-                        '<div style="flex:1;display:flex;flex-direction:column;gap:9px;">' +
-                            '<div>' +
-                                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">' +
-                                    '<span style="' + S.itemTitle + 'color:#c2410c;">RAJAS &middot; Apply (Houses 2, 9, 11, 12)</span>' +
-                                    '<span style="' + S.itemScore + 'color:#c2410c;">' + q.rajasWeight + ' pts (' + q.rajasPct + '%)</span>' +
+                        '<div style="flex:1;display:flex;flex-direction:column;gap:7px;">' +
+                            // Step 1: Starts With (Smaller %)
+                            '<div class="cnp-trans-step-box" style="background:' + mt.startBg + ';border:1px solid ' + mt.startBorder + ';border-radius:9px;padding:7px 10px;">' +
+                                '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:2px;">' +
+                                    '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;color:' + mt.startColor + ';text-transform:uppercase;letter-spacing:0.04em;">&#9889; 1. Starts With (Quick Spark)</span>' +
+                                    '<span style="' + S.itemScore + 'color:' + mt.startColor + ';">' + mt.startPct + '%</span>' +
                                 '</div>' +
-                                '<p style="' + S.itemDesc + '">Outward ideas, creation, team leadership &amp; execution</p>' +
-                                '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#ffedd5;">' +
-                                    '<div style="width:' + q.rajasPct + '%;height:100%;background:#f97316;border-radius:999px;"></div>' +
+                                '<div style="' + S.itemTitleBold + 'font-size:11.5px;margin-bottom:3px;">' + mt.startTitle + '</div>' +
+                                '<div class="cnp-v-bar" style="width:100%;height:7px;background:#ffffff;border-radius:999px;overflow:hidden;">' +
+                                    '<div style="width:' + Math.max(4, mt.startPct) + '%;height:100%;background:' + mt.startColor + ';border-radius:999px;"></div>' +
                                 '</div>' +
                             '</div>' +
-                            '<div>' +
-                                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">' +
-                                    '<span style="' + S.itemTitle + 'color:#047857;">TAMAS &middot; Learn (Houses 3, 5, 6, 8)</span>' +
-                                    '<span style="' + S.itemScore + 'color:#047857;">' + q.tamasWeight + ' pts (' + q.tamasPct + '%)</span>' +
+                            // Downward Transition Arrow
+                            '<div style="text-align:center;font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;color:#4f46e5;line-height:1;letter-spacing:0.05em;">' +
+                                '&#9660; TRANSITIONS &amp; SETTLES OVER TIME INTO &#9660;' +
+                            '</div>' +
+                            // Step 2: Settles Into Over Time (Larger %)
+                            '<div class="cnp-trans-step-box" style="background:' + mt.settleBg + ';border:1.5px solid ' + mt.settleColor + ';border-radius:9px;padding:7px 10px;">' +
+                                '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:2px;">' +
+                                    '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;color:' + mt.settleColor + ';text-transform:uppercase;letter-spacing:0.04em;">&#9875; 2. Settles Into (Long-Term Anchor)</span>' +
+                                    '<span style="' + S.itemScore + 'color:' + mt.settleColor + ';">' + mt.settlePct + '%</span>' +
                                 '</div>' +
-                                '<p style="' + S.itemDesc + '">Inward observation, deep study, skill practice &amp; bonding</p>' +
-                                '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#d1fae5;">' +
-                                    '<div style="width:' + q.tamasPct + '%;height:100%;background:#10b981;border-radius:999px;"></div>' +
+                                '<div style="' + S.itemTitleBold + 'font-size:11.5px;margin-bottom:3px;">' + mt.settleTitle + '</div>' +
+                                '<div class="cnp-v-bar" style="width:100%;height:7px;background:#ffffff;border-radius:999px;overflow:hidden;">' +
+                                    '<div style="width:' + Math.max(4, mt.settlePct) + '%;height:100%;background:' + mt.settleColor + ';border-radius:999px;"></div>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
                     '</div>' +
                 '</div>' +
 
+                // Card 2: Brain & Work Mode (% Only)
                 '<div class="cnp-v-card" style="' + S.card + '">' +
                     buildSubHeader('2. Brain &amp; Work Mode: Physical vs. Mental', 'Hands-on structural execution (Houses 3, 6, 9, 12) vs. mental advisory &amp; people management (Houses 2, 8, 5, 11)') +
                     '<div style="display:flex;align-items:center;gap:16px;">' +
                         donutGP +
-                        '<div style="flex:1;display:flex;flex-direction:column;gap:9px;">' +
-                            '<div>' +
+                        '<div style="flex:1;display:flex;flex-direction:column;gap:10px;">' +
+                            '<div style="background:#eef2ff;border:1px solid #c7d2fe;border-radius:9px;padding:8px 10px;">' +
                                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">' +
-                                    '<span style="' + S.itemTitle + 'color:#3730a3;">Left Brain &middot; Task &amp; Physical (Houses 3, 6, 9, 12)</span>' +
-                                    '<span style="' + S.itemScore + 'color:#3730a3;">' + q.goalWeight + ' pts (' + q.goalPct + '%)</span>' +
+                                    '<span style="' + S.itemTitle + 'color:#3730a3;">Left Brain &middot; Task &amp; Physical (3, 6, 9, 12)</span>' +
+                                    '<span style="' + S.itemScore + 'color:#3730a3;">' + q.goalPct + '%</span>' +
                                 '</div>' +
-                                '<p style="' + S.itemDesc + '">Deep mastery, core stamina &amp; hands-on execution</p>' +
-                                '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#e0e7ff;">' +
-                                    '<div style="width:' + q.goalPct + '%;height:100%;background:#4f46e5;border-radius:999px;"></div>' +
+                                '<p style="' + S.itemDesc + 'margin-bottom:4px;">Deep mastery, core stamina &amp; hands-on execution</p>' +
+                                '<div class="cnp-v-bar" style="width:100%;height:7px;background:#ffffff;border-radius:999px;overflow:hidden;">' +
+                                    '<div style="width:' + Math.max(4, q.goalPct) + '%;height:100%;background:#4f46e5;border-radius:999px;"></div>' +
                                 '</div>' +
                             '</div>' +
-                            '<div>' +
+                            '<div style="background:#fdf2f8;border:1px solid #fbcfe8;border-radius:9px;padding:8px 10px;">' +
                                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">' +
-                                    '<span style="' + S.itemTitle + 'color:#9d174d;">Right Brain &middot; People &amp; Mental (Houses 2, 8, 5, 11)</span>' +
-                                    '<span style="' + S.itemScore + 'color:#9d174d;">' + q.processWeight + ' pts (' + q.processPct + '%)</span>' +
+                                    '<span style="' + S.itemTitle + 'color:#9d174d;">Right Brain &middot; People &amp; Mental (2, 8, 5, 11)</span>' +
+                                    '<span style="' + S.itemScore + 'color:#9d174d;">' + q.processPct + '%</span>' +
                                 '</div>' +
-                                '<p style="' + S.itemDesc + '">Strategic ideas, observation &amp; leading teams</p>' +
-                                '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#fce7f3;">' +
-                                    '<div style="width:' + q.processPct + '%;height:100%;background:#ec4899;border-radius:999px;"></div>' +
+                                '<p style="' + S.itemDesc + 'margin-bottom:4px;">Strategic ideas, observation &amp; leading teams</p>' +
+                                '<div class="cnp-v-bar" style="width:100%;height:7px;background:#ffffff;border-radius:999px;overflow:hidden;">' +
+                                    '<div style="width:' + Math.max(4, q.processPct) + '%;height:100%;background:#ec4899;border-radius:999px;"></div>' +
                                 '</div>' +
                             '</div>' +
                         '</div>' +
@@ -504,13 +549,13 @@
                 '</div>' +
             '</div>' +
 
-            '<div class="cnp-v-takeaway-box" style="background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 100%);border:1px solid #c7d2fe;border-left:4px solid #4f46e5;border-radius:12px;padding:13px 16px;break-inside:avoid;page-break-inside:avoid;">' +
-                '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:4px;">' +
-                    '<div style="font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:800;color:#3730a3;text-transform:uppercase;letter-spacing:0.04em;"><i class="ph ph-sparkle"></i> Combined Takeaway: ' + comboTitle + '</div>' +
+            '<div class="cnp-v-takeaway-box" style="background:linear-gradient(135deg,#eef2ff 0%,#f8fafc 100%);border:1px solid #c7d2fe;border-left:4px solid #4f46e5;border-radius:12px;padding:14px 18px;break-inside:avoid;page-break-inside:avoid;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;margin-bottom:5px;">' +
+                    '<div style="font-family:Montserrat,sans-serif;font-size:12px;font-weight:800;color:#3730a3;text-transform:uppercase;letter-spacing:0.04em;"><i class="ph ph-sparkle"></i> Combined Takeaway: ' + comboTitle + '</div>' +
                     (q.bioAlignmentBadge ? '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:' + q.bioAlignmentBg + ';color:' + q.bioAlignmentColor + ';border:1px solid ' + q.bioAlignmentColor + '30;text-transform:uppercase;">' + q.bioAlignmentBadge + '</span>' : '') +
                 '</div>' +
-                '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0 0 3px 0;">' + comboText + '</p>' +
-                '<p class="cnp-v-body" style="' + S.bodyText + 'color:#1e293b;margin:0;"><strong>Key Operating &amp; Pacing Insight:</strong> ' + (q.bioAlignmentText || '') + '</p>' +
+                '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0 0 4px 0;">' + comboText + '</p>' +
+                '<p class="cnp-v-body" style="' + S.bodyText + 'color:#1e293b;margin:0;"><strong>How Your Transition Works Over Time:</strong> ' + (q.bioAlignmentText || '') + '</p>' +
                 stressStripHTML +
             '</div>' +
         '</div>';
@@ -522,7 +567,7 @@
                 '<div style="' + S.itemTitleBold + 'line-height:1.35;margin-bottom:5px;">' + p.title + '</div>' +
                 '<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:5px;flex-wrap:wrap;">' +
                     renderBenchmarkPill(p.pct) +
-                    '<span style="' + S.itemScore + 'color:' + p.color + ';">' + p.weight + ' pts (' + p.pct + '%)</span>' +
+                    '<span style="' + S.itemScore + 'color:' + p.color + ';">' + p.pct + '%</span>' +
                 '</div>' +
                 '<p style="' + S.itemDesc + 'margin-bottom:6px;">' + p.sub + '</p>' +
                 '<div class="cnp-v-bar" style="' + S.barTrack + '">' +
@@ -538,7 +583,7 @@
         function renderBenchmarkColumn(headerLabel, subLabel, headerBg, headerColor, headerBorder, list) {
             var bodyHTML = list.length
                 ? list.map(renderPillarCard).join('')
-                : '<div style="background:#ffffff;border:1px dashed #cbd5e1;border-radius:10px;padding:14px 10px;text-align:center;font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;color:#94a3b8;font-style:italic;">No pillars in this zone</div>';
+                : '<div style="background:#ffffff;border:1px dashed #cbd5e1;border-radius:10px;padding:14px 10px;text-align:center;font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:600;color:#94a3b8;font-style:italic;">No pillars in this zone</div>';
 
             return '<div style="background:#ffffff;border:1px solid ' + headerBorder + ';border-radius:11px;overflow:hidden;display:flex;flex-direction:column;">' +
                 '<div style="background:' + headerBg + ';border-bottom:1px solid ' + headerBorder + ';padding:8px 12px;display:flex;justify-content:space-between;align-items:center;">' +
@@ -572,54 +617,114 @@
         '</div>';
     }
 
+    // Section 3B: Visual 2-Step Transition Cards (⚡ 1. Starts Here ─────► ⚓ 2. Settles Here Over Time) in % Only
     function buildPsychoTugOfWarHTML(q) {
-        var legendStrip = '<div class="cnp-v-legend-strip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(225px,1fr));gap:10px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:11.5px;line-height:1.45;">' +
-            '<div style="display:flex;align-items:flex-start;gap:6px;"><span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;background:#ecfdf5;color:#047857;border:1px solid #04785730;white-space:nowrap;flex-shrink:0;">Fast Charging</span><span style="color:#475569;"><strong>Intuitive Flow:</strong> Natural skill at ease in the present; needs a clear goal to hit specific targets.</span></div>' +
-            '<div style="display:flex;align-items:flex-start;gap:6px;"><span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;background:#fffbeb;color:#b45309;border:1px solid #b4530930;white-space:nowrap;flex-shrink:0;">Slow Charging</span><span style="color:#475569;"><strong>Logical Drive:</strong> Understands the objective first and learns to achieve it; stays goal-focused.</span></div>' +
-            '<div style="display:flex;align-items:flex-start;gap:6px;"><span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;background:#eff6ff;color:#1d4ed8;border:1px solid #1d4ed830;white-space:nowrap;flex-shrink:0;">Forced Action</span><span style="color:#475569;"><strong>Input Only:</strong> Energy gathers on the learning side; needs a conscious push to act.</span></div>' +
-            '<div style="display:flex;align-items:flex-start;gap:6px;"><span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:2px 7px;border-radius:999px;background:#fff1f2;color:#be123c;border:1px solid #be123c30;white-space:nowrap;flex-shrink:0;">Strained Action</span><span style="color:#475569;"><strong>Output Only:</strong> Direct outward action without an active learning check; needs pacing.</span></div>' +
+        var legendStrip = '<div class="cnp-v-legend-strip" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;background:#f8fafc;border:1px solid #cbd5e1;border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:12px;line-height:1.45;">' +
+            '<div style="display:flex;align-items:flex-start;gap:8px;"><span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2.5px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;border:1px solid #c7d2fe;white-space:nowrap;flex-shrink:0;">&#9889; 1. Smaller % = Starts Here</span><span style="color:#334155;"><strong>Initial Spark:</strong> Light &amp; fast—how you react at the beginning of a situation or in early life.</span></div>' +
+            '<div style="display:flex;align-items:flex-start;gap:8px;"><span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2.5px 8px;border-radius:999px;background:#0f172a;color:#ffffff;white-space:nowrap;flex-shrink:0;">&#9875; 2. Larger % = Settles Here</span><span style="color:#334155;"><strong>Long-Term Anchor:</strong> Heavy &amp; deep—where your mindset and life naturally settle over time.</span></div>' +
         '</div>';
 
         var rows = q.pairsEvaluated.map(function (p) {
-            var leftLabel  = p.leadT ? ('<span style="color:#047857;"><i class="ph ph-battery-charging"></i> ' + p.tLabel + ': <strong>' + p.tw + ' pts (' + p.tShare + '%)</strong></span>')
-                                     : ('<span style="color:#c2410c;"><i class="ph ph-lightning"></i> ' + p.rLabel + ': <strong>' + p.rw + ' pts (' + p.rShare + '%)</strong></span>');
-            var rightLabel = p.leadT ? ('<span style="color:#c2410c;"><strong>' + p.rw + ' pts (' + p.rShare + '%)</strong> : ' + p.rLabel + ' <i class="ph ph-lightning"></i></span>')
-                                     : ('<span style="color:#047857;"><strong>' + p.tw + ' pts (' + p.tShare + '%)</strong> : ' + p.tLabel + ' <i class="ph ph-battery-charging"></i></span>');
+            var leftBoxStyle  = '';
+            var rightBoxStyle = '';
+            var leftBarFill   = '';
+            var rightBarFill  = '';
+            var leftColor     = p.startColor;
+            var rightColor    = p.settleColor;
 
-            var barSegments = p.total > 0
-                ? (p.leadT
-                    ? '<div style="width:' + p.tShare + '%;background:#10b981;transition:width 0.3s;"></div><div style="width:' + p.rShare + '%;background:#f97316;transition:width 0.3s;"></div>'
-                    : '<div style="width:' + p.rShare + '%;background:#f97316;transition:width 0.3s;"></div><div style="width:' + p.tShare + '%;background:#10b981;transition:width 0.3s;"></div>')
-                : '<div style="width:100%;background:#cbd5e1;"></div>';
+            if (p.isQuiet) {
+                leftColor = '#64748b';
+                rightColor = '#64748b';
+                leftBoxStyle  = 'background:#f8fafc;border:1px dashed #cbd5e1;';
+                rightBoxStyle = 'background:#f8fafc;border:1px dashed #cbd5e1;';
+                leftBarFill   = '<div style="width:0%;height:100%;background:#94a3b8;border-radius:999px;"></div>';
+                rightBarFill  = '<div style="width:0%;height:100%;background:#94a3b8;border-radius:999px;"></div>';
+            } else if (p.isOneSided) {
+                leftBoxStyle  = 'background:' + p.startBg + ';border:1.5px solid ' + p.startColor + ';';
+                rightBoxStyle = 'background:#f8fafc;border:1.5px dashed #cbd5e1;';
+                rightColor    = '#64748b';
+                leftBarFill   = '<div style="width:100%;height:100%;background:' + p.startColor + ';border-radius:999px;"></div>';
+                rightBarFill  = '<div style="width:0%;height:100%;background:#94a3b8;border-radius:999px;"></div>';
+            } else {
+                leftBoxStyle  = 'background:' + p.startBg + ';border:1px solid ' + p.startBorder + ';';
+                rightBoxStyle = 'background:' + p.settleBg + ';border:1.5px solid ' + p.settleColor + ';';
+                leftBarFill   = '<div style="width:' + Math.max(6, p.startPct) + '%;height:100%;background:' + p.startColor + ';border-radius:999px;"></div>';
+                rightBarFill  = '<div style="width:' + Math.max(6, p.settlePct) + '%;height:100%;background:' + p.settleColor + ';border-radius:999px;"></div>';
+            }
 
-            return '<div class="cnp-v-tug-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:15px 18px;margin-bottom:14px;break-inside:avoid;page-break-inside:avoid;box-shadow:0 1px 2px rgba(0,0,0,0.02);">' +
-                '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:3px;">' +
+            var transitionBridgeHTML =
+                '<div class="cnp-trans-grid" style="margin-bottom:10px;">' +
+                    // Left Box: Step 1 (Starts Here / Active Anchor)
+                    '<div class="cnp-trans-step-box" style="' + leftBoxStyle + 'border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;">' +
+                        '<div>' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:3px;">' +
+                                '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;color:' + leftColor + ';text-transform:uppercase;letter-spacing:0.04em;">' + p.step1Badge + '</span>' +
+                                '<span style="font-family:Montserrat,sans-serif;font-size:13px;font-weight:800;color:' + leftColor + ';">' + p.startPct + '%</span>' +
+                            '</div>' +
+                            '<div style="' + S.itemTitleBold + 'margin-bottom:5px;">' + p.startLabel + '</div>' +
+                            '<div class="cnp-v-bar" style="width:100%;height:8px;background:#ffffff;border:1px solid #e2e8f0;border-radius:999px;overflow:hidden;">' +
+                                leftBarFill +
+                            '</div>' +
+                        '</div>' +
+                        (p.startDesc ? '<p class="cnp-trans-desc" style="font-size:11.5px;color:#475569;line-height:1.45;margin:6px 0 0 0;">' + p.startDesc + '</p>' : '') +
+                    '</div>' +
+
+                    // Center Transition Arrow
+                    '<div class="cnp-trans-arrow" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:0 4px;color:#4f46e5;">' +
+                        '<span style="font-family:Montserrat,sans-serif;font-size:8.5px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:#6366f1;white-space:nowrap;margin-bottom:2px;">' + p.arrowLabel + '</span>' +
+                        '<div style="display:flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:999px;background:#eef2ff;border:1px solid #c7d2fe;color:#4f46e5;font-size:16px;font-weight:800;">&rarr;</div>' +
+                    '</div>' +
+
+                    // Right Box: Step 2 (Settles Here Over Time / Unactivated 0%)
+                    '<div class="cnp-trans-step-box" style="' + rightBoxStyle + 'border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between;">' +
+                        '<div>' +
+                            '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:3px;">' +
+                                '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;color:' + rightColor + ';text-transform:uppercase;letter-spacing:0.04em;">' + p.step2Badge + '</span>' +
+                                '<span style="font-family:Montserrat,sans-serif;font-size:13px;font-weight:800;color:' + rightColor + ';">' + p.settlePct + '%' + (p.isOneSided ? ' (Inactive)' : '') + '</span>' +
+                            '</div>' +
+                            '<div style="' + S.itemTitleBold + 'margin-bottom:5px;">' + p.settleLabel + '</div>' +
+                            '<div class="cnp-v-bar" style="width:100%;height:8px;background:#ffffff;border:1px solid #e2e8f0;border-radius:999px;overflow:hidden;">' +
+                                rightBarFill +
+                            '</div>' +
+                        '</div>' +
+                        (p.settleDesc ? '<p class="cnp-trans-desc" style="font-size:11.5px;color:#475569;line-height:1.45;margin:6px 0 0 0;">' + p.settleDesc + '</p>' : '') +
+                    '</div>' +
+                '</div>';
+
+            return '<div class="cnp-v-tug-card" style="background:#ffffff;border:1px solid #e2e8f0;border-radius:12px;padding:16px 18px;margin-bottom:14px;break-inside:avoid;page-break-inside:avoid;box-shadow:0 1px 3px rgba(0,0,0,0.02);">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:4px;">' +
                     '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">' +
-                        '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:6px;background:#1e293b;color:#ffffff;text-transform:uppercase;letter-spacing:0.03em;">' + p.stageBadge + '</span>' +
+                        '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2.5px 8px;border-radius:6px;background:#1e293b;color:#ffffff;text-transform:uppercase;letter-spacing:0.03em;">' + p.stageBadge + '</span>' +
                         '<span style="' + S.itemTitleBold + '">' + p.title + '</span>' +
                     '</div>' +
                     '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
                         '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:#eef2ff;color:#4338ca;">' + p.guidance.label + '</span>' +
                         '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:' + p.badgeBg + ';color:' + p.badgeColor + ';border:1px solid ' + p.badgeColor + '30;">' + p.state + '</span>' +
-                        '<span style="' + S.itemScore + 'color:#475569;">Pair Strength: ' + p.effTotalPct + '%</span>' +
+                        '<span style="' + S.itemScore + 'color:#475569;">Stage Share: ' + p.effTotalPct + '%</span>' +
                     '</div>' +
                 '</div>' +
-                '<p style="' + S.itemDesc + 'margin-bottom:6px;font-style:italic;">' + p.stageSub + '</p>' +
-                '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:11px;font-weight:700;margin-bottom:4px;flex-wrap:wrap;gap:4px;">' +
-                    leftLabel + rightLabel +
-                '</div>' +
-                '<div class="cnp-v-tug-bar" style="display:flex;width:100%;height:9px;border-radius:999px;overflow:hidden;background:#f1f5f9;margin-bottom:10px;">' +
-                    barSegments +
-                '</div>' +
-                '<div class="cnp-v-tug-box" style="background:#f8fafc;border-left:3px solid ' + p.badgeColor + ';border-radius:8px;padding:10px 14px;">' +
-                    '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0 0 4px 0;">' + p.guidance.text + '</p>' +
-                    '<p class="cnp-v-body" style="' + S.bodyText + 'color:#0f172a;margin:0;"><strong style="color:' + p.badgeColor + ';">Action Step:</strong> ' + p.guidance.action + '</p>' +
+                '<p style="' + S.itemDesc + 'margin-bottom:8px;font-style:italic;">' + p.stageSub + '</p>' +
+                transitionBridgeHTML +
+                '<div class="cnp-v-tug-box" style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid ' + p.badgeColor + ';border-radius:8px;padding:11px 14px;">' +
+                    '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0 0 6px 0;">' + p.guidance.text + '</p>' +
+                    '<p class="cnp-v-body" style="' + S.bodyText + 'color:#0f172a;margin:0;"><strong style="color:' + p.badgeColor + ';"><i class="ph ph-arrow-bend-down-right"></i> Action Step:</strong> ' + p.guidance.action + '</p>' +
                 '</div>' +
             '</div>';
         });
 
+        var mt = q.macroTransition || {};
+        var convergenceStrip = '<div class="cnp-v-takeaway-box" style="background:linear-gradient(90deg,#0f172a 0%,#1e293b 100%);color:#ffffff;border-radius:11px;padding:11px 16px;margin-top:4px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;break-inside:avoid;page-break-inside:avoid;">' +
+            '<div style="display:flex;align-items:center;gap:8px;">' +
+                '<i class="ph ph-arrows-merge" style="font-size:18px;color:#38bdf8;"></i>' +
+                '<span style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:#38bdf8;">All 4 Stages Merge Into Your Overall Rhythm:</span>' +
+            '</div>' +
+            '<div style="font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:700;color:#f8fafc;">' +
+                '&#9889; Starts with <strong>' + (mt.startShort || 'Spark') + ' (' + (mt.startPct || 0) + '%)</strong> &nbsp;&rarr;&nbsp; &#9875; Settles into <strong>' + (mt.settleShort || 'Anchor') + ' (' + (mt.settlePct || 0) + '%)</strong>' +
+            '</div>' +
+        '</div>';
+
         var firstBlock = '<div class="cnp-keep-together">' +
-            buildSubHeader('4. Deep Dive: Your Four Core Rhythms (Houses 8–2, 3–9, 6–12, 5–11)', 'Evaluates how Intuition (present-moment ease) vs. Logic (goal-focused structure) operates across each of your 4 life stages: <strong>1. Mindset</strong> &rarr; <strong>2. Depth &amp; Structure</strong> &rarr; <strong>3. Solo Execution</strong> &rarr; <strong>4. People &amp; Team</strong>.') +
+            buildSubHeader('4. Deep Dive: Your Four Core Life Transitions (Houses 8–2, 3–9, 6–12, 5–11)', 'Shows how your energy transitions from your <strong>Initial Starting Spark (Smaller %)</strong> &rarr; into your <strong>Long-Term Settling Anchor (Larger %)</strong> across all 4 stages of life.') +
             legendStrip +
             (rows[0] || '') +
         '</div>';
@@ -627,6 +732,7 @@
         return '<div id="cnp-psycho-tug-of-war" style="margin-top:18px;">' +
             firstBlock +
             rows.slice(1).join('') +
+            convergenceStrip +
         '</div>';
     }
 
