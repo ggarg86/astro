@@ -2,8 +2,10 @@
 // GeoAstro — CNP Life Story & Career Builders (cnp_views_life_career.js)
 // [Views Module Part 2 of 2 — Requires cnp_views_core.js]
 // Features:
-// 1. Section 04A: VARK + Actionable Bird/Element Cues + Collaboration + Partner Fit
-// 2. Section 04B: Stability + Wealth Archetype + Top 6 Subjects & Hobbies
+// 1. Section 04A: VARK + Actionable Workspace Cues + Collaboration + Partner Fit
+// 2. Section 04B: Clean Separate Green (Support) vs. Red (Barriers) Bars +
+//    2 Work Style Graphs (Independent/Business vs. Institutional/Partnership) +
+//    Physical & Mental Health Separate Bars + Subjects/Hobbies
 // 3. Section 05A: Quotients (Brain Engines) vs. Intelligences (Talent Tools) + Depts
 // 4. Section 05B: Top 9 Careers + Executive Roadmap + Decision Clock Protocol
 // ============================================================
@@ -26,7 +28,7 @@
         var h1 = topHobbies[0],  h2 = topHobbies[1];
 
         var subjectRows = topSubjects.map(function (s, idx) {
-            return '<div class="cnp-v-row" style="margin-bottom:11px;">' +
+            return '<div class="cnp-v-row" style="margin-bottom:10px;">' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">' +
                     '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
                         '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:' + s.color + '15;color:' + s.color + ';">#' + (idx + 1) + '</span>' +
@@ -34,7 +36,7 @@
                     '</div>' +
                     '<span style="' + S.itemScore + 'color:' + s.color + ';">' + s.score + '%</span>' +
                 '</div>' +
-                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-wrap:wrap;gap:4px;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3.5px;flex-wrap:wrap;gap:4px;">' +
                     '<span style="font-size:11px;color:#64748b;">' + s.drivers + '</span>' +
                     '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:700;padding:1.5px 7px;border-radius:6px;background:' + s.color + '12;color:' + s.color + ';">' + s.stream + '</span>' +
                 '</div>' +
@@ -45,7 +47,7 @@
         }).join('');
 
         var hobbyRows = topHobbies.map(function (h, idx) {
-            return '<div class="cnp-v-row" style="margin-bottom:11px;">' +
+            return '<div class="cnp-v-row" style="margin-bottom:10px;">' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:2px;flex-wrap:wrap;">' +
                     '<div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">' +
                         '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 7px;border-radius:6px;background:' + h.color + '15;color:' + h.color + ';">#' + (idx + 1) + '</span>' +
@@ -53,7 +55,7 @@
                     '</div>' +
                     '<span style="' + S.itemScore + 'color:' + h.color + ';">' + h.score + '%</span>' +
                 '</div>' +
-                '<p style="' + S.itemDesc + '"><strong>Neural Benefit:</strong> ' + h.purpose + '</p>' +
+                '<p style="' + S.itemDesc + '"><strong>Benefit:</strong> ' + h.purpose + '</p>' +
                 '<div class="cnp-v-bar" style="' + S.barTrack + '">' +
                     '<div style="width:' + Math.max(6, h.score) + '%;height:100%;background:' + h.color + ';border-radius:999px;"></div>' +
                 '</div>' +
@@ -61,33 +63,33 @@
         }).join('');
 
         return '<div class="cnp-v-card" style="' + S.card + '">' +
-            H.buildSubHeader('<i class="ph ph-books"></i> 4. Recommended Knowledge Streams &amp; Skill-Building Hobbies', 'Blends your 9 Multiple Intelligences (55%), Circuit-Weighted Houses (30%), and VARK Sensory Channels (15%) to identify your highest-yield study subjects and daily neural-charging activities') +
+            H.buildSubHeader('<i class="ph ph-books"></i> 4. Recommended Knowledge Streams &amp; Skill-Building Hobbies (Houses 2, 3, 5, 6, 8, 9, 11, 12)', 'Blends your natural talent tools (55%), house combinations (30%), and sensory learning channels (15%) to identify your highest-yield study subjects and daily recharge activities') +
             '<div class="cnp-v-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px;align-items:stretch;">' +
                 '<div class="cnp-v-subcard" style="' + S.subCard + 'background:#ffffff;display:flex;flex-direction:column;justify-content:space-between;">' +
                     '<div>' +
-                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #f1f5f9;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid #f1f5f9;">' +
                             '<span style="' + S.itemTitleBold + 'text-transform:uppercase;letter-spacing:0.04em;"><i class="ph ph-student"></i> Top 6 High-Affinity Subjects</span>' +
                             '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;color:#4f46e5;background:#eef2ff;padding:2px 8px;border-radius:999px;">Study &amp; Upskilling</span>' +
                         '</div>' +
                         subjectRows +
                     '</div>' +
-                    '<div class="cnp-v-takeaway-box" style="background:#eef2ff;border:1px solid #c7d2fe;border-left:4px solid #4f46e5;border-radius:9px;padding:12px 15px;margin-top:6px;">' +
+                    '<div class="cnp-v-takeaway-box" style="background:#eef2ff;border:1px solid #c7d2fe;border-left:4px solid #4f46e5;border-radius:9px;padding:11px 14px;margin-top:5px;">' +
                         '<strong style="color:#312e81;font-family:Montserrat,sans-serif;font-size:11px;text-transform:uppercase;display:block;margin-bottom:2px;">Primary Stream Prescription: ' + s1.stream + '</strong>' +
-                        '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0;">Prioritize formal study, certifications, or deep reading in <strong>' + s1.title + ' (' + s1.score + '%)</strong> and <strong>' + s2.title + ' (' + s2.score + '%)</strong> — these subjects align directly with your fastest cognitive circuits.</p>' +
+                        '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0;">Prioritize formal study, certifications, or deep reading in <strong>' + s1.title + ' (' + s1.score + '%)</strong> and <strong>' + s2.title + ' (' + s2.score + '%)</strong> — these subjects align directly with your natural learning style.</p>' +
                     '</div>' +
                 '</div>' +
 
                 '<div class="cnp-v-subcard" style="' + S.subCard + 'background:#ffffff;display:flex;flex-direction:column;justify-content:space-between;">' +
                     '<div>' +
-                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;padding-bottom:7px;border-bottom:1px solid #f1f5f9;">' +
-                            '<span style="' + S.itemTitleBold + 'text-transform:uppercase;letter-spacing:0.04em;"><i class="ph ph-palette"></i> Top 6 Neural-Charging Hobbies</span>' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid #f1f5f9;">' +
+                            '<span style="' + S.itemTitleBold + 'text-transform:uppercase;letter-spacing:0.04em;"><i class="ph ph-palette"></i> Top 6 Daily Recharge Hobbies</span>' +
                             '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;color:#047857;background:#ecfdf5;padding:2px 8px;border-radius:999px;">Skill &amp; Stress Release</span>' +
                         '</div>' +
                         hobbyRows +
                     '</div>' +
-                    '<div class="cnp-v-takeaway-box" style="background:#ecfdf5;border:1px solid #a7f3d0;border-left:4px solid #059669;border-radius:9px;padding:12px 15px;margin-top:6px;">' +
+                    '<div class="cnp-v-takeaway-box" style="background:#ecfdf5;border:1px solid #a7f3d0;border-left:4px solid #059669;border-radius:9px;padding:11px 14px;margin-top:5px;">' +
                         '<strong style="color:#065f46;font-family:Montserrat,sans-serif;font-size:11px;text-transform:uppercase;display:block;margin-bottom:2px;">Daily 30-Minute Habit Prescription:</strong>' +
-                        '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0;">' + h1.habit + ' Pair this with <strong>' + h2.title.split(',')[0] + '</strong> on weekends to keep your mind sharp and stress-free.</p>' +
+                        '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0;">' + h1.habit + ' Pair this with <strong>' + h2.title.split(',')[0] + '</strong> on weekends to keep your mind sharp and relaxed.</p>' +
                     '</div>' +
                 '</div>' +
             '</div>' +
@@ -154,7 +156,7 @@
         if (q.circuitComplement) {
             complementHTML = '<div class="cnp-v-complement-grid" style="margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0;display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;">' +
                 '<div class="cnp-v-complement-card" style="background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #4f46e5;border-radius:10px;padding:11px 14px;">' +
-                    '<div style="font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:800;color:#3730a3;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;"><i class="ph ph-handshake"></i> Who Completes Your Circuit (Co-Founder &amp; Team Fit)</div>' +
+                    '<div style="font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:800;color:#3730a3;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:3px;"><i class="ph ph-handshake"></i> Who Completes Your Strengths (Co-Founder &amp; Team Fit)</div>' +
                     '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0;">' + q.circuitComplement.coFounderFit + '</p>' +
                 '</div>' +
                 '<div class="cnp-v-complement-card" style="background:#f8fafc;border:1px solid #e2e8f0;border-left:3px solid #0d9488;border-radius:10px;padding:11px 14px;">' +
@@ -166,7 +168,7 @@
 
         return '<div class="cnp-v-stack" style="display:flex;flex-direction:column;gap:18px;">' +
             '<div class="cnp-v-card" style="' + S.card + '">' +
-                H.buildSubHeader('<i class="ph ph-graduation-cap"></i> 1. Learns Best By &amp; Working Style (VARK &bull; Bird &bull; Element)', 'Circuit-weighted sensory channels showing how your brain absorbs information, communicates, and shapes its workspace') +
+                H.buildSubHeader('<i class="ph ph-graduation-cap"></i> 1. Learns Best By &amp; Working Style (Houses 3–9, 8–2, 5–11, 6–12)', 'Sensory channels showing how you absorb information, communicate, and shape your ideal workspace') +
                 '<div class="cnp-v-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:12px;margin-bottom:12px;">' +
                     learnCardsGrid +
                 '</div>' +
@@ -181,14 +183,14 @@
             '</div>' +
 
             '<div class="cnp-v-card" style="' + S.card + '">' +
-                H.buildSubHeader('<i class="ph ph-users-three"></i> 2. Collaboration Mode &amp; Circuit Complementarity', 'How your performance scales solo vs. in a team — and the exact partner energy that completes your missing circuits') +
+                H.buildSubHeader('<i class="ph ph-users-three"></i> 2. Collaboration Mode &amp; Partner Complementarity (Houses 2, 6, 12, 3 vs. 5, 11, 8, 9)', 'How your work scales single-handedly vs. with a team — and the partner qualities that balance you best') +
                 '<div class="cnp-v-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;align-items:center;">' +
                     '<div class="cnp-v-subcard" style="display:flex;align-items:center;gap:16px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;">' +
                         modeDonut +
                         '<div style="flex:1;display:flex;flex-direction:column;gap:10px;">' +
                             '<div>' +
                                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
-                                    '<span style="' + S.itemTitle + 'color:#1d4ed8;">Individual Autonomy (12,2,6,3)</span>' +
+                                    '<span style="' + S.itemTitle + 'color:#1d4ed8;">Solo Execution (Houses 2, 6, 12, 3)</span>' +
                                     '<span style="' + S.itemScore + 'color:#1d4ed8;">' + q.individualWeight + ' pts (' + q.individualPct + '%)</span>' +
                                 '</div>' +
                                 '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#dbeafe;">' +
@@ -197,7 +199,7 @@
                             '</div>' +
                             '<div>' +
                                 '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
-                                    '<span style="' + S.itemTitle + 'color:#0f766e;">TEAM Synergy (11,5,8,9)</span>' +
+                                    '<span style="' + S.itemTitle + 'color:#0f766e;">People &amp; Team Synergy (Houses 5, 11, 8, 9)</span>' +
                                     '<span style="' + S.itemScore + 'color:#0f766e;">' + q.teamPlayerWeight + ' pts (' + q.teamPlayerPct + '%)</span>' +
                                 '</div>' +
                                 '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#ccfbf1;">' +
@@ -208,12 +210,12 @@
                     '</div>' +
                     '<div class="cnp-v-takeaway-box" style="background:#f8fafc;border:1px solid #e2e8f0;border-left:4px solid ' + (q.individualWeight >= q.teamPlayerWeight ? '#2563eb' : '#0d9488') + ';border-radius:10px;padding:14px 16px;">' +
                         '<div style="font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:800;color:' + (q.individualWeight >= q.teamPlayerWeight ? '#1d4ed8' : '#0f766e') + ';text-transform:uppercase;letter-spacing:0.04em;margin-bottom:4px;">' +
-                            (q.individualWeight >= q.teamPlayerWeight ? 'Primary Operating Mode: Individual Specialist (' + q.individualPct + '%)' : 'Primary Operating Mode: Team Leader & Collaborator (' + q.teamPlayerPct + '%)') +
+                            (q.individualWeight >= q.teamPlayerWeight ? 'Primary Operating Mode: Solo & Self-Reliant Specialist (' + q.individualPct + '%)' : 'Primary Operating Mode: Team Leader & People Collaborator (' + q.teamPlayerPct + '%)') +
                         '</div>' +
                         '<p class="cnp-v-body" style="' + S.bodyText + 'margin:0;">' +
                             (q.individualWeight >= q.teamPlayerWeight
-                                ? 'You produce your highest-quality work when given solo ownership, direct accountability, and freedom from group micromanagement. Build your core prototypes independently first, then bring others in for scaling.'
-                                : 'Your performance and motivation multiply when delegating, mentoring, and co-creating inside a connected group. Avoid isolating yourself in solo tasks for long stretches — use your voice and network to orchestrate results through people.') +
+                                ? 'You produce your highest-quality work when given independent ownership, direct accountability, and freedom from micromanagement. Build your core work single-handedly first, then bring others in for support.'
+                                : 'Your performance and motivation multiply when working with people, delegating, and leading a connected team. Avoid isolating yourself in solo tasks for long stretches — use your voice and network to build results together.') +
                         '</p>' +
                     '</div>' +
                 '</div>' +
@@ -227,69 +229,211 @@
         var H = getH();
         var S = H.S;
 
-        function buildStabilityCard(title, sub, stabW, stabPct, issW, issPct, accentColor, guidanceText, extraFooterHTML) {
-            var net = M.round1(stabW - issW);
-            var statusLabel = net > 0 ? ('Net Positive Reserve (+' + net + ' pts)') : (net < 0 ? ('High Friction Sensitivity (' + net + ' pts)') : 'Balanced Equilibrium (0 pts)');
-            var statusBg = net >= 0 ? '#ecfdf5' : '#fef2f2';
-            var statusColor = net >= 0 ? '#047857' : '#b91c1c';
+        var wp = q.workPathMatrix || {
+            hasJobResistance: false,
+            soloSelfEmployedPct: 50,
+            teamBusinessPct: 50,
+            largeOrgScalePct: 50,
+            govtJobPct: 50,
+            privateJobPct: 50,
+            familyBizPct: 50,
+            businessFitPct: 50,
+            jobFitPct: 50,
+            statusLabel: 'Balanced Work Style Fit',
+            statusBg: '#ecfdf5',
+            statusColor: '#047857',
+            guidance: ''
+        };
 
-            return '<div class="cnp-v-subcard" style="' + S.subCard + 'display:flex;flex-direction:column;justify-content:space-between;">' +
-                '<div>' +
-                    '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:10px;flex-wrap:wrap;">' +
-                        '<div>' +
-                            '<div style="' + S.itemTitleBold + '">' + title + '</div>' +
-                            '<span style="font-size:11px;color:#64748b;">' + sub + '</span>' +
-                        '</div>' +
-                        '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:999px;background:' + statusBg + ';color:' + statusColor + ';">' + statusLabel + '</span>' +
-                    '</div>' +
-                    '<div style="margin-bottom:10px;">' +
-                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
-                            '<span style="' + S.itemTitle + 'color:#047857;">Stability &amp; Growth Support</span>' +
-                            '<span style="' + S.itemScore + 'color:#047857;">' + stabW + ' pts (' + stabPct + '%)</span>' +
-                        '</div>' +
-                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#d1fae5;">' +
-                            '<div style="width:' + stabPct + '%;height:100%;background:' + accentColor + ';border-radius:999px;"></div>' +
-                        '</div>' +
-                    '</div>' +
-                    '<div style="margin-bottom:12px;">' +
-                        '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
-                            '<span style="' + S.itemTitle + 'color:#e11d48;">Friction / Pressure Load</span>' +
-                            '<span style="' + S.itemScore + 'color:#e11d48;">' + issW + ' pts (' + issPct + '%)</span>' +
-                        '</div>' +
-                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#ffe4e6;">' +
-                            '<div style="width:' + issPct + '%;height:100%;background:#f43f5e;border-radius:999px;"></div>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="cnp-v-body cnp-v-takeaway-box" style="background:#ffffff;border:1px solid #e2e8f0;padding:12px 14px;border-radius:10px;' + S.bodyText + '">' +
-                    guidanceText +
-                    (extraFooterHTML || '') +
-                '</div>' +
-            '</div>';
-        }
+        var hm = q.healthMatrix || {
+            physSupport: q.rhStability,
+            physStrain: q.rhIssues,
+            physSupportPct: q.rhStabilityPct,
+            physStrainPct: q.rhIssuesPct,
+            physIssueTag: 'Strong Physical Stamina',
+            physHasIssue: false,
+            mentSupport: q.rhStability,
+            mentStrain: q.rhIssues,
+            mentSupportPct: q.rhStabilityPct,
+            mentStrainPct: q.rhIssuesPct,
+            mentIssueTag: 'Steady Mental & Relationship Flow',
+            mentHasIssue: false,
+            guidance: ''
+        };
 
-        var mwGuidance = (q.mwStability >= q.mwIssues)
-            ? '<strong>Action Step:</strong> Your natural drive to plan, build, and execute outweighs your internal hesitation. You build financial and career stability fastest when you stay in active production and ship tangible deliverables every week.'
-            : '<strong>Action Step:</strong> Your reflective and risk-scanning sensitivity is high, which can trigger overthinking or perfectionist delays. Use the 48-hour rule: take one visible execution step on new opportunities before self-doubt slows you down.';
+        var mwNet = M.round1(q.mwStability - q.mwIssues);
+        var mwStatusLabel = mwNet >= 0 ? ('Net Positive Reserve (+' + mwNet + ' pts)') : ('High Barrier Sensitivity (' + mwNet + ' pts)');
+        var mwStatusBg    = mwNet >= 0 ? '#ecfdf5' : '#fef2f2';
+        var mwStatusColor = mwNet >= 0 ? '#047857' : '#b91c1c';
+
+        var rhNet = M.round1(q.rhStability - q.rhIssues);
+        var rhStatusLabel = rhNet >= 0 ? ('Net Positive Reserve (+' + rhNet + ' pts)') : ('High Strain Sensitivity (' + rhNet + ' pts)');
+        var rhStatusBg    = rhNet >= 0 ? '#ecfdf5' : '#fef2f2';
+        var rhStatusColor = rhNet >= 0 ? '#047857' : '#b91c1c';
 
         var wealthHTML = '';
         if (q.wealthArchetype) {
-            wealthHTML = '<div style="margin-top:8px;padding-top:8px;border-top:1px dashed #cbd5e1;" class="cnp-v-body">' +
-                '<strong style="color:#047857;font-family:Montserrat,sans-serif;font-size:10.5px;text-transform:uppercase;display:block;margin-bottom:2px;"><i class="ph ph-coins"></i> Wealth Mindset: ' + q.wealthArchetype.title + '</strong>' +
+            wealthHTML = '<div style="margin-top:6px;padding-top:6px;border-top:1px dashed #cbd5e1;" class="cnp-v-body">' +
+                '<strong style="color:#047857;font-family:Montserrat,sans-serif;font-size:10.5px;text-transform:uppercase;display:block;margin-bottom:1.5px;"><i class="ph ph-coins"></i> Wealth Mindset — ' + q.wealthArchetype.title + ':</strong>' +
                 q.wealthArchetype.rule +
             '</div>';
         }
 
-        var rhGuidance = (q.rhStability >= q.rhIssues)
-            ? '<strong>Action Step:</strong> Your capacity for listening, shared optimism, and constructive care provides strong emotional and health resilience. Maintain this balance by expressing appreciation openly and keeping communication warm.'
-            : '<strong>Action Step:</strong> Your high internal standards and sensitivity to friction can create physical tension or emotional distance when stressed. Discharge pressure through daily physical exercise rather than carrying work battles into your home life.';
+        function buildMiniBarRow(label, pctVal, barColor, trackBg) {
+            return '<div style="margin-bottom:6px;">' +
+                '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:700;margin-bottom:2px;">' +
+                    '<span style="color:#1e293b;">' + label + '</span>' +
+                    '<span style="font-weight:800;color:' + barColor + ';">' + pctVal + '%</span>' +
+                '</div>' +
+                '<div class="cnp-v-bar" style="width:100%;height:7px;background:' + (trackBg || '#f1f5f9') + ';border-radius:999px;overflow:hidden;">' +
+                    '<div style="width:' + Math.max(5, pctVal) + '%;height:100%;background:' + barColor + ';border-radius:999px;"></div>' +
+                '</div>' +
+            '</div>';
+        }
+
+        // CARD 1: Money, Career Stability (Green Support vs. Red Barrier) + 2 Work Style Graphs
+        var workAndWealthCard = '<div class="cnp-v-subcard" style="' + S.subCard + 'display:flex;flex-direction:column;justify-content:space-between;">' +
+            '<div>' +
+                '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:8px;flex-wrap:wrap;">' +
+                    '<div>' +
+                        '<div style="' + S.itemTitleBold + '">1. Money, Work Stability &amp; Work Style Fit</div>' +
+                        '<span style="font-size:11px;color:#64748b;">Career Stability (Houses 3, 9, 6, 12) vs. Barriers (Houses 8, 2)</span>' +
+                    '</div>' +
+                    '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;background:' + mwStatusBg + ';color:' + mwStatusColor + ';">' + mwStatusLabel + '</span>' +
+                '</div>' +
+
+                // Part A: Clean Two-Bar "Growth Support (Green) vs. Barriers (Red)" Box
+                '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:9px;padding:8px 11px;margin-bottom:8px;">' +
+                    '<div style="margin-bottom:6px;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:700;margin-bottom:2px;">' +
+                            '<span style="color:#047857;"><i class="ph ph-trend-up"></i> Growth &amp; Career Focus Support</span>' +
+                            '<span style="font-weight:800;color:#047857;">' + q.mwStability + ' pts (' + q.mwStabilityPct + '%)</span>' +
+                        '</div>' +
+                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#dcfce7;">' +
+                            '<div style="width:' + Math.max(5, q.mwStabilityPct) + '%;height:100%;background:#10b981;border-radius:999px;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div>' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:700;margin-bottom:2px;">' +
+                            '<span style="color:#e11d48;"><i class="ph ph-warning-octagon"></i> Barriers (Boredom &amp; Idea Scatter)</span>' +
+                            '<span style="font-weight:800;color:#e11d48;">' + q.mwIssues + ' pts (' + q.mwIssuesPct + '%)</span>' +
+                        '</div>' +
+                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#ffe4e6;">' +
+                            '<div style="width:' + Math.max(5, q.mwIssuesPct) + '%;height:100%;background:#f43f5e;border-radius:999px;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                // Part B: Two Dedicated Work Style Graphs Side-by-Side / Stacked
+                '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:8px;margin-bottom:8px;">' +
+                    // Graph 1: Business & Independent Spectrum
+                    '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:9px;padding:8px 10px;">' +
+                        '<div style="font-family:Montserrat,sans-serif;font-size:10px;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:5px;border-bottom:1px solid #f1f5f9;padding-bottom:3px;">' +
+                            '<i class="ph ph-rocket-launch"></i> Graph 1: Business &amp; Enterprise Fit' +
+                        '</div>' +
+                        buildMiniBarRow('Solo Self-Employed (2,6,12)', wp.soloSelfEmployedPct, '#ea580c', '#ffedd5') +
+                        buildMiniBarRow('Team-Based Business (2,5,11)', wp.teamBusinessPct, '#d97706', '#fef3c7') +
+                        buildMiniBarRow('Large Org &amp; Scaling (8,9,3,5,11)', wp.largeOrgScalePct, '#4f46e5', '#e0e7ff') +
+                    '</div>' +
+
+                    // Graph 2: Institutional & Partnership Spectrum
+                    '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:9px;padding:8px 10px;">' +
+                        '<div style="font-family:Montserrat,sans-serif;font-size:10px;font-weight:800;color:#1d4ed8;text-transform:uppercase;letter-spacing:0.03em;margin-bottom:5px;border-bottom:1px solid #f1f5f9;padding-bottom:3px;">' +
+                            '<i class="ph ph-buildings"></i> Graph 2: Institutional &amp; Partnership Fit' +
+                        '</div>' +
+                        buildMiniBarRow('Govt / Public Sector (8,3,9)', wp.govtJobPct, '#0d9488', '#ccfbf1') +
+                        buildMiniBarRow('Private / Corporate Job (8,6,11,12)', wp.privateJobPct, '#2563eb', '#dbeafe') +
+                        buildMiniBarRow('Trusted Partnership / Association (8,5,3,9)', wp.familyBizPct, '#7c3aed', '#ede9fe') +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="cnp-v-body cnp-v-takeaway-box" style="background:#ffffff;border:1px solid #e2e8f0;padding:10px 13px;border-radius:10px;' + S.bodyText + '">' +
+                wp.guidance +
+                wealthHTML +
+            '</div>' +
+        '</div>';
+
+        // CARD 2: Relationship, Physical & Mental Health Stability (Clean Separate Green Support vs. Red Barrier Bars)
+        var physStatusColor = hm.physHasIssue ? '#be123c' : '#047857';
+        var physStatusBg    = hm.physHasIssue ? '#fff1f2' : '#ecfdf5';
+        var mentStatusColor = hm.mentHasIssue ? '#b45309' : '#047857';
+        var mentStatusBg    = hm.mentHasIssue ? '#fffbeb' : '#ecfdf5';
+
+        var healthAndRelCard = '<div class="cnp-v-subcard" style="' + S.subCard + 'display:flex;flex-direction:column;justify-content:space-between;">' +
+            '<div>' +
+                '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;margin-bottom:8px;flex-wrap:wrap;">' +
+                    '<div>' +
+                        '<div style="' + S.itemTitleBold + '">2. Relationship, Physical &amp; Mental Health Stability</div>' +
+                        '<span style="font-size:11px;color:#64748b;">Physical Stamina (Houses 3, 9, 6, 12) &amp; Relationships (Houses 8, 2, 5, 11)</span>' +
+                    '</div>' +
+                    '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:2px 8px;border-radius:999px;background:' + rhStatusBg + ';color:' + rhStatusColor + ';">' + rhStatusLabel + '</span>' +
+                '</div>' +
+
+                // Axis 1: Physical Body & Stamina (2 Separate Bars: Green Support vs. Red Barrier)
+                '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:9px;padding:8px 11px;margin-bottom:8px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap;">' +
+                        '<span style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#0f172a;"><i class="ph ph-heartbeat" style="color:#dc2626;"></i> Physical Stamina &amp; Body Strength (Houses 3, 9, 6, 12)</span>' +
+                        '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:1.5px 7px;border-radius:999px;background:' + physStatusBg + ';color:' + physStatusColor + ';">' + hm.physIssueTag + '</span>' +
+                    '</div>' +
+                    '<div style="margin-bottom:6px;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:700;margin-bottom:2px;">' +
+                            '<span style="color:#047857;"><i class="ph ph-shield-check"></i> Physical Strength &amp; Stamina Support</span>' +
+                            '<span style="font-weight:800;color:#047857;">' + hm.physSupport + ' pts (' + hm.physSupportPct + '%)</span>' +
+                        '</div>' +
+                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#dcfce7;">' +
+                            '<div style="width:' + Math.max(5, hm.physSupportPct) + '%;height:100%;background:#10b981;border-radius:999px;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div>' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:700;margin-bottom:2px;">' +
+                            '<span style="color:#e11d48;"><i class="ph ph-warning-circle"></i> Barriers (Physical Fatigue &amp; Recovery Strain)</span>' +
+                            '<span style="font-weight:800;color:#e11d48;">' + hm.physStrain + ' pts (' + hm.physStrainPct + '%)</span>' +
+                        '</div>' +
+                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#ffe4e6;">' +
+                            '<div style="width:' + Math.max(5, hm.physStrainPct) + '%;height:100%;background:#f43f5e;border-radius:999px;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+
+                // Axis 2: Mental Peace & Relationships (2 Separate Bars: Green Support vs. Red Barrier)
+                '<div style="background:#ffffff;border:1px solid #e2e8f0;border-radius:9px;padding:8px 11px;margin-bottom:8px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap;">' +
+                        '<span style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#0f172a;"><i class="ph ph-heart" style="color:#4f46e5;"></i> Mental Peace &amp; Relationships (Houses 8, 2, 5, 11)</span>' +
+                        '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;padding:1.5px 7px;border-radius:999px;background:' + mentStatusBg + ';color:' + mentStatusColor + ';">' + hm.mentIssueTag + '</span>' +
+                    '</div>' +
+                    '<div style="margin-bottom:6px;">' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:700;margin-bottom:2px;">' +
+                            '<span style="color:#047857;"><i class="ph ph-hand-heart"></i> Emotional &amp; Relationship Support</span>' +
+                            '<span style="font-weight:800;color:#047857;">' + hm.mentSupport + ' pts (' + hm.mentSupportPct + '%)</span>' +
+                        '</div>' +
+                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#dcfce7;">' +
+                            '<div style="width:' + Math.max(5, hm.mentSupportPct) + '%;height:100%;background:#10b981;border-radius:999px;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div>' +
+                        '<div style="display:flex;justify-content:space-between;align-items:center;font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:700;margin-bottom:2px;">' +
+                            '<span style="color:#e11d48;"><i class="ph ph-warning-circle"></i> Barriers (Mental Restlessness &amp; Relationship Friction)</span>' +
+                            '<span style="font-weight:800;color:#e11d48;">' + hm.mentStrain + ' pts (' + hm.mentStrainPct + '%)</span>' +
+                        '</div>' +
+                        '<div class="cnp-v-bar" style="' + S.barTrack + 'background:#ffe4e6;">' +
+                            '<div style="width:' + Math.max(5, hm.mentStrainPct) + '%;height:100%;background:#f43f5e;border-radius:999px;"></div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>' +
+
+            '<div class="cnp-v-body cnp-v-takeaway-box" style="background:#ffffff;border:1px solid #e2e8f0;padding:10px 13px;border-radius:10px;' + S.bodyText + '">' +
+                hm.guidance +
+            '</div>' +
+        '</div>';
 
         return '<div class="cnp-v-stack" style="display:flex;flex-direction:column;gap:18px;">' +
             '<div class="cnp-v-card" style="' + S.card + '">' +
-                H.buildSubHeader('<i class="ph ph-scales"></i> 3. Life Stability vs. Friction Analysis (Circuit-Modulated)', 'Comparing your circuit-weighted growth support reserves against internal friction and pressure sensitivity') +
+                H.buildSubHeader('<i class="ph ph-scales"></i> 3. Work Style Fit, Career Stability &amp; Health Resilience (Houses 2, 3, 5, 6, 8, 9, 11, 12)', 'Compares Growth Support (Green) vs. Barriers (Red) across your career, work style (Business vs. Institutional), physical stamina, and relationships') +
                 '<div class="cnp-v-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;">' +
-                    buildStabilityCard('Money & Work Stability', 'Support (Houses 2,9,6,12) vs. Friction (Houses 8,3,5)', q.mwStability, q.mwStabilityPct, q.mwIssues, q.mwIssuesPct, '#10b981', mwGuidance, wealthHTML) +
-                    buildStabilityCard('Relationship & Health Stability', 'Support (Houses 5,11,2,9) vs. Friction (Houses 8,6,12)', q.rhStability, q.rhStabilityPct, q.rhIssues, q.rhIssuesPct, '#3b82f6', rhGuidance, '') +
+                    workAndWealthCard +
+                    healthAndRelCard +
                 '</div>' +
             '</div>' +
             buildSubjectsAndHobbiesHTML(q) +
@@ -406,7 +550,7 @@
             bridgeBanner +
 
             '<div class="cnp-v-card" style="' + S.card + '">' +
-                H.buildSubHeader('2. Multiple Intelligences: Your 9 Natural Talent Tools (9 Dimensions)', '<strong>WHAT SPECIFIC SKILLS COME NATURALLY</strong> &mdash; Shows the exact talent channels (words, visuals, numbers, music, movement, people) through which your quotients express themselves.') +
+                H.buildSubHeader('2. Multiple Intelligences: Your 9 Natural Talent Tools (Houses 2, 3, 5, 6, 8, 9, 11, 12)', '<strong>WHAT SPECIFIC SKILLS COME NATURALLY</strong> &mdash; Shows the exact talent channels (words, visuals, numbers, music, movement, people) through which your quotients express themselves.') +
                 '<div class="cnp-v-mi-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;align-items:center;">' +
                     '<div style="padding:4px;">' + buildRadarSVG(q.intelligences) + '</div>' +
                     '<div style="min-width:0;">' + intelBars + '</div>' +
@@ -436,7 +580,7 @@
         }).join('');
 
         return '<div class="cnp-v-card" style="' + S.card + '">' +
-            H.buildSubHeader('3. Corporate Department Suitability', 'Which functional department inside a company or business best fits your energy (70%) and pair readiness (30%)') +
+            H.buildSubHeader('3. Corporate Department Suitability (Houses 2, 3, 5, 6, 8, 9, 11, 12)', 'Which functional department inside a company or enterprise best fits your natural strengths (70%) and long-term pair readiness (30%)') +
             '<div class="cnp-v-grid-2" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(265px,1fr));gap:12px;">' +
                 deptCards +
             '</div>' +
@@ -473,8 +617,8 @@
                     '<span style="' + S.itemScore + 'color:' + c.color + ';">' + c.score + '% Fit</span>' +
                 '</div>' +
                 '<div style="display:flex;justify-content:space-between;align-items:center;font-size:11px;color:#64748b;margin-bottom:3.5px;flex-wrap:wrap;gap:4px;">' +
-                    '<span><strong>Driving Intelligences:</strong> ' + c.drivers + ' (' + c.intelScore + '%)</span>' +
-                    '<span><strong>Pair Engine:</strong> ' + c.pairLabel + '</span>' +
+                    '<span><strong>Driving Talents:</strong> ' + c.drivers + ' (' + c.intelScore + '%)</span>' +
+                    '<span><strong>Core Rhythm:</strong> ' + c.pairLabel + '</span>' +
                 '</div>' +
                 '<div class="cnp-v-bar" style="' + S.barTrack + '">' +
                     '<div style="width:' + Math.max(5, c.score) + '%;height:100%;background:' + c.color + ';border-radius:999px;"></div>' +
@@ -492,7 +636,7 @@
 
         return '<div class="cnp-v-stack" style="display:flex;flex-direction:column;gap:18px;">' +
             '<div class="cnp-v-card" style="' + S.card + '">' +
-                H.buildSubHeader('4. Quantitative Career Fit Analysis (Top 9 Matches)', 'Evaluates 18 modern career domains by blending your natural Talent Tools (70%) with your Pair Charging Readiness (30%)') +
+                H.buildSubHeader('4. Quantitative Career Fit Analysis — Top 9 Matches (Houses 2, 3, 5, 6, 8, 9, 11, 12)', 'Evaluates 18 modern career domains by blending your natural Talent Tools (70%) with your Long-Term Pair Readiness (30%)') +
                 careerBars +
             '</div>' +
 
@@ -506,11 +650,11 @@
                     '</div>' +
                     '<div class="cnp-v-roadmap-item" style="background:#ffffff;border:1px solid #e0e7ff;border-radius:10px;padding:12px 15px;">' +
                         '<strong style="color:#047857;font-family:Montserrat,sans-serif;font-size:11px;text-transform:uppercase;">2. Best Organizational Seat &amp; Career Fit:</strong> ' +
-                        'Inside any organisation, you will thrive most in <strong>' + topDept.title.split(' (')[0] + ' (' + topDept.score + '%)</strong>. Your highest career alignments are <strong>' + topCareer1.title + ' (' + topCareer1.score + '%)</strong> and <strong>' + topCareer2.title + ' (' + topCareer2.score + '%)</strong>, powered by your <strong>' + topCareer1.pairLabel + ' (' + topCareer1.pairStatus + ')</strong> circuit.' +
+                        'Inside any organisation, you will thrive most in <strong>' + topDept.title.split(' (')[0] + ' (' + topDept.score + '%)</strong>. Your highest career alignments are <strong>' + topCareer1.title + ' (' + topCareer1.score + '%)</strong> and <strong>' + topCareer2.title + ' (' + topCareer2.score + '%)</strong>, powered by your <strong>' + topCareer1.pairLabel.split(' (')[0] + ' (' + topCareer1.pairStatus + ')</strong> rhythm.' +
                     '</div>' +
                     '<div class="cnp-v-roadmap-item" style="background:#ffffff;border:1px solid #e0e7ff;border-radius:10px;padding:12px 15px;">' +
                         '<strong style="color:#b45309;font-family:Montserrat,sans-serif;font-size:11px;text-transform:uppercase;">3. What to Delegate or Systematize:</strong> ' +
-                        'Your lowest departmental score is <strong>' + lowDept.title.split(' (')[0] + ' (' + lowDept.score + '%)</strong>. Avoid taking on heavy solo workloads in this area — partner with specialists or use automated tools so your energy stays locked on your core genius.' +
+                        'Your lowest departmental score is <strong>' + lowDept.title.split(' (')[0] + ' (' + lowDept.score + '%)</strong>. Avoid taking on heavy solo workloads in this area — partner with specialists or use automated tools so your energy stays locked on your core strengths.' +
                     '</div>' +
                     decisionCardHTML +
                 '</div>' +

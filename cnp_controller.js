@@ -4,7 +4,7 @@
 // 1. Premium Access Gate + Basic vs. Advanced Report Toggle
 // 2. Native Save-Record Wrapper (Waits for Cache & Syncs Initial Default Record)
 // 3. Reversible Astronomical Details Accordion (#8) with Mobile Touch Scroll Fix
-// 4. Bridges CNP.Math and CNP.Views to Live Page & window.CNPQuantEngine
+// 4. Bridges CNP.Math (with Gender Sync) and CNP.Views to Live Page & Print
 // ============================================================
 
 (function () {
@@ -23,6 +23,13 @@
     }
     window.hasAdvancedCNPAccess = hasAdvancedAccess;
 
+    function getCurrentGender() {
+        if (typeof _gender !== 'undefined' && _gender) return _gender;
+        var btnFem = document.getElementById('btn-female');
+        if (btnFem && btnFem.classList && btnFem.classList.contains('active')) return 'Female';
+        return 'Male';
+    }
+
     // ── NATIVE SAVE-BUTTON WRAPPER ────────────────────────────
     var _userEditedForm = false;
 
@@ -36,6 +43,17 @@
                 el.addEventListener('change', function () { _userEditedForm = true; });
             }
         });
+
+        // Hook setGender so switching Male/Female clears cached quant until regenerated
+        if (typeof window.setGender === 'function' && !window._cnpGenderPatched) {
+            window._cnpGenderPatched = true;
+            var _origSetGender = window.setGender;
+            window.setGender = function (v) {
+                _userEditedForm = true;
+                window.currentCNPQuant = null;
+                return _origSetGender.apply(this, arguments);
+            };
+        }
     }
 
     function syncInitialDefaultRecordIfNeeded() {
@@ -80,6 +98,10 @@
         }
         if (typeof _gender !== 'undefined' && match.gender) {
             _gender = match.gender;
+            var bm = document.getElementById('btn-male');
+            var bf = document.getElementById('btn-female');
+            if (bm) bm.className = 'inp-gender-btn' + (_gender === 'Male' ? ' active' : '');
+            if (bf) bf.className = 'inp-gender-btn female' + (_gender === 'Female' ? ' active' : '');
         }
     }
 
@@ -279,7 +301,6 @@
             }
         }
 
-        // Ensure table itself maintains minimum width on mobile so columns never squish or clip
         tableEl.style.minWidth = '540px';
 
         var astroDetails = document.getElementById('astro-details');
@@ -365,7 +386,7 @@
         }
         if (!window.currentNatalMap || !window.CNP.Math || !window.CNP.Views) return;
 
-        var q = window.CNP.Math.compute(window.currentNatalMap);
+        var q = window.CNP.Math.compute(window.currentNatalMap, getCurrentGender());
         window.currentCNPQuant = q;
 
         var wheelContainer = document.getElementById('octal-chart-container');
@@ -402,7 +423,7 @@
         if (accEnergy && m && window.CNP.Math && window.CNP.Views) {
             var existingQuant = document.getElementById('cnp-life-story-quant');
             if (existingQuant) existingQuant.remove();
-            var q = window.currentCNPQuant || window.CNP.Math.compute(m);
+            var q = window.currentCNPQuant || window.CNP.Math.compute(m, getCurrentGender());
             accEnergy.insertAdjacentHTML('beforeend', window.CNP.Views.buildLifeStoryQuantHTML(q));
         }
         applyCNPReportModeDOM();
@@ -417,7 +438,7 @@
             _origRenderSupportSpeed(l);
         }
         var basicHTML = c.innerHTML;
-        var q = window.currentCNPQuant || window.CNP.Math.compute(window.currentNatalMap);
+        var q = window.currentCNPQuant || window.CNP.Math.compute(window.currentNatalMap, getCurrentGender());
 
         c.innerHTML =
             '<div id="cnp-career-basic-view" class="flex flex-col gap-6">' + basicHTML + '</div>' +
