@@ -1,5 +1,5 @@
 // ============================================================
-// GeoAstro — CNP Download Report Module (report.js)
+// CNP — CNP Download Report Module (report.js)
 // Enforces Premium Access Gate & Expired-User Gate
 // Features:
 // 1. Expired User Print Mode: Prints ONLY Header + Birth Details +
@@ -38,7 +38,7 @@
         return '<div style="margin-bottom:10px;border-bottom:2px solid #1e293b;padding-bottom:6px;break-after:avoid;page-break-after:avoid;">' +
             '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
                 '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:2.5px 8px;border-radius:4px;background:#1e293b;color:#ffffff;">Section 0' + secNum + ' of 0' + totalSecs + '</span>' +
-                '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">' + esc(clientName) + ' &bull; geoastro.brainmanual.in</span>' +
+                '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">' + esc(clientName) + ' &bull; cnp.brainmanual.in</span>' +
             '</div>' +
             '<h3 style="font-family:Montserrat,sans-serif;font-size:1.12em;font-weight:800;color:#0f172a;margin:0;letter-spacing:0.01em;">' + title + '</h3>' +
             (subtitle ? '<p style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;color:#475569;margin:1.5px 0 0 0;">' + subtitle + '</p>' : '') +
@@ -94,7 +94,7 @@
             '</div>';
         });
         html += '</div>';
-        html += '<p style="font-size:0.85em; color:#64748b; font-style:italic; margin-top:8px;">For an in-depth read, refer to the <a href="https://geoastro.brainmanual.in/guide.html" style="color:#2980b9; text-decoration:underline;">Archetype Guide</a>.</p>';
+        html += '<p style="font-size:0.85em; color:#64748b; font-style:italic; margin-top:8px;">For an in-depth read, refer to the <a href="https://cnp.brainmanual.in/guide.html" style="color:#2980b9; text-decoration:underline;">Archetype Guide</a>.</p>';
         return html;
     }
 
@@ -177,7 +177,7 @@
 
         var brandHeader =
             '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2980b9;padding-bottom:6px;margin-bottom:10px;">' +
-            '<span style="font-family:Montserrat,sans-serif;font-weight:800;color:#2980b9;font-size:1.05em;">geoastro.brainmanual.in</span>' +
+            '<span style="font-family:Montserrat,sans-serif;font-weight:800;color:#2980b9;font-size:1.05em;">cnp.brainmanual.in</span>' +
             '<span style="font-size:0.82em;color:#64748b;font-weight:600;">+91-62834-62525 &nbsp;|&nbsp; brainmanual@gmail.com</span>' +
             '</div>';
 
@@ -302,7 +302,7 @@
                         '<div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);color:#ffffff;border-radius:12px;padding:12px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">' +
                             '<div>' +
                                 '<div style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;color:#38bdf8;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:2px;">Brain Architecture &amp; Neural Operating Manual</div>' +
-                                '<h2 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:1.25em;margin:0;color:#ffffff;">Cosmos Neural Programming (CNP) Report</h2>' +
+                                '<h2 style="font-family:Montserrat,sans-serif;font-weight:800;font-size:1.25em;margin:0;color:#ffffff;">Cosmos Neural Programming (CNP) Advance Report</h2>' +
                             '</div>' +
                             '<div style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:4px 10px;border-radius:8px;font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#e2e8f0;">' +
                                 'Date: ' + esc(reportDate) +

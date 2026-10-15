@@ -1,5 +1,5 @@
 // ============================================================
-// GeoAstro — Session Tracking Module (sessions.js)
+// CNP — Session Tracking Module (sessions.js)
 // Respects Premium Access Gate & Basic/Advanced Report Mode
 // Features:
 // 1. Subtitle: "BRAIN ARCHITECTURE & NEURAL OPERATING MANUAL"
@@ -382,7 +382,7 @@ function buildBasicCareerGuidanceHTML() {
             '<span style="color:' + color + ';">Rank ' + (i + 1) + '</span> &mdash; ' + q.code + ' (' + q.name + ')' +
             '</div>';
   });
-  html += '</div><p style="font-size:0.85em; color:#64748b; font-style:italic; margin-top:8px;">For an in-depth read, refer to the <a href="https://geoastro.brainmanual.in/guide.html" style="color:#2980b9; text-decoration:underline;">Archetype Guide</a>.</p></div>';
+  html += '</div><p style="font-size:0.85em; color:#64748b; font-style:italic; margin-top:8px;">For an in-depth read, refer to the <a href="https://cnp.brainmanual.in/guide.html" style="color:#2980b9; text-decoration:underline;">Archetype Guide</a>.</p></div>';
   return html;
 }
 
@@ -390,7 +390,7 @@ function buildSessionChapterBanner(secNum, totalSecs, title, subtitle, clientNam
   return '<div style="margin-bottom:10px;border-bottom:2px solid #1e293b;padding-bottom:6px;break-after:avoid;page-break-after:avoid;">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
       '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:2.5px 8px;border-radius:4px;background:#1e293b;color:#ffffff;">Section 0' + secNum + ' of 0' + totalSecs + '</span>' +
-      '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">' + esc(clientName) + ' &bull; geoastro.brainmanual.in</span>' +
+      '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">' + esc(clientName) + ' &bull; cnp.brainmanual.in</span>' +
     '</div>' +
     '<h3 style="font-family:Montserrat,sans-serif;font-size:1.12em;font-weight:800;color:#0f172a;margin:0;letter-spacing:0.01em;">' + title + '</h3>' +
     (subtitle ? '<p style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;color:#475569;margin:1.5px 0 0 0;">' + subtitle + '</p>' : '') +
@@ -468,7 +468,7 @@ window.printSessionReport = function(s){
 
   var brandHeader =
     '<div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #2980b9;padding-bottom:6px;margin-bottom:10px;">' +
-      '<span style="font-family:Montserrat,sans-serif;font-weight:800;color:#2980b9;font-size:1.05em;">geoastro.brainmanual.in</span>' +
+      '<span style="font-family:Montserrat,sans-serif;font-weight:800;color:#2980b9;font-size:1.05em;">cnp.brainmanual.in</span>' +
       '<span style="font-size:0.82em;color:#64748b;font-weight:600;">+91-62834-62525 &nbsp;|&nbsp; brainmanual@gmail.com</span>' +
     '</div>';
 
@@ -689,7 +689,7 @@ window.printSessionReport = function(s){
   }
 
   var originalTitle = document.title;
-  document.title = clientName ? clientName + ' - CNP Session Report' : 'geoastro.brainmanual.in';
+  document.title = clientName ? clientName + ' - CNP Session Report' : 'cnp.brainmanual.in';
   document.body.classList.add('sess-print-mode');
   setTimeout(function(){
     window.print();
