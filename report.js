@@ -5,13 +5,18 @@
 // 1. Expired User Print Mode: Prints ONLY Header + Birth Details +
 //    Geo-Time Zone Map @ Birth + Planetary Positions Table + Disclaimer
 // 2. Basic Report Mode: Prints Classic Text Report
-// 3. Advanced Report Mode: Clean 1-Page Groupings:
-//    - Sec 3A: Donuts + Takeaway + Working Style + Functional Pillars
-//    - Sec 3B: All 4 Stages of Core Life Transitions Deep Dive
-//    - Sec 4A: Energy Flow + Learns Best By + Collaboration Mode on 1 Page
-//    - Sec 4B: Life Stability + Recommended Subjects & Hobbies on 1 Page
-//    - Sec 5A: Quotients + Multiple Intelligences + Corporate Depts on 1 Page
-//    - Sec 5B: 9 Career Fits + Executive Career Roadmap on 1 Page
+// 3. Advanced Report Mode: Consistent Readable Typography & Clean Pages:
+//    - Sec 1: Map & Octal House Dominance
+//    - Sec 2: Rhythm of Your Soul
+//    - Sec 3A: Donuts + Takeaway + Working Style + Functional Pillars (1 Page)
+//    - Sec 3B: Stages 1 & 2 of Core Life Transitions Deep Dive (1 Page)
+//    - Sec 3C: Stages 3 & 4 of Core Life Transitions + Convergence (1 Page)
+//    - Sec 4A: Energy Flow + Learns Best By + Collaboration Mode (1 Page)
+//    - Sec 4B: Work Style Fit, Career Stability & Health Resilience (1 Page)
+//    - Sec 4C: Recommended Knowledge Streams & Skill-Building Hobbies (1 Page)
+//    - Sec 5A: Quotients + Multiple Intelligences + Corporate Depts (1 Page)
+//    - Sec 5B: 9 Career Fits + Executive Career Roadmap (1 Page)
+//    - Sec 6: Current Planetary Transits + Disclaimer (1 Page)
 // ============================================================
 
 (function() {
@@ -35,13 +40,13 @@
     }
 
     function buildChapterBanner(secNum, totalSecs, title, subtitle, clientName) {
-        return '<div style="margin-bottom:10px;border-bottom:2px solid #1e293b;padding-bottom:6px;break-after:avoid;page-break-after:avoid;">' +
-            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
-                '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:2.5px 8px;border-radius:4px;background:#1e293b;color:#ffffff;">Section 0' + secNum + ' of 0' + totalSecs + '</span>' +
+        return '<div style="margin-bottom:8px;border-bottom:2px solid #1e293b;padding-bottom:5px;break-after:avoid;page-break-after:avoid;">' +
+            '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5px;">' +
+                '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:#1e293b;color:#ffffff;">Section 0' + secNum + ' of 0' + totalSecs + '</span>' +
                 '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">' + esc(clientName) + ' &bull; cnp.brainmanual.in</span>' +
             '</div>' +
-            '<h3 style="font-family:Montserrat,sans-serif;font-size:1.12em;font-weight:800;color:#0f172a;margin:0;letter-spacing:0.01em;">' + title + '</h3>' +
-            (subtitle ? '<p style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;color:#475569;margin:1.5px 0 0 0;">' + subtitle + '</p>' : '') +
+            '<h3 style="font-family:Montserrat,sans-serif;font-size:1.1em;font-weight:800;color:#0f172a;margin:0;letter-spacing:0.01em;">' + title + '</h3>' +
+            (subtitle ? '<p style="font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:600;color:#475569;margin:1px 0 0 0;">' + subtitle + '</p>' : '') +
         '</div>';
     }
 
@@ -133,6 +138,10 @@
     window.generateCNPReport = function() {
         try { calculatePositions(); } catch (e) {}
 
+        if (window.CNP && window.CNP.Views && window.CNP.Views._helpers && window.CNP.Views._helpers.injectViewPrintStyles) {
+            window.CNP.Views._helpers.injectViewPrintStyles();
+        }
+
         var isExpiredUser = (typeof _isExpired !== 'undefined' && !!_isExpired);
         var canAdv = (!isExpiredUser && typeof window.hasAdvancedCNPAccess === 'function') ? window.hasAdvancedCNPAccess() : (!isExpiredUser);
         var isBasic = (isExpiredUser || !canAdv || window.cnpReportMode === 'basic');
@@ -216,14 +225,24 @@
             var workingStyleHTML = extractWorkingStyleHTML(quant);
             var psychoDonutsHTML = (!isBasic && V && quant) ? V.buildPsychoDonutsAndTakeawayHTML(quant) : '';
             var psychoPillarsHTML = (!isBasic && V && quant) ? V.buildPsychoPillarsBoardHTML(quant) : '';
-            var psychoTugHTML = (!isBasic && V && quant) ? V.buildPsychoTugOfWarHTML(quant) : '';
+            var psychoTugPart1HTML = (!isBasic && V && quant)
+                ? (V.buildPsychoTugPart1HTML ? V.buildPsychoTugPart1HTML(quant) : V.buildPsychoTugOfWarHTML(quant))
+                : '';
+            var psychoTugPart2HTML = (!isBasic && V && quant && V.buildPsychoTugPart2HTML)
+                ? V.buildPsychoTugPart2HTML(quant)
+                : '';
 
             // --- 4. LIFE PATH STORY ---
             var energyFlowHTML = '';
             var energyFlowSrc = document.getElementById('energy-flow-container');
             if (energyFlowSrc) energyFlowHTML = energyFlowSrc.innerHTML;
             var lifePartA = (!isBasic && V && quant && V.buildLifeStoryPartAHTML) ? V.buildLifeStoryPartAHTML(quant) : '';
-            var lifePartB = (!isBasic && V && quant && V.buildLifeStoryPartBHTML) ? V.buildLifeStoryPartBHTML(quant) : '';
+            var lifeStabilityHTML = (!isBasic && V && quant)
+                ? (V.buildLifeStabilityOnlyHTML ? V.buildLifeStabilityOnlyHTML(quant) : (V.buildLifeStoryPartBHTML ? V.buildLifeStoryPartBHTML(quant) : ''))
+                : '';
+            var lifeSubjectsHobbiesHTML = (!isBasic && V && quant && V.buildSubjectsAndHobbiesHTML && V.buildLifeStabilityOnlyHTML)
+                ? V.buildSubjectsAndHobbiesHTML(quant)
+                : '';
 
             // --- 5. CAREER GUIDANCE ---
             var careerPartA = (!isBasic && V && quant) ? V.buildCareerPartAHTML(quant) : '';
@@ -323,7 +342,7 @@
                         mapAndDomSideBySide +
                     '</div>' +
 
-                    // SECTION 02: Rhythm of Your Soul (2-Page Clean Flow)
+                    // SECTION 02: Rhythm of Your Soul
                     (rhythmHTML ? '<div class="cnp-report-page cnp-section-rhythm">' +
                         buildChapterBanner(2, 6, 'Rhythm of Your Soul', 'The push and pause underneath everything you build (Ketu–Rahu Charge-Release Circuit)', customerName) +
                         rhythmHTML +
@@ -332,45 +351,57 @@
                     // SECTION 03 PAGE A: Donuts + Combined Takeaway + Working Style Box + 3-Col Functional Strength Pillars
                     '<div class="cnp-report-page">' +
                         buildChapterBanner(3, 6, 'Psycho-Analysis, Working Style & Strength Pillars', 'Action vs. Learn transition dynamics, Left vs. Right Brain dominance, working style, and functional strength zones', customerName) +
-                        '<div style="display:flex;flex-direction:column;gap:11px;">' +
+                        '<div class="cnp-v-stack" style="display:flex;flex-direction:column;gap:6.5px;">' +
                             psychoDonutsHTML +
                             workingStyleHTML +
                             psychoPillarsHTML +
                         '</div>' +
                     '</div>' +
 
-                    // SECTION 03 PAGE B: All 4 Stages of Four Core Life Transitions Together on 1 Page
+                    // SECTION 03 PAGE B: Stages 1 & 2 of Core Life Transitions Deep Dive
                     '<div class="cnp-report-page">' +
-                        buildChapterBanner(3, 6, 'Psycho-Analysis: Four Core Life Transitions Deep Dive', 'Your 4-stage transition story (Starts Here → Settles Here Over Time) from Mindset to Team Leadership', customerName) +
-                        psychoTugHTML +
+                        buildChapterBanner(3, 6, 'Psycho-Analysis: Core Life Transitions (Stages 1 & 2)', 'Your transition story (Starts Here → Settles Here Over Time) for Mindset & Attitude and Knowledge & System Building', customerName) +
+                        psychoTugPart1HTML +
                     '</div>' +
 
-                    // SECTION 04 PAGE A: Planetary Energy Flow + VARK Learning Channels + Collaboration Mode Together on 1 Page
+                    // SECTION 03 PAGE C: Stages 3 & 4 of Core Life Transitions + Convergence
+                    (psychoTugPart2HTML ? '<div class="cnp-report-page">' +
+                        buildChapterBanner(3, 6, 'Psycho-Analysis: Core Life Transitions (Stages 3 & 4)', 'Your transition story for Solo Mastery & Execution and People Support & Team Leadership', customerName) +
+                        psychoTugPart2HTML +
+                    '</div>' : '') +
+
+                    // SECTION 04 PAGE A: Planetary Energy Flow + VARK Learning Channels + Collaboration Mode
                     (energyFlowHTML ? '<div class="cnp-report-page">' +
                         buildChapterBanner(4, 6, 'Life Path Story, Learning Style & Collaboration', 'Planetary relay sequence, VARK & Bird/Element working channels, and collaboration mode', customerName) +
-                        '<div class="cnp-keep-together" style="background:#ffffff; padding:11px 14px; border-radius:12px; border:1px solid #e2e8f0; margin-bottom:12px;">' + energyFlowHTML + '</div>' +
+                        '<div class="cnp-keep-together" style="background:#ffffff; padding:8px 12px; border-radius:10px; border:1px solid #e2e8f0; margin-bottom:8px;">' + energyFlowHTML + '</div>' +
                         lifePartA +
                     '</div>' : '') +
 
-                    // SECTION 04 PAGE B: Life Stability vs. Friction + Recommended Subjects & Hobbies Together on 1 Page
-                    '<div class="cnp-report-page">' +
-                        buildChapterBanner(4, 6, 'Life Stability, Knowledge Streams & Hobbies', 'Growth support vs. barriers, work style fit, high-affinity study subjects, and daily recharge activities', customerName) +
-                        lifePartB +
-                    '</div>' +
+                    // SECTION 04 PAGE B: Work Style Fit, Career Stability & Health Resilience
+                    (lifeStabilityHTML ? '<div class="cnp-report-page">' +
+                        buildChapterBanner(4, 6, 'Life Stability, Work Style Fit & Health Resilience', 'Growth support vs. barriers across career focus, work style (Business vs. Job), physical stamina, and mental peace', customerName) +
+                        lifeStabilityHTML +
+                    '</div>' : '') +
 
-                    // SECTION 05 PAGE A: Core Quotients + 9 Multiple Intelligences + Corporate Departments Together on 1 Page
+                    // SECTION 04 PAGE C: Recommended Knowledge Streams & Skill-Building Hobbies
+                    (lifeSubjectsHobbiesHTML ? '<div class="cnp-report-page">' +
+                        buildChapterBanner(4, 6, 'Recommended Knowledge Streams & Recharge Hobbies', 'High-affinity study subjects for upskilling and daily 30-minute recharge activities', customerName) +
+                        lifeSubjectsHobbiesHTML +
+                    '</div>' : '') +
+
+                    // SECTION 05 PAGE A: Core Quotients + 9 Multiple Intelligences + Corporate Departments
                     '<div class="cnp-report-page">' +
                         buildChapterBanner(5, 6, 'Career Guidance, Quotients, Intelligences & Departments', 'Core operating quotients, 9-dimension intelligence profile, and corporate department suitability', customerName) +
                         careerPartA +
                     '</div>' +
 
-                    // SECTION 05 PAGE B: 9 Career Fits + Executive Career Roadmap Together on 1 Page
+                    // SECTION 05 PAGE B: 9 Career Fits + Executive Career Roadmap
                     '<div class="cnp-report-page">' +
                         buildChapterBanner(5, 6, 'Quantitative Career Fit & Executive Roadmap', 'Quantitative career alignment across 9 domains and actionable executive career strategy', customerName) +
                         careerPartB +
                     '</div>' +
 
-                    // SECTION 06: Side-by-Side Current Transits + Legal Disclaimer on Same Page
+                    // SECTION 06: Side-by-Side Current Transits + Legal Disclaimer
                     '<div class="cnp-report-page">' +
                         buildChapterBanner(6, 6, 'Current Planetary Transits & Active Cycles', 'Real-time transit positions and Past–Present–Future windows for Sun, Moon, Mars, Jupiter, and Saturn', customerName) +
                         compactTransitsGrid +
@@ -395,7 +426,12 @@
             st.id = 'cnp-print-style';
             st.textContent = `
                 @media print { 
-                    @page { margin: 9mm 11mm; }
+                    @page { size: A4 portrait; margin: 8mm 10mm !important; }
+                    body.cnp-print-mode {
+                        font-size: 100% !important;
+                        padding-top: 0 !important;
+                        background: #ffffff !important;
+                    }
                     body.cnp-print-mode > *:not(#cnp-report-print) { display: none !important; } 
                     body.cnp-print-mode #cnp-report-print { display: block !important; } 
                     body.cnp-print-mode #cnp-report-print, body.cnp-print-mode #cnp-report-print * { 
@@ -415,7 +451,10 @@
                         break-after: avoid;
                         page-break-after: avoid;
                     }
-                    /* Consistent 12px Typography & 2-Page Fit for Rhythm of Your Soul */
+                    .cnp-section-rhythm > div {
+                        break-inside: auto !important;
+                        page-break-inside: auto !important;
+                    }
                     .cnp-section-rhythm > div > div:first-child {
                         break-inside: avoid;
                         page-break-inside: avoid;
@@ -425,17 +464,19 @@
                     }
                     .cnp-section-rhythm > div > div:last-child {
                         padding: 12px 16px !important;
+                        break-inside: auto !important;
+                        page-break-inside: auto !important;
                     }
                     .cnp-section-rhythm > div > div:last-child > div {
                         break-inside: avoid;
                         page-break-inside: avoid;
-                        padding: 10px 14px !important;
-                        margin-top: 8px !important;
+                        padding: 9px 14px !important;
+                        margin-top: 7px !important;
                         margin-bottom: 0 !important;
                     }
                     .cnp-section-rhythm p {
-                        line-height: 1.5 !important;
-                        font-size: 12px !important;
+                        line-height: 1.48 !important;
+                        font-size: 11.8px !important;
                     }
                 }
             `;
@@ -445,16 +486,23 @@
         var originalTitle = document.title;
         document.title = customerName ? customerName + ' - CNP Report' : 'CNP Report';
         document.body.classList.add('cnp-print-mode');
+
+        var cleanedUp = false;
+        var cleanupPrint = function() {
+            if (cleanedUp) return;
+            cleanedUp = true;
+            window.removeEventListener('afterprint', cleanupPrint);
+            document.body.classList.remove('cnp-print-mode');
+            document.title = originalTitle;
+            var c = document.getElementById('cnp-report-print');
+            if (c) c.remove();
+        };
+        window.addEventListener('afterprint', cleanupPrint);
         
         setTimeout(function() {
             window.print();
-            setTimeout(function() {
-                document.body.classList.remove('cnp-print-mode');
-                document.title = originalTitle;
-                var c = document.getElementById('cnp-report-print');
-                if (c) c.remove();
-            }, 300);
-        }, 60);
+            setTimeout(cleanupPrint, 60000);
+        }, 120);
     };
 
 })();

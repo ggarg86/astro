@@ -1,11 +1,13 @@
 // ============================================================
 // GeoAstro — CNP Data & Specifications Library (cnp_data.js)
-// [Math Module Part 1 of 2]
+// [Math Module Part 1 of 2 — 5-Level Neural Tree Architecture]
 // Purpose:
 // Holds all static planetary points, house metadata, 4-pair
 // Start -> Settle Transition & Logic/Intuition rich narratives,
-// intelligence/quotient/pillar/subject/hobby/department/career
-// weight matrices, and full-length working style templates.
+// standardized 2.00-weight (1.40 Core + 0.60 Booster) matrices
+// with explicit coreHouses & parent-child tree keys for Pillars,
+// Quotients, Intelligences, Subjects, Hobbies, Departments,
+// Careers, and full-length working style templates.
 // ============================================================
 
 (function () {
@@ -70,7 +72,7 @@
         }
     };
 
-    // Rich Start -> Settle Transition Narratives blending analysis_2.html copy with Intuition vs. Logic
+    // Level 1 Trunk Definitions: 4 Core Charge-Release Circuits
     var PAIR_DEFINITIONS = [
         {
             key: '8-2', tId: 8, rId: 2,
@@ -246,51 +248,125 @@
         }
     ];
 
+    // ============================================================
+    // LEVEL 3A: 4 CORE FUNCTIONAL STRENGTH PILLARS
+    // Standardized Weight Sum = 2.00 (1.40 Core + 0.60 Booster)
+    // ============================================================
     var PILLAR_SPECS = [
         {
+            key: 'P1_SYSTEMS',
+            pairKey: '3-9',
             title: 'Structural Depth & System Building (Houses 3, 9, 2)',
             sub: 'Understanding root causes in depth and building practical, long-term structures that keep growing',
-            weights: [[3, 1.0], [9, 1.0], [2, 0.75]],
+            coreHouses: [3, 9],
+            weights: [[3, 0.70], [9, 0.70], [2, 0.60]],
             color: '#4f46e5'
         },
         {
+            key: 'P2_SOLO',
+            pairKey: '6-12',
             title: 'Solo Execution & Competitive Grit (Houses 6, 12, 2)',
             sub: 'Single-handed effort, proving yourself in competition, and independent on-the-ground execution',
-            weights: [[6, 1.0], [12, 1.0], [2, 0.75]],
+            coreHouses: [6, 12],
+            weights: [[6, 0.70], [12, 0.70], [2, 0.60]],
             color: '#dc2626'
         },
         {
+            key: 'P3_PEOPLE',
+            pairKey: '5-11',
             title: 'People Support & Team Leadership (Houses 5, 11, 2)',
             sub: 'Building warm trust, gathering people support, and getting work done through a team',
-            weights: [[5, 1.0], [11, 1.0], [2, 0.70]],
+            coreHouses: [5, 11],
+            weights: [[5, 0.70], [11, 0.70], [2, 0.60]],
             color: '#0d9488'
         },
         {
+            key: 'P4_SCALE',
+            pairKey: '8-2',
             title: 'Large-Scale Responsibility & Risk Management (Houses 8, 9, 3, 5)',
             sub: 'Taking responsibility for many people, scanning for risks, and scaling organizational structures',
-            weights: [[8, 1.0], [9, 0.9], [3, 0.75], [5, 0.65]],
+            coreHouses: [8, 9],
+            weights: [[8, 0.80], [9, 0.60], [3, 0.30], [5, 0.30]],
             color: '#ea580c'
         }
     ];
 
-    var INTEL_SPECS = [
-        { key: 'Logical',        label: 'Logical',        houses: [3, 9, 2, 6],  weights: [[3, 1.0], [9, 1.0], [2, 0.7], [6, 0.4]],  color: '#4f46e5', tips: 'Break goals into clear step-by-step workflows, analyze what is going wrong in depth, and track measurable outcomes.' },
-        { key: 'Visual-Spatial', label: 'Visual-Spatial', houses: [2, 8, 9],     weights: [[2, 1.0], [8, 1.0], [9, 0.7]],           color: '#2563eb', tips: 'Use flowcharts, visual roadmaps, and diagrams to turn your mental pictures into clear plans.' },
-        { key: 'Kinesthetical',  label: 'Kinesthetical',  houses: [12, 6, 9],    weights: [[12, 1.0], [6, 0.8], [9, 0.7]],          color: '#ea580c', tips: 'Learn through hands-on building, physical movement, field execution, and real-world practice rather than sitting still.' },
-        { key: 'Linguistics',    label: 'Linguistics',    houses: [11, 3, 5, 9], weights: [[11, 1.0], [3, 1.0], [5, 0.7], [9, 0.7]], color: '#d97706', tips: 'Write daily notes, explain ideas aloud, and use clear communication to guide and persuade others.' },
-        { key: 'Musical',        label: 'Musical',        houses: [5, 11, 2],    weights: [[5, 1.0], [11, 1.0], [2, 0.4]],          color: '#db2777', tips: 'Use voice tone, rhythm, and calming background music to keep your emotional energy steady and focused.' },
-        { key: 'Interpersonal',  label: 'Interpersonal',  houses: [5, 11, 8, 9], weights: [[5, 1.0], [11, 1.0], [8, 0.7], [9, 0.4]], color: '#e11d48', tips: 'Build strong teams, mentor others, and use active listening to get big results through people.' },
-        { key: 'Intrapersonal',  label: 'Intrapersonal',  houses: [2, 8, 3, 12], weights: [[2, 1.0], [8, 0.9], [3, 0.7], [12, 0.5]], color: '#0d9488', tips: 'Protect quiet solo work blocks and keep a personal journal to clarify your own independent goals.' },
-        { key: 'Naturalistic',   label: 'Naturalistic',   houses: [8, 12, 6, 5], weights: [[8, 1.0], [12, 1.0], [6, 0.7], [5, 0.7]], color: '#16a34a', tips: 'Spend time outdoors and observe real-world patterns in nature and your surroundings to refresh your mind.' },
-        { key: 'Spiritual',      label: 'Spiritual',      houses: [8, 3, 5, 2],  weights: [[8, 1.0], [3, 1.0], [5, 0.7], [2, 0.4]],  color: '#7c3aed', tips: 'Connect your daily work to a meaningful purpose and long-term responsibility toward the people around you.' }
+    // ============================================================
+    // LEVEL 3B: 5 CORE OPERATING QUOTIENTS (BRAIN ENGINES)
+    // Standardized Weight Sum = 2.00 (1.40 Core + 0.60 Booster)
+    // ============================================================
+    var QUOTIENT_SPECS = [
+        {
+            code: 'IQ',
+            pillarKey: 'P1_SYSTEMS',
+            pairKey: '3-9',
+            name: 'Intelligence Quotient (Houses 3, 9, 6)',
+            desc: 'Understanding root causes in depth, mastering skills, and building structured systems',
+            houses: [3, 9, 6],
+            coreHouses: [3, 9],
+            weights: [[3, 0.70], [9, 0.70], [6, 0.60]],
+            color: '#4f46e5'
+        },
+        {
+            code: 'CQ',
+            pillarKey: 'P1_SYSTEMS',
+            pairKey: '8-2',
+            name: 'Creative Quotient (Houses 2, 9, 3)',
+            desc: 'Generating original ideas, thinking independently, and designing new solutions',
+            houses: [2, 9, 3],
+            coreHouses: [2, 9],
+            weights: [[2, 0.80], [9, 0.60], [3, 0.60]],
+            color: '#f59e0b'
+        },
+        {
+            code: 'EQ',
+            pillarKey: 'P3_PEOPLE',
+            pairKey: '5-11',
+            name: 'Emotional Quotient (Houses 5, 11, 8)',
+            desc: 'Bonding with people, reading situations, and leading teams with warmth and trust',
+            houses: [5, 11, 8],
+            coreHouses: [5, 11],
+            weights: [[5, 0.70], [11, 0.70], [8, 0.60]],
+            color: '#10b981'
+        },
+        {
+            code: 'AQ',
+            pillarKey: 'P2_SOLO',
+            pairKey: '6-12',
+            name: 'Adversity Quotient (Houses 6, 12, 8, 2)',
+            desc: 'Handling tough pressure, single-handed execution, and turning setbacks into strategy',
+            houses: [6, 12, 8, 2],
+            coreHouses: [6, 12],
+            weights: [[6, 0.70], [12, 0.70], [8, 0.30], [2, 0.30]],
+            color: '#e11d48'
+        },
+        {
+            code: 'SQ',
+            pillarKey: 'P4_SCALE',
+            pairKey: '8-2',
+            name: 'Spiritual Quotient (Houses 8, 3, 5, 12)',
+            desc: 'Letting go of stale habits, seeking deeper truth, and carrying larger responsibility',
+            houses: [8, 3, 5, 12],
+            coreHouses: [8, 3],
+            weights: [[8, 0.70], [3, 0.70], [5, 0.35], [12, 0.25]],
+            color: '#7c3aed'
+        }
     ];
 
-    var QUOTIENT_SPECS = [
-        { code: 'IQ', name: 'Intelligence Quotient (Houses 3, 9, 6)',  desc: 'Understanding root causes in depth, mastering skills, and building structured systems', houses: [3, 9, 6],     weights: [[3, 1.0], [9, 1.0], [6, 0.4]],            color: '#4f46e5' },
-        { code: 'CQ', name: 'Creative Quotient (Houses 2, 9, 3)',      desc: 'Generating original ideas, thinking independently, and designing new solutions', houses: [2, 9, 3],     weights: [[2, 1.0], [9, 0.7], [3, 0.4]],            color: '#f59e0b' },
-        { code: 'EQ', name: 'Emotional Quotient (Houses 5, 11, 8)',    desc: 'Bonding with people, reading situations, and leading teams with warmth and trust', houses: [5, 11, 8],    weights: [[5, 1.0], [11, 1.0], [8, 0.4]],           color: '#10b981' },
-        { code: 'AQ', name: 'Adversity Quotient (Houses 6, 12, 8, 2)', desc: 'Handling tough pressure, single-handed execution, and turning setbacks into strategy', houses: [6, 12, 8, 2], weights: [[6, 1.0], [12, 1.0], [8, 0.7], [2, 0.7]], color: '#e11d48' },
-        { code: 'SQ', name: 'Spiritual Quotient (Houses 8, 3, 5, 12)', desc: 'Letting go of stale habits, seeking deeper truth, and carrying larger responsibility', houses: [8, 3, 5, 12], weights: [[8, 1.0], [3, 1.0], [5, 0.7], [12, 0.4]], color: '#7c3aed' }
+    // ============================================================
+    // LEVEL 5A: 9 MULTIPLE INTELLIGENCES (NATURAL TALENT TOOLS)
+    // Standardized Weight Sum = 2.00 (1.40 Core + 0.60 Booster)
+    // ============================================================
+    var INTEL_SPECS = [
+        { key: 'Logical',        label: 'Logical',        quotientKey: 'IQ', houses: [3, 9, 2, 6],  coreHouses: [3, 9],  weights: [[3, 0.70], [9, 0.70], [2, 0.35], [6, 0.25]],  color: '#4f46e5', tips: 'Break goals into clear step-by-step workflows, analyze what is going wrong in depth, and track measurable outcomes.' },
+        { key: 'Visual-Spatial', label: 'Visual-Spatial', quotientKey: 'CQ', houses: [2, 8, 9],     coreHouses: [2, 8],  weights: [[2, 0.75], [8, 0.65], [9, 0.60]],             color: '#2563eb', tips: 'Use flowcharts, visual roadmaps, and diagrams to turn your mental pictures into clear plans.' },
+        { key: 'Kinesthetical',  label: 'Kinesthetical',  quotientKey: 'AQ', houses: [12, 6, 9],    coreHouses: [12, 6], weights: [[12, 0.75], [6, 0.65], [9, 0.60]],            color: '#ea580c', tips: 'Learn through hands-on building, physical movement, field execution, and real-world practice rather than sitting still.' },
+        { key: 'Linguistics',    label: 'Linguistics',    quotientKey: 'EQ', houses: [11, 3, 5, 9], coreHouses: [11, 3], weights: [[11, 0.70], [3, 0.70], [5, 0.30], [9, 0.30]], color: '#d97706', tips: 'Write daily notes, explain ideas aloud, and use clear communication to guide and persuade others.' },
+        { key: 'Musical',        label: 'Musical',        quotientKey: 'EQ', houses: [5, 11, 2],    coreHouses: [5, 11], weights: [[5, 0.75], [11, 0.65], [2, 0.60]],            color: '#db2777', tips: 'Use voice tone, rhythm, and calming background music to keep your emotional energy steady and focused.' },
+        { key: 'Interpersonal',  label: 'Interpersonal',  quotientKey: 'EQ', houses: [5, 11, 8, 9], coreHouses: [5, 11], weights: [[5, 0.70], [11, 0.70], [8, 0.40], [9, 0.20]], color: '#e11d48', tips: 'Build strong teams, mentor others, and use active listening to get big results through people.' },
+        { key: 'Intrapersonal',  label: 'Intrapersonal',  quotientKey: 'CQ', houses: [2, 8, 3, 12], coreHouses: [2, 8],  weights: [[2, 0.70], [8, 0.70], [3, 0.35], [12, 0.25]], color: '#0d9488', tips: 'Protect quiet solo work blocks and keep a personal journal to clarify your own independent goals.' },
+        { key: 'Naturalistic',   label: 'Naturalistic',   quotientKey: 'AQ', houses: [8, 12, 6, 5], coreHouses: [8, 12], weights: [[8, 0.70], [12, 0.70], [6, 0.30], [5, 0.30]], color: '#16a34a', tips: 'Spend time outdoors and observe real-world patterns in nature and your surroundings to refresh your mind.' },
+        { key: 'Spiritual',      label: 'Spiritual',      quotientKey: 'SQ', houses: [8, 3, 5, 2],  coreHouses: [8, 3],  weights: [[8, 0.75], [3, 0.65], [5, 0.40], [2, 0.20]],  color: '#7c3aed', tips: 'Connect your daily work to a meaningful purpose and long-term responsibility toward the people around you.' }
     ];
 
     var LEARNING_STYLE_SPECS = [
@@ -372,188 +448,301 @@
         }
     ];
 
-    var SUBJECT_SPECS = [
-        { title: 'Computer Science, AI & Systems Coding',       stream: 'STEM & Tech Systems',     intels: [['Logical', 0.50], ['Visual-Spatial', 0.30], ['Intrapersonal', 0.20]], houses: [[3, 1.0], [9, 1.0], [2, 0.5]], pairKey: '3-9',  color: '#4f46e5', drivers: 'Logical + Systems Building (Houses 3, 9)' },
-        { title: 'Mathematics, Statistics & Quantitative Logic', stream: 'STEM & Tech Systems',     intels: [['Logical', 0.60], ['Intrapersonal', 0.25], ['Visual-Spatial', 0.15]], houses: [[3, 1.0], [9, 0.8], [2, 0.6]], pairKey: '3-9',  color: '#2563eb', drivers: 'Logical + Deep Reasoning (Houses 3, 9, 2)' },
-        { title: 'Physics, Engineering & Applied Mechanics',     stream: 'STEM & Tech Systems',     intels: [['Logical', 0.45], ['Kinesthetical', 0.30], ['Visual-Spatial', 0.25]], houses: [[9, 1.0], [12, 0.8], [3, 0.7]],pairKey: '3-9',  color: '#0284c7', drivers: 'Logical + Practical Creation (Houses 9, 12, 3)' },
-        { title: 'Finance, Accounting, Economics & Audit',       stream: 'Commerce & Strategy',     intels: [['Logical', 0.50], ['Intrapersonal', 0.30], ['Visual-Spatial', 0.20]], houses: [[8, 1.0], [2, 1.0], [3, 0.7]], pairKey: '8-2',  color: '#0d9488', drivers: 'Risk Audit + Strategic Planning (Houses 8, 2, 3)' },
-        { title: 'Business Management & Entrepreneurship',       stream: 'Commerce & Strategy',     intels: [['Interpersonal', 0.40], ['Logical', 0.35], ['Visual-Spatial', 0.25]], houses: [[2, 1.0], [11, 1.0], [5, 0.8], [9, 0.7]], pairKey: '8-2', color: '#d97706', drivers: 'Vision + Team Leadership (Houses 2, 5, 11, 9)' },
-        { title: 'Law, Civics, Governance & Public Policy',      stream: 'Law & Humanities',        intels: [['Logical', 0.40], ['Linguistics', 0.40], ['Intrapersonal', 0.20]],    houses: [[8, 0.9], [3, 1.0], [9, 0.8], [6, 0.9]], pairKey: '6-12', color: '#7c3aed', drivers: 'Policy Depth + Institutional Rules (Houses 8, 3, 9, 6)' },
-        { title: 'Psychology, Philosophy & Human Behavior',      stream: 'Humanities & Behavioral', intels: [['Spiritual', 0.40], ['Intrapersonal', 0.35], ['Interpersonal', 0.25]],houses: [[8, 1.0], [3, 0.9], [5, 0.8]], pairKey: '8-2',  color: '#9333ea', drivers: 'Deep Observation + Empathy (Houses 8, 3, 5)' },
-        { title: 'Literature, Languages, Media & Journalism',    stream: 'Languages & Media',       intels: [['Linguistics', 0.55], ['Interpersonal', 0.25], ['Musical', 0.20]],    houses: [[3, 1.0], [11, 1.0], [5, 0.7]],pairKey: '5-11', color: '#e11d48', drivers: 'Verbal Expression + Curiosity (Houses 3, 11, 5)' },
-        { title: 'Architecture, Interior & Industrial Design',   stream: 'Design & Creative Arts',  intels: [['Visual-Spatial', 0.55], ['Kinesthetical', 0.25], ['Logical', 0.20]], houses: [[2, 1.0], [9, 1.0], [8, 0.5]], pairKey: '8-2',  color: '#db2777', drivers: 'Spatial Vision + Hands-On Craft (Houses 2, 9)' },
-        { title: 'Fashion, Styling, Fine Arts & Animation',      stream: 'Design & Creative Arts',  intels: [['Visual-Spatial', 0.50], ['Kinesthetical', 0.25], ['Musical', 0.25]], houses: [[2, 1.0], [5, 0.8], [9, 0.7]], pairKey: '8-2',  color: '#ec4899', drivers: 'Aesthetic Sense + Creative Flow (Houses 2, 5, 9)' },
-        { title: 'Performing Arts, Music, Dance & Theatre',      stream: 'Performing & Expressive', intels: [['Musical', 0.50], ['Kinesthetical', 0.30], ['Interpersonal', 0.20]],  houses: [[5, 1.0], [11, 1.0], [12, 0.6]],pairKey: '5-11',color: '#be185d', drivers: 'Rhythm + Stage Expression (Houses 5, 11, 12)' },
-        { title: 'History, Geography & Geopolitics',             stream: 'Law & Humanities',        intels: [['Linguistics', 0.40], ['Naturalistic', 0.30], ['Spiritual', 0.30]],   houses: [[3, 1.0], [8, 0.9], [9, 0.6]], pairKey: '3-9',  color: '#059669', drivers: 'Truth Seeking + Pattern Memory (Houses 3, 8, 9)' },
-        { title: 'Biology, Medicine, Life & Health Sciences',    stream: 'Life & Medical Sciences', intels: [['Naturalistic', 0.45], ['Interpersonal', 0.30], ['Logical', 0.25]],   houses: [[8, 1.0], [5, 0.9], [6, 0.7]], pairKey: '5-11', color: '#16a34a', drivers: 'Care + Organic Diagnostics (Houses 8, 5, 6)' },
-        { title: 'Chemistry, Material & Applied Lab Sciences',   stream: 'Life & Medical Sciences', intels: [['Logical', 0.45], ['Naturalistic', 0.35], ['Kinesthetical', 0.20]],   houses: [[8, 1.0], [9, 0.9], [3, 0.7]], pairKey: '3-9',  color: '#0891b2', drivers: 'Experimentation + Precision (Houses 8, 9, 3)' }
-    ];
-
-    var HOBBY_SPECS = [
-        { title: 'Calligraphy, Grapho-Therapy & Journaling',     purpose: 'Calms Overthinking & Grounds Focus',    intels: [['Linguistics', 0.40], ['Intrapersonal', 0.35], ['Kinesthetical', 0.25]], houses: [[3, 1.0], [9, 1.0], [8, 0.6]], pairKey: '3-9',  color: '#059669', habit: 'Spend 20 mins writing structured notes or practicing handwriting by hand to settle mental restlessness.' },
-        { title: 'Chess, Strategy Games & Logic Puzzles',        purpose: 'Sharpens Foresight & Risk-Scanning',    intels: [['Logical', 0.50], ['Visual-Spatial', 0.30], ['Intrapersonal', 0.20]],    houses: [[2, 1.0], [8, 1.0], [3, 0.7]], pairKey: '8-2',  color: '#2563eb', habit: 'Play 1–2 strategic games or solve a logic puzzle daily to train pattern foresight before making decisions.' },
-        { title: 'Coding, Tech DIY & Model Prototyping',         purpose: 'Channels Creation Into Tangible Tools',  intels: [['Logical', 0.45], ['Kinesthetical', 0.30], ['Visual-Spatial', 0.25]],   houses: [[9, 1.0], [3, 0.8], [2, 0.6]], pairKey: '3-9',  color: '#4f46e5', habit: 'Dedicate 30 mins to building, automating, or repairing a practical tool or digital workflow with your hands.' },
-        { title: 'Photography, Cinematography & Visual Art',     purpose: 'Trains Observation & Spatial Framing',  intels: [['Visual-Spatial', 0.55], ['Intrapersonal', 0.25], ['Naturalistic', 0.20]],houses: [[8, 1.0], [2, 1.0], [9, 0.5]], pairKey: '8-2',  color: '#0284c7', habit: 'Capture or sketch visual frames daily to turn your silent observation instinct into creative output.' },
-        { title: 'Interior Styling, Fashion & Sketching Craft',  purpose: 'Releases Visual & Aesthetic Creativity', intels: [['Visual-Spatial', 0.50], ['Kinesthetical', 0.30], ['Intrapersonal', 0.20]],houses: [[2, 1.0], [9, 1.0], [5, 0.5]], pairKey: '8-2',  color: '#db2777', habit: 'Spend 25 mins sketching, styling spaces, or organizing visual aesthetics to relax the brain and unlock intuition.' },
-        { title: 'Playing a Musical Instrument & Vocal Singing', purpose: 'Harmonizes Emotion & Vocal Rhythm',     intels: [['Musical', 0.55], ['Interpersonal', 0.25], ['Kinesthetical', 0.20]],     houses: [[5, 1.0], [11, 1.0], [2, 0.5]],pairKey: '5-11', color: '#9333ea', habit: 'Practice an instrument, sing aloud, or do rhythmic acoustic exercises for 30 mins to recharge your emotional battery.' },
-        { title: 'Debate, Podcasting & Public Storytelling',     purpose: 'Activates Leadership & Voice Power',    intels: [['Linguistics', 0.50], ['Interpersonal', 0.35], ['Logical', 0.15]],       houses: [[11, 1.0], [3, 0.9], [5, 0.7]],pairKey: '5-11', color: '#e11d48', habit: 'Record a 5-minute voice note or teach one concept aloud daily to strengthen your magnetic influence.' },
-        { title: 'Culinary Arts, Precision Cooking & Baking',    purpose: 'Grounds Mind Through Sensory Craft',    intels: [['Kinesthetical', 0.40], ['Naturalistic', 0.35], ['Visual-Spatial', 0.25]],houses: [[9, 1.0], [5, 0.9], [2, 0.5]], pairKey: '3-9',  color: '#d97706', habit: 'Prepare a mindful, hands-on meal from scratch to engage your senses and step out of mental overdrive.' },
-        { title: 'Rhythmic Dance, Aerobics & Movement Flow',     purpose: 'Discharges Adrenaline & Body Tension',  intels: [['Kinesthetical', 0.50], ['Musical', 0.30], ['Interpersonal', 0.20]],     houses: [[12, 1.0], [6, 0.8], [5, 0.7]],pairKey: '6-12', color: '#ea580c', habit: 'Do 30 mins of rhythmic dance or movement set to music to flush out accumulated stress.' },
-        { title: 'Trekking, Cycling & Outdoor Endurance',        purpose: 'Builds Physical Stamina & Grit',        intels: [['Kinesthetical', 0.50], ['Naturalistic', 0.35], ['Intrapersonal', 0.15]],houses: [[6, 1.0], [12, 1.0], [8, 0.6]],pairKey: '6-12', color: '#dc2626', habit: 'Schedule outdoor cycling, brisk walking, or endurance drills to convert internal restlessness into stamina.' },
-        { title: 'Gardening, Nature Walks & Mindful Grounding',  purpose: 'Restores Nervous System Equilibrium',   intels: [['Naturalistic', 0.50], ['Spiritual', 0.30], ['Intrapersonal', 0.20]],    houses: [[8, 1.0], [5, 0.8], [12, 0.6]],pairKey: '5-11', color: '#16a34a', habit: 'Spend 20 mins tending plants or walking outdoors in nature without your phone to reset your nervous system.' },
-        { title: 'Dramatics, Theatre & Expressive Roleplay',     purpose: 'Unlocks Social Confidence & Empathy',   intels: [['Interpersonal', 0.45], ['Linguistics', 0.35], ['Kinesthetical', 0.20]], houses: [[5, 1.0], [11, 1.0], [2, 0.6]],pairKey: '5-11', color: '#7c3aed', habit: 'Practice expressive storytelling or group improvisation to turn emotional sensitivity into stage presence.' }
-    ];
-
+    // ============================================================
+    // LEVEL 4B: 6 CORPORATE DEPARTMENTS
+    // Linked to Parent Pillar + Parent Quotient + Parent Circuit
+    // Standardized Weight Sum = 2.00 (1.40 Core + 0.60 Booster)
+    // ============================================================
     var DEPT_SPECS = [
-        { title: 'R&D, Product Design & Systems Innovation (Houses 3, 9, 2)',  weights: [[3, 1.0], [9, 1.0], [2, 0.7]],                    pairKey: '3-9',  color: '#4f46e5', desc: 'Deep research, understanding root causes, and building growing structures or products' },
-        { title: 'Strategy, Governance & Top Management (Houses 8, 9, 2, 11)', weights: [[8, 1.0], [9, 0.9], [2, 0.9], [11, 0.7]],         pairKey: '8-2',  color: '#2563eb', desc: 'Carrying organizational responsibility, scaling new structures, and aligning leadership teams' },
-        { title: 'Operations, Quality Control & Field (Houses 6, 12, 9)',      weights: [[6, 1.0], [12, 1.0], [9, 0.7]],                   pairKey: '6-12', color: '#ea580c', desc: 'Competitive standards, hands-on problem solving, and rapid on-the-ground execution' },
-        { title: 'Finance, Risk Audit & Legal Compliance (Houses 8, 3, 6, 2)', weights: [[8, 1.0], [3, 1.0], [6, 0.7], [2, 0.7]],          pairKey: '8-2',  color: '#0d9488', desc: 'Protecting assets, auditing what can go wrong in depth, and enforcing structured rules' },
-        { title: 'Sales, Marketing, PR & Client Growth (Houses 5, 11, 2)',     weights: [[5, 1.0], [11, 1.0], [2, 0.75]],                  pairKey: '5-11', color: '#e11d48', desc: 'Building people relationships, persuasive communication, and multiplying growth through teams' },
-        { title: 'HR, Training, Coaching & Culture (Houses 5, 11, 9, 3)',      weights: [[5, 1.0], [11, 0.9], [9, 0.85], [3, 0.75]],       pairKey: '5-11', color: '#7c3aed', desc: 'Nurturing people support, mentoring talent, and building long-term team cohesion' }
+        {
+            key: 'D1_RND',
+            pillarKey: 'P1_SYSTEMS',
+            quotientKey: 'IQ',
+            pairKey: '3-9',
+            title: 'R&D, Product Design & Systems Innovation (Houses 3, 9, 2)',
+            coreHouses: [3, 9],
+            weights: [[3, 0.70], [9, 0.70], [2, 0.60]],
+            color: '#4f46e5',
+            desc: 'Deep research, understanding root causes, and building growing structures or products'
+        },
+        {
+            key: 'D2_STRAT',
+            pillarKey: 'P4_SCALE',
+            quotientKey: 'CQ',
+            pairKey: '8-2',
+            title: 'Strategy, Governance & Top Management (Houses 8, 9, 2, 11)',
+            coreHouses: [8, 2, 9],
+            weights: [[8, 0.65], [2, 0.55], [9, 0.45], [11, 0.35]],
+            color: '#2563eb',
+            desc: 'Carrying organizational responsibility, scaling new structures, and aligning leadership teams'
+        },
+        {
+            key: 'D3_OPS',
+            pillarKey: 'P2_SOLO',
+            quotientKey: 'AQ',
+            pairKey: '6-12',
+            title: 'Operations, Quality Control & Field (Houses 6, 12, 9)',
+            coreHouses: [6, 12],
+            weights: [[6, 0.70], [12, 0.70], [9, 0.60]],
+            color: '#ea580c',
+            desc: 'Competitive standards, hands-on problem solving, and rapid on-the-ground execution'
+        },
+        {
+            key: 'D4_FIN',
+            pillarKey: 'P4_SCALE',
+            quotientKey: 'SQ',
+            pairKey: '8-2',
+            title: 'Finance, Risk Audit & Legal Compliance (Houses 8, 3, 6, 2)',
+            coreHouses: [8, 3],
+            weights: [[8, 0.70], [3, 0.70], [6, 0.30], [2, 0.30]],
+            color: '#0d9488',
+            desc: 'Protecting assets, auditing what can go wrong in depth, and enforcing structured rules'
+        },
+        {
+            key: 'D5_SALES',
+            pillarKey: 'P3_PEOPLE',
+            quotientKey: 'CQ',
+            pairKey: '5-11',
+            title: 'Sales, Marketing, PR & Client Growth (Houses 5, 11, 2)',
+            coreHouses: [11, 5],
+            weights: [[11, 0.75], [5, 0.65], [2, 0.60]],
+            color: '#e11d48',
+            desc: 'Building people relationships, persuasive communication, and multiplying growth through teams'
+        },
+        {
+            key: 'D6_HR',
+            pillarKey: 'P3_PEOPLE',
+            quotientKey: 'EQ',
+            pairKey: '5-11',
+            title: 'HR, Training, Coaching & Culture (Houses 5, 11, 9, 3)',
+            coreHouses: [5, 11],
+            weights: [[5, 0.75], [11, 0.65], [9, 0.30], [3, 0.30]],
+            color: '#7c3aed',
+            desc: 'Nurturing people support, mentoring talent, and building long-term team cohesion'
+        }
     ];
 
+    // ============================================================
+    // LEVEL 5B: 14 KNOWLEDGE STREAMS & STUDY SUBJECTS
+    // Standardized House Weight Sum = 2.00 + Core House Anchors
+    // ============================================================
+    var SUBJECT_SPECS = [
+        { title: 'Computer Science, AI & Systems Coding',        stream: 'STEM & Tech Systems',     deptKey: 'D1_RND',   intels: [['Logical', 0.50], ['Visual-Spatial', 0.30], ['Intrapersonal', 0.20]], coreHouses: [3, 9],  houses: [[3, 0.75], [9, 0.75], [2, 0.50]],            pairKey: '3-9',  color: '#4f46e5', drivers: 'Logical + Systems Building (Houses 3, 9)' },
+        { title: 'Mathematics, Statistics & Quantitative Logic', stream: 'STEM & Tech Systems',     deptKey: 'D1_RND',   intels: [['Logical', 0.60], ['Intrapersonal', 0.25], ['Visual-Spatial', 0.15]], coreHouses: [3, 9],  houses: [[3, 0.85], [9, 0.65], [2, 0.50]],            pairKey: '3-9',  color: '#2563eb', drivers: 'Logical + Deep Reasoning (Houses 3, 9, 2)' },
+        { title: 'Physics, Engineering & Applied Mechanics',     stream: 'STEM & Tech Systems',     deptKey: 'D3_OPS',   intels: [['Logical', 0.45], ['Kinesthetical', 0.30], ['Visual-Spatial', 0.25]], coreHouses: [9, 12], houses: [[9, 0.75], [12, 0.65], [3, 0.60]],           pairKey: '3-9',  color: '#0284c7', drivers: 'Logical + Practical Creation (Houses 9, 12, 3)' },
+        { title: 'Finance, Accounting, Economics & Audit',       stream: 'Commerce & Strategy',     deptKey: 'D4_FIN',   intels: [['Logical', 0.50], ['Intrapersonal', 0.30], ['Visual-Spatial', 0.20]], coreHouses: [8, 2],  houses: [[8, 0.75], [2, 0.65], [3, 0.60]],            pairKey: '8-2',  color: '#0d9488', drivers: 'Risk Audit + Strategic Planning (Houses 8, 2, 3)' },
+        { title: 'Business Management & Entrepreneurship',       stream: 'Commerce & Strategy',     deptKey: 'D2_STRAT', intels: [['Interpersonal', 0.40], ['Logical', 0.35], ['Visual-Spatial', 0.25]], coreHouses: [2, 11], houses: [[2, 0.65], [11, 0.65], [5, 0.35], [9, 0.35]], pairKey: '8-2',  color: '#d97706', drivers: 'Vision + Team Leadership (Houses 2, 5, 11, 9)' },
+        { title: 'Law, Civics, Governance & Public Policy',      stream: 'Law & Humanities',        deptKey: 'D4_FIN',   intels: [['Logical', 0.40], ['Linguistics', 0.40], ['Intrapersonal', 0.20]],    coreHouses: [8, 3],  houses: [[8, 0.65], [3, 0.65], [6, 0.40], [9, 0.30]], pairKey: '8-2',  color: '#7c3aed', drivers: 'Policy Depth + Institutional Rules (Houses 8, 3, 6, 9)' },
+        { title: 'Psychology, Philosophy & Human Behavior',      stream: 'Humanities & Behavioral', deptKey: 'D6_HR',    intels: [['Spiritual', 0.40], ['Intrapersonal', 0.35], ['Interpersonal', 0.25]],coreHouses: [8, 5],  houses: [[8, 0.70], [5, 0.70], [3, 0.60]],            pairKey: '8-2',  color: '#9333ea', drivers: 'Deep Observation + Empathy (Houses 8, 5, 3)' },
+        { title: 'Literature, Languages, Media & Journalism',    stream: 'Languages & Media',       deptKey: 'D5_SALES', intels: [['Linguistics', 0.55], ['Interpersonal', 0.25], ['Musical', 0.20]],    coreHouses: [3, 11], houses: [[3, 0.75], [11, 0.75], [5, 0.50]],           pairKey: '5-11', color: '#e11d48', drivers: 'Verbal Expression + Curiosity (Houses 3, 11, 5)' },
+        { title: 'Architecture, Interior & Industrial Design',   stream: 'Design & Creative Arts',  deptKey: 'D1_RND',   intels: [['Visual-Spatial', 0.55], ['Kinesthetical', 0.25], ['Logical', 0.20]], coreHouses: [2, 9],  houses: [[2, 0.80], [9, 0.75], [8, 0.45]],            pairKey: '8-2',  color: '#db2777', drivers: 'Spatial Vision + Hands-On Craft (Houses 2, 9)' },
+        { title: 'Fashion, Styling, Fine Arts & Animation',      stream: 'Design & Creative Arts',  deptKey: 'D5_SALES', intels: [['Visual-Spatial', 0.50], ['Kinesthetical', 0.25], ['Musical', 0.25]], coreHouses: [2, 5],  houses: [[2, 0.80], [5, 0.65], [9, 0.55]],            pairKey: '8-2',  color: '#ec4899', drivers: 'Aesthetic Sense + Creative Flow (Houses 2, 5, 9)' },
+        { title: 'Performing Arts, Music, Dance & Theatre',      stream: 'Performing & Expressive', deptKey: 'D5_SALES', intels: [['Musical', 0.50], ['Kinesthetical', 0.30], ['Interpersonal', 0.20]],  coreHouses: [5, 11], houses: [[5, 0.75], [11, 0.75], [12, 0.50]],          pairKey: '5-11', color: '#be185d', drivers: 'Rhythm + Stage Expression (Houses 5, 11, 12)' },
+        { title: 'History, Geography & Geopolitics',             stream: 'Law & Humanities',        deptKey: 'D4_FIN',   intels: [['Linguistics', 0.40], ['Naturalistic', 0.30], ['Spiritual', 0.30]],   coreHouses: [3, 8],  houses: [[3, 0.80], [8, 0.70], [9, 0.50]],            pairKey: '3-9',  color: '#059669', drivers: 'Truth Seeking + Pattern Memory (Houses 3, 8, 9)' },
+        { title: 'Biology, Medicine, Life & Health Sciences',    stream: 'Life & Medical Sciences', deptKey: 'D3_OPS',   intels: [['Naturalistic', 0.45], ['Interpersonal', 0.30], ['Logical', 0.25]],   coreHouses: [8, 6],  houses: [[8, 0.75], [6, 0.65], [5, 0.60]],            pairKey: '6-12', color: '#16a34a', drivers: 'Care + Organic Diagnostics (Houses 8, 6, 5)' },
+        { title: 'Chemistry, Material & Applied Lab Sciences',   stream: 'Life & Medical Sciences', deptKey: 'D1_RND',   intels: [['Logical', 0.45], ['Naturalistic', 0.35], ['Kinesthetical', 0.20]],   coreHouses: [8, 9],  houses: [[8, 0.75], [9, 0.70], [3, 0.55]],            pairKey: '3-9',  color: '#0891b2', drivers: 'Experimentation + Precision (Houses 8, 9, 3)' }
+    ];
+
+    // ============================================================
+    // LEVEL 5C: 12 DAILY RECHARGE & SKILL-BUILDING HOBBIES
+    // Standardized House Weight Sum = 2.00 + Core House Anchors
+    // ============================================================
+    var HOBBY_SPECS = [
+        { title: 'Calligraphy, Grapho-Therapy & Journaling',     purpose: 'Calms Overthinking & Grounds Focus',     intels: [['Linguistics', 0.40], ['Intrapersonal', 0.35], ['Kinesthetical', 0.25]], coreHouses: [3, 9],  houses: [[3, 0.75], [9, 0.75], [8, 0.50]],  pairKey: '3-9',  color: '#059669', habit: 'Spend 20 mins writing structured notes or practicing handwriting by hand to settle mental restlessness.' },
+        { title: 'Chess, Strategy Games & Logic Puzzles',        purpose: 'Sharpens Foresight & Risk-Scanning',     intels: [['Logical', 0.50], ['Visual-Spatial', 0.30], ['Intrapersonal', 0.20]],    coreHouses: [2, 8],  houses: [[2, 0.75], [8, 0.70], [3, 0.55]],  pairKey: '8-2',  color: '#2563eb', habit: 'Play 1–2 strategic games or solve a logic puzzle daily to train pattern foresight before making decisions.' },
+        { title: 'Coding, Tech DIY & Model Prototyping',         purpose: 'Channels Creation Into Tangible Tools',  intels: [['Logical', 0.45], ['Kinesthetical', 0.30], ['Visual-Spatial', 0.25]],   coreHouses: [9, 3],  houses: [[9, 0.80], [3, 0.70], [2, 0.50]],  pairKey: '3-9',  color: '#4f46e5', habit: 'Dedicate 30 mins to building, automating, or repairing a practical tool or digital workflow with your hands.' },
+        { title: 'Photography, Cinematography & Visual Art',     purpose: 'Trains Observation & Spatial Framing',   intels: [['Visual-Spatial', 0.55], ['Intrapersonal', 0.25], ['Naturalistic', 0.20]],coreHouses: [8, 2],  houses: [[8, 0.75], [2, 0.75], [9, 0.50]],  pairKey: '8-2',  color: '#0284c7', habit: 'Capture or sketch visual frames daily to turn your silent observation instinct into creative output.' },
+        { title: 'Interior Styling, Fashion & Sketching Craft',  purpose: 'Releases Visual & Aesthetic Creativity', intels: [['Visual-Spatial', 0.50], ['Kinesthetical', 0.30], ['Intrapersonal', 0.20]],coreHouses: [2, 9],  houses: [[2, 0.80], [9, 0.70], [5, 0.50]],  pairKey: '8-2',  color: '#db2777', habit: 'Spend 25 mins sketching, styling spaces, or organizing visual aesthetics to relax the brain and unlock intuition.' },
+        { title: 'Playing a Musical Instrument & Vocal Singing', purpose: 'Harmonizes Emotion & Vocal Rhythm',      intels: [['Musical', 0.55], ['Interpersonal', 0.25], ['Kinesthetical', 0.20]],     coreHouses: [5, 11], houses: [[5, 0.80], [11, 0.70], [2, 0.50]], pairKey: '5-11', color: '#9333ea', habit: 'Practice an instrument, sing aloud, or do rhythmic acoustic exercises for 30 mins to recharge your emotional battery.' },
+        { title: 'Debate, Podcasting & Public Storytelling',     purpose: 'Activates Leadership & Voice Power',     intels: [['Linguistics', 0.50], ['Interpersonal', 0.35], ['Logical', 0.15]],       coreHouses: [11],    houses: [[11, 0.90], [3, 0.60], [5, 0.50]], pairKey: '5-11', color: '#e11d48', habit: 'Record a 5-minute voice note or teach one concept aloud daily to strengthen your magnetic influence.' },
+        { title: 'Culinary Arts, Precision Cooking & Baking',    purpose: 'Grounds Mind Through Sensory Craft',     intels: [['Kinesthetical', 0.40], ['Naturalistic', 0.35], ['Visual-Spatial', 0.25]],coreHouses: [9, 5],  houses: [[9, 0.75], [5, 0.75], [2, 0.50]],  pairKey: '3-9',  color: '#d97706', habit: 'Prepare a mindful, hands-on meal from scratch to engage your senses and step out of mental overdrive.' },
+        { title: 'Rhythmic Dance, Aerobics & Movement Flow',     purpose: 'Discharges Adrenaline & Body Tension',   intels: [['Kinesthetical', 0.50], ['Musical', 0.30], ['Interpersonal', 0.20]],     coreHouses: [12, 6], houses: [[12, 0.80], [6, 0.65], [5, 0.55]], pairKey: '6-12', color: '#ea580c', habit: 'Do 30 mins of rhythmic dance or movement set to music to flush out accumulated stress.' },
+        { title: 'Trekking, Cycling & Outdoor Endurance',        purpose: 'Builds Physical Stamina & Grit',         intels: [['Kinesthetical', 0.50], ['Naturalistic', 0.35], ['Intrapersonal', 0.15]],coreHouses: [6, 12], houses: [[6, 0.75], [12, 0.75], [8, 0.50]], pairKey: '6-12', color: '#dc2626', habit: 'Schedule outdoor cycling, brisk walking, or endurance drills to convert internal restlessness into stamina.' },
+        { title: 'Gardening, Nature Walks & Mindful Grounding',  purpose: 'Restores Nervous System Equilibrium',    intels: [['Naturalistic', 0.50], ['Spiritual', 0.30], ['Intrapersonal', 0.20]],    coreHouses: [8, 5],  houses: [[8, 0.75], [5, 0.70], [12, 0.55]], pairKey: '5-11', color: '#16a34a', habit: 'Spend 20 mins tending plants or walking outdoors in nature without your phone to reset your nervous system.' },
+        { title: 'Dramatics, Theatre & Expressive Roleplay',     purpose: 'Unlocks Social Confidence & Empathy',    intels: [['Interpersonal', 0.45], ['Linguistics', 0.35], ['Kinesthetical', 0.20]], coreHouses: [5, 11], houses: [[5, 0.75], [11, 0.75], [2, 0.50]], pairKey: '5-11', color: '#7c3aed', habit: 'Practice expressive storytelling or group improvisation to turn emotional sensitivity into stage presence.' }
+    ];
+
+    // ============================================================
+    // LEVEL 5D: 18 EXHAUSTIVE CAREER DOMAINS
+    // Linked to Parent Department (deptKey) + Standardized 2.00 House Sum
+    // ============================================================
     var CAREER_SPECS = [
         {
             title: 'Data Science, AI & Software Engineering',
+            deptKey: 'D1_RND',
             intels: [['Logical', 0.50], ['Intrapersonal', 0.25], ['Visual-Spatial', 0.25]],
-            houses: [[3, 1.0], [9, 1.0], [2, 0.4]],
+            coreHouses: [3, 9],
+            houses: [[3, 0.75], [9, 0.75], [2, 0.50]],
             pairKey: '3-9',
             pairLabel: 'Seeker → Creator (Houses 3–9)',
             color: '#4f46e5'
         },
         {
             title: 'Core Engineering, Manufacturing & Robotics',
+            deptKey: 'D3_OPS',
             intels: [['Kinesthetical', 0.40], ['Logical', 0.35], ['Visual-Spatial', 0.25]],
-            houses: [[9, 1.0], [12, 0.8], [6, 0.6], [3, 0.7]],
+            coreHouses: [9, 12, 6],
+            houses: [[9, 0.65], [12, 0.55], [6, 0.45], [3, 0.35]],
             pairKey: '3-9',
             pairLabel: 'Seeker → Creator (Houses 3–9)',
             color: '#0284c7'
         },
         {
             title: 'Architecture, Interior & Spatial Design',
+            deptKey: 'D1_RND',
             intels: [['Visual-Spatial', 0.50], ['Kinesthetical', 0.30], ['Logical', 0.20]],
-            houses: [[2, 1.0], [9, 1.0], [3, 0.6]],
+            coreHouses: [2, 9],
+            houses: [[2, 0.75], [9, 0.75], [3, 0.50]],
             pairKey: '8-2',
             pairLabel: 'Observer → Strategist (Houses 8–2)',
             color: '#db2777'
         },
         {
             title: 'Fashion, Luxury Styling, Beauty & Lifestyle Design',
+            deptKey: 'D5_SALES',
             intels: [['Visual-Spatial', 0.45], ['Kinesthetical', 0.30], ['Interpersonal', 0.25]],
-            houses: [[2, 1.0], [5, 0.9], [11, 0.6]],
+            coreHouses: [2, 5],
+            houses: [[2, 0.80], [5, 0.70], [11, 0.50]],
             pairKey: '8-2',
             pairLabel: 'Observer → Strategist (Houses 8–2)',
             color: '#ec4899'
         },
         {
             title: 'Animation, Filmmaking, Gaming & UI/UX Media',
+            deptKey: 'D1_RND',
             intels: [['Visual-Spatial', 0.45], ['Musical', 0.25], ['Logical', 0.30]],
-            houses: [[2, 1.0], [9, 1.0], [11, 0.5]],
+            coreHouses: [2, 9],
+            houses: [[2, 0.75], [9, 0.75], [11, 0.50]],
             pairKey: '3-9',
             pairLabel: 'Seeker → Creator (Houses 3–9)',
             color: '#8b5cf6'
         },
         {
             title: 'Performing Arts, Music, Dance & Live Stage',
+            deptKey: 'D5_SALES',
             intels: [['Musical', 0.45], ['Kinesthetical', 0.35], ['Interpersonal', 0.20]],
-            houses: [[5, 1.0], [11, 1.0], [12, 0.7]],
+            coreHouses: [5, 11],
+            houses: [[5, 0.75], [11, 0.75], [12, 0.50]],
             pairKey: '5-11',
             pairLabel: 'Companion → Seller (Houses 5–11)',
             color: '#be185d'
         },
         {
             title: 'Journalism, Content Creation, Writing & Digital Media',
+            deptKey: 'D5_SALES',
             intels: [['Linguistics', 0.50], ['Interpersonal', 0.30], ['Visual-Spatial', 0.20]],
-            houses: [[3, 1.0], [11, 1.0], [9, 0.6]],
+            coreHouses: [3, 11],
+            houses: [[3, 0.75], [11, 0.75], [9, 0.50]],
             pairKey: '5-11',
             pairLabel: 'Companion → Seller (Houses 5–11)',
             color: '#e11d48'
         },
         {
             title: 'Corporate Strategy, Investment Banking & FinTech',
+            deptKey: 'D2_STRAT',
             intels: [['Logical', 0.45], ['Visual-Spatial', 0.30], ['Intrapersonal', 0.25]],
-            houses: [[8, 1.0], [2, 1.0], [3, 0.7], [9, 0.6]],
+            coreHouses: [8, 2],
+            houses: [[8, 0.70], [2, 0.70], [3, 0.35], [9, 0.25]],
             pairKey: '8-2',
             pairLabel: 'Observer → Strategist (Houses 8–2)',
             color: '#2563eb'
         },
         {
             title: 'Entrepreneurship, Team Enterprise & Executive Mgmt',
+            deptKey: 'D2_STRAT',
             intels: [['Interpersonal', 0.35], ['Logical', 0.35], ['Visual-Spatial', 0.30]],
-            houses: [[2, 1.0], [11, 1.0], [5, 0.85], [9, 0.8], [8, 0.7]],
+            coreHouses: [2, 11, 8],
+            houses: [[2, 0.60], [11, 0.55], [8, 0.45], [9, 0.40]],
             pairKey: '8-2',
             pairLabel: 'Observer → Strategist (Houses 8–2)',
             color: '#d97706'
         },
         {
             title: 'Sales, Marketing, PR & Brand Growth',
+            deptKey: 'D5_SALES',
             intels: [['Interpersonal', 0.45], ['Linguistics', 0.35], ['Musical', 0.20]],
-            houses: [[5, 0.95], [11, 1.0], [2, 0.7]],
+            coreHouses: [11, 5],
+            houses: [[11, 0.80], [5, 0.65], [2, 0.55]],
             pairKey: '5-11',
             pairLabel: 'Companion → Seller (Houses 5–11)',
             color: '#f43f5e'
         },
         {
             title: 'HR, Talent Development & Organizational Culture',
+            deptKey: 'D6_HR',
             intels: [['Interpersonal', 0.50], ['Spiritual', 0.25], ['Linguistics', 0.25]],
-            houses: [[5, 1.0], [11, 0.9], [8, 0.7], [9, 0.6]],
+            coreHouses: [5, 11],
+            houses: [[5, 0.75], [11, 0.65], [8, 0.35], [9, 0.25]],
             pairKey: '5-11',
             pairLabel: 'Companion → Seller (Houses 5–11)',
             color: '#9333ea'
         },
         {
             title: 'Research, Academia, EdTech & Advisory Mentorship',
+            deptKey: 'D1_RND',
             intels: [['Linguistics', 0.35], ['Logical', 0.35], ['Spiritual', 0.30]],
-            houses: [[3, 1.0], [9, 1.0], [8, 0.6]],
+            coreHouses: [3, 9],
+            houses: [[3, 0.80], [9, 0.70], [8, 0.50]],
             pairKey: '3-9',
             pairLabel: 'Seeker → Creator (Houses 3–9)',
             color: '#0d9488'
         },
         {
             title: 'Medicine, Clinical Healthcare & Life Sciences',
+            deptKey: 'D3_OPS',
             intels: [['Naturalistic', 0.45], ['Logical', 0.30], ['Interpersonal', 0.25]],
-            houses: [[8, 1.0], [6, 0.9], [5, 0.8], [3, 0.6]],
+            coreHouses: [8, 6],
+            houses: [[8, 0.70], [6, 0.60], [5, 0.40], [3, 0.30]],
             pairKey: '6-12',
             pairLabel: 'Challenger → Warrior (Houses 6–12)',
             color: '#059669'
         },
         {
             title: 'Psychology, Counseling, Coaching & Holistic Healing',
+            deptKey: 'D6_HR',
             intels: [['Spiritual', 0.40], ['Interpersonal', 0.35], ['Intrapersonal', 0.25]],
-            houses: [[5, 1.0], [8, 1.0], [3, 0.7]],
+            coreHouses: [5, 8],
+            houses: [[5, 0.75], [8, 0.75], [3, 0.50]],
             pairKey: '5-11',
             pairLabel: 'Companion → Seller (Houses 5–11)',
             color: '#10b981'
         },
         {
             title: 'Law, Judiciary, Civil Services & Public Policy',
+            deptKey: 'D4_FIN',
             intels: [['Linguistics', 0.40], ['Logical', 0.35], ['Intrapersonal', 0.25]],
-            houses: [[8, 0.9], [3, 0.95], [9, 0.85], [6, 0.9]],
-            pairKey: '6-12',
-            pairLabel: 'Challenger → Warrior (Houses 6–12)',
+            coreHouses: [8, 3],
+            houses: [[8, 0.70], [3, 0.70], [6, 0.35], [9, 0.25]],
+            pairKey: '8-2',
+            pairLabel: 'Observer → Strategist (Houses 8–2)',
             color: '#7c3aed'
         },
         {
             title: 'Operations, Defense, Sports & Solo Execution',
+            deptKey: 'D3_OPS',
             intels: [['Kinesthetical', 0.50], ['Naturalistic', 0.25], ['Intrapersonal', 0.25]],
-            houses: [[6, 1.0], [12, 1.0], [2, 0.6]],
+            coreHouses: [6, 12],
+            houses: [[6, 0.75], [12, 0.75], [2, 0.50]],
             pairKey: '6-12',
             pairLabel: 'Challenger → Warrior (Houses 6–12)',
             color: '#dc2626'
         },
         {
             title: 'Culinary Arts, Hospitality, Events & Luxury Curation',
+            deptKey: 'D5_SALES',
             intels: [['Kinesthetical', 0.35], ['Interpersonal', 0.35], ['Visual-Spatial', 0.30]],
-            houses: [[5, 1.0], [9, 0.9], [11, 0.7]],
+            coreHouses: [5, 9],
+            houses: [[5, 0.75], [9, 0.70], [11, 0.55]],
             pairKey: '5-11',
             pairLabel: 'Companion → Seller (Houses 5–11)',
             color: '#ea580c'
         },
         {
             title: 'Agriculture, Sustainability, Environment & Earth Tech',
+            deptKey: 'D1_RND',
             intels: [['Naturalistic', 0.55], ['Kinesthetical', 0.25], ['Logical', 0.20]],
-            houses: [[8, 1.0], [12, 0.8], [9, 0.7]],
+            coreHouses: [8, 12],
+            houses: [[8, 0.75], [12, 0.65], [9, 0.60]],
             pairKey: '3-9',
             pairLabel: 'Seeker → Creator (Houses 3–9)',
             color: '#16a34a'
@@ -580,16 +769,33 @@
     };
 
     var COFOUNDER_MAP = {
-        '8-2': 'Partner with or hire a calm, detail-oriented planner who naturally spots hidden risks, checks financial downsides, and handles shared organizational responsibilities while you focus on new ideas.',
+        '8-2': 'Partner with or hire a calm, detail-oriented planner who naturally spots hidden risks, checks financial downsides, and handles shared organizational responsibilities while you focus on your core strengths.',
         '3-9': 'Partner with or hire a methodical researcher and system-builder who loves studying what goes wrong in depth and turning raw ideas into repeatable, long-term structures.',
         '6-12': 'Partner with or hire a hands-on, results-driven executor who thrives on quality control, tough negotiations, and getting work done on the ground under deadline pressure.',
         '5-11': 'Partner with or hire a warm, outgoing people-leader who loves nurturing relationships, building team morale, and speaking to clients so you do not have to carry the people load alone.'
     };
 
+    // Expanded to cover all 8 Octal Houses so Wealth Mindset always aligns with Work Style Fit
     var MONEY_ARCHETYPE_MAP = {
         2: {
             title: 'Independent Visionary & Planner',
             rule: 'You build wealth fastest through original ideas, independent positioning, and spotting future opportunities early. <strong>Financial Blind Spot:</strong> Avoid jumping into exciting new ventures before checking the long-term depth — always lock a fixed share of every gain into safe reserves.'
+        },
+        3: {
+            title: 'Deep Domain & Advisory Specialist',
+            rule: 'You build wealth through specialized knowledge, research mastery, and becoming the go-to problem-solving expert in your domain. <strong>Financial Blind Spot:</strong> Avoid staying in endless preparation or undercharging for your research — package your knowledge into clear, billable solutions.'
+        },
+        5: {
+            title: 'Trusted Relationship & Partnership Builder',
+            rule: 'Your wealth grows steadily through long-term client loyalty, trusted family or partner associations, and supportive networks. <strong>Financial Blind Spot:</strong> Do not mix emotional comfort with unverified lending — protect your capital with clear, written terms even with close associates.'
+        },
+        6: {
+            title: 'High-Skill Competitive Specialist',
+            rule: 'You earn your strongest financial rewards by sharpening a high-demand technical skill and proving your excellence in structured, competitive environments. <strong>Financial Blind Spot:</strong> Avoid underpricing your hard work — benchmark your rates against top-tier industry standards.'
+        },
+        8: {
+            title: 'Institutional Steward & Risk Guardian',
+            rule: 'You build lasting wealth by managing large-scale organizational responsibilities, protecting assets, and compounding safe, long-term institutional structures. <strong>Financial Blind Spot:</strong> Guard against sudden restlessness or impulsive pivots when routine feels slow — let long-term compounding work for you.'
         },
         9: {
             title: 'Structure & Product Builder',

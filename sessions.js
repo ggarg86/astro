@@ -3,13 +3,19 @@
 // Respects Premium Access Gate & Basic/Advanced Report Mode
 // Features:
 // 1. Subtitle: "BRAIN ARCHITECTURE & NEURAL OPERATING MANUAL"
-// 2. Clean 1-Page Groupings matching Main Report:
-//    - Sec 4A: Donuts + Takeaway + Working Style + Functional Pillars
-//    - Sec 4B: All 4 Stages of Core Rhythms Deep Dive on 1 Page
-//    - Sec 5A: Energy Flow + Learns Best By + Collaboration Mode on 1 Page
-//    - Sec 5B: Life Stability + Recommended Subjects & Hobbies on 1 Page
-//    - Sec 6A: Quotients + Multiple Intelligences + Corporate Depts on 1 Page
-//    - Sec 6B: 9 Career Fits + Executive Career Roadmap on 1 Page
+// 2. Consistent Readable Typography & Clean Page Groupings matching Main Report:
+//    - Sec 1: Consultation Summary & Prescribed Remedies
+//    - Sec 2: Geo-Time Zone Map & Octal House Dominance
+//    - Sec 3: Rhythm of Your Soul
+//    - Sec 4A: Donuts + Takeaway + Working Style + Functional Pillars (1 Page)
+//    - Sec 4B: Stages 1 & 2 of Core Life Transitions Deep Dive (1 Page)
+//    - Sec 4C: Stages 3 & 4 of Core Life Transitions + Convergence (1 Page)
+//    - Sec 5A: Energy Flow + Learns Best By + Collaboration Mode (1 Page)
+//    - Sec 5B: Work Style Fit, Career Stability & Health Resilience (1 Page)
+//    - Sec 5C: Recommended Knowledge Streams & Skill-Building Hobbies (1 Page)
+//    - Sec 6A: Quotients + Multiple Intelligences + Corporate Depts (1 Page)
+//    - Sec 6B: 9 Career Fits + Executive Career Roadmap (1 Page)
+//    - Sec 7: Current Planetary Transits + Disclaimer (1 Page)
 // ============================================================
 
 (function(){
@@ -328,8 +334,8 @@ function planetaryEnergyFlowHTML(m){
     var arrow = ix < sq.length - 1 ? '<span style="flex-shrink:0;color:#94a3b8;font-size:14px;padding:0 3px;">&#8250;</span>' : '';
     return box + arrow;
   }).join('');
-  return '<div class="sess-keep-together" style="background:#ffffff;padding:11px 14px;border-radius:12px;border:1px solid #e2e8f0;margin-bottom:12px;">' +
-    '<div style="font-family:Montserrat,sans-serif;font-size:11.5px;font-weight:800;color:#1e293b;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:6px;">Planetary Energy Flow Sequence</div>' +
+  return '<div class="sess-keep-together" style="background:#ffffff;padding:8px 12px;border-radius:10px;border:1px solid #e2e8f0;margin-bottom:8px;">' +
+    '<div style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:800;color:#1e293b;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:5px;">Planetary Energy Flow Sequence</div>' +
     '<div style="display:flex;align-items:center;overflow-x:auto;gap:2px;">' + items + '</div>' +
   '</div>';
 }
@@ -387,13 +393,13 @@ function buildBasicCareerGuidanceHTML() {
 }
 
 function buildSessionChapterBanner(secNum, totalSecs, title, subtitle, clientName) {
-  return '<div style="margin-bottom:10px;border-bottom:2px solid #1e293b;padding-bottom:6px;break-after:avoid;page-break-after:avoid;">' +
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">' +
-      '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:2.5px 8px;border-radius:4px;background:#1e293b;color:#ffffff;">Section 0' + secNum + ' of 0' + totalSecs + '</span>' +
+  return '<div style="margin-bottom:8px;border-bottom:2px solid #1e293b;padding-bottom:5px;break-after:avoid;page-break-after:avoid;">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2.5px;">' +
+      '<span style="font-family:Montserrat,sans-serif;font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:#1e293b;color:#ffffff;">Section 0' + secNum + ' of 0' + totalSecs + '</span>' +
       '<span style="font-family:Montserrat,sans-serif;font-size:9.5px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.04em;">' + esc(clientName) + ' &bull; cnp.brainmanual.in</span>' +
     '</div>' +
-    '<h3 style="font-family:Montserrat,sans-serif;font-size:1.12em;font-weight:800;color:#0f172a;margin:0;letter-spacing:0.01em;">' + title + '</h3>' +
-    (subtitle ? '<p style="font-family:Montserrat,sans-serif;font-size:11px;font-weight:600;color:#475569;margin:1.5px 0 0 0;">' + subtitle + '</p>' : '') +
+    '<h3 style="font-family:Montserrat,sans-serif;font-size:1.1em;font-weight:800;color:#0f172a;margin:0;letter-spacing:0.01em;">' + title + '</h3>' +
+    (subtitle ? '<p style="font-family:Montserrat,sans-serif;font-size:10.5px;font-weight:600;color:#475569;margin:1px 0 0 0;">' + subtitle + '</p>' : '') +
   '</div>';
 }
 
@@ -409,6 +415,10 @@ function extractWorkingStyleHTML(quant) {
 
 window.printSessionReport = function(s){
   try { calculatePositions(); } catch(e) {}
+
+  if (window.CNP && window.CNP.Views && window.CNP.Views._helpers && window.CNP.Views._helpers.injectViewPrintStyles) {
+    window.CNP.Views._helpers.injectViewPrintStyles();
+  }
 
   var pad = function(n) { return n.toString().padStart(2, '0'); };
   var canAdv = (typeof window.hasAdvancedCNPAccess === 'function') ? window.hasAdvancedCNPAccess() : true;
@@ -428,11 +438,21 @@ window.printSessionReport = function(s){
   var workingStyleHTML = extractWorkingStyleHTML(quant);
   var psychoDonutsHTML = (!isBasic && V && quant) ? V.buildPsychoDonutsAndTakeawayHTML(quant) : '';
   var psychoPillarsHTML = (!isBasic && V && quant) ? V.buildPsychoPillarsBoardHTML(quant) : '';
-  var psychoTugHTML = (!isBasic && V && quant) ? V.buildPsychoTugOfWarHTML(quant) : '';
+  var psychoTugPart1HTML = (!isBasic && V && quant)
+    ? (V.buildPsychoTugPart1HTML ? V.buildPsychoTugPart1HTML(quant) : V.buildPsychoTugOfWarHTML(quant))
+    : '';
+  var psychoTugPart2HTML = (!isBasic && V && quant && V.buildPsychoTugPart2HTML)
+    ? V.buildPsychoTugPart2HTML(quant)
+    : '';
 
   var energyFlowStripHTML = window.currentNatalMap ? planetaryEnergyFlowHTML(window.currentNatalMap) : '';
   var lifePartA = (!isBasic && V && quant && V.buildLifeStoryPartAHTML) ? V.buildLifeStoryPartAHTML(quant) : '';
-  var lifePartB = (!isBasic && V && quant && V.buildLifeStoryPartBHTML) ? V.buildLifeStoryPartBHTML(quant) : '';
+  var lifeStabilityHTML = (!isBasic && V && quant)
+    ? (V.buildLifeStabilityOnlyHTML ? V.buildLifeStabilityOnlyHTML(quant) : (V.buildLifeStoryPartBHTML ? V.buildLifeStoryPartBHTML(quant) : ''))
+    : '';
+  var lifeSubjectsHobbiesHTML = (!isBasic && V && quant && V.buildSubjectsAndHobbiesHTML && V.buildLifeStabilityOnlyHTML)
+    ? V.buildSubjectsAndHobbiesHTML(quant)
+    : '';
 
   var careerPartA = (!isBasic && V && quant) ? V.buildCareerPartAHTML(quant) : '';
   var careerPartB = (!isBasic && V && quant) ? V.buildCareerPartBHTML(quant) : '';
@@ -580,45 +600,57 @@ window.printSessionReport = function(s){
         // SECTION 04 PAGE A: Donuts + Combined Takeaway + Working Style Box + 3-Col Functional Strength Pillars
         '<div class="sess-report-page">' +
           buildSessionChapterBanner(4, 7, 'Psycho-Analysis, Working Style & Strength Pillars', 'Action vs. Learn dynamics, Left vs. Right Brain dominance, working style, and functional strength zones', clientName) +
-          '<div style="display:flex;flex-direction:column;gap:11px;">' +
+          '<div class="cnp-v-stack" style="display:flex;flex-direction:column;gap:6.5px;">' +
             psychoDonutsHTML +
             workingStyleHTML +
             psychoPillarsHTML +
           '</div>' +
         '</div>' +
 
-        // SECTION 04 PAGE B: All 4 Stages of Four Core Rhythms Deep Dive Together on 1 Page
+        // SECTION 04 PAGE B: Stages 1 & 2 of Core Life Transitions Deep Dive
         '<div class="sess-report-page">' +
-          buildSessionChapterBanner(4, 7, 'Psycho-Analysis: Four Core Rhythms Deep Dive', 'Your 4-stage execution story from Mindset & Attitude to Market & Team Leadership', clientName) +
-          psychoTugHTML +
+          buildSessionChapterBanner(4, 7, 'Psycho-Analysis: Core Life Transitions (Stages 1 & 2)', 'Your transition story (Starts Here → Settles Here Over Time) for Mindset & Attitude and Knowledge & System Building', clientName) +
+          psychoTugPart1HTML +
         '</div>' +
 
-        // SECTION 05 PAGE A: Planetary Energy Flow + VARK Learning Channels + Collaboration Mode Together on 1 Page
+        // SECTION 04 PAGE C: Stages 3 & 4 of Core Life Transitions + Convergence
+        (psychoTugPart2HTML ? '<div class="sess-report-page">' +
+          buildSessionChapterBanner(4, 7, 'Psycho-Analysis: Core Life Transitions (Stages 3 & 4)', 'Your transition story for Solo Mastery & Execution and People Support & Team Leadership', clientName) +
+          psychoTugPart2HTML +
+        '</div>' : '') +
+
+        // SECTION 05 PAGE A: Planetary Energy Flow + VARK Learning Channels + Collaboration Mode
         '<div class="sess-report-page">' +
           buildSessionChapterBanner(5, 7, 'Life Path Story, Learning Style & Collaboration', 'Planetary relay sequence, VARK & Bird/Element working channels, and collaboration mode', clientName) +
           energyFlowStripHTML +
           lifePartA +
         '</div>' +
 
-        // SECTION 05 PAGE B: Life Stability vs. Friction + Recommended Subjects & Hobbies Together on 1 Page
-        '<div class="sess-report-page">' +
-          buildSessionChapterBanner(5, 7, 'Life Stability, Knowledge Streams & Hobbies', 'Circuit-modulated stability reserves, high-affinity study subjects, and neural-charging daily activities', clientName) +
-          lifePartB +
-        '</div>' +
+        // SECTION 05 PAGE B: Work Style Fit, Career Stability & Health Resilience
+        (lifeStabilityHTML ? '<div class="sess-report-page">' +
+          buildSessionChapterBanner(5, 7, 'Life Stability, Work Style Fit & Health Resilience', 'Growth support vs. barriers across career focus, work style (Business vs. Job), physical stamina, and mental peace', clientName) +
+          lifeStabilityHTML +
+        '</div>' : '') +
 
-        // SECTION 06 PAGE A: Core Quotients + 9 Multiple Intelligences + Corporate Departments Together on 1 Page
+        // SECTION 05 PAGE C: Recommended Knowledge Streams & Skill-Building Hobbies
+        (lifeSubjectsHobbiesHTML ? '<div class="sess-report-page">' +
+          buildSessionChapterBanner(5, 7, 'Recommended Knowledge Streams & Recharge Hobbies', 'High-affinity study subjects for upskilling and daily 30-minute recharge activities', clientName) +
+          lifeSubjectsHobbiesHTML +
+        '</div>' : '') +
+
+        // SECTION 06 PAGE A: Core Quotients + 9 Multiple Intelligences + Corporate Departments
         '<div class="sess-report-page">' +
           buildSessionChapterBanner(6, 7, 'Career Guidance, Quotients, Intelligences & Departments', 'Core operating quotients, 9-dimension intelligence profile, and corporate department suitability', clientName) +
           careerPartA +
         '</div>' +
 
-        // SECTION 06 PAGE B: 9 Career Fits + Executive Career Roadmap Together on 1 Page
+        // SECTION 06 PAGE B: 9 Career Fits + Executive Career Roadmap
         '<div class="sess-report-page">' +
           buildSessionChapterBanner(6, 7, 'Quantitative Career Fit & Executive Roadmap', 'Quantitative career alignment across 9 domains and actionable executive career strategy', clientName) +
           careerPartB +
         '</div>' +
 
-        // SECTION 07: Side-by-Side Current Transits + Legal Disclaimer on Same Page
+        // SECTION 07: Side-by-Side Current Transits + Legal Disclaimer
         '<div class="sess-report-page">' +
           buildSessionChapterBanner(7, 7, 'Current Planetary Transits & Active Cycles', 'Real-time transit positions and Past–Present–Future windows for Sun, Moon, Mars, Jupiter, and Saturn', clientName) +
           compactTransitsGrid +
@@ -641,7 +673,12 @@ window.printSessionReport = function(s){
     st.id = 'sess-print-style';
     st.textContent = `
       @media print {
-        @page { margin: 9mm 11mm; }
+        @page { size: A4 portrait; margin: 8mm 10mm !important; }
+        body.sess-print-mode {
+          font-size: 100% !important;
+          padding-top: 0 !important;
+          background: #ffffff !important;
+        }
         body.sess-print-mode > *:not(#session-report-print) { display:none !important; }
         body.sess-print-mode #session-report-print { display:block !important; }
         body.sess-print-mode #session-report-print, body.sess-print-mode #session-report-print * {
@@ -661,7 +698,10 @@ window.printSessionReport = function(s){
           break-after: avoid;
           page-break-after: avoid;
         }
-        /* Consistent 12px Typography & 2-Page Fit for Rhythm of Your Soul */
+        .sess-section-rhythm > div {
+          break-inside: auto !important;
+          page-break-inside: auto !important;
+        }
         .sess-section-rhythm > div > div:first-child {
           break-inside: avoid;
           page-break-inside: avoid;
@@ -671,17 +711,19 @@ window.printSessionReport = function(s){
         }
         .sess-section-rhythm > div > div:last-child {
           padding: 12px 16px !important;
+          break-inside: auto !important;
+          page-break-inside: auto !important;
         }
         .sess-section-rhythm > div > div:last-child > div {
           break-inside: avoid;
           page-break-inside: avoid;
-          padding: 10px 14px !important;
-          margin-top: 8px !important;
+          padding: 9px 14px !important;
+          margin-top: 7px !important;
           margin-bottom: 0 !important;
         }
         .sess-section-rhythm p {
-          line-height: 1.5 !important;
-          font-size: 12px !important;
+          line-height: 1.48 !important;
+          font-size: 11.8px !important;
         }
       }
     `;
@@ -691,15 +733,23 @@ window.printSessionReport = function(s){
   var originalTitle = document.title;
   document.title = clientName ? clientName + ' - CNP Session Report' : 'cnp.brainmanual.in';
   document.body.classList.add('sess-print-mode');
+
+  var cleanedUp = false;
+  var cleanupPrint = function(){
+    if (cleanedUp) return;
+    cleanedUp = true;
+    window.removeEventListener('afterprint', cleanupPrint);
+    document.body.classList.remove('sess-print-mode');
+    document.title = originalTitle;
+    var c = document.getElementById('session-report-print');
+    if (c) c.remove();
+  };
+  window.addEventListener('afterprint', cleanupPrint);
+
   setTimeout(function(){
     window.print();
-    setTimeout(function(){
-      document.body.classList.remove('sess-print-mode');
-      document.title = originalTitle;
-      var c = document.getElementById('session-report-print');
-      if (c) c.remove();
-    }, 300);
-  }, 60);
+    setTimeout(cleanupPrint, 60000);
+  }, 120);
 };
 
 })();
