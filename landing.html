@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmos Neural Programming (CNP) — Understand your inner engines</title>
+    <meta name="description" content="CNP turns your birth details into a personal map of your energy cycles, working style and timing, with a guide and course to put it to use.">
+    <meta name="theme-color" content="#2c3e50">
+
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192.png">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,400&family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --creator: #e67e22;
+            --seller: #9b59b6;
+            --warrior: #c0392b;
+            --strategist: #27ae60;
+            --analysis: #2980b9;
+            --bg: #f4f6f8;
+            --card: #ffffff;
+            --text: #333333;
+            --text-light: #555555;
+            --radius: 14px;
+            --gutter: clamp(16px, 5vw, 40px);
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            font-family: 'Merriweather', serif;
+            line-height: 1.75;
+            color: var(--text);
+            background: var(--bg);
+        }
+        h1, h2, h3 { font-family: 'Montserrat', sans-serif; color: var(--primary); margin: 0 0 .5em; line-height: 1.2; }
+        a { color: inherit; }
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--gutter); }
+        .eyebrow {
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .75rem;
+            letter-spacing: .14em; text-transform: uppercase; color: var(--analysis); margin-bottom: 12px;
+        }
+
+        /* Top bar */
+        .topbar { background: #fff; box-shadow: 0 2px 14px rgba(0,0,0,.07); position: sticky; top: 0; z-index: 50; }
+        .topbar .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; gap: 16px; }
+        .brand { font-family: 'Montserrat', sans-serif; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; text-decoration: none; color: var(--primary); }
+        .topnav { display: flex; align-items: center; gap: 22px; font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: .9rem; }
+        .topnav a { text-decoration: none; color: var(--text-light); }
+        .topnav a:hover { color: var(--primary); }
+        .topnav a.btn-primary, .topnav a.btn-primary:hover { color: #fff; }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .95rem;
+            padding: 14px 26px; border-radius: 999px; text-decoration: none; border: 2px solid transparent;
+            transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+        }
+        .btn:focus-visible { outline: 3px solid var(--analysis); outline-offset: 3px; }
+        .btn-primary { background: var(--analysis); color: #fff; box-shadow: 0 6px 18px rgba(41,128,185,.35); }
+        .btn-primary:hover { transform: translateY(-2px); background: #2472a4; }
+        .btn-ghost { border-color: rgba(255,255,255,.55); color: #fff; }
+        .btn-ghost:hover { background: rgba(255,255,255,.12); }
+        .btn-small { padding: 9px 18px; font-size: .85rem; }
+
+        /* Hero */
+        .hero {
+            background: linear-gradient(135deg, #1f2d3a 0%, var(--primary) 45%, #3a4f66 100%);
+            color: #fff; padding: clamp(56px, 10vw, 110px) 0 clamp(64px, 11vw, 120px); position: relative; overflow: hidden;
+        }
+        .hero::after {
+            content: ""; position: absolute; inset: auto -10% -45% auto; width: 520px; height: 520px; border-radius: 50%;
+            background: radial-gradient(circle, rgba(155,89,182,.35), transparent 65%); pointer-events: none;
+        }
+        .hero .eyebrow { color: #8cc4ea; }
+        .hero h1 { color: #fff; font-size: clamp(2rem, 6vw, 3.6rem); font-weight: 800; max-width: 16ch; }
+        .hero p.lead { font-size: clamp(1rem, 2.4vw, 1.2rem); max-width: 58ch; color: #dbe4ec; margin: 0 0 30px; }
+        .hero .actions { display: flex; flex-wrap: wrap; gap: 14px; position: relative; z-index: 1; }
+        .hero .note { margin-top: 18px; font-family: 'Montserrat', sans-serif; font-size: .8rem; color: #aebccb; }
+
+        section { padding: clamp(48px, 8vw, 88px) 0; }
+        .section-head { max-width: 640px; margin-bottom: 36px; }
+        .section-head h2 { font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 800; }
+        .section-head p { color: var(--text-light); margin: 0; }
+
+        /* Problem band */
+        .problem { background: #fff; }
+        .problem blockquote {
+            margin: 0; padding-left: 22px; border-left: 4px solid var(--creator);
+            font-size: clamp(1.1rem, 2.6vw, 1.45rem); line-height: 1.6; color: var(--primary); max-width: 40ch;
+        }
+        .problem .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+        .problem p { color: var(--text-light); margin: 0 0 14px; }
+
+        /* Archetype cards */
+        .grid { display: grid; gap: 20px; }
+        .grid-4 { grid-template-columns: repeat(4, 1fr); }
+        .grid-3 { grid-template-columns: repeat(3, 1fr); }
+        .card {
+            background: var(--card); border-radius: var(--radius); padding: 24px;
+            box-shadow: 0 4px 18px rgba(0,0,0,.06); border-top: 5px solid var(--accent, var(--analysis));
+        }
+        .card h3 { font-size: 1.1rem; font-weight: 800; }
+        .card .conflict { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: .78rem; text-transform: uppercase; letter-spacing: .06em; color: var(--accent, var(--analysis)); margin-bottom: 10px; }
+        .card p { margin: 0; font-size: .92rem; color: var(--text-light); line-height: 1.65; }
+        .c-creator { --accent: var(--creator); } .c-seller { --accent: var(--seller); }
+        .c-warrior { --accent: var(--warrior); } .c-strategist { --accent: var(--strategist); }
+
+        /* What you get */
+        .report { background: #fff; }
+        .report .card { border-top: none; border-left: 5px solid var(--analysis); box-shadow: none; background: var(--bg); }
+
+        /* Steps */
+        .steps { counter-reset: step; }
+        .step { position: relative; padding-top: 56px; }
+        .step::before {
+            counter-increment: step; content: counter(step);
+            position: absolute; top: 0; left: 0; width: 40px; height: 40px; border-radius: 50%;
+            background: var(--primary); color: #fff; font-family: 'Montserrat', sans-serif; font-weight: 800;
+            display: grid; place-items: center;
+        }
+        .step h3 { font-size: 1.05rem; }
+        .step p { margin: 0; color: var(--text-light); font-size: .93rem; }
+
+        /* CTA */
+        .cta { background: linear-gradient(135deg, var(--primary), #3a4f66); color: #fff; text-align: center; }
+        .cta h2 { color: #fff; font-size: clamp(1.6rem, 4.5vw, 2.4rem); font-weight: 800; }
+        .cta p { color: #dbe4ec; max-width: 52ch; margin: 0 auto 28px; }
+        .cta .actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+
+        /* Footer */
+        footer { background: #1f2d3a; color: #aebccb; font-family: 'Montserrat', sans-serif; font-size: .82rem; padding: 36px 0; }
+        footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 18px; }
+        footer a { color: #cfd9e3; text-decoration: none; margin-right: 18px; }
+        footer a:hover { text-decoration: underline; }
+        .disclaimer { flex-basis: 100%; font-size: .75rem; line-height: 1.6; color: #8d9db0; max-width: 80ch; }
+
+        @media (max-width: 900px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: 1fr; }
+            .problem .wrap { grid-template-columns: 1fr; gap: 24px; }
+        }
+        @media (max-width: 560px) {
+            .grid-4 { grid-template-columns: 1fr; }
+            .topnav a.hide-sm { display: none; }
+            .hero .actions .btn, .cta .actions .btn { width: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .btn { transition: none; }
+        }
+    </style>
+</head>
+<body>
+
+<header class="topbar">
+    <div class="wrap">
+        <a class="brand" href="landing.html">CNP</a>
+        <nav class="topnav" aria-label="Main">
+            <a class="hide-sm" href="#engines">Archetypes</a>
+            <a class="hide-sm" href="#report">Your report</a>
+            <a class="hide-sm" href="#how">How it works</a>
+            <a class="btn btn-primary btn-small" href="analysis.html">Start your chart</a>
+        </nav>
+    </div>
+</header>
+
+<main>
+    <section class="hero" aria-labelledby="hero-title">
+        <div class="wrap">
+            <div class="eyebrow">Cosmos Neural Programming</div>
+            <h1 id="hero-title">Stop fighting your own engine.</h1>
+            <p class="lead">
+                Feeling stuck, anxious or unseen is rarely a weakness. CNP maps the energy patterns in your birth chart
+                into a plain-language report on how you work, where you stall and when your timing opens up.
+            </p>
+            <div class="actions">
+                <a class="btn btn-primary" href="analysis.html">Start your chart</a>
+                <a class="btn btn-ghost" href="guide.html">Read the guide first</a>
+            </div>
+            <div class="note">Takes your date, time and place of birth. Built for self-reflection.</div>
+        </div>
+    </section>
+
+    <section class="problem" aria-labelledby="problem-title">
+        <div class="wrap">
+            <blockquote id="problem-title">
+                You are trying to use an engine built for one job to solve a problem that needs another.
+            </blockquote>
+            <div>
+                <p>
+                    CNP treats the mind as a set of competing energy centers, each with its own fuel and its own output.
+                    When the input does not match the output, the engine stalls, and that stall feels like procrastination,
+                    people-pleasing, anger or worry.
+                </p>
+                <p>
+                    Naming which engine is running, and what it needs, is the first step to working with it instead of
+                    against it.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="engines" aria-labelledby="engines-title">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="eyebrow">The framework</div>
+                <h2 id="engines-title">Four engines of action</h2>
+                <p>Each archetype comes with a core conflict, a deep analysis, strengths and risks, real-life cases and a step-by-step roadmap.</p>
+            </div>
+            <div class="grid grid-4">
+                <article class="card c-creator">
+                    <div class="conflict">Input vs. Output</div>
+                    <h3>The Creator</h3>
+                    <p>For those caught in analysis paralysis and collecting more than they ever make.</p>
+                </article>
+                <article class="card c-seller">
+                    <div class="conflict">Performance vs. Connection</div>
+                    <h3>The Seller</h3>
+                    <p>For those who feel unseen, lonely, or like an impostor despite their charisma.</p>
+                </article>
+                <article class="card c-warrior">
+                    <div class="conflict">Complaint vs. Reform</div>
+                    <h3>The Warrior</h3>
+                    <p>For those filled with anger at inefficiency and injustice who need a way to channel it.</p>
+                </article>
+                <article class="card c-strategist">
+                    <div class="conflict">Anxiety vs. Planning</div>
+                    <h3>The Strategist</h3>
+                    <p>For those paralyzed by fear of future catastrophes and looking for control through preparation.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section id="report" class="report" aria-labelledby="report-title">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="eyebrow">What you get</div>
+                <h2 id="report-title">A report built from your chart</h2>
+                <p>Enter your birth details and the tool calculates positions with the Lahiri (sidereal) method, then explains them in everyday language.</p>
+            </div>
+            <div class="grid grid-3">
+                <article class="card"><h3>Rhythm of Your Soul</h3><p>Where you push and where you pause, and which of your energy circuits are overdrawn or nourished.</p></article>
+                <article class="card"><h3>Working Style</h3><p>How your chart's houses split between the Tamas (inhale) and Rajas (exhale) modes of working.</p></article>
+                <article class="card"><h3>Life Path Story</h3><p>A narrative of how your energy flows from one area of life to the next.</p></article>
+                <article class="card"><h3>Career Guidance</h3><p>The kinds of work that suit your engines, how to excel in them, and the warning signs to watch.</p></article>
+                <article class="card"><h3>Past, Present, Future Cycles</h3><p>Longer-term timing through the slow-moving cycles of Mars, Jupiter and Saturn.</p></article>
+                <article class="card"><h3>Monthly and Daily Rhythm</h3><p>Emotional patterns that shift with the Sun over the year and the Moon day to day.</p></article>
+            </div>
+        </div>
+    </section>
+
+    <section id="how" aria-labelledby="how-title">
+        <div class="wrap">
+            <div class="section-head">
+                <div class="eyebrow">How it works</div>
+                <h2 id="how-title">From birth details to a plan</h2>
+            </div>
+            <div class="grid grid-3 steps">
+                <div class="step">
+                    <h3>Enter your birth details</h3>
+                    <p>Name, date, time and place of birth. The time zone and coordinates fill in from the place you choose.</p>
+                </div>
+                <div class="step">
+                    <h3>Read your report</h3>
+                    <p>See your planets, houses and cycles, with the Archetype Guide open beside it to explain each section.</p>
+                </div>
+                <div class="step">
+                    <h3>Act on it</h3>
+                    <p>Use the roadmaps and, if you want guided practice, the course sessions to turn insight into habits.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="cta" aria-labelledby="cta-title">
+        <div class="wrap">
+            <h2 id="cta-title">See which engine is running your week</h2>
+            <p>Create your chart in a couple of minutes. Questions about access or the course? Message us directly.</p>
+            <div class="actions">
+                <a class="btn btn-primary" href="analysis.html">Start your chart</a>
+                <a class="btn btn-ghost" href="https://wa.me/916283462525" rel="noopener">Message on WhatsApp</a>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="wrap">
+        <div>
+            <a href="landing.html">Home</a>
+            <a href="guide.html">Archetype Guide</a>
+            <a href="analysis.html">Chart tool</a>
+            <a href="mailto:brainmanual@gmail.com">brainmanual@gmail.com</a>
+        </div>
+        <div>&copy; Cosmos Neural Programming</div>
+        <p class="disclaimer">
+            CNP is a framework for self-reflection and personal development. It is not medical, psychological,
+            legal or financial advice and does not predict outcomes. For mental-health concerns, please speak
+            with a qualified professional.
+        </p>
+    </div>
+</footer>
+
+</body>
+</html>
